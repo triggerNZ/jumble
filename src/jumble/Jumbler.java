@@ -3,7 +3,6 @@ package jumble;
 import org.apache.bcel.classfile.JavaClass;
 import java.util.HashSet;
 
-import weka.core.Utils;
 
 /**
  * Mutation tester.  Given a class file can either count the number of
@@ -15,6 +14,8 @@ import weka.core.Utils;
  * @version $Revision$
  */
 public class Jumbler extends org.apache.bcel.util.ClassLoader {
+
+    public final static boolean DEBUG = false;
     
     /** Target class for mutation. */
     private final String mTarget;
@@ -66,32 +67,6 @@ public class Jumbler extends org.apache.bcel.util.ClassLoader {
      */
     public static void main(String[] args) throws Exception {
 	
-	/*
-	  // set up and parse command line arguments
-	  final CLIFlags flags = new CLIFlags("Jumbler", "Mutation testing tool.");
-	  flags.registerOptional('c', "count", "Count possible mutation points");
-	  flags.registerOptional('x', "exclude", String.class, "[method[,]]+", "Comma separated list of method names to ignore");
-	  flags.registerOptional('k', "inlineconstants", "Allow mutation of inline constants");
-	  flags.registerOptional('r', "returns", "Allow mutation of return values");
-	  flags.registerRequired(String.class, "class", "Class to be mutated");
-	  final Flag a1 = flags.registerRequired(Integer.class, "mutation-point", "point to mutate");
-	  final Flag a2 = flags.registerRequired(String.class, "test-class", "corresponding test class");
-	  a1.setMinCount(0);
-	  a2.setMinCount(0);
-	  flags.setValidator(new Validator() {
-	  public boolean isValid(CLIFlags flags) {
-	  if (flags.getAnonymousValue(1) != null && flags.getAnonymousValue(2) == null) {
-	  flags.setParseMessage("must give both mutation point and test class");
-	  return false;
-	  }
-	  return true;
-	  }
-	  });
-	  // following call will cause exit if problem occurs in parsing options
-	  flags.setFlags(args);
-	*/
-	// ignore set
-	
 	final HashSet ignore = new HashSet();
 
 	//get the list of excludes
@@ -110,22 +85,35 @@ public class Jumbler extends org.apache.bcel.util.ClassLoader {
 	    ignore.add("integrity");
 	}
 	
-	if (Utils.getFlag('c',args) || Utils.getFlag("count", args)) {
+	//the flags must be processed first
+	boolean count = Utils.getFlag('c',args) || Utils.getFlag("count", args);
+	boolean constants = Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args);
+	boolean returns = Utils.getFlag('r', args) || Utils.getFlag("returns", args);
+
+	if (count) {
+	    if(DEBUG) {
+		System.out.println("Count mode\nArguments:");
+		for(int i = 0; i < args.length; i++)
+		    System.out.println(args[i]);
+		
+	    }
 	    final Mutater m = new Mutater(0); // run in count mode only, param ignored
 	    m.setIgnoredMethods(ignore);
-	    m.setMutateInlineConstants(Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args));
-	    m.setMutateReturnValues(Utils.getFlag('r', args) || Utils.getFlag("returns", args));
+	    m.setMutateInlineConstants(constants);
+	    m.setMutateReturnValues(returns);
 	    System.out.println("" + m.countMutationPoints(Utils.getNextArgument(args)));
 	} else {
 	    String className = Utils.getNextArgument(args);
+	    System.out.println(className);
 	    int mutationNumber = Integer.parseInt(Utils.getNextArgument(args));
 	    String testName = Utils.getNextArgument(args);
-
+	    
 	    try {
 		final Mutater m = new Mutater(mutationNumber);
 		m.setIgnoredMethods(ignore);
-		m.setMutateInlineConstants(Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args));
-		m.setMutateReturnValues(Utils.getFlag('r', args) || Utils.getFlag("returns", args));
+		m.setMutateInlineConstants(constants);
+		m.setMutateReturnValues(returns);
+
 		final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
 		final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
 		System.err.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));
