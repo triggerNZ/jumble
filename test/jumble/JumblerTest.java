@@ -3,8 +3,6 @@ package jumble;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
 //import com.reeltwo.util.net.Runner;
 
 /**
