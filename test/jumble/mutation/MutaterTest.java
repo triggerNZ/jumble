@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
 import org.apache.bcel.classfile.JavaClass;
-import com.reeltwo.util.HashFunction;
+import java.util.Random;
 
 /**
  * Tests the corresponding class.
@@ -158,7 +158,7 @@ public class MutaterTest extends TestCase {
     try {
       Mutater m = new Mutater(mp);
       JavaClass c = m.jumbler(s);
-      assertEquals(h, HashFunction.irvineHash(c.getBytes()));
+      assertEquals(h, irvineHash(c.getBytes(), 0, c.getBytes().length));
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -209,6 +209,36 @@ public class MutaterTest extends TestCase {
     hash("jumble.X4", 10, 1824724605084526440L);
   }
 
-    
+  /** Randomly generated arrays used to compute irvineHash codes */
+  private static final long[] HASH_BLOCKS;
+  static {
+    HASH_BLOCKS = new long[256];
+    Random r = new Random(1L); // use same seed for deterministic behavior
+    for (int i = 0; i < 256; i++) {
+      HASH_BLOCKS[i] = r.nextLong();
+    }
+  }
+
+  /**
+   * Returns a 64 bit hash of the given string. This hash function
+   * exhibits better statistical behavior than String hashCode() and
+   * has speed comparable to CRC32.
+   *
+   * @param in bytes to checksum
+   * @param start first byte
+   * @param length length of input
+   * @return a hash
+   */
+  private static final long irvineHash(final byte[] in, final int start, final int length) {
+    long r = 0L;
+    for (int i = 0; i < length; i++) {
+      final long sgn = (r & 0x8000000000000000L) >>> 63;
+      r <<= 1;
+      r |= sgn;
+      r ^= HASH_BLOCKS[(in[i + start] + i) & 0xFF];
+    }
+    return r;
+  }
+
 
 }
