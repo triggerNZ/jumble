@@ -71,7 +71,7 @@ public class JumbleTestSuite extends TestSuite {
   /**
    * Run the tests for the given class.
    *
-   * @param run the name of the test class
+   * @param testClassName the name of the test class
    */
   public static String run(String testClassName) {
     try {

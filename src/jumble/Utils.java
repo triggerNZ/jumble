@@ -44,7 +44,7 @@ public final class Utils {
   /**
    * Checks if the given array contains any non-empty options.
    *
-   * @param strings an array of strings
+   * @param options an array of strings
    * @exception Exception if there are any non-empty options
    */
 
@@ -74,7 +74,7 @@ public final class Utils {
    * it is replaced with the empty string.
    *
    * @param flag the character indicating the flag.
-   * @param strings the array of strings containing all the options.
+   * @param options the array of strings containing all the options.
    * @return true if the flag was found
    * @exception Exception if an illegal option was found
    */
@@ -89,7 +89,7 @@ public final class Utils {
    * it is replaced with the empty string.
    *
    * @param flag the String indicating the flag.
-   * @param strings the array of strings containing all the options.
+   * @param options the array of strings containing all the options.
    * @return true if the flag was found
    * @exception Exception if an illegal option was found
    */
@@ -204,7 +204,7 @@ public final class Utils {
    * Split up a string containing options into an array of strings,
    * one for each option.
    *
-   * @param optionString the string containing the options
+   * @param quotedOptionString the string containing the options
    * @return the array of options
    */
   public static String [] splitOptions(String quotedOptionString) throws Exception{
