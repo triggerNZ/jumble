@@ -1,0 +1,53 @@
+\documentclass{article}
+\title{Jumble: A Mutation Tester}
+\author{Sean A. Irvine}
+\date{\today}
+\bibliographystyle{alpha}
+\begin{document}
+\maketitle
+
+The purpose of mutation testing is to provide a measure of the effectiveness of test cases. A single consequential mutation is performed on the code to be tested, the corresponding test cases are then executed. If the modified code fails the tests, then this increases confidence in the tests. Conversely, if the modified code passes the tests this indicates a testing deficiency.
+
+JUnit~\cite{junit} has become the {\em de facto\/} unit testing framework for the Java language. A class and its corresponding JUnit test is a sensible granularity at which to apply mutation testing. With Java it is feasible to perform mutations at either the source code or byte-code level. Jester~\cite{jester} is a mutation tester operating at the source code level. While Jester proves useful, it is hampered by the costly cycle of modifying the source, compiling the source, and running the tests.
+
+Jumble is a new mutation tester operating directly on class files. It uses the byte-code engineering library (BCEL)~\cite{bcel} to directly modify class files thereby drastically cutting the time taken for each mutation test cycle. A modified version of JUnit is used to quickly exit the tests as soon as a unit test fails.
+
+\section{Mutations}
+
+Jumble is capable of making a number of different kinds of mutation.
+
+\begin{itemize}
+
+\item {\bf Conditionals}: Jumble can replace any condition with its negation.  Thus, for example, the condition \verb|x > y| would mutate to become \verb|!(x > y)|. Such mutations are not limited to simple conditionals as in {\tt if} statements. They also can occur in loop conditions of {\tt while}, {\tt for}, and {\tt do} loops and in {\tt ?:} ternary operations. Conditionals include arithmetic comparisons, reference comparisons, and tests for null and not-null. The mutation is effected by means of the {\tt negate()} method of {\bf IfInstruction} class of BCEL.
+
+Sometimes the modification of a conditional can cause infinite looping. Jumble detects this situation by first timing the test on the unmodified code, then if the mutated code takes more than a certain multiple of this time the test is assumed to have caused infinite looping and the result is deemed to be a pass. Such results are indicated by a {\tt T} in the test output.
+
+\item {\bf Binary Arithmetic Operations}: Jumble can replace binary arithmetic operations for either integer or floating-point arithmetic with another operation. The replacement operation is selected according to Figure~\ref{aops}. Fixed replacements rather than random replacements are used because sometimes different operations will (correctly) produce the same result. Even when using the fixed replacements of Figure~\ref{aops} such a situation can occasionally arise. For example, the two expressions \verb|y = x * sign;| and \verb|y = x / sign;| give the same result for \verb|sign| $=\pm1$.
+
+\begin{figure}
+\begin{center}
+\begin{tabular}{cc}
+Current&Mutation\\\hline
++&$-$\\
+$-$&+\\
+$*$&/\\
+/&$*$\\
+\%&$*$\\
+\&&$|$\\
+$|$&\&\\
+\^{ }&\&\\
+$<<$&$>>$\\
+$>>$&$<<$\\
+$>>>$&$<<$\\
+\end{tabular}
+\end{center}
+\caption{\label{aops}Arithmetic mutations.}
+\end{figure}
+
+\end{itemize}
+
+\small
+\bibliography{jumble}
+
+
+\end{document}
