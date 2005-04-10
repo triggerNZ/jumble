@@ -1,7 +1,8 @@
 package jumble;
 
-import org.apache.bcel.classfile.JavaClass;
 import java.util.HashSet;
+
+import org.apache.bcel.classfile.JavaClass;
 
 
 /**
@@ -13,7 +14,7 @@ import java.util.HashSet;
  * @author Sean A. Irvine
  * @version $Revision$
  */
-public class Jumbler extends org.apache.bcel.util.ClassLoader {
+public class Jumbler extends ClassLoader {
 
     public final static boolean DEBUG = false;
     
@@ -104,21 +105,21 @@ public class Jumbler extends org.apache.bcel.util.ClassLoader {
 	    System.out.println("" + m.countMutationPoints(Utils.getNextArgument(args)));
 	} else {
 	    String className = Utils.getNextArgument(args);
-	    System.out.println(className);
+	    //System.out.println(className);
 	    int mutationNumber = Integer.parseInt(Utils.getNextArgument(args));
 	    String testName = Utils.getNextArgument(args);
 	    
 	    try {
-		final Mutater m = new Mutater(mutationNumber);
-		m.setIgnoredMethods(ignore);
-		m.setMutateInlineConstants(constants);
-		m.setMutateReturnValues(returns);
+	        final Mutater m = new Mutater(mutationNumber);
+	        m.setIgnoredMethods(ignore);
+	        m.setMutateInlineConstants(constants);
+	        m.setMutateReturnValues(returns);
 
-		final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
-		final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
-		System.err.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));
+	        final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
+	        final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
+	        System.err.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));
 	    } catch (Exception ex) {
-		ex.printStackTrace();
+	        ex.printStackTrace();
 	    }
 	    
 	}
