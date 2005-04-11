@@ -49,10 +49,10 @@ public class Jumbler extends ClassLoader {
      * @return possibly modified class
      */
     protected JavaClass modifyClass(final JavaClass clazz) {
-	//    System.err.println("Mod " + clazz.getClassName());
 	if (clazz.getClassName().equals(mTarget)) {
 	    try {
-		return mMutater.jumbler(clazz.getClassName());
+	        JavaClass ret = mMutater.jumbler(clazz.getClassName());
+	        return ret;
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }

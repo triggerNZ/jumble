@@ -1,75 +1,65 @@
 package jumble;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.util.HashSet;
 
-/** Class implementing a java version of jumble.sh. Nowhere near finished
+/** Class implementing a java version of jumble.sh. Nowhere near finished yet
  *  @author Tin Pavlinic
  *  @version 0.01
  */
 public class JumbleRunner {
     public static void main(String [] args) throws Exception {
-	String className = Utils.getNextArgument(args);
-	String testName = Utils.getNextArgument(args);
+        try {
+            //Process arguments
+            String excludes = Utils.getOption('x', args);
+            if(excludes.equals(""))
+                excludes = Utils.getOption("exclude", args);
+            
+        	boolean constants = Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args);
+        	boolean returns = Utils.getFlag('r', args) || Utils.getFlag("returns", args);
+            String className = Utils.getNextArgument(args);
+            String testName = Utils.getNextArgument(args);
+            int startingPoint = Integer.parseInt(Utils.getNextArgument(args));
+            
+            final HashSet ignore = new HashSet();
+            
+            if (!excludes.equals("")) {
+        	    final String[] ig = excludes.split(",");
+        	    for (int i = 0; i < ig.length; i++) {
+        		ignore.add(ig[i]);
+        	    }
+        	} else {
+        	    ignore.add("main");
+        	    ignore.add("integrity");
+        	}
+            
+            //First count the number of possible mutaton points
+            Mutater m = new Mutater(0); // run in count mode only, param ignored
+    	    m.setIgnoredMethods(ignore);
+    	    m.setMutateInlineConstants(constants);
+    	    m.setMutateReturnValues(returns);
+    	    
+    	    
+    	    
+    	    int count = m.countMutationPoints(className);
+    	    
+    	    if(startingPoint >= count)
+    	        throw new RuntimeException("StartingPoint must be smaller than the "
+    	                + "total number of mutation points");
+    	    //now run the tests for every mutation
+    	    for(int i = startingPoint; i < count; i++) {
+    	        m = new Mutater(i);
+    	        m.setIgnoredMethods(ignore);
+    	        m.setMutateInlineConstants(constants);
+    	        m.setMutateReturnValues(returns);
 
-	boolean printUsage = false;
-	
-	if(testName.equals("")) {
-	    testName = className + "Test";
-	}
-
-	try {
-	    Class c = Class.forName(className);
-	} catch(Exception e) {
-	    System.err.println("Error: class " + className + " not found.");
-	    return;
-	}
-
-	try {
-	    Class c = Class.forName(testName);
-	} catch(Exception e) {
-	    System.err.println("Error: class " + testName + " not found.");
-	    return;
-	}
-
-	PrintStream oldOut = System.out;
-	PrintStream oldErr = System.err;
-	
-	try {
-
-	    //hijack standard in and err
-	    
-	    ByteArrayOutputStream outBA = new ByteArrayOutputStream();
-	    ByteArrayOutputStream errBA = new ByteArrayOutputStream();
-	    PrintStream outP = new PrintStream(outBA);
-	    PrintStream errP = new PrintStream(errBA);
-	
-	    System.setOut(outP);
-	    System.setErr(errP);
-
-	    //read the number of possible mutations
-	    Jumbler.main(new String[] {"-c", className});
-	    
-	    if(!errBA.toString().equals("")) {
-		throw new RuntimeException("Output on standard error");
-	    }
-	    int count = Integer.parseInt(outBA.toString().trim());
-	    oldOut.println("count: " + count);
-
-	    
-	} catch(Exception e) {
-	    printUsage = true;
-	    oldErr.println(e);
-	} finally { 
-	    //restore out and err
-	    System.setOut(oldOut);
-	    System.setErr(oldErr);
-	}
-
-
-	if(printUsage) {
-	    System.out.println("Usage: java jumble.JumbleRunner [Class]");
-	}
-	
+    	        final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
+    	        final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
+    	        System.out.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));
+    	    }
+            
+        } catch(Exception e) {
+            System.out.println("Error: " + e);
+            System.out.println("Usage: java jumble.JumbleRunner [Options] [Class] [TestClass] [StartingPoint]");
+        }
     }
 }

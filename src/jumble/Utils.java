@@ -23,7 +23,8 @@
 
 package jumble;
 
-import java.util.Vector; //I think this is better to use than Weka's FastVector here
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * Class implementing simple command line parsing methods. A subset of the weka.core.Utils 
@@ -282,7 +283,7 @@ public final class Utils {
 		return retVal;
 	    }
 	}
-	return "";
+	throw new NoSuchElementException("All arguments used up");
     }
 
   /**

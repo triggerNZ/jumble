@@ -1,10 +1,11 @@
 package jumble;
 
-import junit.framework.TestSuite;
-import junit.framework.TestResult;
-import junit.framework.Test;
-import java.util.Enumeration;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Enumeration;
+
+import junit.framework.Test;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
 /**
  * An extension of TestSuite with fast failure and inverting
