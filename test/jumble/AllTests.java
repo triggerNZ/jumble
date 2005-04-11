@@ -13,9 +13,9 @@ public class AllTests extends TestSuite {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(JumblerTest.suite());
     suite.addTest(JumbleTestSuiteTest.suite());
     suite.addTest(MutaterTest.suite());
+    //suite.addTest(TimeOutTest.suite());
     return suite;
   }
 

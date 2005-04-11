@@ -10,7 +10,9 @@ import java.math.BigInteger;
 
 import java.lang.reflect.Method;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author Tin
@@ -53,4 +55,9 @@ public class TimeOutTest extends TestCase {
 		else return slowFibonacci(i.subtract(BigInteger.ONE))
 			.add(slowFibonacci(i.subtract(TWO)));
 	}
+	
+	  public static Test suite() {
+	      TestSuite suite = new TestSuite(MutaterTest.class);
+	      return suite;
+	    }
 }
