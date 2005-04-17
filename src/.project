@@ -3,6 +3,7 @@
 	<name>jumblesrc</name>
 	<comment></comment>
 	<projects>
+		<project>jumbletest</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

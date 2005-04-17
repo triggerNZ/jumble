@@ -48,27 +48,31 @@ public class JumbleTestSuite extends TestSuite {
     // all tests passed, this mutation is a problem, report it
     // this is made complicated because we must get the modification
     // details from a class loaded in a different name space
-    String message;
-    try {
-      message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
-    } catch (IllegalAccessException e) {
-      message = "!!!" + e.getMessage();
-    } catch (IllegalArgumentException e) {
-      message = "!!!" + e.getMessage();
-    } catch (InvocationTargetException e) {
-      message = "!!!" + e.getMessage();
-    } catch (NoSuchMethodException e) {
-      message = "!!!" + e.getMessage();
-    } catch (SecurityException e) {
-      message = "!!!" + e.getMessage();
-    }
-    if (message == null) {
-      message = "none: existing tests never caused class to be loaded";
-    }
 
-    return "FAIL: " + message;
+    return "FAIL: " + getMessage();
   }
 
+  private String getMessage() {
+      String message;
+      try {
+        message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
+      } catch (IllegalAccessException e) {
+        message = "!!!" + e.getMessage();
+      } catch (IllegalArgumentException e) {
+        message = "!!!" + e.getMessage();
+      } catch (InvocationTargetException e) {
+        message = "!!!" + e.getMessage();
+      } catch (NoSuchMethodException e) {
+        message = "!!!" + e.getMessage();
+      } catch (SecurityException e) {
+        message = "!!!" + e.getMessage();
+      }
+      if (message == null) {
+          message = "none: existing tests never caused class to be loaded";
+        }
+      return message;
+  }
+  
   /**
    * Run the tests for the given class.
    *
