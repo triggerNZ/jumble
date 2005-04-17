@@ -12,14 +12,17 @@ package jumble;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public interface JumbleResult {
-    public String getClassName();
-    public String getTestName();
-    public int getMutationCount();
-    public Mutation [] getPassed();
-    public Mutation [] getTimeouts();
-    public Mutation [] getFailed();
-    public Mutation [] getAllMutations();
-    public int hashCode();
-    public boolean equals(Object o);
+public abstract class JumbleResult {
+    public abstract String getClassName();
+    public abstract String getTestName();
+    public abstract int getMutationCount();
+    public abstract Mutation [] getPassed();
+    public abstract Mutation [] getTimeouts();
+    public abstract Mutation [] getFailed();
+    public abstract Mutation [] getAllMutations();
+    public int getCoverage() {
+        return (int)((double)(getPassed().length + getTimeouts().
+                length) / getAllMutations().length);
+    }
+    
 }
