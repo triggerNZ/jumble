@@ -23,19 +23,22 @@ public class TextFilePairProducerTest extends TestCase {
         
         ClassTestPair [] pairs = pp.producePairs();
         
-        assertEquals(4, pairs.length);
+        assertEquals(5, pairs.length);
         
         assertEquals("experiments.JumblerExperiment",  pairs[0].getClassName());
         assertEquals("experiments.JumblerExperimentTest",  pairs[0].getTestName());
         
-        assertEquals("junit.samples.money.MoneyBag",  pairs[1].getClassName());
-        assertEquals("junit.samples.money.MoneyTest",  pairs[1].getTestName());
+        assertEquals("experiments.JumblerExperiment", pairs[1].getClassName());
+        assertEquals("experiments.FailingTest",  pairs[1].getTestName());
         
-        assertEquals("junit.samples.money.IMoney",  pairs[2].getClassName());
+        assertEquals("junit.samples.money.MoneyBag",  pairs[2].getClassName());
         assertEquals("junit.samples.money.MoneyTest",  pairs[2].getTestName());
         
-        assertEquals("junit.samples.money.Money",  pairs[3].getClassName());
-        assertEquals("junit.samples.money.MoneyTest",  pairs[3].getTestName()); 
+        assertEquals("junit.samples.money.IMoney",  pairs[3].getClassName());
+        assertEquals("junit.samples.money.MoneyTest",  pairs[3].getTestName());
+        
+        assertEquals("junit.samples.money.Money",  pairs[4].getClassName());
+        assertEquals("junit.samples.money.MoneyTest",  pairs[4].getTestName()); 
     }
 
 }

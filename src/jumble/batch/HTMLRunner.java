@@ -15,6 +15,10 @@ import java.util.Set;
 import java.util.Iterator;
 
 import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,28 +57,32 @@ public class HTMLRunner {
         buf.append("<B>Class: </B>" + result.getClassName() + "<BR>\n");
         buf.append("<B>Test: </B>" + result.getTestName() + "<BR><BR>\n");
         buf.append("<B>Run: </B><BR>\n");
-        for(int i = 0; i < result.getAllMutations().length; i++) {
-            Mutation m = result.getAllMutations()[i];
-            if(m.isPassed())
-                buf.append(".");
-            else if(m.isFailed())
-                buf.append("M");
-            else if(m.isTimedOut())
-                buf.append("T");
+        if(result.testFailed()) {
+            buf.append("JUnit test failed\n");
+        } else {
+            for(int i = 0; i < result.getAllMutations().length; i++) {
+                Mutation m = result.getAllMutations()[i];
+                if(m.isPassed())
+                    buf.append(".");
+                else if(m.isFailed())
+                    buf.append("M");
+                else if(m.isTimedOut())
+                    buf.append("T");
+            }
+            buf.append("<BR><BR>\n");
+        
+            buf.append("<B>Failures: </B><BR>\n");
+        
+            for(int i = 0; i < result.getFailed().length; i++) {
+                buf.append("" + result.getFailed()[i].getDescription()
+                        + "<BR>\n");
+            }	
+        
+            buf.append("<BR><B> Coverage: </b> " + (result.getPassed().length
+                    + result.getTimeouts().length) 
+                    + "/" + result.getAllMutations().length + 
+                    " (" + result.getCoverage() + "%)<BR>");
         }
-        buf.append("<BR><BR>\n");
-        
-        buf.append("<B>Failures: </B><BR>\n");
-        
-        for(int i = 0; i < result.getFailed().length; i++) {
-            buf.append("" + result.getFailed()[i].getDescription()
-                    + "<BR>\n");
-        }
-        
-       buf.append("<BR><B> Coverage: </b> " + (result.getPassed().length
-               + result.getTimeouts().length) 
-               + "/" + result.getAllMutations().length + "<BR>");
-        
         buf.append("</BODY>\n");
         buf.append("</HTML>");
         return buf.toString();
@@ -89,7 +97,7 @@ public class HTMLRunner {
         JumbleResult [] res = JumbleBatchRunner.runBatch(pairs, true, true, ignore);
         
         HTMLRunner html = new HTMLRunner(res);
-        html.writeWebSite(new File(args[1]));
+        html.writeWebSite(new File(args[1]), new File(args[2]));
         
     }
     private String getPackage(String className) {
@@ -99,7 +107,9 @@ public class HTMLRunner {
         }
         return "(default)";
     }
-    public void writeWebSite(File directory) throws IOException {
+    public void writeWebSite(File directory, File pics) throws IOException {
+        copyPicDir(pics, directory);
+        
         StringBuffer buf = new StringBuffer(); //index web site
         
         if(!directory.isDirectory())
@@ -159,7 +169,19 @@ public class HTMLRunner {
             
             curWriter.println(produceHTML(r));
             curWriter.close();
-            buf.append("<A HREF=" + filename + ".html>" + r.getClassName() +
+            final String pic;
+            if(r.testFailed())
+                pic = "bad.gif";
+            else if(r.getAllMutations().length == 0)
+                pic = "free.gif";
+            else {
+                int coverage = r.getCoverage();
+                pic = "" + (coverage/10) + ".gif";
+            }
+                
+            buf.append("<IMG SRC=" + pic + "></IMG>\n");
+            buf.append("" + r.getCoverage() + "% " + 
+                    "<A HREF=" + filename + ".html>" + r.getClassName() +
                     "</A> <BR> \n");
         }
         buf.append("</BODY>\n");
@@ -169,5 +191,29 @@ public class HTMLRunner {
                     + "/" + name + ".html"));
         writer.println(buf);
         writer.close();
+    }
+    
+    private void copyPicDir(File fromDir, File toDir) throws IOException {
+       for(int i = 0; i <= 10; i++) {
+           copyFile(new File(fromDir.getCanonicalPath()+"/" +i + ".gif")
+                   , toDir);
+       }
+       copyFile(new File(fromDir.getCanonicalPath()+"/bad.gif"), toDir);
+       copyFile(new File(fromDir.getCanonicalPath()+"/free.gif"), toDir);
+    }
+    private void copyFile(File from, File toDir) throws IOException {
+        BufferedOutputStream out = new BufferedOutputStream(
+                new FileOutputStream(
+                toDir.getCanonicalPath()+"/" + from.getName()));
+        BufferedInputStream in = new BufferedInputStream(
+                new FileInputStream(from));
+        
+        int cur;
+        while((cur = in.read()) != -1) {
+            out.write(cur);
+        }
+        in.close();
+        out.close();
+            
     }
 }

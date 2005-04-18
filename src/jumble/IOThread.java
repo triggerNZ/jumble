@@ -4,18 +4,20 @@ import java.util.List;
 import java.util.LinkedList;
 
 import java.io.*;
-
+/** Class which constantly polls an InputStream and allows the user
+ * to see if any data is available.
+ * @author Tin Pavlinic
+ */
 public class IOThread extends Thread {
-       private Process mProcess;
        private BufferedReader mOut;
        private BufferedReader mErr;
        private List mBuffer;
-       
+       //Constructor
        public IOThread(InputStream out) {
            mOut = new BufferedReader(new InputStreamReader(out));
            mBuffer = new LinkedList();
        }
-       
+       /** Loops while the stream exists*/
        public void run() {
            String curLine;
            try {
@@ -30,7 +32,10 @@ public class IOThread extends Thread {
                e.printStackTrace();
            }
        }
-       
+       /** Returns the next line of text if available. Otherwise
+        * returns null.
+        * @return the next line of text or null
+        */
        public String getNext() {
            synchronized(this) {
                if(mBuffer.size() == 0)

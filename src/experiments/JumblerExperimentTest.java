@@ -3,10 +3,14 @@ package experiments;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
+/** Tests the JumblerExperiment class (inadequately) for
+ * jumble testing.
+ * @author Tin Pavlinic
+ */
 public class JumblerExperimentTest extends TestCase {
     private JumblerExperiment exp = new JumblerExperiment();
 
+    
     public void testAdd() {
         assertEquals(3,exp.add(2,1));
         //assertEquals(1, exp.add(1,2));

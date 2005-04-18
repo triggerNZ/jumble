@@ -1,9 +1,4 @@
-/*
- * Created on Apr 11, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+
 package jumble;
 
 import java.util.HashSet;
@@ -12,7 +7,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 import java.io.IOException;
-
+import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
+/** Class for running Jumble on a single class with a single test.
+ * 
+ * @author Tin
+ */
 public class JumbleMain {
     public static JumbleResult runJumble(final String className, final String testName, 
             boolean returnVals, boolean inlineConstants, Set ignore,
@@ -79,6 +79,10 @@ public class JumbleMain {
             private Mutation [] mTimedOut = null;
             private String mClassName = className;
             private String mTestName = testName;
+            
+            public boolean testFailed() {
+                return false;
+            }
             
             public String getClassName() {
                 return mClassName;
@@ -152,18 +156,33 @@ public class JumbleMain {
        
     }
     
-    public static int getTimeOut(String testName) throws ClassNotFoundException {
+    public static int getTimeOut(String testName, boolean output) throws Exception {
         //time the test so we know when to time out
         final int TIMEOUT;
+        
+        
+        //capture the output
+        PrintStream oldOut = System.out;
+        ByteArrayOutputStream log = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(log));
         long before = System.currentTimeMillis();
         junit.textui.TestRunner.run(Class.forName(testName)); 
         long after = System.currentTimeMillis();
+        String res = log.toString();
+        System.setOut(oldOut);
         
+        if(output) {
+            System.out.println(res);
+        }
         
         if(after - before < 200)
             TIMEOUT = 800;
         else
             TIMEOUT = (int)((after - before)*5);
+       
+        if(res.indexOf("F") > 0 || res.indexOf("E") > 0)
+            throw new TestFailedException();
+        
         return TIMEOUT;
     }
     
@@ -179,9 +198,13 @@ public class JumbleMain {
        }
        
        System.out.println("Running test on unmodified class:");
-       
-       final int TIMEOUT = getTimeOut(testName);
-       
+       final int TIMEOUT;
+       try {
+           TIMEOUT = getTimeOut(testName, true);
+       } catch(TestFailedException e) {
+           System.out.println("Test failed");
+           return;
+       }
        HashSet ignore = new HashSet();
        ignore.add("main");
        ignore.add("integrity");

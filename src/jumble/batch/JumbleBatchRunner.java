@@ -8,10 +8,6 @@ package jumble.batch;
 
 import jumble.*;
 
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,19 +38,29 @@ public class JumbleBatchRunner {
     
     public static JumbleResult [] runBatch(ClassTestPair [] pairs, 
             boolean returns, boolean inlineconstants, Set ignore) 
-    	throws IOException, InterruptedException, ClassNotFoundException {
+    	throws Exception {
        ArrayList ret = new ArrayList();
         
-        for(int i = 0; i < pairs.length; i++) {
-            //redirect standard out and run the test
-            PrintStream oldOut = System.out;
-            System.setOut(new PrintStream(new ByteArrayOutputStream()));
-            
-            int timeout = JumbleMain.getTimeOut(pairs[i].getTestName());
-            System.setOut(oldOut);
-            
-            JumbleResult res = JumbleMain.runJumble(pairs[i].getClassName(),
-                    pairs[i].getTestName(), returns, inlineconstants, ignore, timeout);
+        for(int i = 0; i < pairs.length; i++) {  
+            final ClassTestPair p = pairs[i];
+            JumbleResult res;
+            try {
+                int timeout = JumbleMain.getTimeOut(p.getTestName(), false);
+               res = JumbleMain.runJumble(p.getClassName(),
+                        p.getTestName(), returns, inlineconstants, ignore, timeout);
+            } catch(TestFailedException e) {
+                res =  new JumbleResult() {
+                    public Mutation [] getAllMutations() {return null;}
+                    public String getClassName() {return p.getClassName();}
+                    public Mutation [] getFailed() {return null;}
+                    public Mutation [] getTimeouts() {return null;}
+                    public int getMutationCount() {return 0;}
+                    public Mutation [] getPassed() {return null;}
+                    public String getTestName() {return p.getTestName();}
+                    public boolean testFailed() {return true;}
+                    public int getCoverage() {return 0;}
+                };
+            }
             ret.add(res);
         }
         return (JumbleResult [])ret.toArray(new JumbleResult[ret.size()]);

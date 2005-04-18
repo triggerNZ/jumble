@@ -3,3 +3,4 @@ junit.samples.money.IMoney junit.samples.money.MoneyTest
 junit.samples.money.Money junit.samples.money.MoneyTest
 junit.samples.money.MoneyBag junit.samples.money.MoneyTest
 junit.samples.money.MoneyBag junit.samples.money.MoneyTest
+experiments.JumblerExperiment experiments.FailingTest
