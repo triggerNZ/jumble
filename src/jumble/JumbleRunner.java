@@ -16,7 +16,7 @@ public class JumbleRunner {
             
         	boolean constants = Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args);
         	boolean returns = Utils.getFlag('r', args) || Utils.getFlag("returns", args);
-            String className = Utils.getNextArgument(args);
+        	String className = Utils.getNextArgument(args);
             String testName = Utils.getNextArgument(args);
             int startingPoint = Integer.parseInt(Utils.getNextArgument(args));
             

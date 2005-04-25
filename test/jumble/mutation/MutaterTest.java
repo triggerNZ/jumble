@@ -63,30 +63,39 @@ public class MutaterTest extends TestCase {
     assertEquals(12, m.countMutationPoints("jumble.X2"));
   }
 
+  public void testCountMutationPointsX2inc() {
+      Mutater m = new Mutater(0);
+      m.setMutateIncrements(true);
+      assertEquals(10, m.countMutationPoints("jumble.X2"));
+  }
+  
+  
   private void testDescriptions(int x, String s) throws IOException {
     Mutater m = new Mutater(x);
     assertEquals(null, m.getModification());
     m.setMutateInlineConstants(true);
     m.setMutateReturnValues(true);
+    m.setMutateIncrements(true);
     m.jumbler("jumble.X2");
     assertEquals(m.getModification(), s, m.getModification());
   }
 
   public void testDescriptionsX2() throws IOException {
-    testDescriptions(0, "jumble.X2:6: * -> /");
-    testDescriptions(1, "jumble.X2:6: / -> *");
-    testDescriptions(2, "jumble.X2:6: + -> -");
-    testDescriptions(3, "jumble.X2:6: % -> *");
-    testDescriptions(4, "jumble.X2:6: / -> *");
-    testDescriptions(5, "jumble.X2:6: - -> +");
-    testDescriptions(6, "jumble.X2:6: 5 -> -1");
-    testDescriptions(7, "jumble.X2:6: >> -> <<");
-    testDescriptions(8, "jumble.X2:6: << -> >>");
-    testDescriptions(9, "jumble.X2:6: 57 (9) -> 58 (:)");
-    testDescriptions(10, "jumble.X2:6: & -> |");
-    testDescriptions(11, "jumble.X2:6: changed return value (ireturn)");
-    testDescriptions(12, "jumble.X2:6: 0 -> 1");
-    testDescriptions(13, "jumble.X2:6: changed return value (ireturn)");
+    testDescriptions(0, "jumble.X2:6: += -> -=");
+    testDescriptions(1, "jumble.X2:6: * -> /");
+    testDescriptions(2, "jumble.X2:6: / -> *");
+    testDescriptions(3, "jumble.X2:6: + -> -");
+    testDescriptions(4, "jumble.X2:6: % -> *");
+    testDescriptions(5, "jumble.X2:6: / -> *");
+    testDescriptions(6, "jumble.X2:6: - -> +");
+    testDescriptions(7, "jumble.X2:6: 5 -> -1");
+    testDescriptions(8, "jumble.X2:6: >> -> <<");
+    testDescriptions(9, "jumble.X2:6: << -> >>");
+    testDescriptions(10, "jumble.X2:6: 57 (9) -> 58 (:)");
+    testDescriptions(11, "jumble.X2:6: & -> |");
+    testDescriptions(12, "jumble.X2:6: changed return value (ireturn)");
+    testDescriptions(13, "jumble.X2:6: 0 -> 1");
+    testDescriptions(14, "jumble.X2:6: changed return value (ireturn)");
     testDescriptions(500, null);
   }
 

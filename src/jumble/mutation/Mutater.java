@@ -71,6 +71,7 @@ import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.ReturnInstruction;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.generic.Type;
+import org.apache.bcel.generic.IINC;
 
 /**
  * Mutation tester.  Given a class file can either count the number of
@@ -102,7 +103,18 @@ public class Mutater {
   private boolean mMutateInlineConstants = false;
   /** Should return instructions be changed. */
   private boolean mMutateReturns = false;
-
+  /** Should IINC instructions be changed. */
+  private boolean mMutateIncrements = false;
+  
+  public void setMutateIncrements(final boolean v) {
+      mMutateIncrements = v;
+      if(mMutateIncrements) {
+          mMutatable[Constants.IINC] = new NOP();
+      } else {
+          mMutatable[Constants.IINC] = null;
+      }
+  }
+  
   /**
    * Set whether or not inline constants should be mutated.
    *
@@ -380,6 +392,11 @@ public class Mutater {
   private static Instruction mutateSIPUSH(final SIPUSH i, final ConstantPoolGen cp) {
     return new SIPUSH((byte)(i.getValue().shortValue() + 1));
   }
+  
+  /** Mutate an IINC instruction */
+  private static Instruction mutateIINC(final IINC i, final ConstantPoolGen cp) {
+      return new IINC(i.getIndex(), -i.getIncrement());
+  }
 
   /**
    * Return a new integer instruction with the same parameter, but which
@@ -492,6 +509,13 @@ public class Mutater {
     if (i instanceof ReturnInstruction) {
       return "changed return value (" + i.getName() + ")";
     }
+    
+    if(i instanceof IINC) {
+        if(((IINC)i).getIncrement()>= 0)
+            return "+=";
+        else
+            return "-=";
+    }
     return "unknown";
   }
 
@@ -556,7 +580,11 @@ public class Mutater {
             inew = mutateBIPUSH((BIPUSH) i, cp);
           } else if (i instanceof SIPUSH) {
             inew = mutateSIPUSH((SIPUSH) i, cp);
-          } else {
+          } else if(i instanceof IINC) {
+              //added by tin
+              inew = mutateIINC((IINC)i, cp);
+          }
+          else {
             inew = null;
           }
           if (inew != null) {
