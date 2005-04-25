@@ -2,9 +2,9 @@
 <project name="jumble" basedir="." default="jar">
 
     <property name="src.dir" value="."/>
-	<property name="release.dir" value = "c:\jumblerelease"/>
-    <property name="classes.dir" value="${release.dir}/classes"/>
-
+    <property name="release.dir" value="C:\jumblerelease"/>
+	<property name="classes.dir" value="${release.dir}/classes"/>
+	
     <target name="clean" description="Delete all generated files">
         <delete dir="${classes.dir}" failonerror="false"/>
         <delete file="${release.dir}/${ant.project.name}.jar"/>
