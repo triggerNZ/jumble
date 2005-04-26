@@ -289,7 +289,25 @@ public class Mutater {
   }
 
   private boolean checkNormalMethod(final Method m) {
-    return m != null
+   /*
+    if(m == null)
+        System.out.println("null");
+    else if(m.isNative())
+        System.out.println("native");
+    else if(m.isAbstract())
+        System.out.println("abstract");
+    else if(mIgnored.contains(m.getName()))
+        System.out.println("ignored");
+    else if(m.getName().indexOf("access$")!= -1)
+        System.out.println("access");
+    else if(m.getLineNumberTable() == null)
+        System.out.println("linenumber");
+    else if(m.getCode() == null)
+        System.out.println("code");
+    else if(m.getLineNumberTable().getSourceLine(0) <= 0)
+        System.out.println("invalid line number");
+    */
+      return m != null
       && !m.isNative()
       && !m.isAbstract()
       && !mIgnored.contains(m.getName())
@@ -308,7 +326,6 @@ public class Mutater {
     if (!checkNormalMethod(m)) {
       return 0;
     }
-
     final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;

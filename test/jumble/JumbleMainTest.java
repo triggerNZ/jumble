@@ -6,7 +6,10 @@
  */
 package jumble;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import java.util.HashSet;
 
 /**
@@ -26,14 +29,24 @@ public class JumbleMainTest extends TestCase {
         JumbleResult res = JumbleMain.runJumble(
                 "experiments.JumblerExperiment", 
                 "experiments.JumblerExperimentTest", 
-                true, true, sIgnore, 1000);
+                true, true, true, sIgnore, 1000);
+        //System.out.println(res);
         assertEquals("experiments.JumblerExperiment", res.getClassName());
         assertEquals("experiments.JumblerExperimentTest", 
                 res.getTestName());
-        assertEquals(2, res.getFailed().length);
-        assertEquals(2, res.getTimeouts().length);
-        assertEquals(11, res.getAllMutations().length);
+        assertEquals(3, res.getFailed().length);
+        assertEquals(1, res.getTimeouts().length);
+        assertEquals(12, res.getAllMutations().length);
+        
         
     }
+    
+    public static Test suite() {
+        TestSuite suite = new TestSuite(JumbleMainTest.class);
+        return suite;
+      }
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(suite());
+      }
 
 }

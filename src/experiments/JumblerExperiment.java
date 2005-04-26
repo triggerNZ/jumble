@@ -22,12 +22,13 @@ public class JumblerExperiment {
      * @return the product of x and y
      */
     public int multiply(int x, int y) {
+        int total = 0;
         int sum = 0;
         int counter = 0;
         while(counter < y) {
+            total++;
             sum = sum + x;
-            int temp = counter+1;
-            counter = temp;
+            counter++;
         }
         
         return sum;

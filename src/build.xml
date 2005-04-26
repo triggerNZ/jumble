@@ -2,7 +2,8 @@
 <project name="jumble" basedir="." default="jar">
 
     <property name="src.dir" value="."/>
-    <property name="release.dir" value="C:\jumblerelease"/>
+    <property name="test.dir" value = "../jumbletest"/>
+	<property name="release.dir" value="C:\jumblerelease"/>
 	<property name="classes.dir" value="${release.dir}/classes"/>
 	
     <target name="clean" description="Delete all generated files">
@@ -12,7 +13,8 @@
 
     <target name="compile" description="Compiles the Task">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true"/>
+    	<javac srcdir="${test.dir}" destdir="${classes.dir}" debug="true"/>
     </target>
 
     <target name="jar" description="JARs the Task" depends="compile">

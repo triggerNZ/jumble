@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 /** Class implementing a java version of jumble.sh. Nowhere near finished yet
  *  @author Tin Pavlinic
- *  @version 0.01
+ *  @version 1.0
  */
 public class JumbleRunner {
     public static void main(String [] args) throws Exception {
@@ -16,6 +16,7 @@ public class JumbleRunner {
             
         	boolean constants = Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args);
         	boolean returns = Utils.getFlag('r', args) || Utils.getFlag("returns", args);
+        	boolean increments = Utils.getFlag('i', args) || Utils.getFlag("increments", args);
         	String className = Utils.getNextArgument(args);
             String testName = Utils.getNextArgument(args);
             int startingPoint = Integer.parseInt(Utils.getNextArgument(args));
@@ -37,7 +38,7 @@ public class JumbleRunner {
     	    m.setIgnoredMethods(ignore);
     	    m.setMutateInlineConstants(constants);
     	    m.setMutateReturnValues(returns);
-    	    
+    	    m.setMutateIncrements(increments);
     	    
     	    
     	    int count = m.countMutationPoints(className);
@@ -51,14 +52,19 @@ public class JumbleRunner {
     	        m.setIgnoredMethods(ignore);
     	        m.setMutateInlineConstants(constants);
     	        m.setMutateReturnValues(returns);
-
+    	        m.setMutateIncrements(increments);
+    	        
     	        final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
     	        final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
     	        System.out.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));
     	    }
             
         } catch(Exception e) {
-            System.out.println("Error: " + e);
+            StackTraceElement [] st = e.getStackTrace();
+            System.out.print(e.getMessage() + " ");
+            for(int i = 0; i < st.length; i++) {
+                System.out.print(st[i] + " ");
+            }
             System.out.println("Usage: java jumble.JumbleRunner [Options] [Class] [TestClass] [StartingPoint]");
         }
     }

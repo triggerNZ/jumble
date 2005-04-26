@@ -26,7 +26,7 @@ public class Mutation {
         else if(s.startsWith("TIMEOUT"))
             mStatus = TIMEOUT;
         else
-            throw new RuntimeException("Invalid mutation string");
+            throw new RuntimeException("Invalid mutation string: " + s);
     }
     
     public String getDescription() {

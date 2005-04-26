@@ -6,8 +6,11 @@
  */
 package jumble.batch;
 
+import jumble.JumbleTestSuiteTest;
 import jumble.batch.ClassTestPair;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author Tin
@@ -64,4 +67,9 @@ public class ClassTestPairTest extends TestCase {
         assertEquals("[experiments.JumblerExperiment, experiments.JumblerExperimentTest]",
                 ctp.toString());
     }
+    
+    public static Test suite() {
+        TestSuite suite = new TestSuite(ClassTestPairTest.class);
+        return suite;
+      }
 }

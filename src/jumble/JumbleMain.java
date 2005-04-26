@@ -11,11 +11,25 @@ import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
 /** Class for running Jumble on a single class with a single test.
  * 
- * @author Tin
+ * @author Tin Pavlinic
  */
 public class JumbleMain {
+    /** Runs jumble on className and testName
+     * @param className name of class to mutate
+     * @param testName name of corresponding test class
+     * @param returnVals flag indicating whether to mutate 
+     *        return values 
+     * @param inlineConstants flag indicating whether to mutate
+     * 		  inline constants
+     * @param ignore Set of methods to ignore
+     * @param timeout timeout for tests passing
+     * @return the results of this jumble run
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static JumbleResult runJumble(final String className, final String testName, 
-            boolean returnVals, boolean inlineConstants, Set ignore,
+            boolean returnVals, boolean inlineConstants, boolean increments,
+            Set ignore,
             int timeout) 
     	throws IOException, InterruptedException {
         
@@ -25,13 +39,15 @@ public class JumbleMain {
         m.setIgnoredMethods(ignore);
         m.setMutateInlineConstants(inlineConstants);
         m.setMutateReturnValues(returnVals);
+        m.setMutateIncrements(increments);
             
         int count = m.countMutationPoints(className);
             
         int curTest = 0;
         String command = "java jumble.JumbleRunner " + 
          	(returnVals?"-r ":"")  + 
-           	(inlineConstants?"-k ":"") + 
+           	(inlineConstants?"-k ":"") +
+           	(increments?"-i ":"") +
            	className + " " + testName + " " + curTest;
       
         Process p = Runtime.getRuntime().exec(command);
@@ -62,7 +78,8 @@ public class JumbleMain {
                   
                command = "java jumble.JumbleRunner " + 
                	(returnVals?"-r ":"")  + 
-               	(inlineConstants?"-k ":"") + 
+               	(inlineConstants?"-k ":"") +
+               	(increments?"-i ":"") +
                	className + " " + testName + " " + curTest;
                     
                p = Runtime.getRuntime().exec(command);
@@ -155,7 +172,13 @@ public class JumbleMain {
             
        
     }
-    
+    /** Times the running of a test 
+     * @param testName name of test to run
+     * @param output flag indicating whether to show the results
+     * 		  of the test
+     * @return the amount of time in milliseconds that the test took
+     * @throws Exception
+     */
     public static int getTimeOut(String testName, boolean output) throws Exception {
         //time the test so we know when to time out
         final int TIMEOUT;
@@ -185,60 +208,64 @@ public class JumbleMain {
         
         return TIMEOUT;
     }
-    
+    /** Main method - runs jumble on a class/test pair */
     public static void main(String [] args) throws Exception {
-   
-        //For now, just get the test name - everything else is hardcoded
-       String className = Utils.getNextArgument(args);
-       String testName;
-       try {
-           testName = Utils.getNextArgument(args);
-       } catch(Exception e) {
-           testName = className + "Test";
-       }
-       
-       System.out.println("Running test on unmodified class:");
-       final int TIMEOUT;
-       try {
-           TIMEOUT = getTimeOut(testName, true);
-       } catch(TestFailedException e) {
-           System.out.println("Test failed");
-           return;
-       }
-       HashSet ignore = new HashSet();
-       ignore.add("main");
-       ignore.add("integrity");
-       
-       System.out.println("Jumbling...\n");
-       
-       JumbleResult res = runJumble(className, testName, true, true, ignore, TIMEOUT);
-       
-       Mutation [] mut = res.getAllMutations();
-       for(int i = 0; i < mut.length; i++) {
-           if(mut[i].isPassed())
-               System.out.print(".");
-           else if(mut[i].isFailed())
-               System.out.print("M");
-           else if(mut[i].isTimedOut())
-               System.out.print("T");
-           else throw new RuntimeException();
-       }
-       
-       Mutation [] failed = res.getFailed();
-       System.out.println("\n");
-       if(failed.length > 0) {
-           System.out.println("Missed Mutations:");
-           for(int i = 0; i < failed.length; i++) {
-               System.out.println(failed[i].getDescription());
-           }
-       }
-      
-       System.out.println("Summary: ");
-       System.out.println("Class: " + res.getClassName());
-       System.out.println("Test: " + res.getTestName());
-       System.out.println("Covered: " + 
-               (res.getPassed().length + res.getTimeouts().length));
-       System.out.println("Missed: " + res.getFailed().length);
-       System.out.println("Total: " + res.getAllMutations().length);
-   }
+        try {
+	        //For now, just get the test name - everything else is hardcoded
+	       String className = Utils.getNextArgument(args);
+	       String testName;
+	       try {
+	           testName = Utils.getNextArgument(args);
+	       } catch(Exception e) {
+	           testName = className + "Test";
+	       }
+	       Utils.checkForRemainingOptions(args);
+	       System.out.println("Running test on unmodified class:");
+	       final int TIMEOUT;
+	       try {
+	           TIMEOUT = getTimeOut(testName, true);
+	       } catch(TestFailedException e) {
+	           System.out.println("Test failed");
+	           return;
+	       }
+	       HashSet ignore = new HashSet();
+	       ignore.add("main");
+	       ignore.add("integrity");
+	       
+	       System.out.println("Jumbling...\n");
+	       
+	       JumbleResult res = runJumble(className, testName, true, true, true, ignore, TIMEOUT);
+	       
+	       Mutation [] mut = res.getAllMutations();
+	       for(int i = 0; i < mut.length; i++) {
+	           if(mut[i].isPassed())
+	               System.out.print(".");
+	           else if(mut[i].isFailed())
+	               System.out.print("M");
+	           else if(mut[i].isTimedOut())
+	               System.out.print("T");
+	           else throw new RuntimeException();
+	       }
+	       
+	       Mutation [] failed = res.getFailed();
+	       System.out.println("\n");
+	       if(failed.length > 0) {
+	           System.out.println("Missed Mutations:");
+	           for(int i = 0; i < failed.length; i++) {
+	               System.out.println(failed[i].getDescription());
+	           }
+	       }
+	      
+	       System.out.println("Summary: ");
+	       System.out.println("Class: " + res.getClassName());
+	       System.out.println("Test: " + res.getTestName());
+	       System.out.println("Covered: " + 
+	               (res.getPassed().length + res.getTimeouts().length));
+	       System.out.println("Missed: " + res.getFailed().length);
+	       System.out.println("Total: " + res.getAllMutations().length);
+	   }  catch(Exception e) {
+        System.out.println("Usage: java jumble.JumbleMain [ClassName] [TestName]");
+        e.printStackTrace();
+    }
+    }
 }

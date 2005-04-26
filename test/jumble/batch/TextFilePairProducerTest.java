@@ -6,9 +6,13 @@
  */
 package jumble.batch;
 
+import jumble.JumbleTestSuiteTest;
 import jumble.batch.ClassTestPair;
 import jumble.batch.TextFilePairProducer;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import java.io.IOException;
 /**
  * @author Tin
@@ -40,5 +44,10 @@ public class TextFilePairProducerTest extends TestCase {
         assertEquals("junit.samples.money.Money",  pairs[4].getClassName());
         assertEquals("junit.samples.money.MoneyTest",  pairs[4].getTestName()); 
     }
+    
+    public static Test suite() {
+        TestSuite suite = new TestSuite(TextFilePairProducerTest.class);
+        return suite;
+      }
 
 }

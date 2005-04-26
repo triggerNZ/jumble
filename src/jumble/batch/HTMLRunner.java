@@ -94,7 +94,7 @@ public class HTMLRunner {
         ignore.add("integrity");
         
         ClassTestPair [] pairs = new TextFilePairProducer(args[0]).producePairs();
-        JumbleResult [] res = JumbleBatchRunner.runBatch(pairs, true, true, ignore);
+        JumbleResult [] res = JumbleBatchRunner.runBatch(pairs, true, true, true, ignore);
         
         HTMLRunner html = new HTMLRunner(res);
         html.writeWebSite(new File(args[1]), new File(args[2]));
