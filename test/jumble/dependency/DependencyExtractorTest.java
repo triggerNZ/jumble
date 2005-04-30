@@ -9,7 +9,10 @@ package jumble.dependency;
 import java.util.Collection;
 import java.util.Set;
 
+import jumble.JumbleTestSuiteTest;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** Tests the DependencyExtractor
  * @author Tin Pavlinic
@@ -41,4 +44,13 @@ public class DependencyExtractorTest extends TestCase {
         Collection classes = extractor.getAllFilteredDependencies();
         assertEquals(0, classes.size());
     }
+    
+    public static Test suite() {
+        TestSuite suite = new TestSuite(DependencyExtractorTest.class);
+        return suite;
+      }
+
+      public static void main(String[] args) {
+        junit.textui.TestRunner.run(suite());
+      }
 }
