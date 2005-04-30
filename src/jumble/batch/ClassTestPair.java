@@ -1,16 +1,7 @@
-/*
- * Created on Apr 16, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package jumble.batch;
 
-/**
- * @author Tin
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+/** Class representing a class-test association
+ * @author Tin Pavlinic
  */
 public class ClassTestPair {
     private String mClass;

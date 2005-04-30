@@ -29,8 +29,8 @@ public class JumbleMainTest extends TestCase {
         JumbleResult res = JumbleMain.runJumble(
                 "experiments.JumblerExperiment", 
                 "experiments.JumblerExperimentTest", 
-                true, true, true, sIgnore, 1000);
-        //System.out.println(res);
+                true, true, true, sIgnore, 800);
+        
         assertEquals("experiments.JumblerExperiment", res.getClassName());
         assertEquals("experiments.JumblerExperimentTest", 
                 res.getTestName());

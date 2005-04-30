@@ -1,6 +1,8 @@
 package jumble;
 
-import jumble.batch.*;
+import jumble.batch.ClassTestPairTest;
+import jumble.batch.TextFilePairProducerTest;
+import jumble.util.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -19,6 +21,7 @@ public class AllTests extends TestSuite {
     suite.addTest(JumbleMainTest.suite());
     suite.addTest(ClassTestPairTest.suite());
     suite.addTest(TextFilePairProducerTest.suite());
+    suite.addTest(JavaRunnerTest.suite());
     return suite;
   }
 

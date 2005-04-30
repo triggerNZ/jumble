@@ -1,4 +1,4 @@
-package jumble;
+package jumble.util;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -9,6 +9,7 @@ import java.io.*;
  * @author Tin Pavlinic
  */
 public class IOThread extends Thread {
+    public final static boolean DEBUG = false;
        private BufferedReader mOut;
        private BufferedReader mErr;
        private List mBuffer;
@@ -26,8 +27,9 @@ public class IOThread extends Thread {
                        mBuffer.add(0, curLine);
                    }
                }
-               //Finished here
-               //System.out.println("Finished with null");
+               if(DEBUG) {
+                   System.out.println("F");
+               }
            } catch(IOException e) {
                e.printStackTrace();
            }

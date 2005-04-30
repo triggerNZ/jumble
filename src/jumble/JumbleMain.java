@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import jumble.util.IOThread;
+import jumble.util.JavaRunner; 
+
 /** Class for running Jumble on a single class with a single test.
  * 
  * @author Tin Pavlinic
@@ -33,6 +39,11 @@ public class JumbleMain {
             int timeout) 
     	throws IOException, InterruptedException {
         
+        final String BASE_ARG = (returnVals?"-r ":"")  + 
+       	(inlineConstants?"-k ":"") +
+       	(increments?"-i ":"") +
+       	className + " " + testName + " ";
+        
         final List results = new ArrayList();
             
         final Mutater m = new Mutater(0);
@@ -44,13 +55,11 @@ public class JumbleMain {
         int count = m.countMutationPoints(className);
             
         int curTest = 0;
-        String command = "java jumble.JumbleRunner " + 
-         	(returnVals?"-r ":"")  + 
-           	(inlineConstants?"-k ":"") +
-           	(increments?"-i ":"") +
-           	className + " " + testName + " " + curTest;
+        
+        JavaRunner runner = new JavaRunner("jumble.JumbleRunner", 
+                new String[] {BASE_ARG + curTest});
       
-        Process p = Runtime.getRuntime().exec(command);
+        Process p = runner.start();
 
         IOThread ioThread = new IOThread(p.getInputStream());
            ioThread.start();
@@ -74,15 +83,14 @@ public class JumbleMain {
             if(curTest < count) {
                results.add(new Mutation("TIMEOUT"));
                curTest++;
+               BufferedReader reader = new BufferedReader(
+                       new InputStreamReader(p.getErrorStream()));
+               
                p.destroy();
                   
-               command = "java jumble.JumbleRunner " + 
-               	(returnVals?"-r ":"")  + 
-               	(inlineConstants?"-k ":"") +
-               	(increments?"-i ":"") +
-               	className + " " + testName + " " + curTest;
+               runner.setArguments(new String [] {BASE_ARG + curTest});
                     
-               p = Runtime.getRuntime().exec(command);
+               p = runner.start();
 
                ioThread = new IOThread(p.getInputStream());
                ioThread.start();
@@ -198,13 +206,18 @@ public class JumbleMain {
             System.out.println(res);
         }
         
-        if(after - before < 200)
+        if(after - before < 800)
             TIMEOUT = 800;
         else
-            TIMEOUT = (int)((after - before)*5);
+            TIMEOUT = (int)((after - before)*2);
        
         if(res.indexOf("F") > 0 || res.indexOf("E") > 0)
             throw new TestFailedException();
+        
+        if(output) {
+            System.out.println("TIMEOUT: " + TIMEOUT);
+        }
+        
         
         return TIMEOUT;
     }
