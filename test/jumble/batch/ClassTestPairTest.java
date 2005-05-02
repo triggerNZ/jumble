@@ -6,8 +6,8 @@
  */
 package jumble.batch;
 
-import jumble.JumbleTestSuiteTest;
-import jumble.batch.ClassTestPair;
+import java.util.HashSet;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -60,7 +60,10 @@ public class ClassTestPairTest extends TestCase {
     }
     
     public void testHashcode() {
-        assertEquals(854912590, ctp.hashCode());
+        HashSet set = new HashSet();
+        set.add(new ClassTestPair("class", "test"));
+        set.add(new ClassTestPair("class3", "test"));
+        assertTrue(set.contains(new ClassTestPair("class", "test")));
     }
     
     public void testToString() {

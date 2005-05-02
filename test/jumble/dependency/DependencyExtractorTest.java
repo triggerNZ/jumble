@@ -31,20 +31,27 @@ public class DependencyExtractorTest extends TestCase {
     }
     
     public void testDT1() {
-        Collection classes = extractor.getAllFilteredDependencies();
-        assertEquals(2, classes.size());
+        Collection classes = extractor.getAllDependencies(true);
+        System.out.println(classes);
+        assertEquals(1, classes.size());
     }
     public void testDT2() {
         extractor.setClassName("jumble.dependency.DT2");
-        Collection classes = extractor.getAllFilteredDependencies();
-        assertEquals(3, classes.size());
+        Collection classes = extractor.getAllDependencies(true);
+        assertEquals(2, classes.size());
     }
     public void testSilly() {
         extractor.setClassName("[[C");
-        Collection classes = extractor.getAllFilteredDependencies();
+        Collection classes = extractor.getAllDependencies(true);
         assertEquals(0, classes.size());
     }
     
+    public void testNotFiltered() {
+        //huge amount of dependencies - this is more of a regression thing
+        //than an actual test - I have no idea what the value should be
+        Collection classes = extractor.getAllDependencies(false);
+        assertEquals(1396, classes.size());
+    }
     public static Test suite() {
         TestSuite suite = new TestSuite(DependencyExtractorTest.class);
         return suite;

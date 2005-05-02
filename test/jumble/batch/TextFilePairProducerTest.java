@@ -45,6 +45,7 @@ public class TextFilePairProducerTest extends TestCase {
         assertEquals("junit.samples.money.MoneyTest",  pairs[4].getTestName()); 
     }
     
+    
     public static Test suite() {
         TestSuite suite = new TestSuite(TextFilePairProducerTest.class);
         return suite;
