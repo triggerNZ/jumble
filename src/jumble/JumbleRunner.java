@@ -2,6 +2,8 @@ package jumble;
 
 import java.util.HashSet;
 
+import jumble.util.Utils;
+
 /** Class implementing a java version of jumble.sh. Nowhere near finished yet
  *  @author Tin Pavlinic
  *  @version 1.0

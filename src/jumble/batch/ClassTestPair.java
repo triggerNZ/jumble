@@ -30,8 +30,8 @@ public class ClassTestPair {
     public boolean equals(Object o) {
         if(o instanceof ClassTestPair) {
             ClassTestPair p = (ClassTestPair)o;
-            return p.getClassName() == getClassName() &&
-            	p.getTestName() == getTestName();
+            return p.getClassName().equals(getClassName()) &&
+            	p.getTestName().equals(getTestName());
         } else
             return false;
     }

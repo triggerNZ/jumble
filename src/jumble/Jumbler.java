@@ -2,6 +2,8 @@ package jumble;
 
 import java.util.HashSet;
 
+import jumble.util.Utils;
+
 import org.apache.bcel.classfile.JavaClass;
 
 

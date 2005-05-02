@@ -80,6 +80,7 @@ import org.apache.bcel.util.*;
  *
  * @version $Id$
  * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author <A HREF="mailto:tin.pavlinic@gmail.com">Tin Pavlinic </A>
  * @see JavaWrapper
  * @see ClassPath
  */

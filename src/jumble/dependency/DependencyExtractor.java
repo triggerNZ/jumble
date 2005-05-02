@@ -23,18 +23,26 @@ public class DependencyExtractor {
 
     private String mClassName;
     private Set mIgnoredPackages;
-    
+    /**
+     * Main method. Displays the dependencies for the class given as 
+     * a command-line parameter.
+     * @param args the command line arguments.
+     */
     public static void main(String[] args) {
         System.out.println("Dependencies for " + args[0]);
         System.out.println();
         Collection dependencies = new DependencyExtractor(args[0])
-        	.getAllFilteredDependencies();
+        	.getAllDependencies(true);
         Iterator it = dependencies.iterator();
         while(it.hasNext())
            System.out.println(it.next());
         
     }
-    
+    /**
+     * Constructor
+     * @param className the name of the class which is to be checked
+     * for dependencies.
+     */
     public DependencyExtractor(String className) {
         mClassName = className;
         mIgnoredPackages = new HashSet();
@@ -51,14 +59,14 @@ public class DependencyExtractor {
     
     
     
-    /**
-     * @return Returns the mClassName.
+    /** Gets the name of the root class
+     * @return Returns the class name
      */
     public String getClassName() {
         return mClassName;
     }
-    /**
-     * @param className The mClassName to set.
+    /** Sets the source class name
+     * @param className The new class name to set.
      */
     public void setClassName(String className) {
         mClassName = className;
@@ -70,7 +78,7 @@ public class DependencyExtractor {
      * @return the names of the dependency classes in a 
      * Collection
      */
-    private Collection getDependencies(String className) {
+    private Collection getDependencies(String className, boolean ignore) {
         ArrayList ret = new ArrayList();
         
         //ignore classnames starting with [ (don't really)
@@ -95,27 +103,48 @@ public class DependencyExtractor {
                 ret.add(utf8.getBytes().replaceAll("/", "."));
             }
         }
-        return ret;
+        if(ignore) {
+            return filterSystemClasses(ret);
+        } else {
+            return ret;
+        }
     }
-    
-    public Collection getImmediateDependencies() {
-        return getDependencies(getClassName());
+    /**
+     * Gets the immediate dependencies of the class @see getClassName()
+     * @param ignore a flag indicating whether to ignore system classes
+     * @return a Collection of class names of the dependencies.
+     */
+    public Collection getImmediateDependencies(boolean ignore) {
+        if(ignore)
+            return filterSystemClasses(getDependencies(getClassName(), true));
+        else
+            return getDependencies(getClassName(), false);
     }
-    
-    public Collection getAllDependencies() {
+    /**
+     * Gets all of the dependencies of the class @see getClassName()
+     * @param ignore a flag indicating whether to ignore system classes
+     * @return a Collection of class names of the dependencies.
+     */
+    public Collection getAllDependencies(boolean ignore) {
         Stack fringe = new Stack();
         HashSet ret = new HashSet();
         
-        fringe.addAll(getImmediateDependencies());
+        fringe.addAll(getImmediateDependencies(ignore));
         
         while(!fringe.isEmpty()) {
             String cur = (String)fringe.pop();
             
             if(!cur.startsWith("[") && !ret.contains(cur)) {
                 ret.add(cur);
-                fringe.addAll(getDependencies(cur));
+                fringe.addAll(getDependencies(cur, ignore));
             }
         }
+        
+        if(ret.contains(getClassName()))
+            ret.remove(getClassName());
+        
+        if(ignore)
+            return filterSystemClasses(ret);
         return ret;
     }
     
@@ -138,13 +167,19 @@ public class DependencyExtractor {
         return ret;
     }
     
-    public Collection getAllFilteredDependencies() {
-        return filterSystemClasses(getAllDependencies());
-    }
-    
+    /**
+     * Gets a Set of packages (as strings) ignored by the dependency extractor.
+     * All subpackages are ignored also
+     * @return the ignored packages.
+     */
     public Set getIgnoredPackages() {
         return mIgnoredPackages;
     }
+    /**
+     * Sets the set of packages to ignore. All subpackages are ignored
+     * alse
+     * @param newIgnore mew ignore set.
+     */
     public void setIgnoredPackages(Set newIgnore) {
         mIgnoredPackages = newIgnore;
     }

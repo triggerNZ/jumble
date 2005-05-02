@@ -21,7 +21,7 @@
  *
  */
 
-package jumble;
+package jumble.util;
 
 import java.util.NoSuchElementException;
 import java.util.Vector;

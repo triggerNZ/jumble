@@ -6,23 +6,24 @@
  */
 package jumble.batch;
 
-import jumble.*;
-
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Iterator;
-
-import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileWriter;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import jumble.JumbleResult;
+import jumble.Mutation;
+import jumble.util.Utils;
 
 public class HTMLRunner {
     private SortedMap mPackages;
@@ -93,11 +94,19 @@ public class HTMLRunner {
         ignore.add("main");
         ignore.add("integrity");
         
-        ClassTestPair [] pairs = new TextFilePairProducer(args[0]).producePairs();
-        JumbleResult [] res = JumbleBatchRunner.runBatch(pairs, true, true, true, ignore);
+        boolean dependency = Utils.getFlag('d', args) || Utils.getFlag("dependencies", args);
+        String file = Utils.getNextArgument(args);
+        String dir = Utils.getNextArgument(args);
+        String picDir = Utils.getNextArgument(args);
+        
+        ClassTestPair [] pairs = 
+            dependency?
+                new DependencyPairProducer(file).producePairs():
+                new TextFilePairProducer(file).producePairs();
+        JumbleResult [] res = JumbleBatchRunner.runBatch(pairs, true, true, true, ignore, true);
         
         HTMLRunner html = new HTMLRunner(res);
-        html.writeWebSite(new File(args[1]), new File(args[2]));
+        html.writeWebSite(new File(dir), new File(picDir));
         
     }
     private String getPackage(String className) {
@@ -181,7 +190,8 @@ public class HTMLRunner {
                 
             buf.append("<IMG SRC=" + pic + "></IMG>\n");
             buf.append("" + r.getCoverage() + "% " + 
-                    "<A HREF=" + filename + ".html>" + r.getClassName() +
+                    "<A HREF=" + filename + ".html>" + r.getClassName()
+                    + "( " + r.getTestName() + ")" +
                     "</A> <BR> \n");
         }
         buf.append("</BODY>\n");

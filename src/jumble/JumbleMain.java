@@ -13,7 +13,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import jumble.util.IOThread;
-import jumble.util.JavaRunner; 
+import jumble.util.JavaRunner;
+import jumble.util.Utils;
 
 /** Class for running Jumble on a single class with a single test.
  * 
@@ -35,8 +36,7 @@ public class JumbleMain {
      */
     public static JumbleResult runJumble(final String className, final String testName, 
             boolean returnVals, boolean inlineConstants, boolean increments,
-            Set ignore,
-            int timeout) 
+            Set ignore, int timeout) 
     	throws IOException, InterruptedException {
         
         final String BASE_ARG = (returnVals?"-r ":"")  + 
@@ -74,7 +74,11 @@ public class JumbleMain {
                     after = System.currentTimeMillis();
                     Thread.sleep(500);
                 } else {
-                    results.add(new Mutation(cur));
+                    try {
+                        results.add(new Mutation(cur));
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
                     curTest++;
                     before = System.currentTimeMillis();
                 }
@@ -96,8 +100,7 @@ public class JumbleMain {
                ioThread.start();
             }
         }
- 
-        return new JumbleResult() {
+        JumbleResult res = new JumbleResult() {
             private List mResults = results;
             private Mutation [] mFailed = null;
             private Mutation [] mPassed = null;
@@ -177,8 +180,8 @@ public class JumbleMain {
                 }
                 
             };
-            
-       
+
+            return res;
     }
     /** Times the running of a test 
      * @param testName name of test to run

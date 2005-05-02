@@ -21,7 +21,7 @@ public class JumbleBatchRunner {
             ClassTestPair [] pairs = 
                 new TextFilePairProducer(args[0]).producePairs();
            
-            JumbleResult [] results = runBatch(pairs, true,  true, true, ignore);
+            JumbleResult [] results = runBatch(pairs, true,  true, true, ignore, false);
             
             System.out.println("Results: ");
             for(int i = 0; i < results.length; i++) {
@@ -38,7 +38,7 @@ public class JumbleBatchRunner {
     
     public static JumbleResult [] runBatch(ClassTestPair [] pairs, 
             boolean returns, boolean inlineconstants, boolean increments,
-            Set ignore) 
+            Set ignore, boolean display) 
     	throws Exception {
        ArrayList ret = new ArrayList();
         
@@ -61,8 +61,12 @@ public class JumbleBatchRunner {
                     public String getTestName() {return p.getTestName();}
                     public boolean testFailed() {return true;}
                     public int getCoverage() {return 0;}
+                    public String toString() {return getTestName() 
+                        + " Test Failed";}
                 };
             }
+            if(display)
+                System.out.println(res);
             ret.add(res);
         }
         return (JumbleResult [])ret.toArray(new JumbleResult[ret.size()]);
