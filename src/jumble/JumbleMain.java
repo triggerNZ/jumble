@@ -21,7 +21,8 @@ import jumble.util.Utils;
  * @author Tin Pavlinic
  */
 public class JumbleMain {
-    /** Runs jumble on className and testName
+    /** Runs jumble on className and testName. The test must pass or we
+     * will get silly results.
      * @param className name of class to mutate
      * @param testName name of corresponding test class
      * @param returnVals flag indicating whether to mutate 
@@ -75,8 +76,9 @@ public class JumbleMain {
                     Thread.sleep(500);
                 } else {
                     try {
-                        results.add(new Mutation(cur));
+                        results.add(new Mutation(cur, className, curTest));
                     } catch(Exception e) {
+                        System.err.println(className + " - " + testName);
                         e.printStackTrace();
                     }
                     curTest++;
@@ -85,7 +87,7 @@ public class JumbleMain {
             } while(after - before < timeout && curTest < count);
         
             if(curTest < count) {
-               results.add(new Mutation("TIMEOUT"));
+               results.add(new Mutation("TIMEOUT", className, curTest));
                curTest++;
                BufferedReader reader = new BufferedReader(
                        new InputStreamReader(p.getErrorStream()));
@@ -226,6 +228,7 @@ public class JumbleMain {
     }
     /** Main method - runs jumble on a class/test pair */
     public static void main(String [] args) throws Exception {
+        boolean compatability = Utils.getFlag('c', args);
         try {
 	        //For now, just get the test name - everything else is hardcoded
 	       String className = Utils.getNextArgument(args);
@@ -236,49 +239,90 @@ public class JumbleMain {
 	           testName = className + "Test";
 	       }
 	       Utils.checkForRemainingOptions(args);
-	       System.out.println("Running test on unmodified class:");
+	       
 	       final int TIMEOUT;
-	       try {
-	           TIMEOUT = getTimeOut(testName, true);
-	       } catch(TestFailedException e) {
-	           System.out.println("Test failed");
-	           return;
+	       if(!compatability) {
+		       System.out.println("Running test on unmodified class:");
+		       
+		       try {
+		           TIMEOUT = getTimeOut(testName, true);
+		       } catch(TestFailedException e) {
+		           System.out.println("Test failed");
+		           return;
+		       }
+	       }  else {
+	           try {
+	               TIMEOUT = getTimeOut(testName, false);
+	           } catch(TestFailedException e) {
+	               System.out.println("Score: 0 (TEST CLASS IS BROKEN)");
+	               return;
+	           }
+	           System.out.println("Mutating " + className);
+	           if(Class.forName(className).isInterface()) {
+	               System.out.println("Score: 100 (INTERFACE)");
+	               return;
+	           }
+	           System.out.println("Test: " + testName);
 	       }
 	       HashSet ignore = new HashSet();
 	       ignore.add("main");
 	       ignore.add("integrity");
-	       
-	       System.out.println("Jumbling...\n");
+	       if(!compatability) {
+	           System.out.println("Jumbling...\n");
+	       }
 	       
 	       JumbleResult res = runJumble(className, testName, true, true, true, ignore, TIMEOUT);
-	       
-	       Mutation [] mut = res.getAllMutations();
-	       for(int i = 0; i < mut.length; i++) {
-	           if(mut[i].isPassed())
-	               System.out.print(".");
-	           else if(mut[i].isFailed())
-	               System.out.print("M");
-	           else if(mut[i].isTimedOut())
-	               System.out.print("T");
-	           else throw new RuntimeException();
-	       }
-	       
-	       Mutation [] failed = res.getFailed();
-	       System.out.println("\n");
-	       if(failed.length > 0) {
-	           System.out.println("Missed Mutations:");
-	           for(int i = 0; i < failed.length; i++) {
-	               System.out.println(failed[i].getDescription());
+	       if(!compatability) {
+		       Mutation [] mut = res.getAllMutations();
+		       for(int i = 0; i < mut.length; i++) {
+		           if(mut[i].isPassed())
+		               System.out.print(".");
+		           else if(mut[i].isFailed())
+		               System.out.print("M");
+		           else if(mut[i].isTimedOut())
+		               System.out.print("T");
+		           else throw new RuntimeException();
+		       }
+		       
+		       Mutation [] failed = res.getFailed();
+		       System.out.println("\n");
+		       if(failed.length > 0) {
+		           System.out.println("Missed Mutations:");
+		           for(int i = 0; i < failed.length; i++) {
+		               System.out.println(failed[i].getDescription());
+		           }
+		       }
+		      
+		       System.out.println("Summary: ");
+		       System.out.println("Class: " + res.getClassName());
+		       System.out.println("Test: " + res.getTestName());
+		       System.out.println("Covered: " + 
+		               (res.getPassed().length + res.getTimeouts().length));
+		       System.out.println("Missed: " + res.getFailed().length);
+		       System.out.println("Total: " + res.getAllMutations().length);
+	       } else {
+	           if(res.getMutationCount() == 0) {
+	               System.out.println("Score: 100 (NO MUTATIONS POSSIBLE)");
+	           } else {
+	               System.out.println("Mutation points = " + res.getMutationCount() 
+	                      + ", unit test time limit " + ((double)TIMEOUT / 1000) + "s");
+	               
+	               Mutation [] mut = res.getAllMutations();
+			       for(int i = 0; i < mut.length; i++) {
+			           if(mut[i].isPassed())
+			               System.out.print(".");
+			           else if(mut[i].isFailed())
+			               System.out.print("M");
+			           else if(mut[i].isTimedOut())
+			               System.out.print("T");
+			           else throw new RuntimeException();
+			       }
+	               System.out.println();
+	               System.out.println("Score: " + 
+	                       (100-100*res.getFailed().length/res.getMutationCount()));
+	               System.out.println();
 	           }
 	       }
-	      
-	       System.out.println("Summary: ");
-	       System.out.println("Class: " + res.getClassName());
-	       System.out.println("Test: " + res.getTestName());
-	       System.out.println("Covered: " + 
-	               (res.getPassed().length + res.getTimeouts().length));
-	       System.out.println("Missed: " + res.getFailed().length);
-	       System.out.println("Total: " + res.getAllMutations().length);
 	   }  catch(Exception e) {
         System.out.println("Usage: java jumble.JumbleMain [ClassName] [TestName]");
         e.printStackTrace();
