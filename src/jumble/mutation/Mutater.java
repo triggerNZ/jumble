@@ -39,7 +39,9 @@ import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.IDIV;
 import org.apache.bcel.generic.IFEQ;
 import org.apache.bcel.generic.IFNONNULL;
+import org.apache.bcel.generic.IINC;
 import org.apache.bcel.generic.IMUL;
+import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.IOR;
 import org.apache.bcel.generic.IREM;
 import org.apache.bcel.generic.IRETURN;
@@ -71,7 +73,6 @@ import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.ReturnInstruction;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.IINC;
 
 /**
  * Mutation tester.  Given a class file can either count the number of
@@ -238,13 +239,29 @@ public class Mutater {
   }
 
   /**
-   * Is this an instruction we know how to mutate?
+   * Is this an instruction we know how to mutate? Needs the entire
+   * chain since in rare cases we need to examine context to see if
+   * mutation is allowable.
    *
-   * @param i instruction to test
+   * @param ihs current instruction chain
+   * @param offset position in chain
+   * @param cpg constant pool
    * @return true if instruction can be mutated
    */
-  private boolean isMutatable(final Instruction i) {
-    return mMutatable[i.getOpcode()] != null;
+  private boolean isMutatable(final InstructionHandle[] ihs, final int offset, final ConstantPoolGen cpg) {
+    final Instruction i = ihs[offset].getInstruction();
+
+    final boolean canMutate = mMutatable[i.getOpcode()] != null;
+
+    // handle special situation of .class invocations
+    if (canMutate && i instanceof ICONST && offset < ihs.length - 1) {
+      final Instruction context = ihs[offset + 1].getInstruction();
+      if (context instanceof INVOKESTATIC && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
+        return false;
+      }
+    }
+
+    return canMutate;
   }
 
   /**
@@ -330,7 +347,7 @@ public class Mutater {
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;
     for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
-      if (isMutatable(ihs[j].getInstruction())) {
+      if (isMutatable(ihs, j, cp)) {
         count += 1;
       }
     }
@@ -345,6 +362,16 @@ public class Mutater {
     final String className = fixName(cl);
     int count = 0;
     final JavaClass clazz = Repository.lookupClass(className);
+    
+    if(clazz == null) {
+        System.out.println("Error: could not retrieve " + className);
+    }
+    
+//  if is an interface, return -1 to distinguish from 0 point classes
+    if (clazz.isInterface()) {
+      return -1;
+    }
+    
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     /*
@@ -570,7 +597,7 @@ public class Mutater {
 
     for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
       final Instruction i = ihs[j].getInstruction();
-      if (isMutatable(i) && mCount-- == 0) {
+      if (isMutatable(ihs, j, cp) && mCount-- == 0) {
         String mod = className + ":" + m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) + ": ";
         if (i instanceof IfInstruction) {
           mod += "negated conditional";

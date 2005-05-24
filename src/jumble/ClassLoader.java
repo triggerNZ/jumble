@@ -91,7 +91,7 @@ public class ClassLoader extends java.lang.ClassLoader {
   };
   private org.apache.bcel.util.Repository repository 
   		= SyntheticRepository.getInstance();
-  private java.lang.ClassLoader deferTo = ClassLoader.getSystemClassLoader();
+  private java.lang.ClassLoader deferTo = getSystemClassLoader();
 
   public ClassLoader() {
   }

@@ -312,7 +312,8 @@ public class JumbleMain {
 			           if(mut[i].isPassed())
 			               System.out.print(".");
 			           else if(mut[i].isFailed())
-			               System.out.print("M");
+			               System.out.println("M " +
+			                       mut[i].getDescription().substring(6));
 			           else if(mut[i].isTimedOut())
 			               System.out.print("T");
 			           else throw new RuntimeException();
