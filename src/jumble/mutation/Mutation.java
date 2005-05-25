@@ -7,17 +7,18 @@
 package jumble;
 
 /**
- * @author Tin
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Class representing the result of a single mutation test
+ * @author Tin Pavlinic
  */
 public class Mutation {
     public static final int PASS = 0;
     public static final int FAIL = 1;
     public static final int TIMEOUT = 2;
     
-    public Mutation(String s) {
+    public Mutation(String s, String className, int point) {
+        mClassName = className;
+        mPoint = point;
+        
         mDescription = s;
         if(s.startsWith("PASS"))
             mStatus = PASS;
@@ -27,6 +28,14 @@ public class Mutation {
             mStatus = TIMEOUT;
         else
             throw new RuntimeException("Invalid mutation string: " + s);
+    }
+    
+    public String getClassName() {
+        return mClassName;
+    }
+    
+    public int getMutationPoint() {
+        return mPoint;
     }
     
     public String getDescription() {
@@ -42,7 +51,12 @@ public class Mutation {
     public boolean isTimedOut() {
         return mStatus == TIMEOUT;
     }
+    
+    public String toString() {
+        return getDescription();
+    }
     private String mDescription;
     private int mStatus;
-    
+    private String mClassName;
+    private int mPoint;
 }
