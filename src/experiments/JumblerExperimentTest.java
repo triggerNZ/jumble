@@ -13,7 +13,7 @@ public class JumblerExperimentTest extends TestCase {
     
     public void testAdd() {
         assertEquals(3,exp.add(2,1));
-        //assertEquals(1, exp.add(1,2));
+        //assertEquals(-1, exp.add(1,2));
 	
     }
     
