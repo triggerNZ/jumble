@@ -576,7 +576,7 @@ public class Mutater {
   }
 
   /** Count down for mutation to apply. */
-  private static int mCount = 0;
+  private int mCount = 0;
 
   Mutater(final int count) {
     mCount = count;
