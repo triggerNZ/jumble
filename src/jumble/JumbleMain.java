@@ -251,15 +251,16 @@ public class JumbleMain {
 		           return;
 		       }
 	       }  else {
+	           System.out.println("Mutating " + className);
+	           if(Class.forName(className).isInterface()) {
+	               System.out.println("Score: 100 (INTERFACE)");
+	               return;
+	           }
+	           
 	           try {
 	               TIMEOUT = getTimeOut(testName, false);
 	           } catch(TestFailedException e) {
 	               System.out.println("Score: 0 (TEST CLASS IS BROKEN)");
-	               return;
-	           }
-	           System.out.println("Mutating " + className);
-	           if(Class.forName(className).isInterface()) {
-	               System.out.println("Score: 100 (INTERFACE)");
 	               return;
 	           }
 	           System.out.println("Test: " + testName);
