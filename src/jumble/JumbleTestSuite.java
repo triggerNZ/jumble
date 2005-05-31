@@ -33,7 +33,7 @@ public class JumbleTestSuite extends TestSuite {
    * test to fail).  If all tests run correctly then "FAIL"
    * is returned.
    */
-  private String run() {
+  protected String run() {
     final TestResult result = new TestResult();
     for (Enumeration e = tests(); e.hasMoreElements();) {
       ((Test) e.nextElement()).run(result);

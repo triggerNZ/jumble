@@ -92,7 +92,8 @@ public class Jumbler extends ClassLoader {
 	boolean count = Utils.getFlag('c',args) || Utils.getFlag("count", args);
 	boolean constants = Utils.getFlag('k',args) || Utils.getFlag("inlineconstants", args);
 	boolean returns = Utils.getFlag('r', args) || Utils.getFlag("returns", args);
-
+	boolean increments = Utils.getFlag('i', args) || Utils.getFlag("increments", args);
+	
 	if (count) {
 	    if(DEBUG) {
 		System.out.println("Count mode\nArguments:");
@@ -104,6 +105,7 @@ public class Jumbler extends ClassLoader {
 	    m.setIgnoredMethods(ignore);
 	    m.setMutateInlineConstants(constants);
 	    m.setMutateReturnValues(returns);
+	    m.setMutateIncrements(increments);
 	    System.out.println("" + m.countMutationPoints(Utils.getNextArgument(args)));
 	} else {
 	    String className = Utils.getNextArgument(args);
@@ -116,7 +118,8 @@ public class Jumbler extends ClassLoader {
 	        m.setIgnoredMethods(ignore);
 	        m.setMutateInlineConstants(constants);
 	        m.setMutateReturnValues(returns);
-
+	        m.setMutateIncrements(increments);
+	        
 	        final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
 	        final Class clazz = loader.loadClass("jumble.JumbleTestSuite");
 	        System.err.println(clazz.getMethod("run", new Class[] { String.class }).invoke(null, new Object[] { testName.replace('/', '.') }));

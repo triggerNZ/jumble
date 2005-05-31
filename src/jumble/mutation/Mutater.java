@@ -90,13 +90,13 @@ public class Mutater {
    * @param className name of the class
    * @return class name without extension
    */
-  private static String fixName(final String className) {
+  public static String fixName(final String className) {
     if (className.endsWith(".class")) {
-      return className.substring(0, className.length() - 6);
+      return className.substring(0, className.length() - 6).replace('/', '.');
     } else if (className.endsWith(".java")) {
-      return className.substring(0, className.length() - 5);
+      return className.substring(0, className.length() - 5).replace('/', '.');
     } else {
-      return className;
+      return className.replace('/', '.');
     }
   }
 

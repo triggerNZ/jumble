@@ -76,5 +76,12 @@ public class JavaRunner {
          return Runtime.getRuntime().exec(command.toString());
 
     }
-
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer("java " + getClassName());
+        for(int i = 0; i < getArguments().length; i++) {
+            buf.append(" " + getArguments()[i]);
+        }
+        return buf.toString();
+    }
 }

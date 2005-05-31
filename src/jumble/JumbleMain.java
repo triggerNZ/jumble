@@ -231,12 +231,12 @@ public class JumbleMain {
         boolean compatability = Utils.getFlag('c', args);
         try {
 	        //For now, just get the test name - everything else is hardcoded
-	       String className = Utils.getNextArgument(args);
+	       String className = Mutater.fixName(Utils.getNextArgument(args));
 	       String testName;
 	       try {
-	           testName = Utils.getNextArgument(args);
+	           testName = Mutater.fixName(Utils.getNextArgument(args));
 	       } catch(Exception e) {
-	           testName = className + "Test";
+	           testName = getTestName(className);
 	       }
 	       Utils.checkForRemainingOptions(args);
 	       
@@ -329,5 +329,23 @@ public class JumbleMain {
         System.out.println("Usage: java jumble.JumbleMain [ClassName] [TestName]");
         e.printStackTrace();
     }
+    }
+    /**
+     * Creates a test class name from a class name following ReelTwo 
+     * conventions.
+     * @param className the name of the class
+     * @return the inferred test class name
+     */
+    public static String getTestName(String className) {
+        String packageName = className.substring(0, className.lastIndexOf('.'));
+        String justClassName = className.substring(className.lastIndexOf('.') + 1);
+        String testName;
+        
+        if(justClassName.startsWith("Abstract")) {
+            testName = "Dummy" + justClassName.substring(8) + "Test";
+        } else {
+            testName = justClassName + "Test";
+        }
+        return packageName + "." + testName;
     }
 }

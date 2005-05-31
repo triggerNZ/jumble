@@ -6,11 +6,15 @@
  */
 package jumble.batch;
 
-import jumble.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import jumble.JumbleMain;
+import jumble.JumbleResult;
+import jumble.Mutation;
+import jumble.TestFailedException;
+import jumble.util.Utils;
 
 public class JumbleBatchRunner {
     public static void main(String [] args) {
@@ -18,14 +22,21 @@ public class JumbleBatchRunner {
             HashSet ignore = new HashSet();
             ignore.add("main");
             ignore.add("integrity");
-            ClassTestPair [] pairs = 
-                new TextFilePairProducer(args[0]).producePairs();
-           
+            boolean dependency = Utils.getFlag('d', args) || Utils.getFlag("dependencies", args);
+            String file = Utils.getNextArgument(args);
+            
+            ClassTestPair [] pairs;  
+            if(dependency) {
+                pairs = new DependencyPairProducer(file).producePairs();
+            } else {
+                pairs = new TextFilePairProducer(file).producePairs();
+            }
             JumbleResult [] results = runBatch(pairs, true,  true, true, ignore, false);
+            AggregateJumbleScore [] scores = AggregateJumbleScore.resultsToScores(results);
             
             System.out.println("Results: ");
-            for(int i = 0; i < results.length; i++) {
-                System.out.println(results[i]);
+            for(int i = 0; i < scores.length; i++) {
+                System.out.println(scores[i]);
                 System.out.println();
             }
             

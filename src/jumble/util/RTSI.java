@@ -55,8 +55,8 @@ public class RTSI {
                 dirs.add(f);
             else if(f.isFile() && f.getName().endsWith(".jar"))
                 jars.add(f);
-            else
-                ; //ignore all other files
+            
+            //ignore all other files
         }
         
         ArrayList ret = new ArrayList();
