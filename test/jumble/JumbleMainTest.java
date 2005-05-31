@@ -25,11 +25,11 @@ public class JumbleMainTest extends TestCase {
         sIgnore.add("main");
     }
     
-    public void testRunJumbleExperiments() throws Exception {
+    public final void testRunJumbleExperiments() throws Exception {
         JumbleResult res = JumbleMain.runJumble(
                 "experiments.JumblerExperiment", 
                 "experiments.JumblerExperimentTest", 
-                true, true, true, sIgnore, 800);
+                true, true, true, sIgnore, 1000);
         
         assertEquals("experiments.JumblerExperiment", res.getClassName());
         assertEquals("experiments.JumblerExperimentTest", 
@@ -39,6 +39,14 @@ public class JumbleMainTest extends TestCase {
         assertEquals(12, res.getAllMutations().length);
         
         
+    }
+    
+    public final void testGetTestName() {
+        String class1 = "java.lang.String";
+        String class2 = "java.util.AbstractMap";
+        
+        assertEquals("java.lang.StringTest", JumbleMain.getTestName(class1));
+        assertEquals("java.util.DummyMapTest", JumbleMain.getTestName(class2));
     }
     
     public static Test suite() {

@@ -50,7 +50,7 @@ public class JumbleTestSuiteTest extends TestCase {
       JumbleTestSuite.run((String) null);
       fail("Took null");
     } catch (NullPointerException e) {
-      ; // ok
+       // ok
     }
   }
 

@@ -128,7 +128,7 @@ public class MutaterTest extends TestCase {
       m.jumbler("poxweed");
       fail("IO failed to fire");
     } catch (IOException e) {
-      ; // ok
+       // ok
     }
   }
 

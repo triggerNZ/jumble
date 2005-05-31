@@ -3,7 +3,6 @@ package jumble.util;
 import java.util.Properties;
 
 
-import jumble.JumbleMainTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

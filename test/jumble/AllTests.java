@@ -2,6 +2,7 @@ package jumble;
 
 import jumble.batch.ClassTestPairTest;
 import jumble.batch.DependencyPairProducerTest;
+import jumble.batch.JumbleScoreTest;
 import jumble.batch.TextFilePairProducerTest;
 import jumble.dependency.DependencyExtractorTest;
 import jumble.util.JavaRunnerTest;
@@ -28,6 +29,7 @@ public class AllTests extends TestSuite {
     suite.addTest(DependencyExtractorTest.suite());
     suite.addTest(RTSITest.suite());
     suite.addTest(DependencyPairProducerTest.suite());
+    suite.addTest(JumbleScoreTest.suite());
     return suite;
   }
 

@@ -6,7 +6,6 @@
  */
 package jumble.batch;
 
-import jumble.JumbleTestSuiteTest;
 import jumble.batch.ClassTestPair;
 import jumble.batch.TextFilePairProducer;
 import junit.framework.Test;

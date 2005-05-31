@@ -2,7 +2,6 @@ package jumble.util;
 
 import java.util.Collection;
 
-import jumble.JumbleMainTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,7 +18,7 @@ public class RTSITest extends TestCase {
     }
     
     public void testJarRTSI() throws Exception {
-        Collection c = RTSI.find("jumble.util", "junit.framework.TestCase");;
+        Collection c = RTSI.find("jumble.util", "junit.framework.TestCase");
 
         assertTrue(c.contains("jumble.util.DummyTest"));
     }

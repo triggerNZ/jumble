@@ -9,7 +9,6 @@ package jumble.dependency;
 import java.util.Collection;
 import java.util.Set;
 
-import jumble.JumbleTestSuiteTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
