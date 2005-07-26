@@ -11,19 +11,18 @@ import java.io.*;
 public class IOThread extends Thread {
     public final static boolean DEBUG = false;
        private BufferedReader mOut;
-       private BufferedReader mErr;
        private List mBuffer;
        //Constructor
        public IOThread(InputStream out) {
            mOut = new BufferedReader(new InputStreamReader(out));
            mBuffer = new LinkedList();
        }
-       /** Loops while the stream exists*/
+       /** Loops while the stream exists.*/
        public void run() {
            String curLine;
            try {
-               while((curLine = mOut.readLine())!= null) {
-                   synchronized(this) {
+               while((curLine = mOut.readLine())!= null) {  
+                 synchronized(this) {
                        mBuffer.add(0, curLine);
                    }
                }
@@ -32,6 +31,7 @@ public class IOThread extends Thread {
                }
            } catch(IOException e) {
                e.printStackTrace();
+               return;
            }
        }
        /** Returns the next line of text if available. Otherwise

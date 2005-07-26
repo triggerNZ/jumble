@@ -6,57 +6,155 @@
  */
 package jumble.dependency;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.Set;
 
+import jumble.util.JavaRunner;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/** Tests the DependencyExtractor
+/**
+ * Tests the DependencyExtractor
+ * 
  * @author Tin Pavlinic
  */
 public class DependencyExtractorTest extends TestCase {
-    private DependencyExtractor extractor;
-    public void setUp() {
-        extractor = 
-            new DependencyExtractor("jumble.dependency.DT1");
-        Set ignore = extractor.getIgnoredPackages();
-        ignore.add("org.apache");
-    }
-    
-    public void tearDown() {
-        extractor.setClassName("jumble.dependency.DT1");
-    }
-    
-    public void testDT1() {
-        Collection classes = extractor.getAllDependencies(true);
-        System.out.println(classes);
-        assertEquals(1, classes.size());
-    }
-    public void testDT2() {
-        extractor.setClassName("jumble.dependency.DT2");
-        Collection classes = extractor.getAllDependencies(true);
-        assertEquals(2, classes.size());
-    }
-    public void testSilly() {
-        extractor.setClassName("[[C");
-        Collection classes = extractor.getAllDependencies(true);
-        assertEquals(0, classes.size());
-    }
-    
-    public void testNotFiltered() {
-        //huge amount of dependencies - this is more of a regression thing
-        //than an actual test - I have no idea what the value should be
-        Collection classes = extractor.getAllDependencies(false);
-        assertEquals(1396, classes.size());
-    }
-    public static Test suite() {
-        TestSuite suite = new TestSuite(DependencyExtractorTest.class);
-        return suite;
-      }
+  private DependencyExtractor extractor;
 
-      public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-      }
+  public void setUp() {
+    extractor = new DependencyExtractor("jumble.dependency.DT1");
+  }
+
+  public void testDT1() {
+    Collection classes = extractor.getAllDependencies(true);
+    assertEquals("experiments.JumblerExperiment", classes.iterator().next());
+    assertEquals(1, classes.size());
+  }
+
+  public void testDT2() {
+    extractor.setClassName("jumble.dependency.DT2");
+    Collection classes = extractor.getAllDependencies(true);
+    assertEquals(3, classes.size());
+
+    assertTrue(classes.contains("experiments.JumblerExperiment"));
+    assertTrue(classes.contains("jumble.dependency.DT1"));
+    assertTrue(classes.contains("jumble.dependency.DT3"));
+  }
+
+   public void testDT3() {
+     extractor.setClassName("jumble.dependency.DT3");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
+   
+   public void testDT4() {
+     extractor.setClassName("jumble.dependency.DT4");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
+
+   public void testDT5() {
+     extractor.setClassName("jumble.dependency.DT5");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
+   
+   public void testDT6() {
+     extractor.setClassName("jumble.dependency.DT6");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
+   
+   public void testDT7() {
+     extractor.setClassName("jumble.dependency.DT7");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
+  public void testNotFiltered() {
+    // huge amount of dependencies - this is more of a regression thing
+    // than an actual test - I have no idea what the value should be
+    // may vary with different JRE's (although hasn't done so far)
+    Collection classes = extractor.getAllDependencies(false);
+    assertEquals(1413, classes.size());
+  }
+
+  public void testSilly() {
+    extractor.setClassName("[[C");
+    Collection classes = extractor.getAllDependencies(true);
+    assertEquals(0, classes.size());
+  }
+  
+  public void testMainNormal() throws Exception {
+    JavaRunner runner = new JavaRunner("jumble.dependency.DependencyExtractor");
+    runner.setArguments(new String[] {"jumble.dependency.DT2"});
+    
+    Process p = runner.start();
+    
+    String input;
+    BufferedReader in = new BufferedReader
+      (new InputStreamReader(p.getInputStream()));
+    BufferedReader err = new BufferedReader
+      (new InputStreamReader(p.getInputStream()));
+
+    assertEquals("Dependencies for jumble.dependency.DT2", in.readLine().trim());
+    assertEquals("", in.readLine().trim());
+    assertEquals("experiments.JumblerExperiment", in.readLine().trim());
+    assertEquals("jumble.dependency.DT3", in.readLine().trim());
+    assertEquals("jumble.dependency.DT1", in.readLine().trim());
+    assertEquals(null, in.readLine());
+    assertEquals(null, err.readLine());
+    p.destroy();
+  }
+  
+  public void testMainIgnore() throws Exception {
+    JavaRunner runner = new JavaRunner("jumble.dependency.DependencyExtractor");
+    runner.setArguments(new String[] {"experiments.JumblerExperimentTest", 
+        "-i", "junit,java"});
+    
+    Process p = runner.start();
+    
+    String input;
+    BufferedReader in = new BufferedReader
+      (new InputStreamReader(p.getInputStream()));
+    BufferedReader err = new BufferedReader
+      (new InputStreamReader(p.getInputStream()));
+
+    assertEquals("Dependencies for experiments.JumblerExperimentTest", in.readLine().trim());
+    assertEquals("", in.readLine().trim());
+    assertEquals("experiments.JumblerExperiment", in.readLine().trim());
+    assertEquals(null, in.readLine());
+    assertEquals(null, err.readLine());
+    p.destroy();
+  }
+  public static Test suite() {
+    TestSuite suite = new TestSuite(DependencyExtractorTest.class);
+    return suite;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
+  
+  public void testIsPrimitive() {
+    assertTrue(DependencyExtractor.isPrimitiveArray("[[C"));
+    assertFalse(DependencyExtractor.isPrimitiveArray
+        ("[java.util.LinkedList"));
+  }
 }
