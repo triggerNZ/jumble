@@ -22,6 +22,8 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LineNumber;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.Type;
 
 import experiments.JumblerExperimentTest;
@@ -89,7 +91,7 @@ public class FastJumblerTest extends TestCase {
    * results as jumble.Jumbler
    */
   public final void testJumblerCompatability() throws Exception {
-    JavaClass original = new ClassParser("c:/eclipse/workspace/jumblesrc/" 
+    JavaClass original = new ClassParser("d:/workspace/jumblesrc/" 
         + "experiments/JumblerExperiment.class").parse();
     
     for (int i = 0; i < 5; i++) {
@@ -105,6 +107,23 @@ public class FastJumblerTest extends TestCase {
       assertFalse(a == b);
       compareJavaClasses(a, b);     
     }
+  }
+  
+  public void testNoMutation() throws Exception {
+    JavaClass original = new ClassParser("d:/workspace/jumblesrc/" 
+        + "experiments/JumblerExperiment.class").parse();
+    
+    FastJumbler j = new FastJumbler("experiments.JumblerExperiment",
+        new Mutater(-1));
+    JavaClass a = j.modifyClass(original);
+    compareJavaClasses(original, a);
+  }
+  
+  public final void testJumbler() {
+    InstructionList il = new InstructionList();
+    ClassGen gen = new ClassGen("jumble.fast.TestClass", "java.lang.Object",
+        "jumble/fast/TestClass.class", 0, new String[0]);
+    gen.isPublic(true);
   }
   
   /**
