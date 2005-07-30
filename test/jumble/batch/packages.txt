@@ -1,6 +1,0 @@
-testpackage jumble
-testpackage jumble.batch
-testpackage jumble.dependency
-testpackage jumble.util
-	
-excludedependency org.apache

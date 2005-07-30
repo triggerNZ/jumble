@@ -52,6 +52,10 @@ public class Mutation {
         return mStatus == TIMEOUT;
     }
     
+    public int getStatus() {
+      return mStatus;
+    }
+    
     public String toString() {
         return getDescription();
     }

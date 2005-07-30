@@ -69,7 +69,6 @@ public class JumbleMultiRunner {
 	        
 	        final ClassLoader loader = new Jumbler(className.replace('/', '.'), m);
 	        final Class clazz = loader.loadClass("jumble.JumbleMultiTestSuite");
-	        Class [] classes = new Class[tests.size()];
 	        String [] arguments = new String[tests.size()];
 	        
 	        for(int j = 0; j < tests.size(); j++) {

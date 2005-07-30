@@ -22,7 +22,6 @@ public class JavaRunnerTest extends TestCase {
             new JavaRunner("jumble.util.DisplayEnvironment").start();
         BufferedReader out = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        String in;
 
         if(err.readLine() != null)
             fail();

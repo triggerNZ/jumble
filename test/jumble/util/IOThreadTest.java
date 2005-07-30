@@ -37,7 +37,6 @@ public class IOThreadTest extends TestCase {
         Process p = runner.start();
         IOThread iot = new IOThread(p.getInputStream());
         iot.start();
-        String cur;
         
         for(int i = 0; i < 10; i++) {
             Thread.sleep(500);

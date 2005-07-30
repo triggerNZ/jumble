@@ -26,7 +26,7 @@ public class JumbleMainTest extends TestCase {
     }
     
     public final void testRunJumbleExperiments() throws Exception {
-        JumbleResult res = JumbleMain.runJumble(
+        ExtendedJumbleResult res = JumbleMain.runJumble(
                 "experiments.JumblerExperiment", 
                 "experiments.JumblerExperimentTest", 
                 true, true, true, sIgnore, 1000);

@@ -87,6 +87,15 @@ public class DependencyExtractorTest extends TestCase {
      assertTrue(classes.contains("experiments.JumblerExperiment"));
      assertTrue(classes.contains("jumble.dependency.DT1"));
    }
+   
+   public void testDT8() {
+     extractor.setClassName("jumble.dependency.DT8");
+     Collection classes = extractor.getAllDependencies(true);
+     assertEquals(2, classes.size());
+
+     assertTrue(classes.contains("experiments.JumblerExperiment"));
+     assertTrue(classes.contains("jumble.dependency.DT1"));
+   }
   public void testNotFiltered() {
     // huge amount of dependencies - this is more of a regression thing
     // than an actual test - I have no idea what the value should be
@@ -107,7 +116,6 @@ public class DependencyExtractorTest extends TestCase {
     
     Process p = runner.start();
     
-    String input;
     BufferedReader in = new BufferedReader
       (new InputStreamReader(p.getInputStream()));
     BufferedReader err = new BufferedReader
@@ -129,8 +137,7 @@ public class DependencyExtractorTest extends TestCase {
         "-i", "junit,java"});
     
     Process p = runner.start();
-    
-    String input;
+
     BufferedReader in = new BufferedReader
       (new InputStreamReader(p.getInputStream()));
     BufferedReader err = new BufferedReader

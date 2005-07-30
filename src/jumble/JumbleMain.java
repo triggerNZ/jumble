@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
@@ -35,7 +33,7 @@ public class JumbleMain {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static JumbleResult runJumble(final String className, final String testName, 
+    public static ExtendedJumbleResult runJumble(final String className, final String testName, 
             boolean returnVals, boolean inlineConstants, boolean increments,
             Set ignore, int timeout) 
     	throws IOException, InterruptedException {
@@ -89,9 +87,6 @@ public class JumbleMain {
             if(curTest < count) {
                results.add(new Mutation("TIMEOUT", className, curTest));
                curTest++;
-               BufferedReader reader = new BufferedReader(
-                       new InputStreamReader(p.getErrorStream()));
-               
                p.destroy();
                   
                runner.setArguments(new String [] {BASE_ARG + curTest});
@@ -102,7 +97,7 @@ public class JumbleMain {
                ioThread.start();
             }
         }
-        JumbleResult res = new JumbleResult() {
+        ExtendedJumbleResult res = new ExtendedJumbleResult() {
             private List mResults = results;
             private Mutation [] mFailed = null;
             private Mutation [] mPassed = null;
@@ -212,9 +207,9 @@ public class JumbleMain {
         }
         
         if(after - before < 800)
-            TIMEOUT = 800;
+            TIMEOUT = 10000;
         else
-            TIMEOUT = (int)((after - before)*2);
+            TIMEOUT = (int)((after - before)*10);
        
         if(res.indexOf("F") > 0 || res.indexOf("E") > 0)
             throw new TestFailedException();
@@ -272,7 +267,7 @@ public class JumbleMain {
 	           System.out.println("Jumbling...\n");
 	       }
 	       
-	       JumbleResult res = runJumble(className, testName, true, true, true, ignore, TIMEOUT);
+	       ExtendedJumbleResult res = runJumble(className, testName, true, true, true, ignore, TIMEOUT);
 	       if(!compatability) {
 		       Mutation [] mut = res.getAllMutations();
 		       for(int i = 0; i < mut.length; i++) {

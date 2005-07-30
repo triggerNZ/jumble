@@ -154,6 +154,11 @@ public class DependencyExtractor {
     className = cleanClassName(className);
 
     JavaClass clazz = Repository.lookupClass(className);
+    
+    if (clazz == null) {
+      System.err.println("Could not find " + className);
+      return ret;
+    }
     ConstantPool cp = clazz.getConstantPool();
 
     for (int i = 0; i < cp.getLength(); i++) {
@@ -263,6 +268,12 @@ public class DependencyExtractor {
     return ret;
   }
 
+  /**
+   * Filters the ignored classes from the collection and creates a new
+   * collection.
+   * @param c the collection to filter
+   * @return the filtered collection
+   */
   private Collection filterSystemClasses(Collection c) {
     ArrayList ret = new ArrayList();
     Iterator it = c.iterator();

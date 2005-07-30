@@ -94,6 +94,7 @@ public class ClassLoader extends java.lang.ClassLoader {
   private java.lang.ClassLoader deferTo = getSystemClassLoader();
 
   public ClassLoader() {
+    //Empty constructor
   }
 
   public ClassLoader(java.lang.ClassLoader deferTo) {

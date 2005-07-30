@@ -75,10 +75,10 @@ import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.generic.Type;
 
 /**
- * Mutation tester.  Given a class file can either count the number of
- * possible mutation points or perform a mutations.  Mutations can be
- * specified by number or selected at random.
- *
+ * Mutation tester. Given a class file can either count the number of possible
+ * mutation points or perform a mutations. Mutations can be specified by number
+ * or selected at random.
+ * 
  * @author Sean A. Irvine
  * @version $Revision$
  */
@@ -86,8 +86,9 @@ public class Mutater {
 
   /**
    * Lop off .class or .java from a string.
-   *
-   * @param className name of the class
+   * 
+   * @param className
+   *          name of the class
    * @return class name without extension
    */
   public static String fixName(final String className) {
@@ -102,24 +103,27 @@ public class Mutater {
 
   /** Should ICONST instructions be changed. */
   private boolean mMutateInlineConstants = false;
+
   /** Should return instructions be changed. */
   private boolean mMutateReturns = false;
+
   /** Should IINC instructions be changed. */
   private boolean mMutateIncrements = false;
-  
+
   public void setMutateIncrements(final boolean v) {
-      mMutateIncrements = v;
-      if(mMutateIncrements) {
-          mMutatable[Constants.IINC] = new NOP();
-      } else {
-          mMutatable[Constants.IINC] = null;
-      }
+    mMutateIncrements = v;
+    if (mMutateIncrements) {
+      mMutatable[Constants.IINC] = new NOP();
+    } else {
+      mMutatable[Constants.IINC] = null;
+    }
   }
-  
+
   /**
    * Set whether or not inline constants should be mutated.
-   *
-   * @param v true for mutation of inline constants
+   * 
+   * @param v
+   *          true for mutation of inline constants
    */
   public void setMutateInlineConstants(final boolean v) {
     mMutateInlineConstants = v;
@@ -162,8 +166,9 @@ public class Mutater {
 
   /**
    * Set whether or not return values should be mutated.
-   *
-   * @param v true to mutate return values
+   * 
+   * @param v
+   *          true to mutate return values
    */
   public void setMutateReturnValues(final boolean v) {
     mMutateReturns = v;
@@ -183,8 +188,8 @@ public class Mutater {
   }
 
   /**
-   * Table of mutatable instructions. If defined and not a NOP this
-   * gives the mutated instruction to use.
+   * Table of mutatable instructions. If defined and not a NOP this gives the
+   * mutated instruction to use.
    */
   private final Instruction mMutatable[] = new Instruction[256];
   {
@@ -239,16 +244,19 @@ public class Mutater {
   }
 
   /**
-   * Is this an instruction we know how to mutate? Needs the entire
-   * chain since in rare cases we need to examine context to see if
-   * mutation is allowable.
-   *
-   * @param ihs current instruction chain
-   * @param offset position in chain
-   * @param cpg constant pool
+   * Is this an instruction we know how to mutate? Needs the entire chain since
+   * in rare cases we need to examine context to see if mutation is allowable.
+   * 
+   * @param ihs
+   *          current instruction chain
+   * @param offset
+   *          position in chain
+   * @param cpg
+   *          constant pool
    * @return true if instruction can be mutated
    */
-  private boolean isMutatable(final InstructionHandle[] ihs, final int offset, final ConstantPoolGen cpg) {
+  private boolean isMutatable(final InstructionHandle[] ihs, final int offset,
+      final ConstantPoolGen cpg) {
     final Instruction i = ihs[offset].getInstruction();
 
     final boolean canMutate = mMutatable[i.getOpcode()] != null;
@@ -256,7 +264,8 @@ public class Mutater {
     // handle special situation of .class invocations
     if (canMutate && i instanceof ICONST && offset < ihs.length - 1) {
       final Instruction context = ihs[offset + 1].getInstruction();
-      if (context instanceof INVOKESTATIC && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
+      if (context instanceof INVOKESTATIC
+          && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
         return false;
       }
     }
@@ -265,23 +274,25 @@ public class Mutater {
   }
 
   /**
-   * Skip to the next valid instruction to examine.  The primary reason for this
+   * Skip to the next valid instruction to examine. The primary reason for this
    * function is to attempt to skip over assertions.
    */
-  private static int skipAhead(final InstructionHandle[] ihs, final ConstantPoolGen cp, int j) {
+  private static int skipAhead(final InstructionHandle[] ihs,
+      final ConstantPoolGen cp, int j) {
     final Instruction i = ihs[j++].getInstruction();
     if (i instanceof GETSTATIC) {
       final GETSTATIC gs = (GETSTATIC) i;
-      if (gs.getFieldName(cp).equals("$noassert") 
+      if (gs.getFieldName(cp).equals("$noassert")
           || gs.getFieldName(cp).equals("assert")) {
         // attempt to skip over a java 1.4 assert() statement
         // this works for code generated by jikes
         // skip forwards to a ATHROW instruction, most likely it ends the assert
         while (!(ihs[j++].getInstruction() instanceof ATHROW)) {
-           // do nothing
+          // do nothing
         }
       } else if (gs.getFieldName(cp).indexOf("class$") != -1) {
-        // attempt to skip a ".class" reference (because it has a ifnonnull test)
+        // attempt to skip a ".class" reference (because it has a ifnonnull
+        // test)
         if (ihs[j + 1].getInstruction() instanceof IFNONNULL) {
           j += 2;
         }
@@ -295,58 +306,51 @@ public class Mutater {
   private Set mIgnored;
 
   /**
-   * Set the names of all the methods to be ignored during mutation.
-   * Any method named by a member of the given set will not be
-   * subject to mutation.
-   *
-   * @param ignore Set a value of type 'final'
+   * Set the names of all the methods to be ignored during mutation. Any method
+   * named by a member of the given set will not be subject to mutation.
+   * 
+   * @param ignore
+   *          Set a value of type 'final'
    */
   public void setIgnoredMethods(final Set ignore) {
     mIgnored = ignore == null ? new HashSet() : ignore;
   }
 
   private boolean checkNormalMethod(final Method m) {
-   /*
-    if(m == null)
-        System.out.println("null");
-    else if(m.isNative())
-        System.out.println("native");
-    else if(m.isAbstract())
-        System.out.println("abstract");
-    else if(mIgnored.contains(m.getName()))
-        System.out.println("ignored");
-    else if(m.getName().indexOf("access$")!= -1)
-        System.out.println("access");
-    else if(m.getLineNumberTable() == null)
-        System.out.println("linenumber");
-    else if(m.getCode() == null)
-        System.out.println("code");
-    else if(m.getLineNumberTable().getSourceLine(0) <= 0)
-        System.out.println("invalid line number");
-    */
-      return m != null
-      && !m.isNative()
-      && !m.isAbstract()
-      && !mIgnored.contains(m.getName())
-      && m.getName().indexOf("access$") == -1
-      && m.getLineNumberTable() != null
-      && m.getCode() != null
-      && m.getLineNumberTable().getSourceLine(0) > 0;
+    /*
+     * if(m == null) System.out.println("null"); else if(m.isNative())
+     * System.out.println("native"); else if(m.isAbstract())
+     * System.out.println("abstract"); else if(mIgnored.contains(m.getName()))
+     * System.out.println("ignored"); else if(m.getName().indexOf("access$")!=
+     * -1) System.out.println("access"); else if(m.getLineNumberTable() == null)
+     * System.out.println("linenumber"); else if(m.getCode() == null)
+     * System.out.println("code"); else
+     * if(m.getLineNumberTable().getSourceLine(0) <= 0)
+     * System.out.println("invalid line number");
+     */
+    return m != null && !m.isNative() && !m.isAbstract()
+        && !mIgnored.contains(m.getName())
+        && m.getName().indexOf("access$") == -1
+        && m.getLineNumberTable() != null && m.getCode() != null
+        && m.getLineNumberTable().getSourceLine(0) > 0;
   }
 
   /**
    * Count number of mutation points in a method.
    */
-  private int countMutationPoints(final Method m, final String className, final ConstantPoolGen cp) {
+  private int countMutationPoints(final Method m, final String className,
+      final ConstantPoolGen cp) {
 
     // check this is a method that it makes sense to mutate
     if (!checkNormalMethod(m)) {
       return 0;
     }
-    final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
+    final InstructionList il = new MethodGen(m, className, cp)
+        .getInstructionList();
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;
-    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
+    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp,
+        j)) {
       if (isMutatable(ihs, j, cp)) {
         count += 1;
       }
@@ -358,27 +362,24 @@ public class Mutater {
   /**
    * Compute the total number of possible mutation points in the class.
    */
-  int countMutationPoints(final String cl) {
+  public int countMutationPoints(final String cl) {
     final String className = fixName(cl);
     int count = 0;
     final JavaClass clazz = Repository.lookupClass(className);
-    
-    if(clazz == null) {
-        System.out.println("Error: could not retrieve " + className);
+
+    if (clazz == null) {
+      System.out.println("Error: could not retrieve " + className);
     }
-    
-//  if is an interface, return -1 to distinguish from 0 point classes
+    // if is an interface, return -1 to distinguish from 0 point classes
     if (clazz.isInterface()) {
       return -1;
     }
-    
+
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     /*
-    if (mConstants) {
-      count = countMutationPoints(cpool.getConstantPool());
-    }
-    */
+     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
+     */
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
@@ -387,18 +388,20 @@ public class Mutater {
   }
 
   /**
-   * Maps -1 -&gt; 1; 0 -&gt; 1; 1 -&gt; 0; 2 -&gt; 3; 3 -&gt; 4; 4 -&gt; 5; 5 -&gt; -1.
-   * This mapping is careful to handle use as boolean cases correctly.
+   * Maps -1 -&gt; 1; 0 -&gt; 1; 1 -&gt; 0; 2 -&gt; 3; 3 -&gt; 4; 4 -&gt; 5; 5
+   * -&gt; -1. This mapping is careful to handle use as boolean cases correctly.
    */
-  private static final int[] ICONST_MAP = new int[] {1, 1, 0, 3, 4, 5, -1};
+  private static final int[] ICONST_MAP = new int[] { 1, 1, 0, 3, 4, 5, -1 };
 
   /** Mutate an ICONST instruction. */
-  private static Instruction mutateICONST(final ICONST i, final ConstantPoolGen cp) {
+  private static Instruction mutateICONST(final ICONST i,
+      final ConstantPoolGen cp) {
     return new ICONST(ICONST_MAP[i.getValue().intValue() + 1]);
   }
 
   /** Mutate a FCONST instruction. */
-  private static Instruction mutateFCONST(final FCONST i, final ConstantPoolGen cp) {
+  private static Instruction mutateFCONST(final FCONST i,
+      final ConstantPoolGen cp) {
     final float v = i.getValue().floatValue();
     if (v == 0.0F) {
       return new FCONST(1.0F);
@@ -408,7 +411,8 @@ public class Mutater {
   }
 
   /** Mutate a DCONST instruction. */
-  private static Instruction mutateDCONST(final DCONST i, final ConstantPoolGen cp) {
+  private static Instruction mutateDCONST(final DCONST i,
+      final ConstantPoolGen cp) {
     final double v = i.getValue().doubleValue();
     if (v == 0.0) {
       return new DCONST(1.0);
@@ -418,7 +422,8 @@ public class Mutater {
   }
 
   /** Mutate a LCONST instruction. */
-  private static Instruction mutateLCONST(final LCONST i, final ConstantPoolGen cp) {
+  private static Instruction mutateLCONST(final LCONST i,
+      final ConstantPoolGen cp) {
     final long v = i.getValue().longValue();
     if (v == 0L) {
       return new LCONST(1L);
@@ -428,29 +433,33 @@ public class Mutater {
   }
 
   /** Mutate a BIPUSH instruction. */
-  private static Instruction mutateBIPUSH(final BIPUSH i, final ConstantPoolGen cp) {
-    return new BIPUSH((byte)(i.getValue().byteValue() + 1));
+  private static Instruction mutateBIPUSH(final BIPUSH i,
+      final ConstantPoolGen cp) {
+    return new BIPUSH((byte) (i.getValue().byteValue() + 1));
   }
 
   /** Mutate a SIPUSH instruction. */
-  private static Instruction mutateSIPUSH(final SIPUSH i, final ConstantPoolGen cp) {
-    return new SIPUSH((byte)(i.getValue().shortValue() + 1));
+  private static Instruction mutateSIPUSH(final SIPUSH i,
+      final ConstantPoolGen cp) {
+    return new SIPUSH((byte) (i.getValue().shortValue() + 1));
   }
-  
+
   /** Mutate an IINC instruction */
   private static Instruction mutateIINC(final IINC i, final ConstantPoolGen cp) {
-      return new IINC(i.getIndex(), -i.getIncrement());
+    return new IINC(i.getIndex(), -i.getIncrement());
   }
 
   /**
-   * Return a new integer instruction with the same parameter, but which
-   * differs from the current instruction.
+   * Return a new integer instruction with the same parameter, but which differs
+   * from the current instruction.
    */
-  private Instruction mutateIntegerArithmetic(final ArithmeticInstruction current, final ConstantPoolGen cp) {
+  private Instruction mutateIntegerArithmetic(
+      final ArithmeticInstruction current, final ConstantPoolGen cp) {
     return mMutatable[current.getOpcode()];
   }
 
-  private InstructionList mutateRETURN(final ReturnInstruction ret, final InstructionFactory ifactory) {
+  private InstructionList mutateRETURN(final ReturnInstruction ret,
+      final InstructionFactory ifactory) {
     final InstructionList il = new InstructionList();
     if (ret instanceof IRETURN) {
       // maps 0->1 and anything else to 0, this is done without need
@@ -480,7 +489,8 @@ public class Mutater {
       il.append(ifnonnull);
       il.append(ifactory.createNew("java.lang.RuntimeException"));
       il.append(new DUP());
-      il.append(ifactory.createInvoke("java.lang.RuntimeException", "<init>", Type.VOID, new Type[0], Constants.INVOKESPECIAL));
+      il.append(ifactory.createInvoke("java.lang.RuntimeException", "<init>",
+          Type.VOID, new Type[0], Constants.INVOKESPECIAL));
       il.append(new ATHROW());
       il.append(new ACONST_NULL());
       ifnonnull.setTarget(il.getEnd());
@@ -490,24 +500,30 @@ public class Mutater {
 
   /**
    * Produce a human description of an instruction.
-   *
-   * @param i the instruction
+   * 
+   * @param i
+   *          the instruction
    * @return description
    */
   private String describe(final Instruction i) {
-    if (i instanceof IADD || i instanceof LADD || i instanceof FADD || i instanceof DADD) {
-      return "+";                                                                       
-    }                                                                                   
-    if (i instanceof ISUB || i instanceof LSUB || i instanceof FSUB || i instanceof DSUB) {
-      return "-";                                                                       
-    }                                                                                   
-    if (i instanceof IMUL || i instanceof LMUL || i instanceof FMUL || i instanceof DMUL) {
-      return "*";                                                                       
-    }                                                                                   
-    if (i instanceof IDIV || i instanceof LDIV || i instanceof FDIV || i instanceof DDIV) {
-      return "/";                                                                       
-    }                                                                                   
-    if (i instanceof IREM || i instanceof LREM || i instanceof FREM || i instanceof DREM) {
+    if (i instanceof IADD || i instanceof LADD || i instanceof FADD
+        || i instanceof DADD) {
+      return "+";
+    }
+    if (i instanceof ISUB || i instanceof LSUB || i instanceof FSUB
+        || i instanceof DSUB) {
+      return "-";
+    }
+    if (i instanceof IMUL || i instanceof LMUL || i instanceof FMUL
+        || i instanceof DMUL) {
+      return "*";
+    }
+    if (i instanceof IDIV || i instanceof LDIV || i instanceof FDIV
+        || i instanceof DDIV) {
+      return "/";
+    }
+    if (i instanceof IREM || i instanceof LREM || i instanceof FREM
+        || i instanceof DREM) {
       return "%";
     }
     if (i instanceof IOR || i instanceof LOR) {
@@ -553,12 +569,12 @@ public class Mutater {
     if (i instanceof ReturnInstruction) {
       return "changed return value (" + i.getName() + ")";
     }
-    
-    if(i instanceof IINC) {
-        if(((IINC)i).getIncrement()>= 0)
-            return "+=";
-        else
-            return "-=";
+
+    if (i instanceof IINC) {
+      if (((IINC) i).getIncrement() >= 0)
+        return "+=";
+      else
+        return "-=";
     }
     return "unknown";
   }
@@ -568,22 +584,23 @@ public class Mutater {
 
   /**
    * Return the most recent modification.
-   *
+   * 
    * @return description of modification
    */
-  String getModification() {
+  public String getModification() {
     return mModification;
   }
 
   /** Count down for mutation to apply. */
   private int mCount = 0;
 
-  Mutater(final int count) {
+  public Mutater(final int count) {
     mCount = count;
     setIgnoredMethods(null);
   }
 
-  private Method jumble(Method m, final String className, final ConstantPoolGen cp) {
+  private Method jumble(Method m, final String className,
+      final ConstantPoolGen cp) {
 
     // check if modification is appropriate
     if (mCount < 0 || !checkNormalMethod(m)) {
@@ -595,16 +612,19 @@ public class Mutater {
     final InstructionHandle[] ihs = il.getInstructionHandles();
     final InstructionFactory ifactory = new InstructionFactory(cp);
 
-    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
+    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp,
+        j)) {
       final Instruction i = ihs[j].getInstruction();
       if (isMutatable(ihs, j, cp) && mCount-- == 0) {
-        String mod = className + ":" + m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) + ": ";
+        String mod = className + ":"
+            + m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) + ": ";
         if (i instanceof IfInstruction) {
           mod += "negated conditional";
           ihs[j].setInstruction(((IfInstruction) i).negate());
         } else if (i instanceof ArithmeticInstruction) {
           // binary operand integer instruction
-          final Instruction inew = mutateIntegerArithmetic((ArithmeticInstruction) i, cp);
+          final Instruction inew = mutateIntegerArithmetic(
+              (ArithmeticInstruction) i, cp);
           ihs[j].setInstruction(inew);
           mod += describe(i) + " -> " + describe(inew);
         } else if (i instanceof ReturnInstruction) {
@@ -624,11 +644,10 @@ public class Mutater {
             inew = mutateBIPUSH((BIPUSH) i, cp);
           } else if (i instanceof SIPUSH) {
             inew = mutateSIPUSH((SIPUSH) i, cp);
-          } else if(i instanceof IINC) {
-              //added by tin
-              inew = mutateIINC((IINC)i, cp);
-          }
-          else {
+          } else if (i instanceof IINC) {
+            // added by tin
+            inew = mutateIINC((IINC) i, cp);
+          } else {
             inew = null;
           }
           if (inew != null) {
@@ -637,7 +656,7 @@ public class Mutater {
           }
         }
         mModification = mod;
-        //     System.err.println("Made modification: " + mModification);
+        // System.err.println("Made modification: " + mModification);
         break;
       }
     }
@@ -660,6 +679,92 @@ public class Mutater {
     }
     clazz.setConstantPool(cp.getFinalConstantPool());
     return clazz;
+  }
+
+  public JavaClass jumbler(final JavaClass clazz) {
+    JavaClass ret = clazz.copy();
+
+    Method[] methods = ret.getMethods();
+    ConstantPoolGen cp = new ConstantPoolGen(ret.getConstantPool());
+    for (int i = 0; i < methods.length; i++) {
+      methods[i] = jumble(methods[i], ret.getClassName(), cp);
+    }
+    ret.setConstantPool(cp.getFinalConstantPool());
+    return ret;
+  }
+
+  /**
+   * Gets the name of the method currently being mutated for the given class.
+   * 
+   * @param cl
+   *          the name of the class to mutate
+   * 
+   * @return mutated method name
+   */
+  public String getMutatedMethodName(String cl) {
+    final String className = fixName(cl);
+    int count = 0;
+    final JavaClass clazz = Repository.lookupClass(className);
+
+    if (clazz == null) {
+      System.out.println("Error: could not retrieve " + className);
+    }
+
+    final Method[] methods = clazz.getMethods();
+    final ConstantPool cpool = clazz.getConstantPool();
+    /*
+     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
+     */
+    final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+    for (int i = 0; i < methods.length; i++) {
+      count += countMutationPoints(methods[i], className, cp);
+
+      // Once we have gone past the mutation point,
+      // then we have found the mutated method
+      if (mCount < count) {
+        return methods[i].getName();
+      }
+    }
+
+    // If we get here, then something went wrong
+    throw new RuntimeException("Invalid mutation point");
+  }
+
+  /**
+   * Gets the mutation point, relative to the method being mutated. The method
+   * is specified by <CODE>getMutatedMethodName(cl)</CODE>.
+   * 
+   * @param cl
+   *          the class to to mutate.
+   * @return the mutation point, relative to the mutated method.
+   */
+  public int getMethodRelativeMutationPoint(String cl) {
+    final String className = fixName(cl);
+    int count = 0;
+    final JavaClass clazz = Repository.lookupClass(className);
+
+    if (clazz == null) {
+      System.out.println("Error: could not retrieve " + className);
+    }
+
+    final Method[] methods = clazz.getMethods();
+    final ConstantPool cpool = clazz.getConstantPool();
+    /*
+     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
+     */
+    final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+    for (int i = 0; i < methods.length; i++) {
+      int oldCount = count;
+      count += countMutationPoints(methods[i], className, cp);
+      // Once we have gone past the mutation point,
+      // then we have found the mutated method
+      if (mCount < count) {
+        return mCount - oldCount;
+      }
+    }
+
+    // If we get here, then something went wrong
+    throw new RuntimeException("Invalid mutation point");
   }
 
 }

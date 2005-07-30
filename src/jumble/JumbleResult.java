@@ -2,8 +2,6 @@
 package jumble;
 
 public abstract class JumbleResult {
-    public abstract String getClassName();
-    public abstract String getTestName();
     public abstract int getMutationCount();
     public abstract Mutation [] getPassed();
     public abstract Mutation [] getTimeouts();
