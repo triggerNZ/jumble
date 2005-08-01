@@ -29,7 +29,6 @@ public class RTSITest extends TestCase {
     System.out.println("CLASSPATH: " + System.getProperty("java.class.path"));
     Collection c = RTSI.getAllVisiblePackages();
     assertTrue(c.contains("jumble"));
-    assertTrue(c.contains("jumble.batch"));
     assertTrue(c.contains("jumble.dependency"));
     assertTrue(c.contains("jumble.fast"));
     assertTrue(c.contains("jumble.util"));

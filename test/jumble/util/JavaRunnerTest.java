@@ -15,10 +15,18 @@ import java.io.IOException;
  * @author Tin Pavlinic
  */
 public class JavaRunnerTest extends TestCase {
-
+  Process p = null;
+  
+    public void tearDown() {
+      if (p != null) {
+        p.destroy();
+        p = null;
+      }
+    }
+  
     public void testStart() throws IOException{
         Properties props = System.getProperties();
-        Process p = 
+        p = 
             new JavaRunner("jumble.util.DisplayEnvironment").start();
         BufferedReader out = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -31,7 +39,7 @@ public class JavaRunnerTest extends TestCase {
     }
 
     public void testArguments() throws Exception {
-        Process p = 
+        p = 
             new JavaRunner("jumble.util.DisplayArguments",
                     new String[] {"one", "two", "three"})
                     .start();
