@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 import jumble.dependency.DependencyExtractor;
-import jumble.util.RTSI;
-import junit.framework.TestCase;
+import jumble.util.BCELRTSI;
+
+import org.apache.bcel.Repository;
 
 /**
  * Class which performs Jumble tests for every class in the system.
@@ -28,7 +29,6 @@ public class JumbleAll {
    *          command line arguments - none
    */
   public static void main(String[] args) throws Exception {
-    Collection packages = RTSI.getAllVisiblePackages();
     Set classNames = new HashSet();
     Set testNames = new HashSet();
     Set dependentClasses = new HashSet();
@@ -49,23 +49,8 @@ public class JumbleAll {
 
     System.out.println("Finding all classes...");
 
-    // Find all the tests and all the other classes too
-    for (Iterator it = packages.iterator(); it.hasNext();) {
-      String packageName = (String) it.next();
-      boolean ignorePackage = false;
-
-      for (Iterator i = ignore.iterator(); i.hasNext();) {
-        if (packageName.startsWith(((String) i.next()) + ".")) {
-          ignorePackage = true;
-          break;
-        }
-      }
-
-      if (!ignorePackage) {
-        classNames.addAll(RTSI.find(packageName, Object.class));
-        testNames.addAll(RTSI.find(packageName, TestCase.class));
-      }
-    }
+    classNames.addAll(BCELRTSI.getAllClasses());
+    testNames.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase"));
 
     // Remove all the test classes from the other classes
     classNames.removeAll(testNames);
@@ -74,9 +59,9 @@ public class JumbleAll {
         + testNames.size() + " tests.");
     System.out.println("Doing dependency analysis...");
     // Now do the dependency analysis
+    DependencyExtractor extractor = new DependencyExtractor();
     for (Iterator it = testNames.iterator(); it.hasNext();) {
       String curTest = (String) it.next();
-      DependencyExtractor extractor = new DependencyExtractor();
       extractor.setIgnoredPackages(ignore);
       Collection dependent = extractor.getAllDependencies(curTest, true);
 
@@ -108,7 +93,7 @@ public class JumbleAll {
     for (Iterator it = classNames.iterator(); it.hasNext();) {
       String className = (String) it.next();
       System.out.print(className + ": ");
-      if (Class.forName(className).isInterface()) {
+      if (Repository.lookupClass(className).isInterface()) {
         System.out.println("100 (INTERFACE)");
       } else if (classTestMap.containsKey(className)) {
         List testList = new ArrayList((Collection) classTestMap.get(className));
