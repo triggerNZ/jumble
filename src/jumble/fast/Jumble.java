@@ -45,7 +45,7 @@ public class Jumble {
         Iterator testIt = tests.iterator();      
         while (testIt.hasNext()) {
           String testClass = (String)testIt.next();
-          DependencyExtractor extractor = new DependencyExtractor(testClass);
+          DependencyExtractor extractor = new DependencyExtractor();
           //ignore junit stuff, but not the samples
           extractor.getIgnoredPackages().add("junit.awtui");
           extractor.getIgnoredPackages().add("junit.framework");
@@ -55,7 +55,7 @@ public class Jumble {
           extractor.getIgnoredPackages().add("junit.textui");
           
           Collection dependentClasses = 
-            extractor.getAllDependencies(true);
+            extractor.getAllDependencies(testClass, true);
           
           //Now if the class is a dependency, then we should do that test
           if (dependentClasses.contains(className)) {

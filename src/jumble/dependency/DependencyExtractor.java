@@ -2,6 +2,7 @@ package jumble.dependency;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -39,6 +40,9 @@ public class DependencyExtractor {
   /** Set of packages to ignore. (Subpackages are ignored automatically) */
   private Set mIgnoredPackages;
 
+  /** A cache for the classes which have already been analyzed */
+  private HashMap mCache;
+  
   /**
    * Main method. Displays the dependencies for the class given as a
    * command-line parameter.
@@ -74,13 +78,13 @@ public class DependencyExtractor {
       System.out.println();
 
       
-      DependencyExtractor extractor = new DependencyExtractor(className);
+      DependencyExtractor extractor = new DependencyExtractor();
       
       if (ignoreSet != null) {
         extractor.setIgnoredPackages(ignoreSet);
       }
       
-      Collection dependencies = extractor.getAllDependencies(true);
+      Collection dependencies = extractor.getAllDependencies(className, true);
       Iterator it = dependencies.iterator();
       while (it.hasNext())
         System.out.println(it.next());
@@ -98,12 +102,9 @@ public class DependencyExtractor {
 
   /**
    * Constructor
-   * 
-   * @param className
-   *          the name of the class which is to be checked for dependencies.
    */
-  public DependencyExtractor(String className) {
-    mClassName = className;
+  public DependencyExtractor() {
+    mCache = new HashMap();
     mIgnoredPackages = new HashSet();
 
     mIgnoredPackages.add("java");
@@ -114,7 +115,7 @@ public class DependencyExtractor {
     mIgnoredPackages.add("org.xml");
     mIgnoredPackages.add("org.omg");
     mIgnoredPackages.add("org.ietf");
-    integrity();
+    //integrity();
   }
 
   /**
@@ -134,7 +135,7 @@ public class DependencyExtractor {
    */
   public void setClassName(String className) {
     mClassName = className;
-    integrity();
+    //integrity();
   }
 
   /**
@@ -145,8 +146,12 @@ public class DependencyExtractor {
    * @return the names of the dependency classes in a Collection
    */
   private Collection getDependencies(String className, boolean ignore) {
+    //First look in the cache
+    if (mCache.containsKey(className)) {
+      return (Collection)mCache.get(className);
+    }
+    
     ArrayList ret = new ArrayList();
-
     if (isPrimitiveArray(className)) {
       // System.out.println(className + " primitive array");
       return ret;
@@ -195,10 +200,10 @@ public class DependencyExtractor {
     ret.addAll(getStringTypes(fieldTypes));
 
     if (ignore) {
-      return filterSystemClasses(ret);
-    } else {
-      return ret;
+      ret = new ArrayList(filterSystemClasses(ret));
     }
+    mCache.put(className, ret);
+    return ret;
   }
 
   /**
@@ -221,7 +226,7 @@ public class DependencyExtractor {
       // System.out.println("gid - " + getClassName() + " is primitive");
       ret = new HashSet();
     }
-    integrity();
+    //integrity();
     return ret;
   }
 
@@ -232,7 +237,8 @@ public class DependencyExtractor {
    *          a flag indicating whether to ignore system classes
    * @return a Collection of class names of the dependencies.
    */
-  public Collection getAllDependencies(boolean ignore) {
+  public Collection getAllDependencies(String rootClass, boolean ignore) {
+    setClassName(rootClass);
     Stack fringe = new Stack();
     HashSet ret = new HashSet();
 
@@ -263,7 +269,7 @@ public class DependencyExtractor {
       ret = new HashSet(filterSystemClasses(ret));
     }
 
-    integrity();
+    //integrity();
 
     return ret;
   }
@@ -344,14 +350,14 @@ public class DependencyExtractor {
     return false;
   }
 
-  public void integrity() {
-    // Class must exist
-    try {
-      Class.forName(mClassName);
-    } catch (ClassNotFoundException e) {
-      assert false;
-    }
-  }
+//  public void integrity() {
+//    // Class must exist
+//    try {
+//      Class.forName(mClassName);
+//    } catch (ClassNotFoundException e) {
+//      assert false;
+//    }
+//  }
 
   public Set getStringTypes(Collection c) {
     Set s = new HashSet();
@@ -388,5 +394,9 @@ public class DependencyExtractor {
       }
     }
     return s;
+  }
+  
+  public void clearCache() {
+    mCache.clear();
   }
 }

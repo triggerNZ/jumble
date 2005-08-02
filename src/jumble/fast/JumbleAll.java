@@ -35,7 +35,7 @@ public class JumbleAll {
     Map classTestMap = new HashMap();
 
     Set ignore = new HashSet();
-    ignore.addAll(new DependencyExtractor("java.lang.Object")
+    ignore.addAll(new DependencyExtractor()
         .getIgnoredPackages());
     ignore.add("junit.awtui");
     ignore.add("junit.framework");
@@ -76,9 +76,9 @@ public class JumbleAll {
     // Now do the dependency analysis
     for (Iterator it = testNames.iterator(); it.hasNext();) {
       String curTest = (String) it.next();
-      DependencyExtractor extractor = new DependencyExtractor(curTest);
+      DependencyExtractor extractor = new DependencyExtractor();
       extractor.setIgnoredPackages(ignore);
-      Collection dependent = extractor.getAllDependencies(true);
+      Collection dependent = extractor.getAllDependencies(curTest, true);
 
       for (Iterator dit = dependent.iterator(); dit.hasNext();) {
         String curClass = (String) dit.next();
