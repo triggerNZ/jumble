@@ -3,8 +3,10 @@ package jumble.fast;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+import junit.framework.TestSuite;
 import experiments.TimedTests;
 
 /**
@@ -40,5 +42,14 @@ public class TimingTestSuiteTest extends TestCase {
     assertEquals(3, mResult.runCount());
     assertEquals(0, mResult.errorCount());
     assertEquals(0, mResult.failureCount());
+  }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite(TimingTestSuiteTest.class);
+    return suite;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
   }
 }

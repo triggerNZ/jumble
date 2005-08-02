@@ -24,18 +24,18 @@ public class DependencyExtractorTest extends TestCase {
   private DependencyExtractor extractor;
 
   public void setUp() {
-    extractor = new DependencyExtractor("jumble.dependency.DT1");
+    extractor = new DependencyExtractor();
   }
 
   public void testDT1() {
-    Collection classes = extractor.getAllDependencies(true);
+    Collection classes = extractor.getAllDependencies("jumble.dependency.DT1", true);
     assertEquals("experiments.JumblerExperiment", classes.iterator().next());
     assertEquals(1, classes.size());
   }
 
   public void testDT2() {
     extractor.setClassName("jumble.dependency.DT2");
-    Collection classes = extractor.getAllDependencies(true);
+    Collection classes = extractor.getAllDependencies("jumble.dependency.DT2", true);
     assertEquals(3, classes.size());
 
     assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -44,8 +44,7 @@ public class DependencyExtractorTest extends TestCase {
   }
 
    public void testDT3() {
-     extractor.setClassName("jumble.dependency.DT3");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT3", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -53,8 +52,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT4() {
-     extractor.setClassName("jumble.dependency.DT4");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT4", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -62,8 +60,7 @@ public class DependencyExtractorTest extends TestCase {
    }
 
    public void testDT5() {
-     extractor.setClassName("jumble.dependency.DT5");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT5", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -71,8 +68,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT6() {
-     extractor.setClassName("jumble.dependency.DT6");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT6", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -80,8 +76,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT7() {
-     extractor.setClassName("jumble.dependency.DT7");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT7", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -89,8 +84,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT8() {
-     extractor.setClassName("jumble.dependency.DT8");
-     Collection classes = extractor.getAllDependencies(true);
+     Collection classes = extractor.getAllDependencies("jumble.dependency.DT8", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -100,13 +94,13 @@ public class DependencyExtractorTest extends TestCase {
     // huge amount of dependencies - this is more of a regression thing
     // than an actual test - I have no idea what the value should be
     // may vary with different JRE's (although hasn't done so far)
-    Collection classes = extractor.getAllDependencies(false);
+    Collection classes = extractor.getAllDependencies("jumble.dependency.DT1", false);
     assertEquals(1413, classes.size());
   }
 
   public void testSilly() {
     extractor.setClassName("[[C");
-    Collection classes = extractor.getAllDependencies(true);
+    Collection classes = extractor.getAllDependencies("[[C", true);
     assertEquals(0, classes.size());
   }
   

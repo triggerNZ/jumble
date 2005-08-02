@@ -6,8 +6,10 @@ import java.io.PrintStream;
 import java.io.StringReader;
 
 import jumble.Mutation;
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
 /**
  * Tests the corresponding class.
@@ -97,6 +99,15 @@ public class SeanResultPrinterTest extends TestCase {
     public long getTimeoutLength() {
       return 1000;
     }
+  }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite(SeanResultPrinterTest.class);
+    return suite;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
   }
 
 }

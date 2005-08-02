@@ -672,13 +672,14 @@ public class Mutater {
     if (clazz == null) {
       throw new IOException("Class did not exist");
     }
-    Method[] methods = clazz.getMethods();
-    ConstantPoolGen cp = new ConstantPoolGen(clazz.getConstantPool());
-    for (int i = 0; i < methods.length; i++) {
-      methods[i] = jumble(methods[i], cn, cp);
-    }
-    clazz.setConstantPool(cp.getFinalConstantPool());
-    return clazz;
+    return jumbler(clazz);
+//    Method[] methods = clazz.getMethods();
+//    ConstantPoolGen cp = new ConstantPoolGen(clazz.getConstantPool());
+//    for (int i = 0; i < methods.length; i++) {
+//      methods[i] = jumble(methods[i], cn, cp);
+//    }
+//    clazz.setConstantPool(cp.getFinalConstantPool());
+//    return clazz;
   }
 
   public JavaClass jumbler(final JavaClass clazz) {

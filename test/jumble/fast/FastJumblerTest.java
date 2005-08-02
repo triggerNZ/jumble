@@ -8,8 +8,10 @@ import java.io.ObjectOutputStream;
 
 import jumble.Mutater;
 import jumble.util.JavaRunner;
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.Attribute;
@@ -24,7 +26,6 @@ import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.IADD;
-import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.IDIV;
 import org.apache.bcel.generic.IMUL;
 import org.apache.bcel.generic.IOR;
@@ -118,6 +119,7 @@ public class FastJumblerTest extends TestCase {
         new Mutater(0));
     
     JavaClass c1 = fj.modifyClass(original);   
+    //printClass(c1);
     compareModification(original, c1, 6, new IDIV());
     
     fj.setMutater(new Mutater(1));
@@ -541,7 +543,27 @@ public class FastJumblerTest extends TestCase {
     }
   }
 
+  public static Test suite() {
+    TestSuite suite = new TestSuite(FastJumblerTest.class);
+    return suite;
+  }
 
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
 
+  private static void printClass(JavaClass c) throws Exception {
+    Method[] m = c.getMethods();
+    
+    for (int i = 0; i < m.length; i++) {
+      System.out.println(m[i].getName());
+      
+      ByteSequence code = new ByteSequence(m[i].getCode().getCode());
+      
+      while (code.available() > 0) {
+        System.out.println("\t" + Instruction.readInstruction(code));
+      }
+    }
+  }
 
 }

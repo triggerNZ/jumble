@@ -87,8 +87,6 @@ public class MutaterTest extends TestCase {
     testDescriptions(9, "jumble.X2:6: 57 (9) -> 58 (:)");
     testDescriptions(10, "jumble.X2:6: & -> |");
     testDescriptions(11, "jumble.X2:6: changed return value (ireturn)");
-    testDescriptions(12, "jumble.X2:6: 0 -> 1");
-    testDescriptions(13, "jumble.X2:6: changed return value (ireturn)");
     testDescriptions(500, null);
   }
 
@@ -102,14 +100,11 @@ public class MutaterTest extends TestCase {
   }
 
   public void testDescriptionsX3() throws IOException {
-    //testDescriptions3(0, "jumble.X3:6: 3 -> 4");
     testDescriptions3(0, "jumble.X3:6: * -> /");
     testDescriptions3(1, "jumble.X3:6: * -> /");
     testDescriptions3(2, "jumble.X3:6: + -> -");
     testDescriptions3(3, "jumble.X3:6: - -> +");
     testDescriptions3(4, "jumble.X3:6: changed return value (areturn)");
-    testDescriptions3(5, "jumble.X3:6: changed return value (areturn)");
-    testDescriptions3(6, "jumble.X3:6: changed return value (areturn)");
     testDescriptions3(500, null);
   }
 

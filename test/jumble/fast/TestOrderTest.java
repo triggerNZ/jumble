@@ -7,7 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.bcel.util.ClassLoader;
 
@@ -95,5 +97,14 @@ public class TestOrderTest extends TestCase {
     assertEquals("300", tokens.nextToken());
     assertEquals("400", tokens.nextToken());
     assertEquals("500", tokens.nextToken());
+  }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite(TestOrderTest.class);
+    return suite;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
   }
 }

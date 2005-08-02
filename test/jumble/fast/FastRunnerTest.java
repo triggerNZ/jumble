@@ -1,6 +1,8 @@
 package jumble.fast;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Tests the corrresponding class.
@@ -13,5 +15,13 @@ public class FastRunnerTest extends TestCase {
     assertEquals(12000, FastRunner.computeTimeout(1000));
   }
 
+  public static Test suite() {
+    TestSuite suite = new TestSuite(FastRunnerTest.class);
+    return suite;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
 
 }
