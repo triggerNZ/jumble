@@ -32,7 +32,7 @@ public class Jumble {
       Set testClasses = new HashSet();
       Set allTests = new HashSet();
       System.out.println("Finding tests...");
-      allTests.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase"));
+      allTests.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase", false));
       System.out.println("DONE: " + allTests.size() + " total tests classes");
       
       System.out.println("Doing dependency analysis: "); 

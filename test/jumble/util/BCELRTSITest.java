@@ -11,7 +11,7 @@ import org.apache.bcel.classfile.JavaClass;
 
 public class BCELRTSITest extends TestCase {
   public void testBCELRTSI() throws Exception {
-    Collection c = BCELRTSI.getAllDerivedClasses("jumble.util.Command", "jumble.util");
+    Collection c = BCELRTSI.getAllDerivedClasses("jumble.util.Command", "jumble.util", false);
     assertEquals(2, c.size());
     assertTrue(c.contains("jumble.util.LightOff"));
     assertTrue(c.contains("jumble.util.DoorClose"));
@@ -19,12 +19,12 @@ public class BCELRTSITest extends TestCase {
   }
 
   public void testBCELJarRTSI() throws Exception {
-    Collection c = BCELRTSI.getAllDerivedClasses("junit.framework.TestCase", "jumble.util");
+    Collection c = BCELRTSI.getAllDerivedClasses("junit.framework.TestCase", "jumble.util", true);
     assertTrue(c.contains("jumble.util.DummyTest"));
   }
 
   public void testGetAllClasses() {
-    Collection c = BCELRTSI.getAllDerivedClasses("jumble.util.Command");
+    Collection c = BCELRTSI.getAllDerivedClasses("jumble.util.Command", false);
     assertEquals(2, c.size());
     assertTrue(c.contains("jumble.util.LightOff"));
     assertTrue(c.contains("jumble.util.DoorClose"));

@@ -26,7 +26,7 @@ import org.apache.bcel.classfile.JavaClass;
  */
 public class BCELRTSI {
   public final static boolean DEBUG = false;
-  
+
   private final static String CLASSPATH = System.getProperty("java.class.path");
 
   private final static String PS = System.getProperty("path.separator");
@@ -37,10 +37,12 @@ public class BCELRTSI {
    * Gets a collection of strings representing the names of all the classes that
    * are visible in the class path.
    * 
+   * @param openJars
+   *          flag indicating whether to load classes from jar files
    * @return all the visible classes.
    */
-  public static Collection getAllClasses() {
-    return getAllClasses(null);
+  public static Collection getAllClasses(boolean openJars) {
+    return getAllClasses(null, openJars);
   }
 
   /**
@@ -49,17 +51,20 @@ public class BCELRTSI {
    * 
    * @param packageName
    *          the name of the package from which to collect classes.
-   * 
+   * @param openJars
+   *          flag indicating whether to load classes from jar files
    * @return all the visible classes in the package.
    */
-  public static Collection getAllClasses(String packageName) {
+  public static Collection getAllClasses(String packageName, boolean openJars) {
     Collection ret = new HashSet();
     for (StringTokenizer tokens = new StringTokenizer(CLASSPATH, PS); tokens
         .hasMoreTokens();) {
       String curPath = tokens.nextToken();
 
       if (curPath.toLowerCase().endsWith(".jar")) {
-        ret.addAll(getClassesFromJar(packageName, curPath));
+        if (openJars) {
+          ret.addAll(getClassesFromJar(packageName, curPath));
+        }
       } else if (new File(curPath).isDirectory()) {
         ret.addAll(getClassesFromDir(packageName, curPath));
       } else {
@@ -75,10 +80,13 @@ public class BCELRTSI {
    * 
    * @param superclassName
    *          the name of the superclass.
+   * @param openJars
+   *          flag indicating whether to load classes from jar files
    * @return all the visible classes deriving from the superclass.
    */
-  public static Collection getAllDerivedClasses(String superclassName) {
-    Collection c = filterSuperclass(getAllClasses(), superclassName);
+  public static Collection getAllDerivedClasses(String superclassName,
+      boolean openJars) {
+    Collection c = filterSuperclass(getAllClasses(openJars), superclassName);
     c.remove(superclassName);
     return c;
   }
@@ -92,12 +100,15 @@ public class BCELRTSI {
    *          the name of the superclass.
    * @param packageName
    *          the name of the package.
+   * @param openJars
+   *          flag indicating whether to load classes from jar files
    * @return all the visible classes deriving from the superclass in the
    *         package.
    */
   public static Collection getAllDerivedClasses(String superclassName,
-      String packageName) {
-    Collection c = filterSuperclass(getAllClasses(packageName), superclassName);
+      String packageName, boolean openJars) {
+    Collection c = filterSuperclass(getAllClasses(packageName, openJars),
+        superclassName);
     c.remove(superclassName);
     return c;
   }
@@ -113,21 +124,21 @@ public class BCELRTSI {
    */
   private static Collection filterSuperclass(Collection classes,
       String superclassName) {
-    //The BCEL produces output on stderr which doesn't matter in our
-    //case. Eat up the output and only ouput it if DEBUG is on
+    // The BCEL produces output on stderr which doesn't matter in our
+    // case. Eat up the output and only ouput it if DEBUG is on
     PrintStream oldErr = System.err;
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream err = new PrintStream(baos);
-    
+
     Collection ret = new HashSet();
-    
+
     JavaClass superclass = Repository.lookupClass(superclassName);
-    
+
     assert superclass != null;
     for (Iterator it = classes.iterator(); it.hasNext();) {
       String className = (String) it.next();
       JavaClass clazz = null;
-      //hijack err here
+      // hijack err here
       System.setErr(err);
       clazz = Repository.lookupClass(className);
       System.setErr(oldErr);
@@ -138,9 +149,9 @@ public class BCELRTSI {
         baos.reset();
       }
       assert clazz != null;
-     
+
       try {
-        //hijack err here
+        // hijack err here
         System.setErr(err);
         if (instanceOf(clazz, superclass)) {
           ret.add(clazz.getClassName());
@@ -152,7 +163,7 @@ public class BCELRTSI {
           }
           baos.reset();
         }
-        
+
       } catch (Exception e) {
         System.err.println(clazz.getClassName() + " : "
             + superclass.getClassName());
@@ -291,14 +302,14 @@ public class BCELRTSI {
       if (a.getClassName().equals(b.getClassName())) {
         return true;
       }
-  
+
       JavaClass[] superclasses;
       if (b.isInterface()) {
         superclasses = a.getAllInterfaces();
       } else {
         superclasses = a.getSuperClasses();
       }
-  
+
       for (int i = 0; i < superclasses.length; i++) {
         if (superclasses[i].getClassName().equals(b.getClassName())) {
           return true;

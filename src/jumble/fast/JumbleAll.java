@@ -35,8 +35,7 @@ public class JumbleAll {
     Map classTestMap = new HashMap();
 
     Set ignore = new HashSet();
-    ignore.addAll(new DependencyExtractor()
-        .getIgnoredPackages());
+    ignore.addAll(new DependencyExtractor().getIgnoredPackages());
     ignore.add("junit.awtui");
     ignore.add("junit.framework");
     ignore.add("junit.extensions");
@@ -49,8 +48,9 @@ public class JumbleAll {
 
     System.out.println("Finding all classes...");
 
-    classNames.addAll(BCELRTSI.getAllClasses());
-    testNames.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase"));
+    classNames.addAll(BCELRTSI.getAllClasses(false));
+    testNames.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase",
+        false));
 
     // Remove all the test classes from the other classes
     classNames.removeAll(testNames);
