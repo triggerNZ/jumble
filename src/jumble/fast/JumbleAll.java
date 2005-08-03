@@ -21,6 +21,7 @@ import org.apache.bcel.Repository;
  * 
  */
 public class JumbleAll {
+  public final static boolean DEBUG = true;
 
   /**
    * Main method. Runs Jumble on all classes found in the classpath.
@@ -92,11 +93,14 @@ public class JumbleAll {
 
     for (Iterator it = classNames.iterator(); it.hasNext();) {
       String className = (String) it.next();
-      System.out.print(className + ": ");
+      System.out.print(className + ":");
       if (Repository.lookupClass(className).isInterface()) {
         System.out.println("100 (INTERFACE)");
       } else if (classTestMap.containsKey(className)) {
         List testList = new ArrayList((Collection) classTestMap.get(className));
+        if (DEBUG) {
+          System.out.print("(" + testList.size() + " tests" + ":");
+        }
         JumbleResult res = FastRunner.runJumble(className, testList, exclude,
             true, true, true);
 

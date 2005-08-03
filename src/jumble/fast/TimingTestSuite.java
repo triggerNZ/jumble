@@ -23,7 +23,9 @@ import junit.framework.TestResult;
  * @author Tin Pavlinic
  */
 public class TimingTestSuite extends FlatTestSuite {
-  /** The runtimes for the tests */
+  public final static boolean DEBUG = true;
+  
+  /** Th€e runtimes for the tests */
   private long[] mRuntimes = null;
 
   /**
@@ -55,6 +57,9 @@ public class TimingTestSuite extends FlatTestSuite {
     mRuntimes = new long[testCount()];
     for (int i = 0; i < mRuntimes.length; i++) {
       Test curTest = testAt(i);
+      if (DEBUG) {
+        System.out.println("Running initially " + curTest);
+      }
       long before = System.currentTimeMillis();
       curTest.run(result);
       long after = System.currentTimeMillis();

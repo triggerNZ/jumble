@@ -161,8 +161,10 @@ public class RTSI {
           if (!curEntry.isDirectory() && curEntry.toString().endsWith(".class")) {
             String className = curEntry.toString().substring(0,
                 curEntry.toString().length() - 6).replace('/', '.');
-
-            String pack = className.substring(0, className.lastIndexOf("."));
+            String pack = "";
+            if (className.indexOf('.') > 0) {
+              pack = className.substring(0, className.lastIndexOf("."));
+            }
             if (pack.equals(packageName)) {
               try {
                 Class c = Class.forName(className);
@@ -216,7 +218,7 @@ public class RTSI {
 
     ret.addAll(getPackagesFromDirs(dirs));
     ret.addAll(getPackagesFromJars(jars));
-
+    ret.add("");
     return ret;
   }
 

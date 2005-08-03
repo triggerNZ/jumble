@@ -87,6 +87,7 @@ public class BCELRTSI {
   public static Collection getAllDerivedClasses(String superclassName,
       boolean openJars) {
     Collection c = filterSuperclass(getAllClasses(openJars), superclassName);
+
     c.remove(superclassName);
     return c;
   }
@@ -138,30 +139,20 @@ public class BCELRTSI {
     for (Iterator it = classes.iterator(); it.hasNext();) {
       String className = (String) it.next();
       JavaClass clazz = null;
-      // hijack err here
-      System.setErr(err);
       clazz = Repository.lookupClass(className);
-      System.setErr(oldErr);
-      if (baos.toString().length() > 0) {
-        if (DEBUG) {
-          System.err.print(baos);
-        }
-        baos.reset();
-      }
+      // System.setErr(oldErr);
+      // if (baos.toString().length() > 0) {
+      // if (DEBUG) {
+      // System.err.print(baos);
+      // }
+      // baos.reset();
+      // }
       assert clazz != null;
 
       try {
-        // hijack err here
-        System.setErr(err);
+
         if (instanceOf(clazz, superclass)) {
           ret.add(clazz.getClassName());
-        }
-        System.setErr(oldErr);
-        if (baos.toString().length() > 0) {
-          if (DEBUG) {
-            System.err.print(baos);
-          }
-          baos.reset();
         }
 
       } catch (Exception e) {
@@ -183,9 +174,10 @@ public class BCELRTSI {
    */
   private static Collection getClassesFromJar(String packageName,
       String filename) {
+    JarFile jar = null;
     try {
       Collection ret = new HashSet();
-      JarFile jar = new JarFile(filename);
+      jar = new JarFile(filename);
 
       for (Enumeration e = jar.entries(); e.hasMoreElements();) {
         JarEntry entry = (JarEntry) e.nextElement();
@@ -206,8 +198,15 @@ public class BCELRTSI {
           }
         }
       }
+      jar.close();
       return ret;
     } catch (IOException e) {
+      if (jar != null) {
+        try {
+          jar.close();
+        } catch (IOException ex) {
+        }
+      }
       e.printStackTrace();
       return null;
     }
