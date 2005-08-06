@@ -160,6 +160,7 @@ public class BCELRTSI {
             + superclass.getClassName());
       }
     }
+    Repository.clearCache();
     return ret;
   }
 

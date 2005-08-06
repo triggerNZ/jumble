@@ -203,6 +203,7 @@ public class DependencyExtractor {
       ret = new ArrayList(filterSystemClasses(ret));
     }
     mCache.put(className, ret);
+    Repository.clearCache();
     return ret;
   }
 
