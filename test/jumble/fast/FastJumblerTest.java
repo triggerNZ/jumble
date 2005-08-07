@@ -552,6 +552,12 @@ public class FastJumblerTest extends TestCase {
     junit.textui.TestRunner.run(suite());
   }
 
+  /**
+   * Method used for debugging - prints out the bytecode instructions for each
+   * method in the class.
+   * @param c the class to display.
+   * @throws Exception if something goes wrong
+   */
   private static void printClass(JavaClass c) throws Exception {
     Method[] m = c.getMethods();
     
