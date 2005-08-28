@@ -91,7 +91,8 @@ public class FastJumblerTest extends TestCase {
       final Class clazz = loader.loadClass("jumble.fast.JumbleTestSuite");
       clazz.getMethod("run", new Class[] {
           loader.loadClass("jumble.fast.TestOrder"), String.class,
-          String.class, boolean.class, boolean.class });
+          String.class, int.class, boolean.class, boolean.class, boolean.class,
+          boolean.class });
     } catch (NoSuchMethodException e) {
       fail();
     }
@@ -114,74 +115,69 @@ public class FastJumblerTest extends TestCase {
 
   public final void testJumbler() throws Exception {
     JavaClass original = Repository.lookupClass("jumble.X2");
-    
-    FastJumbler fj = new FastJumbler("jumble.X2", 
-        new Mutater(0));
-    
-    JavaClass c1 = fj.modifyClass(original);   
-    //printClass(c1);
+
+    FastJumbler fj = new FastJumbler("jumble.X2", new Mutater(0));
+
+    JavaClass c1 = fj.modifyClass(original);
+    // printClass(c1);
     compareModification(original, c1, 6, new IDIV());
-    
+
     fj.setMutater(new Mutater(1));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 8, new IMUL());
-    
+
     fj.setMutater(new Mutater(2));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 9, new ISUB());
-    
+
     fj.setMutater(new Mutater(3));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 12, new IMUL());
-    
+
     fj.setMutater(new Mutater(4));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 14, new IMUL());
-    
+
     fj.setMutater(new Mutater(5));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 15, new IADD());
-    
+
     fj.setMutater(new Mutater(6));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 17, new ISHL());
-    
+
     fj.setMutater(new Mutater(7));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 19, new ISHR());
-    
+
     fj.setMutater(new Mutater(8));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 21, new IOR());
-    
+
     fj.setMutater(new Mutater(9));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 23, null);
   }
-  
-  private void compareModification(JavaClass orig,
-      JavaClass mod, int mutationPoint, 
-      Instruction expected) throws Exception {
-    int point = 0; 
-    
+
+  private void compareModification(JavaClass orig, JavaClass mod,
+      int mutationPoint, Instruction expected) throws Exception {
+    int point = 0;
+
     InstructionComparator comp = Instruction.getComparator();
     Method[] methods = orig.getMethods();
-    
+
     for (int i = 0; i < methods.length; i++) {
-      
-      ByteSequence origCode = 
-        new ByteSequence(methods[i].getCode().getCode());
-      
-      ByteSequence modCode = new ByteSequence
-        (mod.getMethods()[i].getCode().getCode());
-      
+
+      ByteSequence origCode = new ByteSequence(methods[i].getCode().getCode());
+
+      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode()
+          .getCode());
+
       while (origCode.available() > 0) {
-        Instruction i1 = Instruction
-          .readInstruction(origCode);
-        Instruction i2 = Instruction
-        .readInstruction(modCode);
-        //System.out.println(i1 + " : " + i2);
-        if (point == mutationPoint) {    
+        Instruction i1 = Instruction.readInstruction(origCode);
+        Instruction i2 = Instruction.readInstruction(modCode);
+        // System.out.println(i1 + " : " + i2);
+        if (point == mutationPoint) {
           assertFalse(i1 + "==" + i2, comp.equals(i1, i2));
           assertTrue(i1 + "!=" + i2, comp.equals(i2, expected));
         } else {
@@ -189,7 +185,7 @@ public class FastJumblerTest extends TestCase {
         }
         point++;
       }
-      
+
     }
   }
 
@@ -555,17 +551,20 @@ public class FastJumblerTest extends TestCase {
   /**
    * Method used for debugging - prints out the bytecode instructions for each
    * method in the class.
-   * @param c the class to display.
-   * @throws Exception if something goes wrong
+   * 
+   * @param c
+   *          the class to display.
+   * @throws Exception
+   *           if something goes wrong
    */
   private static void printClass(JavaClass c) throws Exception {
     Method[] m = c.getMethods();
-    
+
     for (int i = 0; i < m.length; i++) {
       System.out.println(m[i].getName());
-      
+
       ByteSequence code = new ByteSequence(m[i].getCode().getCode());
-      
+
       while (code.available() > 0) {
         System.out.println("\t" + Instruction.readInstruction(code));
       }

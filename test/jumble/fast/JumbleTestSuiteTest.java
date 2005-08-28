@@ -43,30 +43,30 @@ public class JumbleTestSuiteTest extends TestCase {
   public void testTestClass() {
     assertTrue(JumbleTestSuite.run(
         new TestOrder(new Class[] { Mutater.class }, new long[] { 0 }), null,
-        null, false, false).startsWith("PASS"));
+        null, 0, false, false, false, true).startsWith("PASS"));
   }
 
   public void testX5T() {
     assertTrue(JumbleTestSuite.run(
         new TestOrder(new Class[] { jumble.X5T.class }, new long[] { 0 }),
-        null, null, false, false).startsWith("PASS"));
+        null, null, 0, false, false, false, true).startsWith("PASS"));
   }
 
   public void testX5TF() {
     assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
         JumbleTestSuite.run(new TestOrder(new Class[] { jumble.X5TF.class },
-            new long[] { 0 }), null, null, false, false));
+            new long[] { 0 }), null, null, 0, false, false, false, true));
   }
 
   public void testX5TY() {
     assertTrue(JumbleTestSuite.run(
         new TestOrder(new Class[] { jumble.X5TY.class }, new long[] { 0, 1 }),
-        null, null, false, false).startsWith("PASS"));
+        null, null, 0, false, false, false, true).startsWith("PASS"));
   }
 
   public void testNULL() {
     try {
-      JumbleTestSuite.run((TestOrder) null, null, null, false, false);
+      JumbleTestSuite.run((TestOrder) null, null, null, 0, false, false, false, true);
       fail("Took null");
     } catch (NullPointerException e) {
       // ok
@@ -76,7 +76,7 @@ public class JumbleTestSuiteTest extends TestCase {
   public void testX5TQ() {
     assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
         JumbleTestSuite.run(new TestOrder(new Class[] { jumble.X5TQ.class },
-            new long[] { 0, 1, 2 }), null, null, false, false));
+            new long[] { 0, 1, 2 }), null, null, 0, false, false, false, true));
   }
 
   public final void testOrder() throws Exception {
@@ -96,8 +96,8 @@ public class JumbleTestSuiteTest extends TestCase {
 
     System.setOut(out);
 
-    String s = JumbleTestSuite.run(timingSuite.getOrder(), null, null, false,
-        false);
+    String s = JumbleTestSuite.run(timingSuite.getOrder(), null, null, 0, false,
+        false, false, false);
     assertTrue(s.startsWith("FAIL"));
     StringTokenizer tokens = new StringTokenizer(ba.toString());
     assertEquals("Short", tokens.nextToken());
@@ -111,7 +111,7 @@ public class JumbleTestSuiteTest extends TestCase {
     Class clazz = JumbleTestSuite.class;
     try {
       Method m = clazz.getMethod("run", new Class[] { TestOrder.class,
-          String.class, String.class, boolean.class, boolean.class });
+          String.class, String.class, int.class, boolean.class, boolean.class, boolean.class, boolean.class });
       assertNotSame(null, m);
     } catch (NoSuchMethodException e) {
       fail();
@@ -134,19 +134,23 @@ public class JumbleTestSuiteTest extends TestCase {
     }
     assertFalse(f.exists());
     
-    JumbleTestSuite.run(timingSuite.getOrder(), "DummyClass", "dummyMethod",
-        false, true);
+    JumbleTestSuite.run(timingSuite.getOrder(), "DummyClass", "dummyMethod", 1,
+        false, true, true, true);
 
     assertTrue(f.exists());
     
     ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
     HashMap hash = (HashMap)in.readObject();
+    HashMap hash2 = (HashMap)in.readObject();
     in.close();
 
     assertTrue(hash.containsKey("DummyClass.dummyMethod"));
     HashSet s = (HashSet)hash.get("DummyClass.dummyMethod");
     assertTrue(s.contains("testFail"));
     assertEquals(1, s.size());
+    
+    assertTrue(hash2.containsKey("DummyClass.dummyMethod:1"));
+    assertEquals("testFail", hash2.get("DummyClass.dummyMethod:1"));
   }
   
   
