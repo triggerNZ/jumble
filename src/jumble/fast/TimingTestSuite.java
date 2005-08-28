@@ -23,7 +23,7 @@ import junit.framework.TestResult;
  * @author Tin Pavlinic
  */
 public class TimingTestSuite extends FlatTestSuite {
-  public final static boolean DEBUG = true;
+  public final static boolean DEBUG = false;
   
   /** Th€e runtimes for the tests */
   private long[] mRuntimes = null;

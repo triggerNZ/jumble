@@ -102,7 +102,7 @@ public class JumbleAll {
           System.out.print("(" + testList.size() + " tests" + ":");
         }
         JumbleResult res = FastRunner.runJumble(className, testList, exclude,
-            true, true, true);
+            true, true, true, false, true, true, true);
 
         if (res.getInitialTestResult().wasSuccessful()) {
           if (res.getAllMutations().length == 0) {

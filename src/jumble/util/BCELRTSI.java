@@ -1,10 +1,8 @@
 package jumble.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -125,12 +123,6 @@ public class BCELRTSI {
    */
   private static Collection filterSuperclass(Collection classes,
       String superclassName) {
-    // The BCEL produces output on stderr which doesn't matter in our
-    // case. Eat up the output and only ouput it if DEBUG is on
-    PrintStream oldErr = System.err;
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    PrintStream err = new PrintStream(baos);
-
     Collection ret = new HashSet();
 
     JavaClass superclass = Repository.lookupClass(superclassName);
@@ -140,13 +132,6 @@ public class BCELRTSI {
       String className = (String) it.next();
       JavaClass clazz = null;
       clazz = Repository.lookupClass(className);
-      // System.setErr(oldErr);
-      // if (baos.toString().length() > 0) {
-      // if (DEBUG) {
-      // System.err.print(baos);
-      // }
-      // baos.reset();
-      // }
       assert clazz != null;
 
       try {

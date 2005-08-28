@@ -7,11 +7,17 @@
 package jumble;
 
 public class TestFailedException extends RuntimeException {
-    public TestFailedException(String s) {
-        super(s);
-    }
-    public TestFailedException() {
-        super();
-    }
-    
+  /**
+   * Number used for serialization
+   */
+  private static final long serialVersionUID = 1331153312422968104L;
+
+  public TestFailedException(String s) {
+    super(s);
+  }
+
+  public TestFailedException() {
+    super();
+  }
+
 }

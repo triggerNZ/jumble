@@ -13,9 +13,12 @@ import junit.framework.TestSuite;
  * @author Tin Pavlinic
  */
 public class TestOrder implements Serializable, ClassLoaderChanger {
+  /** Number for serialization */
+  private static final long serialVersionUID = 4401643897371182214L;
+
   /** Flag to turn debugging on and off */
   public static final boolean DEBUG = true;
-  
+
   /** The test classes used to produce this ordering */
   private String[] mTestClasses;
 
@@ -66,10 +69,10 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     for (int i = 0; i < mOrder.length; i++) {
       mOrder[i] = sortPairs[i].getPos();
     }
-    
+
     TestSuite ts = new FlatTestSuite();
     try {
-    ts.addTestSuite(Class.forName(mTestClasses[0]));
+      ts.addTestSuite(Class.forName(mTestClasses[0]));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -91,7 +94,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     mTestClasses = testClasses;
     mOrder = order;
     mRuntimes = runtimes;
-    
+
     assert integrity();
   }
 
@@ -106,7 +109,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
       throws ClassNotFoundException {
 
     assert integrity();
-    
+
     Class clazz = loader.loadClass(getClass().getName());
 
     try {
@@ -170,7 +173,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
 
   public long getTotalRuntime() {
     assert integrity();
-    
+
     long sum = 0;
     for (int i = 0; i < getTestCount(); i++) {
       sum += getRuntime(i);
@@ -200,14 +203,24 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
       for (int i = 0; i < mTestClasses.length; i++) {
         ts.addTestSuite(Class.forName(mTestClasses[i]));
       }
-      
+
       int testCount = ts.testCount();
-      
+
       return testCount == mOrder.length && testCount == mRuntimes.length;
     } catch (Exception e) {
       return false;
     }
   }
+
+    /**
+     * Resets the order so that it is the default order. Useful when we want to quickly revert to 
+     * default ordering.
+     */
+    public void dropOrder() {
+	for (int i = 0; i < mOrder.length; i++) {
+	    mOrder[i] = i;
+	}
+    }
 
   /**
    * Just a little structure used in the sorting of runtimes.

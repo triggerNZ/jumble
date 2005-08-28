@@ -44,7 +44,8 @@ public class FastRunner {
    * 
    * OPTIONS -r Mutate return values. -k Mutate inline constants. -i Mutate
    * increments. -x Exclude specified methods. -h Display this help message.
-   * -o Name of the class responsible for producing output.
+   * -o Name of the class responsible for producing output. -n Do not order
+   * tests by runtime. -s Do not save cache. -l Do not load cache.
    * 
    * </PRE>
    */
@@ -58,8 +59,9 @@ public class FastRunner {
       boolean increments = Utils.getFlag('i', args);
       boolean finishedTests = false;
       String outputClass = Utils.getOption('o', args);
-      
-
+      boolean noOrder = Utils.getFlag('n', args);
+      boolean load = !Utils.getFlag('l', args);
+      boolean save = !Utils.getFlag('s', args);
       String className;
       List testList;
       Set excludeMethods = new HashSet();
@@ -88,9 +90,9 @@ public class FastRunner {
           finishedTests = true;
         }
       }
-      
+      Utils.checkForRemainingOptions(args);
       JumbleResult res = runJumble(className, testList, 
-          excludeMethods, constants, returns, increments);
+          excludeMethods, constants, returns, increments, noOrder, load, save, load && save);
       JumbleResultPrinter printer = getPrinter(outputClass);
       printer.printResult(res);
       
@@ -150,6 +152,7 @@ public class FastRunner {
     System.out.println("         -k Mutate inline constants.");
     System.out.println("         -i Mutate increments.");
     System.out.println("         -x Exclude specified methods. ");
+    System.out.println("         -n Do not order tests according to runtime");
     System.out.println("         -h Display this help message.");
   }
 
@@ -189,7 +192,8 @@ public class FastRunner {
   public static JumbleResult runJumble(final String className,
       final List testClassNames, final Set excludeMethods,
       final boolean inlineConstants, final boolean returnVals,
-      final boolean increments) throws Exception {
+      final boolean increments, boolean noOrder, boolean loadCache,
+      boolean saveCache, boolean useWeakCache) throws Exception {
 
     Class[] testClasses = new Class[testClassNames.size()];
     final TestResult initialResult;
@@ -206,6 +210,10 @@ public class FastRunner {
     timingSuite = new TimingTestSuite(testClasses);
     timingSuite.run(initialResult);
     order = timingSuite.getOrder();
+
+    if (noOrder) {
+	order.dropOrder();
+    }
 
     //Now, if the tests failed, can return straight away
     if (!initialResult.wasSuccessful()) {
@@ -314,6 +322,17 @@ public class FastRunner {
           args.add("-i");
         }
         
+        //cache stuff
+        if (!useWeakCache) {
+          args.add("-u");
+        }
+        
+        if (!loadCache) {
+          args.add("-l");
+        }
+        if (!saveCache) {
+          args.add("-s");
+        }
         //start process
         runner.setArguments((String[])args.toArray(new String[0]));
         childProcess = runner.start();

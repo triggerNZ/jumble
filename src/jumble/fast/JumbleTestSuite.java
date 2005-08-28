@@ -1,11 +1,15 @@
 package jumble.fast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +27,11 @@ import junit.framework.TestResult;
  * @author Tin
  */
 public class JumbleTestSuite extends FlatTestSuite {
+  /** Name of cache file */
   public final static String CACHE_FILENAME = "jumble-cache.dat";
+
+  /** Flag indicating whether to use the loose cache */
+  private boolean mUseCache;
 
   /** Order of tests */
   private TestOrder mOrder;
@@ -34,8 +42,17 @@ public class JumbleTestSuite extends FlatTestSuite {
   /** Mutated method */
   private String mMethod;
 
+  /** Mutation Point */
+  private int mMethodRelativeMutationPoint;
+
+  /** The cache which remembers the exact mutation point */
+  private HashMap mExactCache;
+
   /** The cache which remembers what methods failed where */
   private HashMap mCache;
+
+  /** Should we surpress output? */
+  private boolean mStopOutput = true;
 
   /**
    * Constructs test suite from the given order of tests.
@@ -46,13 +63,16 @@ public class JumbleTestSuite extends FlatTestSuite {
    *           if <CODE>order</CODE> is malformed.
    */
   public JumbleTestSuite(TestOrder order, String mutatedClass,
-      String mutatedMethod, boolean loadCache) throws ClassNotFoundException {
+      String mutatedMethod, int mutationPoint, boolean loadCache,
+      boolean stopOut, boolean useCache) throws ClassNotFoundException {
     super();
     mOrder = order;
     mClass = mutatedClass;
     mMethod = mutatedMethod;
-    
-    //Create the test suites from the order
+    mStopOutput = stopOut;
+    mMethodRelativeMutationPoint = mutationPoint;
+    mUseCache = useCache;
+    // Create the test suites from the order
     String[] classNames = mOrder.getTestClasses();
     for (int i = 0; i < classNames.length; i++) {
       addTestSuite(Class.forName(classNames[i]));
@@ -70,19 +90,38 @@ public class JumbleTestSuite extends FlatTestSuite {
   protected String run() {
     final TestResult result = new TestResult();
     Test[] tests = getOrder();
-
+    PrintStream newOut;
+    PrintStream oldOut = System.out;
+    if (mStopOutput) {
+      newOut = new PrintStream(new ByteArrayOutputStream());
+    } else {
+      newOut = oldOut;
+    }
+//     FileWriter f;
+//     try {
+//     f = new FileWriter("jumble-debug.txt", true);
+//     } catch (IOException e) {
+//     f = null;
+//     }
+//     PrintWriter out = new PrintWriter(f);
     for (int i = 0; i < testCount(); i++) {
       TestCase t = (TestCase) tests[i];
+//       out.println(mClass + "." + mMethod + ":" + mMethodRelativeMutationPoint
+//       + " - " + t);
+
+      System.setOut(newOut);
       t.run(result);
+      System.setOut(oldOut);
       if (result.errorCount() > 0 || result.failureCount() > 0) {
         recordFail(t.getName());
+//         out.close();
         return "PASS: " + getMessage();
       }
       if (result.shouldStop()) {
         break;
       }
     }
-
+//     out.close();
     // all tests passed, this mutation is a problem, report it
     // this is made complicated because we must get the modification
     // details from a class loaded in a different name space
@@ -117,13 +156,31 @@ public class JumbleTestSuite extends FlatTestSuite {
    * 
    * @param order
    *          the order in which to run the tests.
+   * @param mutatedClassName
+   *          the name of the class which was mutated
+   * @param muatatedMethodName
+   *          the name of the method which was mutated
+   * @param relativeMutationPoint
+   *          the mutation point location relative to the mutated method
+   * @param loadLast
+   *          flag indicating whether to load the cache friom a file
+   * @param saveLast
+   *          flag indicating whether to save the new cache to a file
+   * @param useCache
+   *          flag indicating whether to actually use the cache. This must be
+   *          enabled if we want to save or load the cache.
+   * @param surpressOutput
+   *          flag whether to surpress output during the test run. Should be
+   *          <CODE>true</CODE> for all Jumble runs.
    * @see TestOrder
    */
   public static String run(TestOrder order, String mutatedClassName,
-      String mutatedMethodName, boolean loadLast, boolean saveLast) {
+      String mutatedMethodName, int relativeMutationPoint, boolean loadLast,
+      boolean saveLast, boolean useCache, boolean supressOutput) {
     try {
       JumbleTestSuite suite = new JumbleTestSuite(order, mutatedClassName,
-          mutatedMethodName, loadLast);
+          mutatedMethodName, relativeMutationPoint, loadLast, supressOutput,
+          useCache);
       String ret = suite.run();
       if (saveLast) {
         try {
@@ -140,15 +197,16 @@ public class JumbleTestSuite extends FlatTestSuite {
 
   /**
    * Initializes the cache. If the file CACHE_FILENAME exists, the cache is
-   * loaded from that file unless the <CODE>loadCache</CODE> parameter is 
+   * loaded from that file unless the <CODE>loadCache</CODE> parameter is
    * false. Otherwise, a new cache is created.
    */
   private void initCache(boolean loadCache) {
     if (!loadCache) {
       mCache = new HashMap();
+      mExactCache = new HashMap();
       return;
     }
-    
+
     File f = new File(CACHE_FILENAME);
     boolean loaded;
 
@@ -156,6 +214,7 @@ public class JumbleTestSuite extends FlatTestSuite {
       try {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
         mCache = (HashMap) in.readObject();
+        mExactCache = (HashMap) in.readObject();
         in.close();
 
         loaded = true;
@@ -168,6 +227,7 @@ public class JumbleTestSuite extends FlatTestSuite {
 
     if (!loaded) {
       mCache = new HashMap();
+      mExactCache = new HashMap();
     }
   }
 
@@ -179,39 +239,71 @@ public class JumbleTestSuite extends FlatTestSuite {
    *         previously get run first.
    */
   private Test[] getOrder() {
+
     ArrayList headList = new ArrayList();
     ArrayList tailList = new ArrayList();
 
-    Set failedTests = (Set) mCache.get(getCacheKey());
+    Set failedTests = null;
+    if (mUseCache) {
+      failedTests = (Set) mCache.get(getCacheKey());
+    }
     if (failedTests == null) {
-      //null just means empty set in this case
+      // null just means empty set in this case
       failedTests = new HashSet();
     }
 
     for (int i = 0; i < testCount(); i++) {
       tailList.add(testAt(mOrder.getTestIndex(i)));
     }
+    // Local tests first
+    if (mUseCache) {
+      for (int i = 0; i < tailList.size(); i++) {
+        TestCase cur = (TestCase) tailList.get(i);
+        String name = cur.getName();
 
-    for (int i = 0; i < tailList.size(); i++) {
-      TestCase cur = (TestCase) tailList.get(i);
-      String name = cur.getName();
+        if (failedTests.contains(name)) {
+          headList.add(cur);
+          failedTests.remove(name);
+          tailList.remove(i);
+          i--;
+        }
+      }
+    }
 
-      if (failedTests.contains(name)) {
-        headList.add(cur);
-        failedTests.remove(name);
-        tailList.remove(i);
-        i--;
+    if (mExactCache.containsKey(getExactCacheKey())) {
+      String firstTestName = (String) mExactCache.get(getExactCacheKey());
+      boolean found = false;
+
+      for (int i = 0; i < headList.size(); i++) {
+        TestCase curTest = (TestCase) headList.get(i);
+
+        if (curTest.getName().equals(firstTestName)) {
+          found = true;
+          headList.remove(i);
+          headList.add(0, curTest);
+        }
+      }
+
+      if (!found) {
+        for (int i = 0; i < tailList.size(); i++) {
+          TestCase curTest = (TestCase) tailList.get(i);
+
+          if (curTest.getName().equals(firstTestName)) {
+            tailList.remove(i);
+            headList.add(0, curTest);
+          }
+        }
       }
     }
 
     Test[] ret = new Test[headList.size() + tailList.size()];
-    //First the head list
+    // First the head list
     int i;
     for (i = 0; i < headList.size(); i++) {
       ret[i] = (Test) headList.get(i);
     }
 
-    //Now the tail
+    // Now the tail
     for (int j = 0; j < tailList.size(); j++) {
       ret[i + j] = (Test) tailList.get(j);
     }
@@ -230,6 +322,10 @@ public class JumbleTestSuite extends FlatTestSuite {
     return mClass + "." + mMethod;
   }
 
+  private String getExactCacheKey() {
+    return getCacheKey() + ":" + mMethodRelativeMutationPoint;
+  }
+
   /**
    * Caches a failure.
    * 
@@ -238,7 +334,7 @@ public class JumbleTestSuite extends FlatTestSuite {
    */
   private void recordFail(String testName) {
     Set s = (Set) mCache.get(getCacheKey());
-    //Create the record if it doesn't exist
+    // Create the record if it doesn't exist
     if (s == null) {
       s = new HashSet();
     }
@@ -246,6 +342,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     s.add(testName);
 
     mCache.put(getCacheKey(), s);
+    mExactCache.put(getExactCacheKey(), testName);
   }
 
   /**
@@ -259,6 +356,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     File f = new File(CACHE_FILENAME);
     ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(f));
     o.writeObject(mCache);
+    o.writeObject(mExactCache);
     o.close();
   }
 }

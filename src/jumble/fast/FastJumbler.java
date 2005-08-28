@@ -30,7 +30,7 @@ import org.apache.bcel.util.ClassLoader;
  * BCEL's cache.
  * 
  * @author Tin Pavlinic
- *  
+ * 
  */
 public class FastJumbler extends ClassLoader {
   /** Used to perform the actual mutation */
@@ -124,7 +124,7 @@ public class FastJumbler extends ClassLoader {
    */
   public static void main(String[] args) {
     try {
-      //First, process all the command line options
+      // First, process all the command line options
       final String className;
       final Mutater m;
       final int mutationCount;
@@ -134,14 +134,16 @@ public class FastJumbler extends ClassLoader {
       final boolean increments = Utils.getFlag('i', args);
       final String excludes = Utils.getOption('x', args);
       final boolean help = Utils.getFlag('h', args);
-
-      //Display help
+      final boolean save = !Utils.getFlag('s', args);
+      final boolean use = !Utils.getFlag('u', args);
+      final boolean load = !Utils.getFlag('l', args);
+      // Display help
       if (help) {
         printUsage();
         return;
       }
 
-      //Process excludes
+      // Process excludes
       Set ignore = new HashSet();
       if (!excludes.equals("")) {
         StringTokenizer tokens = new StringTokenizer(excludes, ",");
@@ -176,10 +178,10 @@ public class FastJumbler extends ClassLoader {
 
         Utils.checkForRemainingOptions(args);
 
-        //Let the parent JVM know that we are ready to start
+        // Let the parent JVM know that we are ready to start
         System.out.println("START");
-        
-        //Now run all the tests for each mutation point
+
+        // Now run all the tests for each mutation point
         for (int i = startPoint; i < mutationCount; i++) {
           Mutater tempMutater = new Mutater(i);
           tempMutater.setIgnoredMethods(ignore);
@@ -189,13 +191,17 @@ public class FastJumbler extends ClassLoader {
           jumbler.setMutater(tempMutater);
           jumbler = new FastJumbler(className, tempMutater);
           Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
-          Method meth = clazz.getMethod("run", new Class[] { jumbler
-              .loadClass("jumble.fast.TestOrder"), String.class, 
-              String.class, boolean.class, boolean.class});
-          System.out.println(meth.invoke(null, new Object[] { order
-              .changeClassLoader(jumbler), className, 
-              tempMutater.getMutatedMethodName(className), 
-              Boolean.TRUE, Boolean.TRUE}));
+          Method meth = clazz.getMethod("run", new Class[] {
+              jumbler.loadClass("jumble.fast.TestOrder"), String.class,
+              String.class, int.class, boolean.class, boolean.class,
+              boolean.class, boolean.class });
+          System.out.println(meth.invoke(null, new Object[] {
+              order.changeClassLoader(jumbler),
+              className,
+              tempMutater.getMutatedMethodName(className),
+              Integer.valueOf(tempMutater
+                  .getMethodRelativeMutationPoint(className)), Boolean.valueOf(load),
+              Boolean.valueOf(save), Boolean.valueOf(use), Boolean.TRUE }));
         }
       }
 
