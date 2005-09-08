@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -167,7 +168,16 @@ public class FastJumbler extends ClassLoader {
       } else {
         final int startPoint = Integer.parseInt(Utils.getNextArgument(args));
         final String filename = Utils.getNextArgument(args);
+        String cacheFile;
+        try {
+          cacheFile = Utils.getNextArgument(args);
+        } catch (NoSuchElementException e) {
+          cacheFile = null;
+        }
+
         final TestOrder order;
+        final FailedTestMap cache;
+
         FastJumbler jumbler = new FastJumbler(className, m);
 
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
@@ -176,7 +186,13 @@ public class FastJumbler extends ClassLoader {
         order = (TestOrder) ois.readObject();
         ois.close();
 
-        Utils.checkForRemainingOptions(args);
+        if (cacheFile == null) {
+          cache = null;
+        } else {
+          ois = new ObjectInputStream(new FileInputStream(cacheFile));
+          cache = (FailedTestMap) ois.readObject();
+          ois.close();
+        }
 
         // Let the parent JVM know that we are ready to start
         System.out.println("START");
@@ -192,16 +208,29 @@ public class FastJumbler extends ClassLoader {
           jumbler = new FastJumbler(className, tempMutater);
           Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
           Method meth = clazz.getMethod("run", new Class[] {
-              jumbler.loadClass("jumble.fast.TestOrder"), String.class,
-              String.class, int.class, boolean.class, boolean.class,
-              boolean.class, boolean.class });
-          System.out.println(meth.invoke(null, new Object[] {
+              jumbler.loadClass("jumble.fast.TestOrder"),
+              jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
+              String.class, int.class, boolean.class });
+          String out = (String) meth.invoke(null, new Object[] {
               order.changeClassLoader(jumbler),
+              (cache == null ? null : cache.changeClassLoader(jumbler)),
               className,
               tempMutater.getMutatedMethodName(className),
               Integer.valueOf(tempMutater
-                  .getMethodRelativeMutationPoint(className)), Boolean.valueOf(load),
-              Boolean.valueOf(save), Boolean.valueOf(use), Boolean.TRUE }));
+                  .getMethodRelativeMutationPoint(className)), Boolean.TRUE });
+          System.out.println(out);
+          if (cache != null && out.startsWith("PASS: ")) {
+              StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
+              String clazzName = tokens.nextToken();
+              assert clazzName.equals(className);
+              String methodName = tokens.nextToken();
+              //System.out.println(methodName);
+              int mutPoint = Integer.parseInt(tokens.nextToken());
+              //System.out.println(mutPoint);
+              String testName = tokens.nextToken();
+              //System.out.println(testName);
+              cache.addFailure(className, methodName, mutPoint, testName);
+            }
         }
       }
 

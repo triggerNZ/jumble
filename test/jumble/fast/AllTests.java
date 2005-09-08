@@ -14,6 +14,7 @@ public class AllTests extends TestSuite {
     suite.addTest(SeanResultPrinterTest.suite());
     suite.addTest(new TestSuite(TestOrderTest.class)); //???
     suite.addTest(TimingTestSuiteTest.suite());
+    suite.addTest(FailedTestMapTest.suite());
     return suite;
   }
   

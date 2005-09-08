@@ -723,7 +723,7 @@ public class Mutater {
       // Once we have gone past the mutation point,
       // then we have found the mutated method
       if (mCount < count) {
-        return methods[i].getName();
+        return methods[i].getName() + methods[i].getSignature();
       }
     }
 

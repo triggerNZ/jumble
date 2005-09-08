@@ -2,9 +2,13 @@ package jumble.fast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import jumble.Mutater;
 import jumble.util.JavaRunner;
@@ -90,9 +94,9 @@ public class FastJumblerTest extends TestCase {
           "experiments.JumblerExperiment", new Mutater(0));
       final Class clazz = loader.loadClass("jumble.fast.JumbleTestSuite");
       clazz.getMethod("run", new Class[] {
-          loader.loadClass("jumble.fast.TestOrder"), String.class,
-          String.class, int.class, boolean.class, boolean.class, boolean.class,
-          boolean.class });
+          loader.loadClass("jumble.fast.TestOrder"),
+          loader.loadClass("jumble.fast.FailedTestMap"), String.class,
+          String.class, int.class, boolean.class });
     } catch (NoSuchMethodException e) {
       fail();
     }
@@ -571,4 +575,25 @@ public class FastJumblerTest extends TestCase {
     }
   }
 
+  public final void testSaveCache() throws Exception {
+    File f = new File("jumble-cache.dat");
+    assertTrue(!f.exists() || f.delete());
+
+    ArrayList tests = new ArrayList();
+    tests.add("experiments.JumblerExperimentTest");
+    FastRunner.runJumble("experiments.JumblerExperiment", tests, new HashSet(),
+        true, true, true, false, true, true, true);
+
+    assertTrue(f.exists());
+
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+    FailedTestMap map = (FailedTestMap) ois.readObject();
+    ois.close();
+    assertTrue(f.delete());
+
+    assertEquals("testAdd", map.getLastFailure("experiments.JumblerExperiment",
+        "add(II)I", 0));
+    assertEquals("testMultiply", map.getLastFailure(
+        "experiments.JumblerExperiment", "multiply(II)I", 0));
+  }
 }

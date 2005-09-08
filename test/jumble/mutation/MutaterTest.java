@@ -209,13 +209,13 @@ public class MutaterTest extends TestCase {
   
   public void testGetMutatedMethodName() {
     Mutater m = new Mutater(0);
-    assertEquals("add", m.getMutatedMethodName("experiments.JumblerExperiment"));
+    assertEquals("add(II)I", m.getMutatedMethodName("experiments.JumblerExperiment"));
 
     m = new Mutater(2);
-    assertEquals("add", m.getMutatedMethodName("experiments.JumblerExperiment"));
+    assertEquals("add(II)I", m.getMutatedMethodName("experiments.JumblerExperiment"));
     
     m = new Mutater(3);
-    assertEquals("multiply", m.getMutatedMethodName("experiments.JumblerExperiment"));
+    assertEquals("multiply(II)I", m.getMutatedMethodName("experiments.JumblerExperiment"));
   
     try {
       m = new Mutater(500);
