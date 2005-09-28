@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import jumble.util.ClassLoaderChanger;
+
 /**
  * A map from mutation points to failed tests. Used to cache previous test
  * failures for Jumble.

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Comparator;
 
+import jumble.util.ClassLoaderChanger;
 import junit.framework.TestSuite;
 
 /**

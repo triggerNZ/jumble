@@ -5,30 +5,19 @@
     <property name="test.dir" value = "../jumbletest"/>
 	<property name="release.dir" value="C:\jumblerelease"/>
 	<property name="classes.dir" value="${release.dir}/bin"/>
-	<property name="pics.dir" value="${release.dir}/pics"/>
 	<property name="outsrc.dir" value="${release.dir}/src"/>
     <property name="lib.dir" value="${release.dir}/lib"/>
 	
-	<property name="bcel.jar" value="C:\jakarta\bcel-5.1\bcel-5.1.jar"/>
-	<property name="junit.jar" value="C:\junit3.8.1\junit.jar"/>
+	<property name="bcel.jar" value="d:\reeltwo\jar\bcel.jar"/>
+	<property name="junit.jar" value="d:\reeltwo\jar\junit.jar"/>
 	
 	<target name="clean" description="Delete all generated files">
         <delete dir="${classes.dir}" failonerror="false"/>
         <delete file="${release.dir}/${ant.project.name}.jar"/>
     	<delete file="${release.dir}/${ant.project.name}.zip"/>
-    	<delete dir="${pics.dir}" failonerror="false"/>
 		<delete dir="${outsrc.dir}" failonerror="false"/>
 		<delete dir="${lib.dir}" failonerror="false"/>
     </target>
-
-	<target name="copypics" description="Copy pictures to release directory" depends="clean">
-		<mkdir dir="${pics.dir}"/>
-		<copy todir="${pics.dir}">
-			<fileset dir="${src.dir}/jumble" casesensitive="no">
-			  <include name="**/*.gif"/>
-			</fileset>
-		</copy>
-	</target>
 	
 	<target name="copysrc" depends="clean" description="Copy source to release directory">
 		<mkdir dir="${outsrc.dir}"/>
@@ -56,7 +45,7 @@
     </target>
 
 	<target name="zipall" description="Zips release directory for distribution"
-		depends="copypics,copysrc,compile,jar,lib">
+		depends="copysrc,compile,jar,lib">
 		<zip destfile="${release.dir}/${ant.project.name}.zip" basedir="${release.dir}"/>
 	</target>
 	

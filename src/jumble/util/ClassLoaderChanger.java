@@ -1,4 +1,4 @@
-package jumble.fast;
+package jumble.util;
 
 /**
  * Interface for classes which can be dynamically reloaded and cloned in a new
