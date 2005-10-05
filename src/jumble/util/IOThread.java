@@ -30,7 +30,7 @@ public class IOThread extends Thread {
                    System.out.println("F");
                }
            } catch(IOException e) {
-               e.printStackTrace();
+               //e.printStackTrace();
                return;
            }
        }
