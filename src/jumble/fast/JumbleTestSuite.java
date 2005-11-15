@@ -145,11 +145,11 @@ public class JumbleTestSuite extends FlatTestSuite {
    * @param cache the cache
    * @param mutatedClassName
    *          the name of the class which was mutated
-   * @param muatatedMethodName
+   * @param mutatedMethodName
    *          the name of the method which was mutated
    * @param relativeMutationPoint
    *          the mutation point location relative to the mutated method
-   * @param surpressOutput
+   * @param supressOutput
    *          flag whether to surpress output during the test run. Should be
    *          <CODE>true</CODE> for all Jumble runs.
    * @see TestOrder
