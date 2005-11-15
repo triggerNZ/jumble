@@ -13,6 +13,7 @@ import java.io.IOException;
 
 /** Tests the corresponding class
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class JavaRunnerTest extends TestCase {
   Process p = null;

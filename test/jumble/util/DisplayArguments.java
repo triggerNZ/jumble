@@ -9,6 +9,7 @@ package jumble.util;
 /** Class which simply prints out its command line arguments.
  * Used for the testing of JavaRunner
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class DisplayArguments {
 

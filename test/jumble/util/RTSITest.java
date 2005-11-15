@@ -10,6 +10,7 @@ import junit.framework.TestSuite;
  * Tests the RTSI class. Extremely low jumble score so this needs more work.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class RTSITest extends TestCase {
   public void testRTSI() throws Exception {
