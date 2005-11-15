@@ -1,9 +1,9 @@
 package jumble.util;
 
 import java.lang.reflect.Method;
-
+import junit.framework.Test;
 import junit.framework.TestCase;
-
+import junit.framework.TestSuite;
 import org.apache.bcel.util.ClassLoader;
 
 public class ClassLoaderChangeableTestSuiteTest extends TestCase {
@@ -20,4 +20,13 @@ public class ClassLoaderChangeableTestSuiteTest extends TestCase {
     
   }
 
+  public static Test suite() {
+    TestSuite suite = new TestSuite(ClassLoaderChangeableTestSuite.class);
+    return suite;
+  }
+  
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
 }
