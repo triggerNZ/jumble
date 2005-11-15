@@ -8,7 +8,7 @@ import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 /**
- * An extension of TestSuite with fast failure and inverting
+ * An extension of <code>TestSuite</code> with fast failure and inverting
  * of the result.  Useful for mutation testing.  It runs the
  * tests in the class specified at construction time.  If a
  * tests fails then the test run immediately halts (this is

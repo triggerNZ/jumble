@@ -196,7 +196,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * Integrity method. Checks this object for consistency. Should only be called
    * while debugging.
    * 
-   * @returns true if the object is consistent, false otherwise.
+   * @return true if the object is consistent, false otherwise.
    */
   public boolean integrity() {
     try {

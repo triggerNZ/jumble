@@ -20,7 +20,7 @@ import org.apache.bcel.classfile.JavaClass;
  * for use with Jumble.
  * 
  * @author Tin Pavlinic
- * 
+ * @version $Revision$
  */
 public class BCELRTSI {
   public final static boolean DEBUG = false;
@@ -56,7 +56,7 @@ public class BCELRTSI {
   public static Collection getAllClasses(String packageName, boolean openJars) {
     Collection ret = new HashSet();
     for (StringTokenizer tokens = new StringTokenizer(CLASSPATH, PS); tokens
-        .hasMoreTokens();) {
+           .hasMoreTokens();) {
       String curPath = tokens.nextToken();
 
       if (curPath.toLowerCase().endsWith(".jar")) {
@@ -83,7 +83,7 @@ public class BCELRTSI {
    * @return all the visible classes deriving from the superclass.
    */
   public static Collection getAllDerivedClasses(String superclassName,
-      boolean openJars) {
+                                                boolean openJars) {
     Collection c = filterSuperclass(getAllClasses(openJars), superclassName);
 
     c.remove(superclassName);
@@ -105,9 +105,9 @@ public class BCELRTSI {
    *         package.
    */
   public static Collection getAllDerivedClasses(String superclassName,
-      String packageName, boolean openJars) {
+                                                String packageName, boolean openJars) {
     Collection c = filterSuperclass(getAllClasses(packageName, openJars),
-        superclassName);
+                                    superclassName);
     c.remove(superclassName);
     return c;
   }
@@ -122,7 +122,7 @@ public class BCELRTSI {
    * @return the filtered collection of class names.
    */
   private static Collection filterSuperclass(Collection classes,
-      String superclassName) {
+                                             String superclassName) {
     Collection ret = new HashSet();
 
     JavaClass superclass = Repository.lookupClass(superclassName);
@@ -142,7 +142,7 @@ public class BCELRTSI {
 
       } catch (Exception e) {
         System.err.println(clazz.getClassName() + " : "
-            + superclass.getClassName());
+                           + superclass.getClassName());
       }
     }
     Repository.clearCache();
@@ -159,7 +159,7 @@ public class BCELRTSI {
    * @return the classes in the package in the jar file.
    */
   private static Collection getClassesFromJar(String packageName,
-      String filename) {
+                                              String filename) {
     JarFile jar = null;
     try {
       Collection ret = new HashSet();
@@ -174,7 +174,7 @@ public class BCELRTSI {
           continue;
         } else {
           String className = entry.getName().replace('/', '.').substring(0,
-              entry.getName().length() - 6);
+                                                                         entry.getName().length() - 6);
           if (packageName != null) {
             if (className.startsWith(packageName + ".")) {
               ret.add(className);
@@ -208,7 +208,7 @@ public class BCELRTSI {
    * @return collection of classes in the directory.
    */
   private static Collection getClassesFromDir(String packageName,
-      String filename) {
+                                              String filename) {
     if (packageName == null) {
       // hard case. need to recurse through the directory structure
       // picking everything up
@@ -228,7 +228,7 @@ public class BCELRTSI {
       for (int i = 0; i < files.length; i++) {
         // Lop off .class
         String className = files[i].getName().substring(0,
-            files[i].getName().length() - 6);
+                                                        files[i].getName().length() - 6);
 
         if (!packageName.equals("")) {
           ret.add(packageName + "." + className);
@@ -262,7 +262,7 @@ public class BCELRTSI {
       className = className.substring(baseDirName.length() + 1);
       assert !className.startsWith(FS);
       className = className.replace(FS.charAt(0), '.').substring(0,
-          className.length() - 6);
+                                                                 className.length() - 6);
       ret.add(className);
     }
 
@@ -304,7 +304,7 @@ public class BCELRTSI {
     } catch (Throwable e) {
       if (DEBUG) {
         System.err.println("CHECKING " + a.getClassName() + " vs "
-            + b.getClassName());
+                           + b.getClassName());
         e.printStackTrace();
       }
       return false;

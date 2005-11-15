@@ -22,6 +22,7 @@ import junit.framework.TestResult;
  * @author Tin
  */
 public class JumbleTestSuite extends FlatTestSuite {
+
   /** Cache of previously failed tests */
   private FailedTestMap mCache;
 
@@ -49,8 +50,8 @@ public class JumbleTestSuite extends FlatTestSuite {
    *           if <CODE>order</CODE> is malformed.
    */
   public JumbleTestSuite(TestOrder order, FailedTestMap cache,
-      String mutatedClass, String mutatedMethod, int mutationPoint,
-      boolean stopOut) throws ClassNotFoundException {
+                         String mutatedClass, String mutatedMethod, int mutationPoint,
+                         boolean stopOut) throws ClassNotFoundException {
     super();
     mCache = cache;
     mOrder = order;
@@ -92,7 +93,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     for (int i = 0; i < testCount(); i++) {
       TestCase t = (TestCase) tests[i];
       out.println(mClass + "." + mMethod + ":" + mMethodRelativeMutationPoint
-          + " - " + t);
+                  + " - " + t);
 
       System.setOut(newOut);
       t.run(result);
@@ -100,7 +101,7 @@ public class JumbleTestSuite extends FlatTestSuite {
       if (result.errorCount() > 0 || result.failureCount() > 0) {
         out.close();
         return "PASS: " + mClass + ":" + mMethod + ":"
-            + mMethodRelativeMutationPoint + ":" + t.getName();
+          + mMethodRelativeMutationPoint + ":" + t.getName();
       }
       if (result.shouldStop()) {
         break;
@@ -118,7 +119,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     String message;
     try {
       message = (String) getClass().getClassLoader().getClass().getMethod(
-          "getModification", null).invoke(getClass().getClassLoader(), null);
+                                                                          "getModification", null).invoke(getClass().getClassLoader(), null);
     } catch (IllegalAccessException e) {
       message = "!!!" + e.getMessage();
     } catch (IllegalArgumentException e) {
@@ -147,25 +148,18 @@ public class JumbleTestSuite extends FlatTestSuite {
    *          the name of the method which was mutated
    * @param relativeMutationPoint
    *          the mutation point location relative to the mutated method
-   * @param loadLast
-   *          flag indicating whether to load the cache friom a file
-   * @param saveLast
-   *          flag indicating whether to save the new cache to a file
-   * @param useCache
-   *          flag indicating whether to actually use the cache. This must be
-   *          enabled if we want to save or load the cache.
    * @param surpressOutput
    *          flag whether to surpress output during the test run. Should be
    *          <CODE>true</CODE> for all Jumble runs.
    * @see TestOrder
    */
   public static String run(TestOrder order, FailedTestMap cache,
-      String mutatedClassName, String mutatedMethodName,
-      int relativeMutationPoint, boolean supressOutput) {
+                           String mutatedClassName, String mutatedMethodName,
+                           int relativeMutationPoint, boolean supressOutput) {
     try {
       JumbleTestSuite suite = new JumbleTestSuite(order, cache,
-          mutatedClassName, mutatedMethodName, relativeMutationPoint,
-          supressOutput);
+                                                  mutatedClassName, mutatedMethodName, relativeMutationPoint,
+                                                  supressOutput);
       String ret = suite.run();
 
       return ret;
@@ -188,7 +182,7 @@ public class JumbleTestSuite extends FlatTestSuite {
 
     if (mCache != null) {
       firstTestName = mCache.getLastFailure(mClass, mMethod,
-          mMethodRelativeMutationPoint);
+                                            mMethodRelativeMutationPoint);
       frontTestNames = mCache.getFailedTests(mClass, mMethod);
     }
 
