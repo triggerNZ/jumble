@@ -142,6 +142,7 @@ public class JumbleTestSuite extends FlatTestSuite {
    * 
    * @param order
    *          the order in which to run the tests.
+   * @param cache the cache
    * @param mutatedClassName
    *          the name of the class which was mutated
    * @param muatatedMethodName
