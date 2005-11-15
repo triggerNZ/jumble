@@ -12,7 +12,7 @@ public class AllTests extends TestSuite {
     suite.addTest(FlatTestSuiteTest.suite());
     suite.addTest(JumbleTestSuiteTest.suite());
     suite.addTest(SeanResultPrinterTest.suite());
-    suite.addTest(new TestSuite(TestOrderTest.class)); //???
+    suite.addTest(TestOrderTest.suite());
     suite.addTest(TimingTestSuiteTest.suite());
     suite.addTest(FailedTestMapTest.suite());
     return suite;
