@@ -55,7 +55,7 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
       mCache.put(mutatedClass + "." + mutatedMethod, mutationToTest);
     }
 
-    mutationToTest.put(Integer.valueOf(methodRelativeMutationPoint), testName);
+    mutationToTest.put(new Integer(methodRelativeMutationPoint), testName);
   }
 
   /**
@@ -80,8 +80,8 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
         int points = map.size();
 
         for (int i = 0; i < points; i++) {
-          String testName = (String) map.get(Integer.valueOf(i));
-          m.invoke(o, new Object[] { className, methodName, Integer.valueOf(i),
+          String testName = (String) map.get(new Integer(i));
+          m.invoke(o, new Object[] { className, methodName, new Integer(i),
               testName });
         }
       }
@@ -111,7 +111,7 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
     if (map == null) {
       return null;
     } else {
-      String testName = (String) map.get(Integer.valueOf(mutationPoint));
+      String testName = (String) map.get(new Integer(mutationPoint));
       return testName;
     }
   }

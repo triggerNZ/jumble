@@ -216,8 +216,7 @@ public class FastJumbler extends ClassLoader {
               (cache == null ? null : cache.changeClassLoader(jumbler)),
               className,
               tempMutater.getMutatedMethodName(className),
-              Integer.valueOf(tempMutater
-                  .getMethodRelativeMutationPoint(className)), Boolean.TRUE });
+              new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
           System.out.println(out);
           if (cache != null && out.startsWith("PASS: ")) {
               StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
