@@ -16,7 +16,7 @@ public class ClassLoaderChangeableTestSuiteTest extends TestCase {
     Object o = new ClassLoaderChangeableTestSuite("experiments.JumblerExperimentTest").changeClassLoader(cl);
     //System.out.println(o);   
     Method m = o.getClass().getMethod("testCount", new Class[0]);
-    assertEquals(Integer.valueOf(2), m.invoke(o, new Object[0]));
+    assertEquals(new Integer(2), m.invoke(o, new Object[0]));
     
   }
 
