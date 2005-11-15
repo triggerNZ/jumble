@@ -106,8 +106,7 @@ public class FastJumblerTest extends TestCase {
     JavaClass original = new ClassParser(
         "../jumblesrc/experiments/JumblerExperiment.class").parse();
 
-    FastJumbler j = new FastJumbler("experiments.JumblerExperiment",
-        new Mutater(-1));
+    FastJumbler j = new FastJumbler("experiments.JumblerExperiment", new Mutater(-1));
     JavaClass a = j.modifyClass(original);
     compareJavaClasses(original, a);
     JavaClass b = j.modifyClass(original);
