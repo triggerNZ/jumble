@@ -1,11 +1,11 @@
-/*
- * Created on Apr 17, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package jumble;
 
+/**
+ * Runtime exception for a test failure.
+ *
+ * @author Tin
+ * @version $Revision$
+ */
 public class TestFailedException extends RuntimeException {
   /**
    * Number used for serialization

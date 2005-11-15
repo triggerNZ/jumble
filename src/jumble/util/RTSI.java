@@ -1,7 +1,3 @@
-/**
- * RTSI.java
- */
-
 package jumble.util;
 
 import java.io.File;
@@ -21,6 +17,7 @@ import java.util.jar.JarFile;
  * subclasses of a given class in a set of given packages.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class RTSI {
   private final static String CLASSPATH = System.getProperty("java.class.path");

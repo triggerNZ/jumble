@@ -1,5 +1,11 @@
 package jumble;
 
+/**
+ * A jumble result.
+ *
+ * @author Tin
+ * @version $Revision$
+ */
 public abstract class JumbleResult {
   public abstract int getMutationCount();
   public abstract Mutation[] getPassed();
