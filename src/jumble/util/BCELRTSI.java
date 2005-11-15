@@ -15,7 +15,7 @@ import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
 
 /**
- * A class which performs a similar funtion to the RTSI class, but using BCEL
+ * A class which performs a similar function to the RTSI class, but using BCEL
  * instead of reflection. Has a slightly different API to make it more useful
  * for use with Jumble.
  * 
