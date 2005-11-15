@@ -12,6 +12,7 @@ import junit.framework.TestSuite;
  * of test classes and associates an ordering with tests.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class TestOrder implements Serializable, ClassLoaderChanger {
   /** Number for serialization */

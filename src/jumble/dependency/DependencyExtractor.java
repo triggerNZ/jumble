@@ -26,6 +26,7 @@ import org.apache.bcel.generic.Type;
  * Class for extracting dependencies from class files
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class DependencyExtractor {
   /** CONSTANT_Class value. */

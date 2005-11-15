@@ -8,6 +8,7 @@ import jumble.Mutation;
  * Class outputting jumble results in Sean's original jumble format
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class SeanResultPrinter extends AbstractResultPrinter {
   /**

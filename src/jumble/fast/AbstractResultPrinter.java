@@ -7,6 +7,7 @@ import java.io.PrintStream;
  * </CODE> to get the output stream
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public abstract class AbstractResultPrinter implements JumbleResultPrinter {
   /** Output stream */

@@ -16,6 +16,7 @@ import jumble.util.ClassLoaderChanger;
  * failures for Jumble.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  * 
  */
 public class FailedTestMap implements Serializable, ClassLoaderChanger {

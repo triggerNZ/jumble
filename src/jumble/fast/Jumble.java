@@ -16,6 +16,7 @@ import org.apache.bcel.Repository;
  * Jumble stages of mutation testing.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  * 
  */
 public class Jumble {

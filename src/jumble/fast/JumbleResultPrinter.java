@@ -4,6 +4,7 @@ package jumble.fast;
  * Interface representing a class which prints the results of a jumble run.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  *  
  */
 public interface JumbleResultPrinter {
@@ -15,5 +16,5 @@ public interface JumbleResultPrinter {
    * @throws Exception
    *           if something goes wrong
    */
-  public void printResult(JumbleResult result) throws Exception;
+  void printResult(JumbleResult result) throws Exception;
 }

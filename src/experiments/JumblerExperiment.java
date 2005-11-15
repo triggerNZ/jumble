@@ -5,6 +5,7 @@ package experiments;
  * function (for coverage) and a multiply function (for timeouts)
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class JumblerExperiment {
   /**

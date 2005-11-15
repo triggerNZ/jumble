@@ -8,6 +8,7 @@ import java.io.IOException;
  * Class to run a java process with the same settings as this JRE.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class JavaRunner {
   private String mClassName;

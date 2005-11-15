@@ -28,6 +28,7 @@ import junit.framework.TestResult;
  * JVM and detects timeouts. Consists mostly of static methods.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  * 
  */
 public class FastRunner {

@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 /** Silly test for jumble testing
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class JumblerExperimentSecondTest extends TestCase {
 

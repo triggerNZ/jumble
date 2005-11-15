@@ -14,6 +14,7 @@ import junit.framework.TestSuite;
  * added, they are flattened. This is useful for ordering tests in Jumble.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class FlatTestSuite extends TestSuite {
   /**

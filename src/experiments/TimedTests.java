@@ -6,6 +6,7 @@ import junit.framework.TestCase;
  * A test with some dummy tests taking varying amounts of time for
  * Jumble heuristic testing.
  * @author Tin
+ * @version $Revision$
  */
 public class TimedTests extends TestCase {
   public final void testMedium() throws Exception {

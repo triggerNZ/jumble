@@ -21,11 +21,12 @@ import junit.framework.TestResult;
  * order so that it fails quickly.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class TimingTestSuite extends FlatTestSuite {
   public final static boolean DEBUG = false;
   
-  /** Th€e runtimes for the tests */
+  /** The runtimes for the tests */
   private long[] mRuntimes = null;
 
   /**

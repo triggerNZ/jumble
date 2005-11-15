@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 /**
  * A test suite which is capable of being loaded in a new class loader.
  * @author Tin Pavlinic
+ * @version $Revision$
  *
  */
 public class ClassLoaderChangeableTestSuite extends TestSuite implements

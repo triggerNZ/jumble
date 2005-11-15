@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 /** Tests the JumblerExperiment class (inadequately) for
  * jumble testing.
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class JumblerExperimentTest extends TestCase {
     private JumblerExperiment exp = new JumblerExperiment();

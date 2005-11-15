@@ -11,6 +11,7 @@ package jumble;
  * and <CODE>getTestName()</CODE>
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  *  
  */
 public abstract class ExtendedJumbleResult extends JumbleResult {

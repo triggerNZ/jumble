@@ -5,6 +5,7 @@ package jumble.util;
  * class loader.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public interface ClassLoaderChanger {
   /**

@@ -20,6 +20,7 @@ import junit.framework.TestResult;
  * tests that failed last time and does those first.
  * 
  * @author Tin
+ * @version $Revision$
  */
 public class JumbleTestSuite extends FlatTestSuite {
 

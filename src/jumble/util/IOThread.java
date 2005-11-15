@@ -10,6 +10,7 @@ import java.io.*;
  * to see if any data is available.
  *
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class IOThread extends Thread {
   public final static boolean DEBUG = false;

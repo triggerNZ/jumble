@@ -12,6 +12,7 @@ import java.io.PrintStream;
  * Result printer used for debugging
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class DebugResultPrinter extends AbstractResultPrinter {
   /**

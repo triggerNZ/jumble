@@ -31,6 +31,7 @@ import org.apache.bcel.util.ClassLoader;
  * BCEL's cache.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  * 
  */
 public class FastJumbler extends ClassLoader {

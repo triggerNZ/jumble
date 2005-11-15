@@ -7,6 +7,7 @@ import junit.framework.TestResult;
  * A class representing the results of a Jumble run.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  *  
  */
 public abstract class JumbleResult {

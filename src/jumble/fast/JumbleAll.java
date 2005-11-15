@@ -18,6 +18,7 @@ import org.apache.bcel.Repository;
  * Class which performs Jumble tests for every class in the system.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  * 
  */
 public class JumbleAll {
