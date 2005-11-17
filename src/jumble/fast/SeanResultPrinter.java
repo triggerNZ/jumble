@@ -33,7 +33,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
 
     out.println("Mutating " + res.getClassName());
     
-    if(Class.forName(res.getClassName()).isInterface()) {
+    if (Class.forName(res.getClassName()).isInterface()) {
       out.println("Score: 100 (INTERFACE)");
       return;
   }
@@ -45,7 +45,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
     }
     out.println();
     
-    if(!res.getInitialTestResult().wasSuccessful()) {
+    if (!res.getInitialTestResult().wasSuccessful()) {
       out.println("Score: 0 (TEST CLASS IS BROKEN)");
       return;
     }
@@ -66,7 +66,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
     }
     out.println();
     
-    if(res.getAllMutations().length == 0) {
+    if (res.getAllMutations().length == 0) {
       out.println("Score: 100 (NO MUTATIONS POSSIBLE)");
     } else {
       out.println("Score: " + res.getCovered().length

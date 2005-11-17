@@ -55,19 +55,19 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     }
 
     java.util.Arrays.sort(sortPairs, new Comparator() {
-      public int compare(Object o1, Object o2) {
-        SortPair p1 = (SortPair) o1;
-        SortPair p2 = (SortPair) o2;
+        public int compare(Object o1, Object o2) {
+          SortPair p1 = (SortPair) o1;
+          SortPair p2 = (SortPair) o2;
 
-        if (p1.getTime() < p2.getTime()) {
-          return -1;
-        } else if (p1.getTime() == p2.getTime()) {
-          return 0;
-        } else {
-          return 1;
+          if (p1.getTime() < p2.getTime()) {
+            return -1;
+          } else if (p1.getTime() == p2.getTime()) {
+            return 0;
+          } else {
+            return 1;
+          }
         }
-      }
-    });
+      });
     for (int i = 0; i < mOrder.length; i++) {
       mOrder[i] = sortPairs[i].getPos();
     }
@@ -108,16 +108,15 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * @return a clone of <CODE>this</CODE> in the differen class loader
    */
   public Object changeClassLoader(ClassLoader loader)
-      throws ClassNotFoundException {
+    throws ClassNotFoundException {
 
     assert integrity();
 
     Class clazz = loader.loadClass(getClass().getName());
 
     try {
-      Constructor c = clazz.getConstructor(new Class[] { String[].class,
-          int[].class, long[].class });
-      return c.newInstance(new Object[] { mTestClasses, mOrder, mRuntimes });
+      Constructor c = clazz.getConstructor(new Class[] {String[].class, int[].class, long[].class});
+      return c.newInstance(new Object[] {mTestClasses, mOrder, mRuntimes});
     } catch (Exception e) {
       e.printStackTrace();
       throw new ClassNotFoundException("Error invoking constructor");
@@ -214,15 +213,15 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     }
   }
 
-    /**
-     * Resets the order so that it is the default order. Useful when we want to quickly revert to 
-     * default ordering.
-     */
-    public void dropOrder() {
-	for (int i = 0; i < mOrder.length; i++) {
-	    mOrder[i] = i;
-	}
+  /**
+   * Resets the order so that it is the default order. Useful when we want to quickly revert to 
+   * default ordering.
+   */
+  public void dropOrder() {
+    for (int i = 0; i < mOrder.length; i++) {
+      mOrder[i] = i;
     }
+  }
 
   /**
    * Just a little structure used in the sorting of runtimes.

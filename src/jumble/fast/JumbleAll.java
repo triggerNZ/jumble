@@ -22,7 +22,9 @@ import org.apache.bcel.Repository;
  * 
  */
 public class JumbleAll {
-  public final static boolean DEBUG = true;
+  public static final boolean DEBUG = true;
+
+  private JumbleAll() { }
 
   /**
    * Main method. Runs Jumble on all classes found in the classpath.

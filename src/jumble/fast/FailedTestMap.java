@@ -68,8 +68,7 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
     try {
       Constructor constructor = clazz.getConstructor(new Class[0]);
       Object o = constructor.newInstance(new Object[0]);
-      Method m = clazz.getMethod("addFailure", new Class[] { String.class,
-          String.class, int.class, String.class });
+      Method m = clazz.getMethod("addFailure", new Class[] {String.class, String.class, int.class, String.class});
 
       Set keys = mCache.keySet();
       for (Iterator it = keys.iterator(); it.hasNext();) {
@@ -82,8 +81,7 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
 
         for (int i = 0; i < points; i++) {
           String testName = (String) map.get(new Integer(i));
-          m.invoke(o, new Object[] { className, methodName, new Integer(i),
-              testName });
+          m.invoke(o, new Object[] {className, methodName, new Integer(i), testName});
         }
       }
       return o;

@@ -21,6 +21,8 @@ import org.apache.bcel.Repository;
  */
 public class Jumble {
 
+  private Jumble() { }
+
   /**
    * Main method. Finds all visible test classes, identifies those which use the
    * specified class and runs Jumble on them.
@@ -64,7 +66,7 @@ public class Jumble {
           }
         }
         System.out.println("DONE: " + testClasses);
-      } else if(args.length == 2) {
+      } else if (args.length == 2) {
         StringTokenizer tokens = new StringTokenizer(args[1], ",");
         
         while (tokens.hasMoreTokens()) {

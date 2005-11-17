@@ -21,11 +21,11 @@ public class Mutation {
     mPoint = point;
         
     mDescription = s;
-    if(s.startsWith("PASS")) {
+    if (s.startsWith("PASS")) {
       mStatus = PASS;
-    } else if(s.startsWith("FAIL")) {
+    } else if (s.startsWith("FAIL")) {
       mStatus = FAIL;
-    } else if(s.startsWith("TIMEOUT")) {
+    } else if (s.startsWith("TIMEOUT")) {
       mStatus = TIMEOUT;
     } else {
       throw new RuntimeException("Invalid mutation string: " + s);

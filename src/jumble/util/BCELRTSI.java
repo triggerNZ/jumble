@@ -23,13 +23,15 @@ import org.apache.bcel.classfile.JavaClass;
  * @version $Revision$
  */
 public class BCELRTSI {
-  public final static boolean DEBUG = false;
+  public static final boolean DEBUG = false;
 
-  private final static String CLASSPATH = System.getProperty("java.class.path");
+  private static final String CLASSPATH = System.getProperty("java.class.path");
 
-  private final static String PS = System.getProperty("path.separator");
+  private static final String PS = System.getProperty("path.separator");
 
-  private final static String FS = System.getProperty("file.separator");
+  private static final String FS = System.getProperty("file.separator");
+
+  private BCELRTSI() { }
 
   /**
    * Gets a collection of strings representing the names of all the classes that

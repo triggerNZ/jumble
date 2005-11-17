@@ -35,6 +35,9 @@ public class FastRunner {
   /** Filename for the cache */
   public static final String CACHE_FILENAME = "jumble-cache.dat";
 
+  /** Prevent instantiation. */
+  private FastRunner() { }
+
   /**
    * Main method.
    * 
@@ -126,8 +129,8 @@ public class FastRunner {
       Class clazz = Class.forName(className);
 
       try {
-        Constructor c = clazz.getConstructor(new Class[] { PrintStream.class });
-        return (JumbleResultPrinter) c.newInstance(new Object[] { System.out });
+        Constructor c = clazz.getConstructor(new Class[] {PrintStream.class});
+        return (JumbleResultPrinter) c.newInstance(new Object[] {System.out});
       } catch (Exception e) {
         try {
           Constructor c = clazz.getConstructor(new Class[0]);
