@@ -276,7 +276,7 @@ public class FastRunner {
         }
 
         public String[] getTestClasses() {
-          return (String[]) testClassNames.toArray(new String[0]);
+          return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
         }
 
         public long getTimeoutLength() {
@@ -487,7 +487,7 @@ public class FastRunner {
       }
 
       public String[] getTestClasses() {
-        return (String[]) testClassNames.toArray(new String[0]);
+        return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
       }
 
       private Mutation[] filter(int mutationType) {
