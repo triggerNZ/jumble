@@ -160,8 +160,7 @@ public class FastJumblerTest extends TestCase {
     compareModification(original, c1, 23, null);
   }
 
-  private void compareModification(JavaClass orig, JavaClass mod,
-      int mutationPoint, Instruction expected) throws Exception {
+  private void compareModification(JavaClass orig, JavaClass mod, int mutationPoint, Instruction expected) throws Exception {
     int point = 0;
 
     InstructionComparator comp = Instruction.getComparator();
@@ -171,13 +170,11 @@ public class FastJumblerTest extends TestCase {
 
       ByteSequence origCode = new ByteSequence(methods[i].getCode().getCode());
 
-      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode()
-          .getCode());
+      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode().getCode());
 
       while (origCode.available() > 0) {
-        Instruction i1 = Instruction.readInstruction(origCode);
-        Instruction i2 = Instruction.readInstruction(modCode);
-        // System.out.println(i1 + " : " + i2);
+        final Instruction i1 = Instruction.readInstruction(origCode);
+        final Instruction i2 = Instruction.readInstruction(modCode);
         if (point == mutationPoint) {
           assertFalse(i1 + "==" + i2, comp.equals(i1, i2));
           assertTrue(i1 + "!=" + i2, comp.equals(i2, expected));
