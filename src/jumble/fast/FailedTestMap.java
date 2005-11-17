@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jumble.util.ClassLoaderChanger;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A map from mutation points to failed tests. Used to cache previous test
@@ -85,10 +86,18 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
         }
       }
       return o;
-    } catch (Exception e) {
+    } catch (InstantiationException e) {
       e.printStackTrace();
-      throw new ClassNotFoundException("Error creating object: "
-          + e.getMessage());
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
     }
   }
 

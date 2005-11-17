@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 import jumble.util.ClassLoaderChanger;
 import junit.framework.TestSuite;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A class indicating the order in which tests should be run. Contains an array
@@ -117,7 +118,16 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     try {
       Constructor c = clazz.getConstructor(new Class[] {String[].class, int[].class, long[].class});
       return c.newInstance(new Object[] {mTestClasses, mOrder, mRuntimes});
-    } catch (Exception e) {
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      throw new ClassNotFoundException("Error invoking constructor");
+    } catch (NoSuchMethodException e) {
       e.printStackTrace();
       throw new ClassNotFoundException("Error invoking constructor");
     }
@@ -208,7 +218,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
       int testCount = ts.testCount();
 
       return testCount == mOrder.length && testCount == mRuntimes.length;
-    } catch (Exception e) {
+    } catch (ClassNotFoundException e) {
       return false;
     }
   }

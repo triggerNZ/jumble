@@ -124,120 +124,113 @@ public class FastJumbler extends ClassLoader {
    * 
    * </PRE>
    */
-  public static void main(String[] args) {
-    try {
-      // First, process all the command line options
-      final String className;
-      final Mutater m;
-      final int mutationCount;
-      final boolean countMode = Utils.getFlag('c', args);
-      final boolean returnVals = Utils.getFlag('r', args);
-      final boolean inlineConstants = Utils.getFlag('k', args);
-      final boolean increments = Utils.getFlag('i', args);
-      final String excludes = Utils.getOption('x', args);
-      final boolean help = Utils.getFlag('h', args);
-      //      final boolean save = !Utils.getFlag('s', args);
-      //      final boolean use = !Utils.getFlag('u', args);
-      //      final boolean load = !Utils.getFlag('l', args);
-      // Display help
-      if (help) {
-        printUsage();
-        return;
-      }
-
-      // Process excludes
-      Set ignore = new HashSet();
-      if (!excludes.equals("")) {
-        StringTokenizer tokens = new StringTokenizer(excludes, ",");
-        while (tokens.hasMoreTokens()) {
-          ignore.add(tokens.nextToken());
-        }
-
-      }
-      className = Utils.getNextArgument(args).replace('/', '.');
-      m = new Mutater(0);
-
-      m.setIgnoredMethods(ignore);
-      m.setMutateIncrements(increments);
-      m.setMutateInlineConstants(inlineConstants);
-      m.setMutateReturnValues(returnVals);
-      mutationCount = m.countMutationPoints(className);
-
-      if (countMode) {
-        System.out.println(mutationCount);
-        return;
-      } else {
-        final int startPoint = Integer.parseInt(Utils.getNextArgument(args));
-        final String filename = Utils.getNextArgument(args);
-        String cacheFile;
-        try {
-          cacheFile = Utils.getNextArgument(args);
-        } catch (NoSuchElementException e) {
-          cacheFile = null;
-        }
-
-        final TestOrder order;
-        final FailedTestMap cache;
-
-        FastJumbler jumbler = new FastJumbler(className, m);
-
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
-            filename));
-
-        order = (TestOrder) ois.readObject();
-        ois.close();
-
-        if (cacheFile == null) {
-          cache = null;
-        } else {
-          ois = new ObjectInputStream(new FileInputStream(cacheFile));
-          cache = (FailedTestMap) ois.readObject();
-          ois.close();
-        }
-
-        // Let the parent JVM know that we are ready to start
-        System.out.println("START");
-
-        // Now run all the tests for each mutation point
-        for (int i = startPoint; i < mutationCount; i++) {
-          Mutater tempMutater = new Mutater(i);
-          tempMutater.setIgnoredMethods(ignore);
-          tempMutater.setMutateIncrements(increments);
-          tempMutater.setMutateInlineConstants(inlineConstants);
-          tempMutater.setMutateReturnValues(returnVals);
-          jumbler.setMutater(tempMutater);
-          jumbler = new FastJumbler(className, tempMutater);
-          Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
-          Method meth = clazz.getMethod("run", new Class[] {
-              jumbler.loadClass("jumble.fast.TestOrder"),
-              jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
-              String.class, int.class, boolean.class });
-          String out = (String) meth.invoke(null, new Object[] {
-              order.changeClassLoader(jumbler),
-              (cache == null ? null : cache.changeClassLoader(jumbler)),
-              className,
-              tempMutater.getMutatedMethodName(className),
-              new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
-          System.out.println(out);
-          if (cache != null && out.startsWith("PASS: ")) {
-              StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
-              String clazzName = tokens.nextToken();
-              assert clazzName.equals(className);
-              String methodName = tokens.nextToken();
-              //System.out.println(methodName);
-              int mutPoint = Integer.parseInt(tokens.nextToken());
-              //System.out.println(mutPoint);
-              String testName = tokens.nextToken();
-              //System.out.println(testName);
-              cache.addFailure(className, methodName, mutPoint, testName);
-            }
-        }
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace(System.out);
-      System.out.println();
+  public static void main(String[] args) throws Exception {
+    // First, process all the command line options
+    final String className;
+    final Mutater m;
+    final int mutationCount;
+    final boolean countMode = Utils.getFlag('c', args);
+    final boolean returnVals = Utils.getFlag('r', args);
+    final boolean inlineConstants = Utils.getFlag('k', args);
+    final boolean increments = Utils.getFlag('i', args);
+    final String excludes = Utils.getOption('x', args);
+    final boolean help = Utils.getFlag('h', args);
+    //      final boolean save = !Utils.getFlag('s', args);
+    //      final boolean use = !Utils.getFlag('u', args);
+    //      final boolean load = !Utils.getFlag('l', args);
+    // Display help
+    if (help) {
       printUsage();
+      return;
+    }
+
+    // Process excludes
+    Set ignore = new HashSet();
+    if (!excludes.equals("")) {
+      StringTokenizer tokens = new StringTokenizer(excludes, ",");
+      while (tokens.hasMoreTokens()) {
+        ignore.add(tokens.nextToken());
+      }
+
+    }
+    className = Utils.getNextArgument(args).replace('/', '.');
+    m = new Mutater(0);
+
+    m.setIgnoredMethods(ignore);
+    m.setMutateIncrements(increments);
+    m.setMutateInlineConstants(inlineConstants);
+    m.setMutateReturnValues(returnVals);
+    mutationCount = m.countMutationPoints(className);
+
+    if (countMode) {
+      System.out.println(mutationCount);
+      return;
+    } else {
+      final int startPoint = Integer.parseInt(Utils.getNextArgument(args));
+      final String filename = Utils.getNextArgument(args);
+      String cacheFile;
+      try {
+        cacheFile = Utils.getNextArgument(args);
+      } catch (NoSuchElementException e) {
+        cacheFile = null;
+      }
+
+      final TestOrder order;
+      final FailedTestMap cache;
+
+      FastJumbler jumbler = new FastJumbler(className, m);
+
+      ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
+                                                                        filename));
+
+      order = (TestOrder) ois.readObject();
+      ois.close();
+
+      if (cacheFile == null) {
+        cache = null;
+      } else {
+        ois = new ObjectInputStream(new FileInputStream(cacheFile));
+        cache = (FailedTestMap) ois.readObject();
+        ois.close();
+      }
+
+      // Let the parent JVM know that we are ready to start
+      System.out.println("START");
+
+      // Now run all the tests for each mutation point
+      for (int i = startPoint; i < mutationCount; i++) {
+        Mutater tempMutater = new Mutater(i);
+        tempMutater.setIgnoredMethods(ignore);
+        tempMutater.setMutateIncrements(increments);
+        tempMutater.setMutateInlineConstants(inlineConstants);
+        tempMutater.setMutateReturnValues(returnVals);
+        jumbler.setMutater(tempMutater);
+        jumbler = new FastJumbler(className, tempMutater);
+        Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
+        Method meth = clazz.getMethod("run", new Class[] {
+          jumbler.loadClass("jumble.fast.TestOrder"),
+          jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
+          String.class, int.class, boolean.class });
+        String out = (String) meth.invoke(null, new Object[] {
+          order.changeClassLoader(jumbler),
+          (cache == null ? null : cache.changeClassLoader(jumbler)),
+          className,
+          tempMutater.getMutatedMethodName(className),
+          new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
+        System.out.println(out);
+        if (cache != null && out.startsWith("PASS: ")) {
+          StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
+          String clazzName = tokens.nextToken();
+          assert clazzName.equals(className);
+          String methodName = tokens.nextToken();
+          //System.out.println(methodName);
+          int mutPoint = Integer.parseInt(tokens.nextToken());
+          //System.out.println(mutPoint);
+          String testName = tokens.nextToken();
+          //System.out.println(testName);
+          cache.addFailure(className, methodName, mutPoint, testName);
+        }
+      }
     }
   }
 
