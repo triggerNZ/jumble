@@ -20,11 +20,11 @@ import java.util.jar.JarFile;
  * @version $Revision$
  */
 public class RTSI {
-  private final static String CLASSPATH = System.getProperty("java.class.path");
+  private static final String CLASSPATH = System.getProperty("java.class.path");
 
-  private final static String PS = System.getProperty("path.separator");
+  private static final String PS = System.getProperty("path.separator");
 
-  private final static String FS = System.getProperty("file.separator");
+  private static final String FS = System.getProperty("file.separator");
 
   /**
    * Display all the classes inheriting or implementing a given class in a given
@@ -36,7 +36,7 @@ public class RTSI {
    *          the name of the class to inherit from
    */
   public static Collection find(String pckname, String tosubclassname)
-      throws ClassNotFoundException {
+    throws ClassNotFoundException {
     Class c = Class.forName(tosubclassname);
     return find(pckname, c);
   }
@@ -59,11 +59,11 @@ public class RTSI {
 
     while (tokens.hasMoreTokens()) {
       File f = new File(tokens.nextToken());
-      if (f.isDirectory())
+      if (f.isDirectory()) {
         dirs.add(f);
-      else if (f.isFile() && f.getName().endsWith(".jar"))
+      } else if (f.isFile() && f.getName().endsWith(".jar")) {
         jars.add(f);
-
+      }
       // ignore all other files
     }
 
@@ -75,7 +75,7 @@ public class RTSI {
   }
 
   private static Collection getClassesFromDirs(Collection dirs,
-      String packageName, Class baseClass) {
+                                               String packageName, Class baseClass) {
     Collection ret = new HashSet();
     // System.out.println(packageName);
     Iterator dirIterator = dirs.iterator();
@@ -85,26 +85,26 @@ public class RTSI {
 
       // Need to check this
       File packageDir = new File(currentDir.getAbsolutePath() + FS
-          + packageName.replace('.', FS.charAt(0)));
+                                 + packageName.replace('.', FS.charAt(0)));
 
       File[] classes = packageDir.listFiles(new FileFilter() {
-        public boolean accept(File f) {
-          return f.getName().endsWith(".class");
-        }
-      });
+          public boolean accept(File f) {
+            return f.getName().endsWith(".class");
+          }
+        });
       if (classes == null)
         continue;
       for (int i = 0; i < classes.length; i++) {
         // [package name] + filename -".class"
         String className = packageName
-            + "."
-            + classes[i].getName().substring(0,
-                classes[i].getName().length() - 6);
+          + "."
+          + classes[i].getName().substring(0,
+                                           classes[i].getName().length() - 6);
         Class clazz = null;
         try {
           clazz = Class.forName(className);
         } catch (NoClassDefFoundError e) {
-          // This is no problem, sometimes happens
+          ; // This is no problem, sometimes happens
         } catch (Throwable e) {
           System.err.println("Error getting " + className);
           e.printStackTrace();
@@ -133,8 +133,9 @@ public class RTSI {
       return false;
     } else {
       while (clazz != null) {
-        if (clazz == base)
+        if (clazz == base) {
           return true;
+        }
         clazz = clazz.getSuperclass();
       }
       return false;
@@ -142,7 +143,7 @@ public class RTSI {
   }
 
   private static Collection getClassesFromJars(Collection jars,
-      String packageName, Class baseClass) {
+                                               String packageName, Class baseClass) {
     Collection ret = new HashSet();
 
     Iterator jarsIt = jars.iterator();
@@ -157,7 +158,7 @@ public class RTSI {
           // only look at actual class files
           if (!curEntry.isDirectory() && curEntry.toString().endsWith(".class")) {
             String className = curEntry.toString().substring(0,
-                curEntry.toString().length() - 6).replace('/', '.');
+                                                             curEntry.toString().length() - 6).replace('/', '.');
             String pack = "";
             if (className.indexOf('.') > 0) {
               pack = className.substring(0, className.lastIndexOf("."));
@@ -170,7 +171,7 @@ public class RTSI {
                   ret.add(className);
                 }
               } catch (NoClassDefFoundError e) {
-                // this can sometimes happen, no worries
+                ; // this can sometimes happen, no worries
               } catch (Throwable e) {
                 System.err.println("Error getting " + className);
                 e.printStackTrace();
@@ -273,7 +274,7 @@ public class RTSI {
 
         if (entry.isDirectory()) {
           ret.add(entry.getName().replace('/', '.').substring(0,
-              entry.getName().length() - 1));
+                                                              entry.getName().length() - 1));
         }
       }
 

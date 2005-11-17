@@ -53,24 +53,24 @@ public class JumbleTestSuite extends TestSuite {
   }
 
   private String getMessage() {
-      String message;
-      try {
-        message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
-      } catch (IllegalAccessException e) {
-        message = "!!!" + e.getMessage();
-      } catch (IllegalArgumentException e) {
-        message = "!!!" + e.getMessage();
-      } catch (InvocationTargetException e) {
-        message = "!!!" + e.getMessage();
-      } catch (NoSuchMethodException e) {
-        message = "!!!" + e.getMessage();
-      } catch (SecurityException e) {
-        message = "!!!" + e.getMessage();
-      }
-      if (message == null) {
-          message = "none: existing tests never caused class to be loaded";
-        }
-      return message;
+    String message;
+    try {
+      message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
+    } catch (IllegalAccessException e) {
+      message = "!!!" + e.getMessage();
+    } catch (IllegalArgumentException e) {
+      message = "!!!" + e.getMessage();
+    } catch (InvocationTargetException e) {
+      message = "!!!" + e.getMessage();
+    } catch (NoSuchMethodException e) {
+      message = "!!!" + e.getMessage();
+    } catch (SecurityException e) {
+      message = "!!!" + e.getMessage();
+    }
+    if (message == null) {
+      message = "none: existing tests never caused class to be loaded";
+    }
+    return message;
   }
   
   /**

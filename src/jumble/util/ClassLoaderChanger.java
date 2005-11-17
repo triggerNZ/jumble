@@ -18,6 +18,5 @@ public interface ClassLoaderChanger {
    *           if <CODE>loader</CODE> could not load the class or if the class
    *           cannot be cloned in the new loader.
    */
-  public Object changeClassLoader(ClassLoader loader)
-      throws ClassNotFoundException;
+  Object changeClassLoader(ClassLoader loader) throws ClassNotFoundException;
 }

@@ -37,10 +37,11 @@ import java.util.Vector;
  * @author Yong Wang
  * @author Len Trigg
  * @author Julien Prados
- * @version $Revision: 1.0
+ * @version $Revision$
  */
-
 public final class Utils {
+
+  private Utils() { }
 
   /**
    * Checks if the given array contains any non-empty options.
@@ -50,9 +51,8 @@ public final class Utils {
    * @exception Exception
    *              if there are any non-empty options
    */
-
   public static void checkForRemainingOptions(String[] options)
-      throws Exception {
+    throws Exception {
 
     int illegalOptionsFound = 0;
     StringBuffer text = new StringBuffer();
@@ -138,7 +138,7 @@ public final class Utils {
    *              if the option indicated by the flag can't be found
    */
   public static/* @non_null@ */String getOption(char flag, String[] options)
-      throws Exception {
+    throws Exception {
     return getOption("" + flag, options);
   }
 
@@ -156,15 +156,15 @@ public final class Utils {
    *              if the option indicated by the flag can't be found
    */
   public static/* @non_null@ */String getOption(String flag, String[] options)
-      throws Exception {
+    throws Exception {
 
     String newString;
 
-    if (options == null)
+    if (options == null) {
       return "";
+    }
     for (int i = 0; i < options.length; i++) {
       if ((options[i].length() > 0) && (options[i].charAt(0) == '-')) {
-
         // Check if it is a negative number
         try {
           Double dummy = Double.valueOf(options[i]);
@@ -221,7 +221,7 @@ public final class Utils {
    * @return the array of options
    */
   public static String[] splitOptions(String quotedOptionString)
-      throws Exception {
+    throws Exception {
 
     Vector optionsVec = new Vector();
     String str = new String(quotedOptionString);
@@ -231,22 +231,22 @@ public final class Utils {
 
       //trimLeft
       i = 0;
-      while ((i < str.length()) && (Character.isWhitespace(str.charAt(i))))
+      while ((i < str.length()) && (Character.isWhitespace(str.charAt(i)))) {
         i++;
+      }
       str = str.substring(i);
-
       //stop when str is empty
-      if (str.length() == 0)
+      if (str.length() == 0) {
         break;
-
+      }
       //if str start with a double quote
       if (str.charAt(0) == '"') {
-
         //find the first not anti-slached double quote
         i = 1;
         while (i < str.length()) {
-          if (str.charAt(i) == str.charAt(0))
+          if (str.charAt(i) == str.charAt(0)) {
             break;
+          }
           if (str.charAt(i) == '\\') {
             i += 1;
             if (i >= str.length())
@@ -256,9 +256,9 @@ public final class Utils {
           }
           i += 1;
         }
-        if (i >= str.length())
+        if (i >= str.length()) {
           throw new Exception("Quote parse error.");
-
+        }
         //add the founded string to the option vector (without quotes)
         String optStr = str.substring(1, i);
         optStr = unbackQuoteChars(optStr);
@@ -267,9 +267,9 @@ public final class Utils {
       } else {
         //find first whiteSpace
         i = 0;
-        while ((i < str.length()) && (!Character.isWhitespace(str.charAt(i))))
+        while ((i < str.length()) && (!Character.isWhitespace(str.charAt(i)))) {
           i++;
-
+        }
         //add the founded string to the option vector
         String optStr = str.substring(0, i);
         optionsVec.addElement(optStr);
