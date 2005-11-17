@@ -109,7 +109,7 @@ public final class Utils {
     for (int i = 0; i < options.length; i++) {
       if ((options[i].length() > 1) && (options[i].charAt(0) == '-')) {
         try {
-          Double dummy = Double.valueOf(options[i]);
+          Double.valueOf(options[i]);
         } catch (NumberFormatException e) {
           if (options[i].equals("-" + flag)) {
             options[i] = "";
@@ -167,7 +167,7 @@ public final class Utils {
       if ((options[i].length() > 0) && (options[i].charAt(0) == '-')) {
         // Check if it is a negative number
         try {
-          Double dummy = Double.valueOf(options[i]);
+          Double.valueOf(options[i]);
         } catch (NumberFormatException e) {
           if (options[i].equals("-" + flag)) {
             if (i + 1 == options.length) {
