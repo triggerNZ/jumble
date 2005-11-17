@@ -226,7 +226,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
   /**
    * Just a little structure used in the sorting of runtimes.
    */
-  private class SortPair {
+  private static class SortPair {
     private int mPos;
 
     private long mTime;
