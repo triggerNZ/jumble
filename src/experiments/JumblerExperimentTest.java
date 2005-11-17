@@ -3,6 +3,7 @@ package experiments;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 /**
  * Tests the JumblerExperiment class (inadequately) for
  * jumble testing.
@@ -16,7 +17,6 @@ public class JumblerExperimentTest extends TestCase {
   public void testAdd() {
     assertEquals(3, mExp.add(2, 1));
     //assertEquals(-1, mExp.add(1,2));
-	
   }
     
   public void testMultiply() {

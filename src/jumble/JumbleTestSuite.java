@@ -25,7 +25,7 @@ public class JumbleTestSuite extends TestSuite {
   JumbleTestSuite(final Class theClass) {
     super(theClass);
   }
-	
+
   /**
    * Runs the tests returning the result as a string.  If any
    * of the individual tests fail then the run is aborted and

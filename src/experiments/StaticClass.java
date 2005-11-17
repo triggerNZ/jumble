@@ -8,7 +8,7 @@ package experiments;
  */
 public class StaticClass {
 
-  private StaticClass() {}
+  private StaticClass() { }
 
   public static int add(int a, int b) {
     return a + b;

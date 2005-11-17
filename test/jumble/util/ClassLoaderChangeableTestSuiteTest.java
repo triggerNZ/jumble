@@ -6,6 +6,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.bcel.util.ClassLoader;
 
+/**
+ * Test the corresponding class.
+ *
+ * @author Tin
+ * @version $Revision$
+ */
 public class ClassLoaderChangeableTestSuiteTest extends TestCase {
 
   /*
