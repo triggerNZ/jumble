@@ -7,6 +7,6 @@ package jumble.util;
  * @version $Revision$
  */
 public interface Command {
-  public void process();
+  void process();
 }
 
