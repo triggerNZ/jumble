@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  * method and return an array of concrete instances to be checked.
  * 
  * @author Tin Pavlinic
- *  
+ * @version $Revision$
  */
 public abstract class AbstractJumbleResultTest extends TestCase {
   public abstract JumbleResult[] getJumbleResults();
