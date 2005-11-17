@@ -22,6 +22,7 @@ import jumble.util.IOThread;
 import jumble.util.JavaRunner;
 import jumble.util.Utils;
 import junit.framework.TestResult;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A runner for the <CODE>FastJumbler</CODE>. Runs the FastJumbler in a new
@@ -135,7 +136,19 @@ public class FastRunner {
         try {
           Constructor c = clazz.getConstructor(new Class[0]);
           return (JumbleResultPrinter) c.newInstance(new Object[0]);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException ex) {
+          System.err.println("Invalid output class. Exception: ");
+          e.printStackTrace();
+          return new SeanResultPrinter(System.out);
+        } catch (InvocationTargetException ex) {
+          System.err.println("Invalid output class. Exception: ");
+          e.printStackTrace();
+          return new SeanResultPrinter(System.out);
+        } catch (InstantiationException ex) {
+          System.err.println("Invalid output class. Exception: ");
+          e.printStackTrace();
+          return new SeanResultPrinter(System.out);
+        } catch (NoSuchMethodException ex) {
           System.err.println("Invalid output class. Exception: ");
           e.printStackTrace();
           return new SeanResultPrinter(System.out);
@@ -375,7 +388,7 @@ public class FastRunner {
         }
 
         // start process
-        runner.setArguments((String[]) args.toArray(new String[0]));
+        runner.setArguments((String[]) args.toArray(new String[args.size()]));
         childProcess = runner.start();
         iot = new IOThread(childProcess.getInputStream());
         iot.start();
@@ -509,7 +522,7 @@ public class FastRunner {
           ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(CACHE_FILENAME));
           os.writeObject(cache);
           os.close();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
           e.printStackTrace();
         }
       }
