@@ -1,13 +1,8 @@
 package jumble.fast;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
 import jumble.Mutater;
@@ -15,8 +10,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import experiments.FailingTest;
-import experiments.JumblerExperimentTest;
 import experiments.TimedTests;
 
 /**
