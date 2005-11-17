@@ -19,9 +19,9 @@ public class ClassLoaderChangeableTestSuite extends TestSuite implements
     
     try {
       Class clazz = cl.loadClass("jumble.util.ClassLoaderChangeableTestSuite");
-      Constructor con = clazz.getConstructor(new Class[] { String.class });
+      Constructor con = clazz.getConstructor(new Class[] {String.class});
 
-      return con.newInstance(new Object[] { getName()});
+      return con.newInstance(new Object[] {getName()});
     } catch (Exception e) {
       throw new ClassNotFoundException(e.getMessage());
     }

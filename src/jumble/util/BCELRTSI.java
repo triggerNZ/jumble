@@ -68,7 +68,7 @@ public class BCELRTSI {
       } else if (new File(curPath).isDirectory()) {
         ret.addAll(getClassesFromDir(packageName, curPath));
       } else {
-        // Invalid classpath entry, ignore
+        ; // Invalid classpath entry, ignore
       }
     }
     return ret;
@@ -108,8 +108,7 @@ public class BCELRTSI {
    */
   public static Collection getAllDerivedClasses(String superclassName,
                                                 String packageName, boolean openJars) {
-    Collection c = filterSuperclass(getAllClasses(packageName, openJars),
-                                    superclassName);
+    Collection c = filterSuperclass(getAllClasses(packageName, openJars), superclassName);
     c.remove(superclassName);
     return c;
   }
@@ -193,6 +192,7 @@ public class BCELRTSI {
         try {
           jar.close();
         } catch (IOException ex) {
+          ;
         }
       }
       e.printStackTrace();
