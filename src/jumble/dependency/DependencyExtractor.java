@@ -29,11 +29,12 @@ import org.apache.bcel.generic.Type;
  * @version $Revision$
  */
 public class DependencyExtractor {
+
   /** CONSTANT_Class value. */
-  public final static byte CONSTANT_Class = 7;
+  private static final byte CONSTANT_CLASS = 7;
 
   /** CONSTANT_Utf8 value. */
-  public final static byte CONSTANT_Utf8 = 1;
+  private static final byte CONSTANT_UTF8 = 1;
 
   /** The name of the class being analyzed. */
   private String mClassName;
@@ -87,8 +88,9 @@ public class DependencyExtractor {
       
       Collection dependencies = extractor.getAllDependencies(className, true);
       Iterator it = dependencies.iterator();
-      while (it.hasNext())
+      while (it.hasNext()) {
         System.out.println(it.next());
+      }
     } catch (Exception e) {
       e.printStackTrace();
       System.err.println();
@@ -149,7 +151,7 @@ public class DependencyExtractor {
   private Collection getDependencies(String className, boolean ignore) {
     //First look in the cache
     if (mCache.containsKey(className)) {
-      return (Collection)mCache.get(className);
+      return (Collection) mCache.get(className);
     }
     
     ArrayList ret = new ArrayList();
@@ -169,13 +171,13 @@ public class DependencyExtractor {
 
     for (int i = 0; i < cp.getLength(); i++) {
       Constant c = cp.getConstant(i);
-      if (c == null)
+      if (c == null) {
         continue;
-
-      if (c.getTag() == CONSTANT_Class) {
+      }
+      if (c.getTag() == CONSTANT_CLASS) {
         ConstantClass cc = (ConstantClass) c;
         ConstantUtf8 utf8 = (ConstantUtf8) cp.getConstant(cc.getNameIndex(),
-            CONSTANT_Utf8);
+            CONSTANT_UTF8);
         ret.add(utf8.getBytes().replaceAll("/", "."));
       }
     }
@@ -264,9 +266,9 @@ public class DependencyExtractor {
       }
     }
 
-    if (ret.contains(getClassName()))
+    if (ret.contains(getClassName())) {
       ret.remove(getClassName());
-
+    }
     if (ignore) {
       ret = new HashSet(filterSystemClasses(ret));
     }
@@ -292,11 +294,13 @@ public class DependencyExtractor {
       boolean allowed = true;
       while (packages.hasNext()) {
         String pack = (String) packages.next();
-        if (cur.startsWith(pack + "."))
+        if (cur.startsWith(pack + ".")) {
           allowed = false;
+        }
       }
-      if (allowed)
+      if (allowed) {
         ret.add(cur);
+      }
     }
     return ret;
   }
