@@ -103,8 +103,7 @@ public class FastJumblerTest extends TestCase {
   }
 
   public void testNoMutation() throws Exception {
-    JavaClass original = new ClassParser(
-        "../jumblesrc/experiments/JumblerExperiment.class").parse();
+    JavaClass original = new ClassParser(getClass().getClassLoader().getResourceAsStream("experiments/JumblerExperiment.class"), "JumblerExperiment.class").parse();
 
     FastJumbler j = new FastJumbler("experiments.JumblerExperiment", new Mutater(-1));
     JavaClass a = j.modifyClass(original);
