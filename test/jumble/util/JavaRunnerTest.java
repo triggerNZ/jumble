@@ -2,7 +2,6 @@ package jumble.util;
 
 import java.util.Properties;
 
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -13,38 +12,44 @@ import java.io.IOException;
 
 /**
  * Tests the corresponding class
+ * 
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class JavaRunnerTest extends TestCase {
   Process mProcess = null;
-  
+
   public void tearDown() {
     if (mProcess != null) {
       mProcess.destroy();
       mProcess = null;
     }
   }
-  
-  public void testStart() throws IOException{
+
+  public void testStart() throws IOException {
     Properties props = System.getProperties();
     mProcess = new JavaRunner("jumble.util.DisplayEnvironment").start();
-    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
-    BufferedReader err = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
+    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess
+        .getInputStream()));
+    BufferedReader err = new BufferedReader(new InputStreamReader(mProcess
+        .getErrorStream()));
+
+    assertEquals("java.home " + props.getProperty("java.home"), out.readLine());
+    assertEquals("java.class.path " + props.getProperty("java.class.path"), out
+        .readLine());
 
     if (err.readLine() != null) {
       fail();
     }
-        
-    assertEquals("java.home " + props.getProperty("java.home"), out.readLine() );
-    assertEquals("java.class.path " + props.getProperty("java.class.path"), out.readLine());
   }
 
   public void testArguments() throws Exception {
-    mProcess = new JavaRunner("jumble.util.DisplayArguments", new String[] {"one", "two", "three"}).start();
-        
-    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
-        
+    mProcess = new JavaRunner("jumble.util.DisplayArguments", new String[] {
+        "one", "two", "three" }).start();
+
+    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess
+        .getInputStream()));
+
     assertEquals("one", out.readLine());
     assertEquals("two", out.readLine());
     assertEquals("three", out.readLine());
@@ -52,7 +57,8 @@ public class JavaRunnerTest extends TestCase {
   }
 
   public void testConstructor() {
-    assertEquals(0, new JavaRunner("jumble.util.DisplayEnvironment").getArguments().length);
+    assertEquals(0, new JavaRunner("jumble.util.DisplayEnvironment")
+        .getArguments().length);
   }
 
   public static Test suite() {

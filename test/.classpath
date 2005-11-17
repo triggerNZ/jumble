@@ -3,8 +3,59 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.0.0/src/org.junit_3.8.1/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry kind="lib" path="C:/jar/bcel-5.1/bcel-5.1.jar"/>
 	<classpathentry kind="src" path="/jumblesrc/"/>
 	<classpathentry kind="lib" path="jumble/util/rtsi.jar"/>
+	<classpathentry kind="lib" path="/jar/acme.jar"/>
+	<classpathentry kind="lib" path="/jar/activation.jar"/>
+	<classpathentry kind="lib" path="/jar/axis.jar"/>
+	<classpathentry kind="lib" path="/jar/axis-ant.jar"/>
+	<classpathentry kind="lib" path="/jar/bcel.jar"/>
+	<classpathentry kind="lib" path="/jar/Chemical-client.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-collections.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-dbcp.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-discovery.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-httpclient-3.0-rc4.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-logging.jar"/>
+	<classpathentry kind="lib" path="/jar/commons-pool.jar"/>
+	<classpathentry kind="lib" path="/jar/derby.jar"/>
+	<classpathentry kind="lib" path="/jar/edtftpj.jar"/>
+	<classpathentry kind="lib" path="/jar/EntityExtractor-client.jar"/>
+	<classpathentry kind="lib" path="/jar/googleapi.jar"/>
+	<classpathentry kind="lib" path="/jar/hsqldb.jar"/>
+	<classpathentry kind="lib" path="/jar/httpclient.jar"/>
+	<classpathentry kind="lib" path="/jar/httpunit.jar"/>
+	<classpathentry kind="lib" path="/jar/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="/jar/jdring.jar"/>
+	<classpathentry kind="lib" path="/jar/jhall.jar"/>
+	<classpathentry kind="lib" path="/jar/jlfgr.jar"/>
+	<classpathentry kind="lib" path="/jar/jode-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/jar/jrefactory.jar"/>
+	<classpathentry kind="lib" path="/jar/jsvm.jar"/>
+	<classpathentry kind="lib" path="/jar/junit.jar"/>
+	<classpathentry kind="lib" path="/jar/lexichem.jar"/>
+	<classpathentry kind="lib" path="/jar/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/jar/lucene.jar"/>
+	<classpathentry kind="lib" path="/jar/lucene-addons.jar"/>
+	<classpathentry kind="lib" path="/jar/lucene-RODirectory.jar"/>
+	<classpathentry kind="lib" path="/jar/mail.jar"/>
+	<classpathentry kind="lib" path="/jar/mysql.jar"/>
+	<classpathentry kind="lib" path="/jar/Patent-client.jar"/>
+	<classpathentry kind="lib" path="/jar/poi-2.5.1-reeltwo-fix.jar"/>
+	<classpathentry kind="lib" path="/jar/pop.jar"/>
+	<classpathentry kind="lib" path="/jar/proguard.jar"/>
+	<classpathentry kind="lib" path="/jar/RPlot.jar"/>
+	<classpathentry kind="lib" path="/jar/saaj.jar"/>
+	<classpathentry kind="lib" path="/jar/Tidy.jar"/>
+	<classpathentry kind="lib" path="/jar/Tomcat_CompressionFilter.jar"/>
+	<classpathentry kind="lib" path="/jar/tools.jar"/>
+	<classpathentry kind="lib" path="/jar/weka_test.jar"/>
+	<classpathentry kind="lib" path="/jar/weka.jar"/>
+	<classpathentry kind="lib" path="/jar/weka-src.jar"/>
+	<classpathentry kind="lib" path="/jar/wsdl4j.jar"/>
+	<classpathentry kind="lib" path="/jar/xercesAPI.jar"/>
+	<classpathentry kind="lib" path="/jar/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/jar/xml-writer.jar"/>
+	<classpathentry kind="lib" path="/jar/zipfile_hack.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
