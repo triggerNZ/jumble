@@ -10,17 +10,17 @@ import junit.framework.TestSuite;
  * @version $Revision$
  */
 public class JumblerExperimentTest extends TestCase {
-  private JumblerExperiment exp = new JumblerExperiment();
+  private JumblerExperiment mExp = new JumblerExperiment();
 
     
   public void testAdd() {
-    assertEquals(3, exp.add(2, 1));
-    //assertEquals(-1, exp.add(1,2));
+    assertEquals(3, mExp.add(2, 1));
+    //assertEquals(-1, mExp.add(1,2));
 	
   }
     
   public void testMultiply() {
-    assertEquals(4, exp.multiply(2, 2));
+    assertEquals(4, mExp.multiply(2, 2));
   }
     
   public static Test suite() {

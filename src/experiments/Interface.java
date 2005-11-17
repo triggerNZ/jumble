@@ -6,5 +6,5 @@ package experiments;
  * @version $Revision$
  */
 public interface Interface {
-    public void dummyMethod();
+  void dummyMethod();
 }

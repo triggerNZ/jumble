@@ -4,6 +4,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+/**
+ * Test corresponding class.
+ *
+ * @author Tin
+ * @version $Revision$
+ */
 public class IOThreadTest extends TestCase {
 
   public final void testIOThread() throws Exception {
@@ -29,10 +35,10 @@ public class IOThreadTest extends TestCase {
   public void testJumbleMultiRunner() throws Exception {
     JavaRunner runner = new JavaRunner("jumble.JumbleMultiRunner");
     runner
-        .setArguments(new String[] { "-r -k -i experiments.JumblerExperiment "
+        .setArguments(new String[] {"-r -k -i experiments.JumblerExperiment "
             + "experiments.JumblerExperimentTest "
             + "experiments.JumblerExperimentEmptyTest "
-            + "experiments.JumblerExperimentSecondTest 0" });
+            + "experiments.JumblerExperimentSecondTest 0"});
 
     Process p = runner.start();
     IOThread iot = new IOThread(p.getInputStream());

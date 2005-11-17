@@ -20,15 +20,15 @@ import experiments.JumblerExperimentTest;
  * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class TestOrderTest extends TestCase {
   private TestOrder mOrder;
 
   public void setUp() {
-    Class[] classes = new Class[] { JumblerExperimentTest.class,
-        JumblerExperimentSecondTest.class };
+    Class[] classes = new Class[] {JumblerExperimentTest.class, JumblerExperimentSecondTest.class};
 
-    long[] runtimes = new long[] { 300, 200, 500, 100, 400 };
+    long[] runtimes = new long[] {300, 200, 500, 100, 400};
     mOrder = new TestOrder(classes, runtimes);
 
   }

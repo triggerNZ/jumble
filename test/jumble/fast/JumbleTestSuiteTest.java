@@ -35,25 +35,25 @@ public class JumbleTestSuiteTest extends TestCase {
 
   public void testTestClass() {
     assertTrue(JumbleTestSuite.run(
-        new TestOrder(new Class[] { Mutater.class }, new long[] { 0 }),
+        new TestOrder(new Class[] {Mutater.class}, new long[] {0}),
         new FailedTestMap(), null, null, 0, true).startsWith("PASS"));
   }
 
   public void testX5T() {
     assertTrue(JumbleTestSuite.run(
-        new TestOrder(new Class[] { jumble.X5T.class }, new long[] { 0 }),
+        new TestOrder(new Class[] {jumble.X5T.class}, new long[] {0}),
         null, null, null, 0, true).startsWith("PASS"));
   }
 
   public void testX5TF() {
     assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
-        JumbleTestSuite.run(new TestOrder(new Class[] { jumble.X5TF.class },
-            new long[] { 0 }), null, null, null, 0, true));
+        JumbleTestSuite.run(new TestOrder(new Class[] {jumble.X5TF.class},
+            new long[] {0}), null, null, null, 0, true));
   }
 
   public void testX5TY() {
     assertTrue(JumbleTestSuite.run(
-        new TestOrder(new Class[] { jumble.X5TY.class }, new long[] { 0, 1 }),
+        new TestOrder(new Class[] {jumble.X5TY.class}, new long[] {0, 1}),
         new FailedTestMap(), null, null, 0, true).startsWith("PASS"));
   }
 
@@ -68,8 +68,8 @@ public class JumbleTestSuiteTest extends TestCase {
 
   public void testX5TQ() {
     assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
-        JumbleTestSuite.run(new TestOrder(new Class[] { jumble.X5TQ.class },
-            new long[] { 0, 1, 2 }), null, null, null, 0, true));
+        JumbleTestSuite.run(new TestOrder(new Class[] {jumble.X5TQ.class },
+            new long[] {0, 1, 2}), null, null, null, 0, true));
   }
 
   public final void testOrder() throws Exception {
@@ -78,7 +78,7 @@ public class JumbleTestSuiteTest extends TestCase {
     // first time the tests (throw away output)
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
     TimingTestSuite timingSuite = new TimingTestSuite(
-        new Class[] { TimedTests.class });
+        new Class[] {TimedTests.class});
     timingSuite.run(new TestResult());
     System.setOut(oldOut);
 
@@ -103,9 +103,9 @@ public class JumbleTestSuiteTest extends TestCase {
   public final void testRunMethodExistence() {
     Class clazz = JumbleTestSuite.class;
     try {
-      Method m = clazz.getMethod("run", new Class[] { TestOrder.class,
+      Method m = clazz.getMethod("run", new Class[] {TestOrder.class,
           FailedTestMap.class, String.class, String.class, int.class,
-          boolean.class });
+          boolean.class});
       assertNotSame(null, m);
     } catch (NoSuchMethodException e) {
       fail();

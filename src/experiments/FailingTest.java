@@ -7,8 +7,8 @@ import junit.framework.TestCase;
  * @version $Revision$
  */
 public class FailingTest extends TestCase {
-    /** Always fails */
-    public void testFail() {
-        fail();
-    }
+  /** Always fails */
+  public void testFail() {
+    fail();
+  }
 }

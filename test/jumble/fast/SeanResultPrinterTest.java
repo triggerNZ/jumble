@@ -15,6 +15,7 @@ import junit.framework.TestSuite;
  * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class SeanResultPrinterTest extends TestCase {
   ByteArrayOutputStream mBA;
@@ -36,7 +37,7 @@ public class SeanResultPrinterTest extends TestCase {
     assertEquals("Mutating java.util.LinkedList", in.readLine());
     assertEquals("Tests: java.util.LinkedListTest", in.readLine());
     assertEquals("Mutation points = 3, unit test time limit 1.0s",
-        in.readLine());
+                 in.readLine());
     assertEquals(".M FAIL", in.readLine());
     assertEquals("T", in.readLine());
   }
@@ -44,11 +45,11 @@ public class SeanResultPrinterTest extends TestCase {
   private abstract class AbstractDummyResult extends JumbleResult {
     public Mutation[] getAllMutations() {
       Mutation[] muts = new Mutation
-      [(getCovered() != null?getCovered().length:0)
-          + (getMissed() != null?getMissed().length:0)
-          + (getTimeouts()!=null?getTimeouts().length:0)];
+        [(getCovered() != null ? getCovered().length : 0)
+         + (getMissed() != null ? getMissed().length : 0)
+         + (getTimeouts() != null ? getTimeouts().length : 0)];
 
-      if(muts.length == 0) {
+      if (muts.length == 0) {
         return null;
       }
       
