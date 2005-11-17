@@ -7,6 +7,9 @@ package experiments;
  * @version $Revision$
  */
 public class StaticClass {
+
+  private StaticClass() {}
+
   public static int add(int a, int b) {
     return a + b;
   }

@@ -26,6 +26,8 @@ public class RTSI {
 
   private static final String FS = System.getProperty("file.separator");
 
+  private RTSI() { }
+
   /**
    * Display all the classes inheriting or implementing a given class in a given
    * package.
@@ -92,8 +94,9 @@ public class RTSI {
             return f.getName().endsWith(".class");
           }
         });
-      if (classes == null)
+      if (classes == null) {
         continue;
+      }
       for (int i = 0; i < classes.length; i++) {
         // [package name] + filename -".class"
         String className = packageName
