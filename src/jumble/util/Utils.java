@@ -249,10 +249,12 @@ public final class Utils {
           }
           if (str.charAt(i) == '\\') {
             i += 1;
-            if (i >= str.length())
+            if (i >= str.length()) {
               throw new Exception("String should not finish with \\");
-            if (str.charAt(i) != '\\' && str.charAt(i) != '"')
+            }
+            if (str.charAt(i) != '\\' && str.charAt(i) != '"') {
               throw new Exception("Unknow character \\" + str.charAt(i));
+            }
           }
           i += 1;
         }
@@ -346,8 +348,8 @@ public final class Utils {
     StringBuffer newStringBuffer;
 
     // replace each of the following characters with the backquoted version
-    String charsFind[] = { "\\\\", "\\'", "\\t", "\\\"", "\\%" };
-    char charsReplace[] = { '\\', '\'', '\t', '"', '%' };
+    String[] charsFind = {"\\\\", "\\'", "\\t", "\\\"", "\\%"};
+    char[] charsReplace = {'\\', '\'', '\t', '"', '%'};
 
     for (int i = 0; i < charsFind.length; i++) {
       if (string.indexOf(charsFind[i]) != -1) {

@@ -87,14 +87,14 @@ public class JavaRunner {
 
     //get the properties
     Properties props = System.getProperties();
-    final String LS = props.getProperty("file.separator");
-    final String JAVAHOME = props.getProperty("java.home");
-    final String CLASSPATH = props.getProperty("java.class.path");
+    final String ls = props.getProperty("file.separator");
+    final String javahome = props.getProperty("java.home");
+    final String classpath = props.getProperty("java.class.path");
 
     //create the java command
     StringBuffer command = new StringBuffer();
-    command.append(JAVAHOME + LS + "bin" + LS + "java ");
-    command.append("-cp " + CLASSPATH + " ");
+    command.append(javahome + ls + "bin" + ls + "java ");
+    command.append("-cp " + classpath + " ");
     command.append(getClassName());
 
     for (int i = 0; i < getArguments().length; i++) {

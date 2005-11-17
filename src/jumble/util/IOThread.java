@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class IOThread extends Thread {
 
-  public final static boolean DEBUG = false;
+  public static final boolean DEBUG = false;
   private BufferedReader mOut;
   private List mBuffer;
 
