@@ -21,21 +21,25 @@ import junit.framework.TestSuite;
  * @author Tin Pavlinic
  */
 public class DependencyExtractorTest extends TestCase {
-  private DependencyExtractor extractor;
+  private DependencyExtractor mExtractor;
 
   public void setUp() {
-    extractor = new DependencyExtractor();
+    mExtractor = new DependencyExtractor();
+  }
+
+  public void tearDown() {
+    mExtractor = null;
   }
 
   public void testDT1() {
-    Collection classes = extractor.getAllDependencies("jumble.dependency.DT1", true);
+    Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT1", true);
     assertEquals("experiments.JumblerExperiment", classes.iterator().next());
     assertEquals(1, classes.size());
   }
 
   public void testDT2() {
-    extractor.setClassName("jumble.dependency.DT2");
-    Collection classes = extractor.getAllDependencies("jumble.dependency.DT2", true);
+    mExtractor.setClassName("jumble.dependency.DT2");
+    Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT2", true);
     assertEquals(3, classes.size());
 
     assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -44,7 +48,7 @@ public class DependencyExtractorTest extends TestCase {
   }
 
    public void testDT3() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT3", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT3", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -52,7 +56,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT4() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT4", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT4", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -60,7 +64,7 @@ public class DependencyExtractorTest extends TestCase {
    }
 
    public void testDT5() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT5", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT5", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -68,7 +72,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT6() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT6", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT6", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -76,7 +80,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT7() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT7", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT7", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -84,7 +88,7 @@ public class DependencyExtractorTest extends TestCase {
    }
    
    public void testDT8() {
-     Collection classes = extractor.getAllDependencies("jumble.dependency.DT8", true);
+     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT8", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -94,13 +98,13 @@ public class DependencyExtractorTest extends TestCase {
     // huge amount of dependencies - this is more of a regression thing
     // than an actual test - I have no idea what the value should be
     // may vary with different JRE's (although hasn't done so far)
-    Collection classes = extractor.getAllDependencies("jumble.dependency.DT1", false);
+    Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT1", false);
     assertTrue(1000 < classes.size());
   }
 
   public void testSilly() {
-    extractor.setClassName("[[C");
-    Collection classes = extractor.getAllDependencies("[[C", true);
+    mExtractor.setClassName("[[C");
+    Collection classes = mExtractor.getAllDependencies("[[C", true);
     assertEquals(0, classes.size());
   }
   
