@@ -136,9 +136,9 @@ public class FastJumbler extends ClassLoader {
       final boolean increments = Utils.getFlag('i', args);
       final String excludes = Utils.getOption('x', args);
       final boolean help = Utils.getFlag('h', args);
-      final boolean save = !Utils.getFlag('s', args);
-      final boolean use = !Utils.getFlag('u', args);
-      final boolean load = !Utils.getFlag('l', args);
+      //      final boolean save = !Utils.getFlag('s', args);
+      //      final boolean use = !Utils.getFlag('u', args);
+      //      final boolean load = !Utils.getFlag('l', args);
       // Display help
       if (help) {
         printUsage();
