@@ -369,6 +369,7 @@ public class Mutater {
 
     if (clazz == null) {
       System.out.println("Error: could not retrieve " + className);
+      return -1;
     }
     // if is an interface, return -1 to distinguish from 0 point classes
     if (clazz.isInterface()) {
@@ -710,6 +711,7 @@ public class Mutater {
 
     if (clazz == null) {
       System.out.println("Error: could not retrieve " + className);
+      return null;
     }
 
     final Method[] methods = clazz.getMethods();
@@ -747,6 +749,7 @@ public class Mutater {
 
     if (clazz == null) {
       System.out.println("Error: could not retrieve " + className);
+      return -1;
     }
 
     final Method[] methods = clazz.getMethods();
