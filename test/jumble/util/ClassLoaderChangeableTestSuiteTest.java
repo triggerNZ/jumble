@@ -21,7 +21,7 @@ public class ClassLoaderChangeableTestSuiteTest extends TestCase {
   }
 
   public static Test suite() {
-    TestSuite suite = new TestSuite(ClassLoaderChangeableTestSuite.class);
+    TestSuite suite = new TestSuite(ClassLoaderChangeableTestSuiteTest.class);
     return suite;
   }
   
