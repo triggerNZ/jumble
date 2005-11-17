@@ -105,7 +105,7 @@ public class FastRunner {
       }
       Utils.checkForRemainingOptions(args);
       JumbleResult res = runJumble(className, testList, excludeMethods,
-          constants, returns, increments, noOrder, load, save, use);
+                                   constants, returns, increments, noOrder, load, save, use);
       JumbleResultPrinter printer = getPrinter(outputClass);
       printer.printResult(res);
 
@@ -127,32 +127,38 @@ public class FastRunner {
    */
   private static JumbleResultPrinter getPrinter(String className) {
     try {
-      Class clazz = Class.forName(className);
-
+      final Class clazz = Class.forName(className);
       try {
-        Constructor c = clazz.getConstructor(new Class[] {PrintStream.class});
+        final Constructor c = clazz.getConstructor(new Class[] {PrintStream.class});
         return (JumbleResultPrinter) c.newInstance(new Object[] {System.out});
-      } catch (Exception e) {
-        try {
-          Constructor c = clazz.getConstructor(new Class[0]);
-          return (JumbleResultPrinter) c.newInstance(new Object[0]);
-        } catch (IllegalAccessException ex) {
-          System.err.println("Invalid output class. Exception: ");
-          e.printStackTrace();
-          return new SeanResultPrinter(System.out);
-        } catch (InvocationTargetException ex) {
-          System.err.println("Invalid output class. Exception: ");
-          e.printStackTrace();
-          return new SeanResultPrinter(System.out);
-        } catch (InstantiationException ex) {
-          System.err.println("Invalid output class. Exception: ");
-          e.printStackTrace();
-          return new SeanResultPrinter(System.out);
-        } catch (NoSuchMethodException ex) {
-          System.err.println("Invalid output class. Exception: ");
-          e.printStackTrace();
-          return new SeanResultPrinter(System.out);
-        }
+      } catch (IllegalAccessException e) {
+        ; // too bad
+      } catch (InvocationTargetException e) {
+        ; // too bad
+      } catch (InstantiationException e) {
+        ; // too bad
+      } catch (NoSuchMethodException e) {
+        ; // too bad
+      }
+      try {
+        final Constructor c = clazz.getConstructor(new Class[0]);
+        return (JumbleResultPrinter) c.newInstance(new Object[0]);
+      } catch (IllegalAccessException e) {
+        System.err.println("Invalid output class. Exception: ");
+        e.printStackTrace();
+        return new SeanResultPrinter(System.out);
+      } catch (InvocationTargetException e) {
+        System.err.println("Invalid output class. Exception: ");
+        e.printStackTrace();
+        return new SeanResultPrinter(System.out);
+      } catch (InstantiationException e) {
+        System.err.println("Invalid output class. Exception: ");
+        e.printStackTrace();
+        return new SeanResultPrinter(System.out);
+      } catch (NoSuchMethodException e) {
+        System.err.println("Invalid output class. Exception: ");
+        e.printStackTrace();
+        return new SeanResultPrinter(System.out);
       }
     } catch (ClassNotFoundException e) {
       return new SeanResultPrinter(System.out);
@@ -168,7 +174,7 @@ public class FastRunner {
     System.out.println();
 
     System.out
-        .println("CLASS the fully-qualified name of the class to mutate.");
+      .println("CLASS the fully-qualified name of the class to mutate.");
     System.out.println();
     System.out.println("TESTS a test suite file containing the tests.");
     System.out.println();
@@ -215,10 +221,10 @@ public class FastRunner {
    * @see JumbleResult
    */
   public static JumbleResult runJumble(final String className,
-      final List testClassNames, final Set excludeMethods,
-      final boolean inlineConstants, final boolean returnVals,
-      final boolean increments, boolean noOrder, boolean loadCache,
-      boolean saveCache, boolean useCache) throws Exception {
+                                       final List testClassNames, final Set excludeMethods,
+                                       final boolean inlineConstants, final boolean returnVals,
+                                       final boolean increments, boolean noOrder, boolean loadCache,
+                                       boolean saveCache, boolean useCache) throws Exception {
 
     Class[] testClasses = new Class[testClassNames.size()];
     final TestResult initialResult;
@@ -239,7 +245,7 @@ public class FastRunner {
       if (loadCache) {
         try {
           ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
-              CACHE_FILENAME));
+                                                                            CACHE_FILENAME));
           cache = (FailedTestMap) ois.readObject();
           loaded = true;
         } catch (IOException e) {
@@ -267,43 +273,43 @@ public class FastRunner {
     // Now, if the tests failed, can return straight away
     if (!initialResult.wasSuccessful()) {
       return new JumbleResult() {
-        public String getClassName() {
-          return className;
-        }
+          public String getClassName() {
+            return className;
+          }
 
-        public Mutation[] getAllMutations() {
-          return null;
-        }
+          public Mutation[] getAllMutations() {
+            return null;
+          }
 
-        public String[] getTestClasses() {
-          return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
-        }
+          public String[] getTestClasses() {
+            return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
+          }
 
-        public long getTimeoutLength() {
-          return 0;
-        }
+          public long getTimeoutLength() {
+            return 0;
+          }
 
-        public TestResult getInitialTestResult() {
-          return initialResult;
-        }
+          public TestResult getInitialTestResult() {
+            return initialResult;
+          }
 
-        public Mutation[] getCovered() {
-          return null;
-        }
+          public Mutation[] getCovered() {
+            return null;
+          }
 
-        public Mutation[] getMissed() {
-          return null;
-        }
+          public Mutation[] getMissed() {
+            return null;
+          }
 
-        public Mutation[] getTimeouts() {
-          return null;
-        }
-      };
+          public Mutation[] getTimeouts() {
+            return null;
+          }
+        };
     }
 
     // Store the timing stuff in a temporary file
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-        fileName));
+                                                                         fileName));
     oos.writeObject(order);
     oos.close();
 
@@ -404,7 +410,7 @@ public class FastRunner {
             break;
           } else {
             throw new RuntimeException("jumble.fast.FastJumbler returned "
-                + str + " instead of START");
+                                       + str + " instead of START");
 
           }
         }
@@ -421,7 +427,7 @@ public class FastRunner {
         if (out == null) {
           if (after - before > timeout) {
             allMutations[currentMutation] = new Mutation("TIMEOUT", className,
-                currentMutation);
+                                                         currentMutation);
             childProcess.destroy();
             childProcess = null;
             break;
@@ -433,11 +439,11 @@ public class FastRunner {
           try {
             // We have output so go to the next loop iteration
             allMutations[currentMutation] = new Mutation(out, className,
-                currentMutation);
+                                                         currentMutation);
             if (useCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
               StringTokenizer tokens = new StringTokenizer(out.substring(6),
-                  ":");
+                                                           ":");
               String clazzName = tokens.nextToken();
               assert clazzName.equals(className);
               String methodName = tokens.nextToken();
@@ -458,52 +464,52 @@ public class FastRunner {
     }
 
     JumbleResult ret = new JumbleResult() {
-      public String getClassName() {
-        return className;
-      }
-
-      public TestResult getInitialTestResult() {
-        return initialResult;
-      }
-
-      public Mutation[] getAllMutations() {
-        return allMutations;
-      }
-
-      public Mutation[] getCovered() {
-        return filter(Mutation.PASS);
-      }
-
-      public Mutation[] getTimeouts() {
-        return filter(Mutation.TIMEOUT);
-      }
-
-      public Mutation[] getMissed() {
-        return filter(Mutation.FAIL);
-      }
-
-      public long getTimeoutLength() {
-        return computeTimeout(order.getTotalRuntime());
-      }
-
-      public String[] getTestClasses() {
-        return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
-      }
-
-      private Mutation[] filter(int mutationType) {
-        Mutation[] all = getAllMutations();
-        ArrayList ret = new ArrayList();
-
-        for (int i = 0; i < all.length; i++) {
-          if (all[i].getStatus() == mutationType) {
-            ret.add(all[i]);
-          }
+        public String getClassName() {
+          return className;
         }
 
-        return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
-      }
+        public TestResult getInitialTestResult() {
+          return initialResult;
+        }
 
-    };
+        public Mutation[] getAllMutations() {
+          return allMutations;
+        }
+
+        public Mutation[] getCovered() {
+          return filter(Mutation.PASS);
+        }
+
+        public Mutation[] getTimeouts() {
+          return filter(Mutation.TIMEOUT);
+        }
+
+        public Mutation[] getMissed() {
+          return filter(Mutation.FAIL);
+        }
+
+        public long getTimeoutLength() {
+          return computeTimeout(order.getTotalRuntime());
+        }
+
+        public String[] getTestClasses() {
+          return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
+        }
+
+        private Mutation[] filter(int mutationType) {
+          Mutation[] all = getAllMutations();
+          ArrayList ret = new ArrayList();
+
+          for (int i = 0; i < all.length; i++) {
+            if (all[i].getStatus() == mutationType) {
+              ret.add(all[i]);
+            }
+          }
+
+          return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
+        }
+
+      };
 
     // finally, delete the test suite file
     if (!new File(fileName).delete()) {
