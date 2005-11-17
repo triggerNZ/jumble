@@ -47,7 +47,7 @@ import experiments.JumblerExperimentTest;
  * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
- * 
+ * @version $Revision$
  */
 public class FastJumblerTest extends TestCase {
   private String mFileName;
@@ -56,8 +56,7 @@ public class FastJumblerTest extends TestCase {
     // Unique filename
     mFileName = "tmpTest" + System.currentTimeMillis() + ".dat";
 
-    TimingTestSuite suite = new TimingTestSuite(
-        new Class[] { JumblerExperimentTest.class });
+    TimingTestSuite suite = new TimingTestSuite(new Class[] {JumblerExperimentTest.class});
     suite.run(new TestResult());
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
         mFileName));

@@ -10,6 +10,7 @@ import experiments.JumblerExperimentTest;
  * Tests the corresponding class
  * 
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class FlatTestSuiteTest extends TestCase {
   private FlatTestSuite mTest;

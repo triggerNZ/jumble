@@ -12,7 +12,7 @@ import junit.framework.TestSuite;
  * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
- * 
+ * @version $Revision$
  */
 public class FailedTestMapTest extends TestCase {
   private FailedTestMap mMap;
@@ -43,7 +43,7 @@ public class FailedTestMapTest extends TestCase {
     assertEquals(other.getClass().getName(), mMap.getClass().getName());
     assertNotSame(other.getClass(), mMap.getClass());
     Method m = other.getClass().getMethod("getLastFailure", new Class[] {String.class, String.class, int.class});
-    String ret = (String)m.invoke(other, new Object[] {"DummyClass", "dummyMethod", new Integer(0)});
+    String ret = (String) m.invoke(other, new Object[] {"DummyClass", "dummyMethod", new Integer(0)});
     assertEquals("dummyTest1", ret);
   }
 

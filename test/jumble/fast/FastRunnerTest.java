@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Tests the corrresponding class.
  * @author Tin Pavlinic
- *
+ * @version $Revision$
  */
 public class FastRunnerTest extends TestCase {
   public void testComputeTimeout() {

@@ -265,7 +265,7 @@ public class MutaterTest extends TestCase {
    * @param length length of input
    * @return a hash
    */
-  private static final long irvineHash(final byte[] in, final int start, final int length) {
+  private static long irvineHash(final byte[] in, final int start, final int length) {
     long r = 0L;
     for (int i = 0; i < length; i++) {
       final long sgn = (r & 0x8000000000000000L) >>> 63;

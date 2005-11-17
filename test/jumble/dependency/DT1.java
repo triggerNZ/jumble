@@ -1,16 +1,12 @@
-/*
- * Created on May 1, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package jumble.dependency;
 
 import experiments.JumblerExperiment;
 
-/** Used in DependencyExtractorTest
+/**
+ * Used in DependencyExtractorTest
  * @author Tin Pavlinic
+ * @version $Revision$
  */
 public class DT1 {
-    public JumblerExperiment exp = new JumblerExperiment();
+  public JumblerExperiment mExp = new JumblerExperiment();
 }

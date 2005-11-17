@@ -9,6 +9,12 @@ import junit.framework.TestSuite;
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
 
+/**
+ * Tests the corresponding class.
+ *
+ * @author Tin
+ * @version $Revision$
+ */
 public class BCELRTSITest extends TestCase {
   public void testBCELRTSI() throws Exception {
     Collection c = BCELRTSI.getAllDerivedClasses("jumble.util.Command", "jumble.util", false);
