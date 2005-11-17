@@ -339,7 +339,7 @@ public class DependencyExtractor {
   }
 
   /**
-   * Determines whether the string <CODE>s<CODE> is the internal
+   * Determines whether the string <CODE>s</CODE> is the internal
    * representation of a primitive type.
    * 
    * @param s
