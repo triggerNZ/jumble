@@ -33,6 +33,10 @@ public class TestOrderTest extends TestCase {
 
   }
 
+  public void tearDown() {
+    mOrder = null;
+  }
+
   public final void testGetTestCount() {
     assertEquals(5, mOrder.getTestCount());
   }

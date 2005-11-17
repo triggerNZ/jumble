@@ -20,6 +20,10 @@ public class FlatTestSuiteTest extends TestCase {
     mTest.addTestSuite(JumblerExperimentSecondTest.class);
   }
 
+  public void tearDown() {
+    mTest = null;
+  }
+
   public final void testCountTestCases() {
     assertEquals(3, mTest.countTestCases());
   }

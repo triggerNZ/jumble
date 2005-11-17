@@ -29,6 +29,11 @@ public class TimingTestSuiteTest extends TestCase {
     System.setOut(oldOut);
   }
 
+  protected void tearDown() {
+    mSuite = null;
+    mResult = null;
+  }
+
   public final void testGetOrder() {
     TestOrder order = mSuite.getOrder();
     assertEquals(3, order.getTestCount());

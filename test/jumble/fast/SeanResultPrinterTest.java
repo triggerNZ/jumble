@@ -26,6 +26,11 @@ public class SeanResultPrinterTest extends TestCase {
     mBA = new ByteArrayOutputStream();
     mPrint = new PrintStream(mBA);
   }
+
+  protected void tearDown() {
+    mBA = null;
+    mPrint = null;
+  }
   
   public final void testOutput() throws Exception {
     JumbleResultPrinter printer = new SeanResultPrinter(mPrint);

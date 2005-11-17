@@ -31,6 +31,10 @@ public class FailedTestMapTest extends TestCase {
     mMap.addFailure("DummyClass2", "dummyMethod", 0, "dummyTest1");
   }
 
+  public void tearDown() {
+    mMap = null;
+  }
+
   public void testChangeClassLoader() throws Exception {
     ClassLoader cl = new FastJumbler("DummyClass", new Mutater(0));
     
