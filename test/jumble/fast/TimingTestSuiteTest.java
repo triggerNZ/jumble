@@ -21,7 +21,7 @@ public class TimingTestSuiteTest extends TestCase {
   private TestResult mResult;
 
   protected void setUp() throws Exception {
-    mSuite = new TimingTestSuite(new Class[] {TimedTests.class});
+    mSuite = new TimingTestSuite(new Class[] { TimedTests.class });
     mResult = new TestResult();
     PrintStream oldOut = System.out;
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
@@ -40,8 +40,9 @@ public class TimingTestSuiteTest extends TestCase {
     assertEquals(2, order.getTestIndex(0));
     assertEquals(0, order.getTestIndex(1));
     assertEquals(1, order.getTestIndex(2));
-    //A bit dangerous
-    assertEquals(11000, order.getTotalRuntime());
+    // A biTt dangerous
+    assertTrue(11000 <= order.getTotalRuntime()
+        && order.getTotalRuntime() < 12000);
   }
 
   public final void testResult() {
@@ -49,7 +50,7 @@ public class TimingTestSuiteTest extends TestCase {
     assertEquals(0, mResult.errorCount());
     assertEquals(0, mResult.failureCount());
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite(TimingTestSuiteTest.class);
     return suite;
