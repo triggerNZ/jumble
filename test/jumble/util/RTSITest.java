@@ -32,11 +32,9 @@ public class RTSITest extends TestCase {
     assertTrue(c.contains("jumble.dependency"));
     assertTrue(c.contains("jumble.fast"));
     assertTrue(c.contains("jumble.util"));
-    assertTrue(c.contains("junit.samples.money"));
     assertTrue(c.contains("org.apache.bcel"));
     assertTrue(c.contains("junit"));
     assertTrue(c.contains("org.apache"));
-    assertTrue(c.contains("org.eclipse"));
     assertTrue(c.contains("junit.framework"));
     assertTrue(c.contains("experiments"));
   }
