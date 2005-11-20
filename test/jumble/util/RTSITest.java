@@ -21,9 +21,10 @@ public class RTSITest extends TestCase {
   }
 
   public void testJarRTSI() throws Exception {
-    Collection c = RTSI.find("jumble.util", "junit.framework.TestCase");
+    // The bcel jar is pretty much guaranteed to be on the classpath
+    Collection c = RTSI.find("org.apache.bcel.generic", "org.apache.bcel.generic.Instruction");
 
-    assertTrue(c.contains("jumble.util.DummyTest"));
+    assertTrue(c.contains("org.apache.bcel.generic.IADD"));
   }
 
   public void testGetAllVisiblePackages() {

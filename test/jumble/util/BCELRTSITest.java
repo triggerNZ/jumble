@@ -25,8 +25,8 @@ public class BCELRTSITest extends TestCase {
   }
 
   public void testBCELJarRTSI() throws Exception {
-    Collection c = BCELRTSI.getAllDerivedClasses("junit.framework.TestCase", "jumble.util", true);
-    assertTrue(c.contains("jumble.util.DummyTest"));
+    Collection c = BCELRTSI.getAllDerivedClasses("org.apache.bcel.generic.Instruction", "org.apache.bcel.generic", true);
+    assertTrue(c.contains("org.apache.bcel.generic.IADD"));
   }
 
   public void testGetAllClasses() {
