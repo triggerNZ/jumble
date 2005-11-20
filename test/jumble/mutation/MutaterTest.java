@@ -100,11 +100,12 @@ public class MutaterTest extends TestCase {
   }
 
   public void testDescriptionsX3() throws IOException {
-    testDescriptions3(0, "jumble.X3:6: * -> /");
+    testDescriptions3(0, "jumble.X3:6: 3 -> 4");
     testDescriptions3(1, "jumble.X3:6: * -> /");
-    testDescriptions3(2, "jumble.X3:6: + -> -");
-    testDescriptions3(3, "jumble.X3:6: - -> +");
-    testDescriptions3(4, "jumble.X3:6: changed return value (areturn)");
+    testDescriptions3(2, "jumble.X3:6: * -> /");
+    testDescriptions3(3, "jumble.X3:6: + -> -");
+    testDescriptions3(4, "jumble.X3:6: - -> +");
+    testDescriptions3(5, "jumble.X3:6: changed return value (areturn)");
     testDescriptions3(500, null);
   }
 
