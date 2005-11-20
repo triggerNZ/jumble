@@ -26,9 +26,10 @@ public class TestOrderTest extends TestCase {
   private TestOrder mOrder;
 
   public void setUp() {
-    Class[] classes = new Class[] {JumblerExperimentTest.class, JumblerExperimentSecondTest.class};
+    Class[] classes = new Class[] {JumblerExperimentTest.class,
+        JumblerExperimentSecondTest.class };
 
-    long[] runtimes = new long[] {300, 200, 500, 100, 400};
+    long[] runtimes = new long[] {300, 200, 100 };
     mOrder = new TestOrder(classes, runtimes);
 
   }
@@ -38,15 +39,13 @@ public class TestOrderTest extends TestCase {
   }
 
   public final void testGetTestCount() {
-    assertEquals(5, mOrder.getTestCount());
+    assertEquals(3, mOrder.getTestCount());
   }
 
   public final void testGetTestIndex() {
-    assertEquals(3, mOrder.getTestIndex(0));
+    assertEquals(2, mOrder.getTestIndex(0));
     assertEquals(1, mOrder.getTestIndex(1));
     assertEquals(0, mOrder.getTestIndex(2));
-    assertEquals(4, mOrder.getTestIndex(3));
-    assertEquals(2, mOrder.getTestIndex(4));
   }
 
   public final void testGetTestClasses() {
@@ -63,7 +62,7 @@ public class TestOrderTest extends TestCase {
   }
 
   public final void testGetTotalRuntime() {
-    assertEquals(1500, mOrder.getTotalRuntime());
+    assertEquals(600, mOrder.getTotalRuntime());
   }
 
   public final void testSavingAndLoading() throws Exception {
@@ -100,17 +99,15 @@ public class TestOrderTest extends TestCase {
     assertEquals("100", tokens.nextToken());
     assertEquals("200", tokens.nextToken());
     assertEquals("300", tokens.nextToken());
-    assertEquals("400", tokens.nextToken());
-    assertEquals("500", tokens.nextToken());
   }
 
   public final void testDropOrder() {
     mOrder.dropOrder();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
       assertEquals(i, mOrder.getTestIndex(i));
     }
-    
+
   }
 
   public static Test suite() {
