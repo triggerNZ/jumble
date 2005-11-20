@@ -221,7 +221,7 @@ public class BCELRTSI {
       File dir = new File(finalDir);
 
       if (!dir.exists()) {
-        System.err.println("NOT FOUND: " + dir.getAbsolutePath());
+	  //System.err.println("NOT FOUND: " + dir.getAbsolutePath());
         return new HashSet();
       }
 
