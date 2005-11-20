@@ -21,7 +21,7 @@ public class TimingTestSuiteTest extends TestCase {
   private TestResult mResult;
 
   protected void setUp() throws Exception {
-    mSuite = new TimingTestSuite(new Class[] { TimedTests.class });
+    mSuite = new TimingTestSuite(new Class[] {TimedTests.class});
     mResult = new TestResult();
     PrintStream oldOut = System.out;
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
