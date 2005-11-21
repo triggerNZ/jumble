@@ -227,7 +227,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
         
         return false;
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
       System.err.println("EXCEPTION");
 
       return false;
