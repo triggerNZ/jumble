@@ -35,6 +35,7 @@ public class DependencyExtractorTest extends TestCase {
   public void testDT2() {
     mExtractor.setClassName("jumble.dependency.DT2");
     Collection classes = mExtractor.getAllDependencies("jumble.dependency.DT2", true);
+    //System.out.println(classes);
     assertEquals(3, classes.size());
 
     assertTrue(classes.contains("experiments.JumblerExperiment"));
