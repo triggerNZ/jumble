@@ -56,7 +56,8 @@ public class FastJumblerTest extends TestCase {
     // Unique filename
     mFileName = "tmpTest" + System.currentTimeMillis() + ".dat";
 
-    TimingTestSuite suite = new TimingTestSuite(new Class[] {JumblerExperimentTest.class});
+    TimingTestSuite suite = new TimingTestSuite(
+        new Class[] {JumblerExperimentTest.class });
     suite.run(new TestResult());
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
         mFileName));
@@ -102,9 +103,12 @@ public class FastJumblerTest extends TestCase {
   }
 
   public void testNoMutation() throws Exception {
-    JavaClass original = new ClassParser(getClass().getClassLoader().getResourceAsStream("experiments/JumblerExperiment.class"), "JumblerExperiment.class").parse();
+    JavaClass original = new ClassParser(getClass().getClassLoader()
+        .getResourceAsStream("experiments/JumblerExperiment.class"),
+        "JumblerExperiment.class").parse();
 
-    FastJumbler j = new FastJumbler("experiments.JumblerExperiment", new Mutater(-1));
+    FastJumbler j = new FastJumbler("experiments.JumblerExperiment",
+        new Mutater(-1));
     JavaClass a = j.modifyClass(original);
     compareJavaClasses(original, a);
     JavaClass b = j.modifyClass(original);
@@ -120,47 +124,50 @@ public class FastJumblerTest extends TestCase {
     FastJumbler fj = new FastJumbler("jumble.X2", new Mutater(0));
 
     JavaClass c1 = fj.modifyClass(original);
-    // printClass(c1);
-    compareModification(original, c1, 6, new IDIV());
+    //printClass(original);
+    //System.out.println("-------------------");
+    //printClass(c1);
+    compareModification(original, c1, 3, new IDIV());
 
     fj.setMutater(new Mutater(1));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 8, new IMUL());
+    compareModification(original, c1, 5, new IMUL());
 
     fj.setMutater(new Mutater(2));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 9, new ISUB());
+    compareModification(original, c1, 6, new ISUB());
 
     fj.setMutater(new Mutater(3));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 12, new IMUL());
+    compareModification(original, c1, 9, new IMUL());
 
     fj.setMutater(new Mutater(4));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 14, new IMUL());
+    compareModification(original, c1, 11, new IMUL());
 
     fj.setMutater(new Mutater(5));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 15, new IADD());
+    compareModification(original, c1, 12, new IADD());
 
     fj.setMutater(new Mutater(6));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 17, new ISHL());
+    compareModification(original, c1, 14, new ISHL());
 
     fj.setMutater(new Mutater(7));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 19, new ISHR());
+    compareModification(original, c1, 16, new ISHR());
 
     fj.setMutater(new Mutater(8));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 21, new IOR());
+    compareModification(original, c1, 18, new IOR());
 
     fj.setMutater(new Mutater(9));
     c1 = fj.modifyClass(original);
-    compareModification(original, c1, 23, null);
+    compareModification(original, c1, 25, null);
   }
 
-  private void compareModification(JavaClass orig, JavaClass mod, int mutationPoint, Instruction expected) throws Exception {
+  private void compareModification(JavaClass orig, JavaClass mod,
+      int mutationPoint, Instruction expected) throws Exception {
     int point = 0;
 
     InstructionComparator comp = Instruction.getComparator();
@@ -170,7 +177,8 @@ public class FastJumblerTest extends TestCase {
 
       ByteSequence origCode = new ByteSequence(methods[i].getCode().getCode());
 
-      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode().getCode());
+      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode()
+          .getCode());
 
       while (origCode.available() > 0) {
         final Instruction i1 = Instruction.readInstruction(origCode);
