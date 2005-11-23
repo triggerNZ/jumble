@@ -94,7 +94,19 @@ public class FastRunner {
       testList = new ArrayList();
 
       // We need at least one test
-      testList.add(Utils.getNextArgument(args));
+      try {
+          testList.add(Utils.getNextArgument(args).replace('/', '.'));
+      } catch (NoSuchElementException e) {
+          finishedTests = true;
+          // no test class given, guess its name
+          final String testName;
+          if (className.startsWith("Abstract")) {
+              testName = "Dummy" + className.substring(8) + "Test";
+          } else {
+              testName = className + "Test";
+          }
+          testList.add(testName);
+      }
 
       while (!finishedTests) {
         try {
