@@ -84,23 +84,14 @@ public class JumbleTestSuite extends FlatTestSuite {
     } else {
       newOut = oldOut;
     }
-    FileWriter f;
-    try {
-      f = new FileWriter("jumble-debug.txt", true);
-    } catch (IOException e) {
-      f = null;
-    }
-    PrintWriter out = new PrintWriter(f);
+
     for (int i = 0; i < testCount(); i++) {
       TestCase t = (TestCase) tests[i];
-      out.println(mClass + "." + mMethod + ":" + mMethodRelativeMutationPoint
-                  + " - " + t);
 
       System.setOut(newOut);
       t.run(result);
       System.setOut(oldOut);
       if (result.errorCount() > 0 || result.failureCount() > 0) {
-        out.close();
         return "PASS: " + mClass + ":" + mMethod + ":"
           + mMethodRelativeMutationPoint + ":" + t.getName();
       }
@@ -108,7 +99,6 @@ public class JumbleTestSuite extends FlatTestSuite {
         break;
       }
     }
-    out.close();
     // all tests passed, this mutation is a problem, report it
     // this is made complicated because we must get the modification
     // details from a class loaded in a different name space
