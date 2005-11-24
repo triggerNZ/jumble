@@ -37,7 +37,8 @@ public class FastRunner {
   public static final String CACHE_FILENAME = "jumble-cache.dat";
 
   /** Prevent instantiation. */
-  private FastRunner() { }
+  private FastRunner() {
+  }
 
   /**
    * Main method.
@@ -117,7 +118,7 @@ public class FastRunner {
       }
       Utils.checkForRemainingOptions(args);
       JumbleResult res = runJumble(className, testList, excludeMethods,
-                                   constants, returns, increments, noOrder, load, save, use);
+          constants, returns, increments, noOrder, load, save, use);
       JumbleResultPrinter printer = getPrinter(outputClass);
       printer.printResult(res);
 
@@ -141,8 +142,9 @@ public class FastRunner {
     try {
       final Class clazz = Class.forName(className);
       try {
-        final Constructor c = clazz.getConstructor(new Class[] {PrintStream.class});
-        return (JumbleResultPrinter) c.newInstance(new Object[] {System.out});
+        final Constructor c = clazz
+            .getConstructor(new Class[] {PrintStream.class });
+        return (JumbleResultPrinter) c.newInstance(new Object[] {System.out });
       } catch (IllegalAccessException e) {
         ; // too bad
       } catch (InvocationTargetException e) {
@@ -186,7 +188,7 @@ public class FastRunner {
     System.out.println();
 
     System.out
-      .println("CLASS the fully-qualified name of the class to mutate.");
+        .println("CLASS the fully-qualified name of the class to mutate.");
     System.out.println();
     System.out.println("TESTS a test suite file containing the tests.");
     System.out.println();
@@ -233,10 +235,10 @@ public class FastRunner {
    * @see JumbleResult
    */
   public static JumbleResult runJumble(final String className,
-                                       final List testClassNames, final Set excludeMethods,
-                                       final boolean inlineConstants, final boolean returnVals,
-                                       final boolean increments, boolean noOrder, boolean loadCache,
-                                       boolean saveCache, boolean useCache) throws Exception {
+      final List testClassNames, final Set excludeMethods,
+      final boolean inlineConstants, final boolean returnVals,
+      final boolean increments, boolean noOrder, boolean loadCache,
+      boolean saveCache, boolean useCache) throws Exception {
 
     Class[] testClasses = new Class[testClassNames.size()];
     final TestResult initialResult;
@@ -257,14 +259,13 @@ public class FastRunner {
       if (loadCache) {
         try {
           ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
-                                                                            CACHE_FILENAME));
+              CACHE_FILENAME));
           cache = (FailedTestMap) ois.readObject();
           loaded = true;
         } catch (IOException e) {
           loaded = false;
         }
       }
-
       if (!loaded) {
         cache = new FailedTestMap();
       }
@@ -284,44 +285,12 @@ public class FastRunner {
 
     // Now, if the tests failed, can return straight away
     if (!initialResult.wasSuccessful()) {
-      return new JumbleResult() {
-          public String getClassName() {
-            return className;
-          }
-
-          public Mutation[] getAllMutations() {
-            return null;
-          }
-
-          public String[] getTestClasses() {
-            return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
-          }
-
-          public long getTimeoutLength() {
-            return 0;
-          }
-
-          public TestResult getInitialTestResult() {
-            return initialResult;
-          }
-
-          public Mutation[] getCovered() {
-            return null;
-          }
-
-          public Mutation[] getMissed() {
-            return null;
-          }
-
-          public Mutation[] getTimeouts() {
-            return null;
-          }
-        };
+      return new FailedTestResult(className, testClassNames, initialResult);
     }
 
     // Store the timing stuff in a temporary file
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-                                                                         fileName));
+        fileName));
     oos.writeObject(order);
     oos.close();
 
@@ -340,32 +309,26 @@ public class FastRunner {
     final JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler");
     Process childProcess = null;
     IOThread iot = null;
-
+    
     final Mutation[] allMutations = new Mutation[mutationCount];
-
     for (int currentMutation = 0; currentMutation < mutationCount; currentMutation++) {
-
       // If no process is running, start a new one
       if (childProcess == null) {
         ArrayList args = new ArrayList();
-
         // class name
         args.add(className);
-
         // mutation point
         args.add(String.valueOf(currentMutation));
-
         // test suite filename
         args.add(fileName);
-
         if (useCache) {
-          
           try {
             File f = new File(cacheFileName);
             if (f.exists()) {
               f.delete();
             }
-            ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(cacheFileName));
+            ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(
+                cacheFileName));
             o.writeObject(cache);
             o.close();
             args.add(cacheFileName);
@@ -373,13 +336,11 @@ public class FastRunner {
             e.printStackTrace();
           }
         }
-
         // exclude methods
         if (!excludeMethods.isEmpty()) {
           StringBuffer ex = new StringBuffer();
           ex.append("-x ");
           Iterator it = excludeMethods.iterator();
-
           for (int i = 0; i < excludeMethods.size(); i++) {
             if (i == 0) {
               ex.append(it.next());
@@ -389,28 +350,23 @@ public class FastRunner {
           }
           args.add(ex.toString());
         }
-
         // inline constants
         if (inlineConstants) {
           args.add("-k");
         }
-
         // return values
         if (returnVals) {
           args.add("-r");
         }
-
         // increments
         if (increments) {
           args.add("-i");
         }
-
         // start process
         runner.setArguments((String[]) args.toArray(new String[args.size()]));
         childProcess = runner.start();
         iot = new IOThread(childProcess.getInputStream());
         iot.start();
-
         // read the "START" to let us know the JVM has started
         // we don't want to time this.
         while (true) {
@@ -422,24 +378,20 @@ public class FastRunner {
             break;
           } else {
             throw new RuntimeException("jumble.fast.FastJumbler returned "
-                                       + str + " instead of START");
-
+                + str + " instead of START");
           }
         }
       }
-
       long before = System.currentTimeMillis();
       long after = before;
       long timeout = computeTimeout(timeLeft);
-
       // Run until we time out
       while (true) {
         String out = iot.getNext();
-
         if (out == null) {
           if (after - before > timeout) {
             allMutations[currentMutation] = new Mutation("TIMEOUT", className,
-                                                         currentMutation);
+                currentMutation);
             childProcess.destroy();
             childProcess = null;
             break;
@@ -451,19 +403,16 @@ public class FastRunner {
           try {
             // We have output so go to the next loop iteration
             allMutations[currentMutation] = new Mutation(out, className,
-                                                         currentMutation);
+                currentMutation);
             if (useCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
               StringTokenizer tokens = new StringTokenizer(out.substring(6),
-                                                           ":");
+                  ":");
               String clazzName = tokens.nextToken();
               assert clazzName.equals(className);
               String methodName = tokens.nextToken();
-              //System.out.println(methodName);
               int mutPoint = Integer.parseInt(tokens.nextToken());
-              //System.out.println(mutPoint);
               String testName = tokens.nextToken();
-              //System.out.println(testName);
               cache.addFailure(className, methodName, mutPoint, testName);
             }
           } catch (RuntimeException e) {
@@ -472,72 +421,24 @@ public class FastRunner {
           break;
         }
       }
-
     }
 
-    JumbleResult ret = new JumbleResult() {
-        public String getClassName() {
-          return className;
-        }
-
-        public TestResult getInitialTestResult() {
-          return initialResult;
-        }
-
-        public Mutation[] getAllMutations() {
-          return allMutations;
-        }
-
-        public Mutation[] getCovered() {
-          return filter(Mutation.PASS);
-        }
-
-        public Mutation[] getTimeouts() {
-          return filter(Mutation.TIMEOUT);
-        }
-
-        public Mutation[] getMissed() {
-          return filter(Mutation.FAIL);
-        }
-
-        public long getTimeoutLength() {
-          return computeTimeout(order.getTotalRuntime());
-        }
-
-        public String[] getTestClasses() {
-          return (String[]) testClassNames.toArray(new String[testClassNames.size()]);
-        }
-
-        private Mutation[] filter(int mutationType) {
-          Mutation[] all = getAllMutations();
-          ArrayList ret = new ArrayList();
-
-          for (int i = 0; i < all.length; i++) {
-            if (all[i].getStatus() == mutationType) {
-              ret.add(all[i]);
-            }
-          }
-
-          return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
-        }
-
-      };
-
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames,
+        initialResult, allMutations, order);
     // finally, delete the test suite file
     if (!new File(fileName).delete()) {
       System.err.println("Error: could not delete temporary file");
     }
-    
-    //Also delete the temporary cache and save the cache if needed
+    // Also delete the temporary cache and save the cache if needed
     if (useCache) {
       if (!new File(cacheFileName).delete()) {
         System.err.println("Error: could not delete temporary cache file");
       }
-      
       if (saveCache) {
         try {
-          //System.out.println("saving...");
-          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(CACHE_FILENAME));
+          // System.out.println("saving...");
+          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(
+              CACHE_FILENAME));
           os.writeObject(cache);
           os.close();
         } catch (RuntimeException e) {
@@ -545,7 +446,122 @@ public class FastRunner {
         }
       }
     }
-    
     return ret;
   }
+}
+
+class FailedTestResult extends JumbleResult {
+  private String mClassName;
+
+  private List mTestClassNames;
+
+  private TestResult mInitialResult;
+
+  public FailedTestResult(String className, List testClassNames,
+      TestResult result) {
+    mClassName = className;
+    mTestClassNames = testClassNames;
+    mInitialResult = result;
+  }
+
+  public String getClassName() {
+    return mClassName;
+  }
+
+  public Mutation[] getAllMutations() {
+    return null;
+  }
+
+  public String[] getTestClasses() {
+    return (String[]) mTestClassNames
+        .toArray(new String[mTestClassNames.size()]);
+  }
+
+  public long getTimeoutLength() {
+    return 0;
+  }
+
+  public TestResult getInitialTestResult() {
+    return mInitialResult;
+  }
+
+  public Mutation[] getCovered() {
+    return null;
+  }
+
+  public Mutation[] getMissed() {
+    return null;
+  }
+
+  public Mutation[] getTimeouts() {
+    return null;
+  }
+}
+
+class NormalJumbleResult extends JumbleResult {
+  private String mClassName;
+
+  private List mTestClassNames;
+
+  private TestResult mInitialResult;
+
+  private Mutation[] mAllMutations;
+
+  private TestOrder mOrder;
+
+  public NormalJumbleResult(String className, List testClassNames,
+      TestResult initialResult, Mutation[] allMutations, TestOrder order) {
+    mClassName = className;
+    mTestClassNames = testClassNames;
+    mInitialResult = initialResult;
+    mAllMutations = allMutations;
+    mOrder = order;
+  }
+
+  public String getClassName() {
+    return mClassName;
+  }
+
+  public TestResult getInitialTestResult() {
+    return mInitialResult;
+  }
+
+  public Mutation[] getAllMutations() {
+    return mAllMutations;
+  }
+
+  public Mutation[] getCovered() {
+    return filter(Mutation.PASS);
+  }
+
+  public Mutation[] getTimeouts() {
+    return filter(Mutation.TIMEOUT);
+  }
+
+  public Mutation[] getMissed() {
+    return filter(Mutation.FAIL);
+  }
+
+  public long getTimeoutLength() {
+    return FastRunner.computeTimeout(mOrder.getTotalRuntime());
+  }
+
+  public String[] getTestClasses() {
+    return (String[]) mTestClassNames
+        .toArray(new String[mTestClassNames.size()]);
+  }
+
+  private Mutation[] filter(int mutationType) {
+    Mutation[] all = getAllMutations();
+    ArrayList ret = new ArrayList();
+
+    for (int i = 0; i < all.length; i++) {
+      if (all[i].getStatus() == mutationType) {
+        ret.add(all[i]);
+      }
+    }
+
+    return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
+  }
+
 }
