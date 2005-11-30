@@ -1,58 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="jumble" basedir="." default="zipall">
+<project name="jumble" basedir="." default="jar">
+	<property name="src.dir" value="." />
+	<property name="test.dir" value="../jumbletests" />
+	<property name="lib.dir" value="../jumblelib" />
+	<property name="classes.dir" value="c:/jumbletemp/" />
 
-    <property name="src.dir" value="."/>
-    <property name="test.dir" value = "../jumbletest"/>
-	<property name="release.dir" value="C:\jumblerelease"/>
-	<property name="classes.dir" value="${release.dir}/bin"/>
-	<property name="outsrc.dir" value="${release.dir}/src"/>
-    <property name="lib.dir" value="${release.dir}/lib"/>
-	
-	<property name="bcel.jar" value="d:\reeltwo\jar\bcel.jar"/>
-	<property name="junit.jar" value="d:\reeltwo\jar\junit.jar"/>
-	
-	<target name="clean" description="Delete all generated files">
-        <delete dir="${classes.dir}" failonerror="false"/>
-        <delete file="${release.dir}/${ant.project.name}.jar"/>
-    	<delete file="${release.dir}/${ant.project.name}.zip"/>
-		<delete dir="${outsrc.dir}" failonerror="false"/>
-		<delete dir="${lib.dir}" failonerror="false"/>
-    </target>
-	
-	<target name="copysrc" depends="clean" description="Copy source to release directory">
-		<mkdir dir="${outsrc.dir}"/>
-		<copy todir="${outsrc.dir}">
-			<fileset dir="${src.dir}" casesensitive="no">
-			  <include name="**/*.java"/>
-			</fileset>
-		</copy>
+	<target name="init">
+		<mkdir dir="${classes.dir}" />
 	</target>
-    
-	<target name="compile" description="Compiles the Task" depends="clean">
-        <mkdir dir="${classes.dir}"/>
-       <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true"/>
-    </target>
-	
-	<target name="compiletests" description="Compiles the Task" depends="compile">
-	   <javac srcdir="${test.dir}" destdir="${classes.dir}" debug="true"/>
-	</target>
-	
-    <target name="jar" description="JARs the Task" depends="compile,compiletests">
-    	<mkdir dir="${lib.dir}"/>
-    	<jar destfile="${lib.dir}/${ant.project.name}.jar">
-        	<fileset dir="${classes.dir}"/>
-        </jar>
-    </target>
 
-	<target name="zipall" description="Zips release directory for distribution"
-		depends="copysrc,compile,jar,lib">
-		<zip destfile="${release.dir}/${ant.project.name}.zip" basedir="${release.dir}"/>
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.4" classpath="${lib.dir}/bcel.jar${path.separator}${lib.dir}/junit.jar" debug="on" />
+
 	</target>
-	
-	<target name="lib" description="Copies the Junit and JARS to the destination directory"
-		depends="clean, jar">
-		<mkdir dir="${lib.dir}"/>
-		<copy file="${junit.jar}" todir="${lib.dir}"/>
-		<copy file="${bcel.jar}" todir="${lib.dir}"/>
+
+	<target name="jar" depends="compile">
+		<jar destfile="jumble.jar">
+			<fileset dir="${classes.dir}" includes="**/*.class" />
+			<zipfileset src="${lib.dir}/bcel.jar" />
+			<zipfileset src="${lib.dir}/junit.jar" />
+			<manifest>
+				<attribute name="Main-Class" value="jumble.fast.FastRunner" />
+			</manifest>
+		</jar>
 	</target>
 </project>
