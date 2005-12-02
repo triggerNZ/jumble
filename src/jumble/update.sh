@@ -76,7 +76,7 @@ for file in $(cat c2list); do
     classname=$(echo $f | sed 's|/|.|g')
     if [ ! -r $JHOME/jumbles/$f.txt ]; then
         mkdir -p $JHOME/jumbles/${f%/*}
-        java jumble.fast.FastRunnerJumbleMain -c $classname | tee $JHOME/jumbles/$f.txt
+        java jumble.fast.FastRunner -r -k -i $classname | tee $JHOME/jumbles/$f.txt
     elif [ "$j" -nt $JHOME/jumbles/$f.txt ]; then
         java jumble.JumbleMain -c $classname | tee $JHOME/jumbles/$f.txt
     elif [ "$jt" -nt $JHOME/jumbles/$f.txt ]; then
