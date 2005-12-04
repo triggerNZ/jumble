@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import jumble.Mutater;
 import jumble.Mutation;
 import jumble.util.IOThread;
@@ -275,6 +274,18 @@ public class FastRunner {
       }
     }
 
+    // Get the number of mutation points from the Jumbler
+    final Mutater m = new Mutater(0);
+    m.setIgnoredMethods(excludeMethods);
+    m.setMutateIncrements(increments);
+    m.setMutateInlineConstants(inlineConstants);
+    m.setMutateReturnValues(returnVals);
+
+    final int mutationCount = m.countMutationPoints(className);
+    if (mutationCount == -1) {
+      return new InterfaceResult(className); 
+    }
+
     for (int i = 0; i < testClasses.length; i++) {
       testClasses[i] = Class.forName((String) testClassNames.get(i));
     }
@@ -300,15 +311,6 @@ public class FastRunner {
 
     // compute the timeout
     long timeLeft = order.getTotalRuntime();
-
-    // Get the number of mutation points from the Jumbler
-    final Mutater m = new Mutater(0);
-    m.setIgnoredMethods(excludeMethods);
-    m.setMutateIncrements(increments);
-    m.setMutateInlineConstants(inlineConstants);
-    m.setMutateReturnValues(returnVals);
-
-    final int mutationCount = m.countMutationPoints(className);
 
     final JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler");
     Process childProcess = null;
