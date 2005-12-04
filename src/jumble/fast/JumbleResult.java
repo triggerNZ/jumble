@@ -81,4 +81,13 @@ public abstract class JumbleResult {
    *         not jumbled.
    */
   public abstract Mutation[] getAllMutations();
+
+  /**
+   * Was the class tested actually an interface.
+   *
+   * @return true for an interface.
+   */
+  public boolean isInterface() {
+    return false;
+  }
 }
