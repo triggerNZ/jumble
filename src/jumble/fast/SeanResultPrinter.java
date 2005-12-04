@@ -33,7 +33,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
 
     out.println("Mutating " + res.getClassName());
     
-    if (Class.forName(res.getClassName()).isInterface()) {
+    if (res.isInterface()) {
       out.println("Score: 100 (INTERFACE)");
       return;
   }
