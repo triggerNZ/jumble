@@ -91,7 +91,7 @@ public class FastRunner {
         return;
       }
 
-      className = Utils.getNextArgument(args);
+      className = Utils.getNextArgument(args).replace('/', '.');
       testList = new ArrayList();
 
       // We need at least one test
@@ -187,8 +187,7 @@ public class FastRunner {
     System.out.println("java jumble.fast.FastRunner [OPTIONS] [CLASS] [TESTS]");
     System.out.println();
 
-    System.out
-        .println("CLASS the fully-qualified name of the class to mutate.");
+    System.out.println("CLASS the fully-qualified name of the class to mutate.");
     System.out.println();
     System.out.println("TESTS a test suite file containing the tests.");
     System.out.println();
