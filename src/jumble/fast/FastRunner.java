@@ -102,9 +102,14 @@ public class FastRunner {
           // no test class given, guess its name
           final String testName;
           if (className.startsWith("Abstract")) {
-              testName = "Dummy" + className.substring(8) + "Test";
+            testName = "Dummy" + className.substring(8) + "Test";
           } else {
+            final int ab = className.indexOf(".Abstract");
+            if (ab != -1) {
+              testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9) + "Test";
+            } else {
               testName = className + "Test";
+            }
           }
           testList.add(testName);
       }
