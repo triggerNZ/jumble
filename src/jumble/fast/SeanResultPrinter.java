@@ -36,7 +36,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
     if (res.isInterface()) {
       out.println("Score: 100 (INTERFACE)");
       return;
-  }
+    }
     
     String[] testClasses = res.getTestClasses();
     out.print("Tests: ");
