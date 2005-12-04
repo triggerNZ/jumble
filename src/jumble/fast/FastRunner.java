@@ -309,8 +309,7 @@ public class FastRunner {
     }
 
     // Store the timing stuff in a temporary file
-    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-        fileName));
+    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
     oos.writeObject(order);
     oos.close();
 
