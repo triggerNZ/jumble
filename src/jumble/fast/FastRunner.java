@@ -287,7 +287,12 @@ public class FastRunner {
     }
 
     for (int i = 0; i < testClasses.length; i++) {
-      testClasses[i] = Class.forName((String) testClassNames.get(i));
+      try {
+        testClasses[i] = Class.forName((String) testClassNames.get(i));
+      } catch (ClassNotFoundException e) {
+        // test class did not exist
+        return new FailedTestResult(className, testClassNames, null);
+      }
     }
     initialResult = new TestResult();
     timingSuite = new TimingTestSuite(testClasses);

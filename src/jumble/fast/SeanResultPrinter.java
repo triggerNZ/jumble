@@ -3,6 +3,7 @@ package jumble.fast;
 import java.io.PrintStream;
 
 import jumble.Mutation;
+import junit.framework.TestResult;
 
 /**
  * Class outputting jumble results in Sean's original jumble format
@@ -44,8 +45,14 @@ public class SeanResultPrinter extends AbstractResultPrinter {
       out.print((i == 0 ? "" : ", ") + testClasses[i]);
     }
     out.println();
+
+    final TestResult result = res.getInitialTestResult();
+    if (result == null) {
+      out.println("Score: 0 (NO TEST CLASS)");
+      return;
+    }
     
-    if (!res.getInitialTestResult().wasSuccessful()) {
+    if (!result.wasSuccessful()) {
       out.println("Score: 0 (TEST CLASS IS BROKEN)");
       return;
     }
