@@ -13,7 +13,7 @@ import junit.textui.TestRunner;
 public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(JumbleTestSuiteTest.suite());
+
     suite.addTest(MutaterTest.suite());
   
     suite.addTest(jumble.dependency.AllTests.suite());
