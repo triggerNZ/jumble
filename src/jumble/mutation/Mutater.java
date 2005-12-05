@@ -1,4 +1,4 @@
-package jumble;
+package jumble.mutation;
 
 import java.io.IOException;
 import java.util.HashSet;
