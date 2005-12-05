@@ -74,12 +74,10 @@ public class Jumble {
         }
       }
       // Now that we have the tests to run, run Jumble
-      HashSet ignore = new HashSet();
-      ignore.add("main");
-      ignore.add("integrity");
-      JumbleResult res = FastRunner
-          .runJumble(className, new ArrayList(testClasses), ignore, true, true,
-              true, false, true, true, true);
+      FastRunner runner = new FastRunner();
+      runner.addExcludeMethod("main");
+      runner.addExcludeMethod("integrity");
+      JumbleResult res = runner.runJumble(className, new ArrayList(testClasses));
       new SeanResultPrinter(System.out).printResult(res);
 
     } catch (Exception e) {

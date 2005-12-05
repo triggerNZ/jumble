@@ -90,9 +90,9 @@ public class JumbleAll {
     System.out.println("RESULTS:");
     System.out.println();
 
-    Set exclude = new HashSet();
-    exclude.add("main");
-    exclude.add("integrity");
+    FastRunner runner = new FastRunner();
+    runner.addExcludeMethod("main");
+    runner.addExcludeMethod("integrity");
 
     for (Iterator it = classNames.iterator(); it.hasNext();) {
       String className = (String) it.next();
@@ -104,8 +104,7 @@ public class JumbleAll {
         if (DEBUG) {
           System.out.print("(" + testList.size() + " tests" + ":");
         }
-        JumbleResult res = FastRunner.runJumble(className, testList, exclude,
-            true, true, true, false, true, true, true);
+        JumbleResult res = runner.runJumble(className, testList);
 
         if (res.getInitialTestResult().wasSuccessful()) {
           if (res.getAllMutations().length == 0) {

@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import jumble.Mutater;
 import jumble.util.JavaRunner;
@@ -583,8 +582,8 @@ public class FastJumblerTest extends TestCase {
 
     ArrayList tests = new ArrayList();
     tests.add("experiments.JumblerExperimentTest");
-    FastRunner.runJumble("experiments.JumblerExperiment", tests, new HashSet(),
-        true, true, true, false, true, true, true);
+    FastRunner runner = new FastRunner();
+    runner.runJumble("experiments.JumblerExperiment", tests);
 
     assertTrue(f.exists());
 

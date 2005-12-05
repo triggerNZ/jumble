@@ -32,12 +32,31 @@ import java.lang.reflect.InvocationTargetException;
  * 
  */
 public class FastRunner {
+
   /** Filename for the cache */
   public static final String CACHE_FILENAME = "jumble-cache.dat";
 
-  /** Prevent instantiation. */
-  private FastRunner() {
-  }
+  /** Whether to mutate constants */
+  private boolean mInlineConstants = true;
+
+  /** Whether to mutate return values */
+  private boolean mReturnVals = true;
+
+  /** Whether to mutate increments */
+  private boolean mIncrements = true;
+
+  private boolean mNoOrder = false;
+
+  private boolean mLoadCache = true;
+  private boolean mSaveCache = true;
+  private boolean mUseCache = true;
+
+  private Set mExcludeMethods = new HashSet();
+
+  /** The variable storing the failed tests - can get pretty big */
+  FailedTestMap mCache = null;
+
+
 
   /**
    * Main method.
@@ -63,26 +82,28 @@ public class FastRunner {
   public static void main(String[] args) throws Exception {
     try {
       // Process arguments
+      FastRunner jumble = new FastRunner();
+
       boolean help = Utils.getFlag('h', args);
       String excludes = Utils.getOption('x', args);
-      boolean constants = Utils.getFlag('k', args);
-      boolean returns = Utils.getFlag('r', args);
-      boolean increments = Utils.getFlag('i', args);
       boolean finishedTests = false;
       String outputClass = Utils.getOption('o', args);
-      boolean noOrder = Utils.getFlag('n', args);
-      boolean load = !Utils.getFlag('l', args);
-      boolean save = !Utils.getFlag('s', args);
-      boolean use = !Utils.getFlag('u', args);
+
+      jumble.mInlineConstants = Utils.getFlag('k', args);
+      jumble.mReturnVals = Utils.getFlag('r', args);
+      jumble.mIncrements = Utils.getFlag('i', args);
+      jumble.mNoOrder = Utils.getFlag('n', args);
+      jumble.mLoadCache = !Utils.getFlag('l', args);
+      jumble.mSaveCache = !Utils.getFlag('s', args);
+      jumble.mUseCache = !Utils.getFlag('u', args);
 
       String className;
       List testList;
-      Set excludeMethods = new HashSet();
 
       StringTokenizer tokens = new StringTokenizer(excludes, ",");
 
       while (tokens.hasMoreTokens()) {
-        excludeMethods.add(tokens.nextToken());
+        jumble.addExcludeMethod(tokens.nextToken());
       }
 
       if (help) {
@@ -121,8 +142,7 @@ public class FastRunner {
         }
       }
       Utils.checkForRemainingOptions(args);
-      JumbleResult res = runJumble(className, testList, excludeMethods,
-          constants, returns, increments, noOrder, load, save, use);
+      JumbleResult res = jumble.runJumble(className, testList);
       JumbleResultPrinter printer = getPrinter(outputClass);
       printer.printResult(res);
 
@@ -216,32 +236,101 @@ public class FastRunner {
     return runtime * 10 + 2000;
   }
 
+  private void initCache() throws Exception {
+    if (mUseCache) {
+      boolean loaded = false;
+      
+      // Load the cache if it exists and is needed
+      if (mLoadCache) {
+        try {
+          ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CACHE_FILENAME));
+          mCache = (FailedTestMap) ois.readObject();
+          loaded = true;
+        } catch (IOException e) {
+          loaded = false;
+        }
+      }
+      if (!loaded) {
+        mCache = new FailedTestMap();
+      }
+    }
+  }
+
+  private boolean writeCache(String cacheFileName) {
+    try {
+      File f = new File(cacheFileName);
+      if (f.exists()) {
+        f.delete();
+      }
+      ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(cacheFileName));
+      o.writeObject(mCache);
+      o.close();
+      return true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public void addExcludeMethod(String methodName) {
+    mExcludeMethods.add(methodName);
+  }
+
+  private String[] createArgs(String className, int currentMutation, String fileName, String cacheFileName) {
+    ArrayList args = new ArrayList();
+    // class name
+    args.add(className);
+    // mutation point
+    args.add(String.valueOf(currentMutation));
+    // test suite filename
+    args.add(fileName);
+    
+    if (mUseCache) {
+      // Write a temp cache
+      if (writeCache(cacheFileName)) {
+        args.add(cacheFileName);
+      }
+    }
+    
+    // exclude methods
+    if (!mExcludeMethods.isEmpty()) {
+      StringBuffer ex = new StringBuffer();
+      ex.append("-x ");
+      Iterator it = mExcludeMethods.iterator();
+      for (int i = 0; i < mExcludeMethods.size(); i++) {
+        if (i == 0) {
+          ex.append(it.next());
+        } else {
+          ex.append("," + it.next());
+        }
+      }
+      args.add(ex.toString());
+    }
+    // inline constants
+    if (mInlineConstants) {
+      args.add("-k");
+    }
+    // return values
+    if (mReturnVals) {
+      args.add("-r");
+    }
+    // increments
+    if (mIncrements) {
+      args.add("-i");
+    }
+    return (String[]) args.toArray(new String[args.size()]);
+  }
+
   /**
    * Performs a Jumble run on the specified class with the specified tests.
    * 
-   * @param className
-   *          the name of the class to Jumble
-   * @param testClassNames
-   *          the names of the associated test classes
-   * @param excludeMethods
-   *          a <CODE>Set</CODE> of strings containing the names of the
-   *          methods which are excluded from the jumble run.
-   * @param inlineConstants
-   *          flag indicating whether to mutate inline constants
-   * @param returnVals
-   *          flag indicating whether to mutate return values.
-   * @param increments
-   *          flag indicating whether to mutate increment instructions.
+   * @param className the name of the class to Jumble
+   * @param testClassNames the names of the associated test classes
    * @return the results of the Jumble run
-   * @throws Exception
-   *           if something goes wrong
+   * @throws Exception if something goes wrong
    * @see JumbleResult
    */
-  public static JumbleResult runJumble(final String className,
-      final List testClassNames, final Set excludeMethods,
-      final boolean inlineConstants, final boolean returnVals,
-      final boolean increments, boolean noOrder, boolean loadCache,
-      boolean saveCache, boolean useCache) throws Exception {
+  public JumbleResult runJumble(final String className, final List testClassNames) throws Exception {
 
     Class[] testClasses = new Class[testClassNames.size()];
     final TestResult initialResult;
@@ -252,34 +341,14 @@ public class FastRunner {
     // Unique name for the cache
     final String cacheFileName = "cache" + System.currentTimeMillis() + ".dat";
 
-    /** The variable storing the failed tests - can get pretty big */
-    FailedTestMap cache = null;
-
-    if (useCache) {
-      boolean loaded = false;
-
-      // Load the cache if it exists and is needed
-      if (loadCache) {
-        try {
-          ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
-              CACHE_FILENAME));
-          cache = (FailedTestMap) ois.readObject();
-          loaded = true;
-        } catch (IOException e) {
-          loaded = false;
-        }
-      }
-      if (!loaded) {
-        cache = new FailedTestMap();
-      }
-    }
+    initCache();
 
     // Get the number of mutation points from the Jumbler
     final Mutater m = new Mutater(0);
-    m.setIgnoredMethods(excludeMethods);
-    m.setMutateIncrements(increments);
-    m.setMutateInlineConstants(inlineConstants);
-    m.setMutateReturnValues(returnVals);
+    m.setIgnoredMethods(mExcludeMethods);
+    m.setMutateIncrements(mIncrements);
+    m.setMutateInlineConstants(mInlineConstants);
+    m.setMutateReturnValues(mReturnVals);
 
     final int mutationCount = m.countMutationPoints(className);
     if (mutationCount == -1) {
@@ -299,7 +368,7 @@ public class FastRunner {
     timingSuite.run(initialResult);
     order = timingSuite.getOrder();
 
-    if (noOrder) {
+    if (mNoOrder) {
       order.dropOrder();
     }
 
@@ -324,56 +393,8 @@ public class FastRunner {
     for (int currentMutation = 0; currentMutation < mutationCount; currentMutation++) {
       // If no process is running, start a new one
       if (childProcess == null) {
-        ArrayList args = new ArrayList();
-        // class name
-        args.add(className);
-        // mutation point
-        args.add(String.valueOf(currentMutation));
-        // test suite filename
-        args.add(fileName);
-        if (useCache) {
-          try {
-            File f = new File(cacheFileName);
-            if (f.exists()) {
-              f.delete();
-            }
-            ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(
-                cacheFileName));
-            o.writeObject(cache);
-            o.close();
-            args.add(cacheFileName);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-        // exclude methods
-        if (!excludeMethods.isEmpty()) {
-          StringBuffer ex = new StringBuffer();
-          ex.append("-x ");
-          Iterator it = excludeMethods.iterator();
-          for (int i = 0; i < excludeMethods.size(); i++) {
-            if (i == 0) {
-              ex.append(it.next());
-            } else {
-              ex.append("," + it.next());
-            }
-          }
-          args.add(ex.toString());
-        }
-        // inline constants
-        if (inlineConstants) {
-          args.add("-k");
-        }
-        // return values
-        if (returnVals) {
-          args.add("-r");
-        }
-        // increments
-        if (increments) {
-          args.add("-i");
-        }
         // start process
-        runner.setArguments((String[]) args.toArray(new String[args.size()]));
+        runner.setArguments(createArgs(className, currentMutation, fileName, cacheFileName));
         childProcess = runner.start();
         iot = new IOThread(childProcess.getInputStream());
         iot.start();
@@ -414,7 +435,7 @@ public class FastRunner {
             // We have output so go to the next loop iteration
             allMutations[currentMutation] = new Mutation(out, className,
                 currentMutation);
-            if (useCache && allMutations[currentMutation].isPassed()) {
+            if (mUseCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
               StringTokenizer tokens = new StringTokenizer(out.substring(6),
                   ":");
@@ -423,7 +444,7 @@ public class FastRunner {
               String methodName = tokens.nextToken();
               int mutPoint = Integer.parseInt(tokens.nextToken());
               String testName = tokens.nextToken();
-              cache.addFailure(className, methodName, mutPoint, testName);
+              mCache.addFailure(className, methodName, mutPoint, testName);
             }
           } catch (RuntimeException e) {
             throw e;
@@ -433,29 +454,21 @@ public class FastRunner {
       }
     }
 
-    JumbleResult ret = new NormalJumbleResult(className, testClassNames,
-        initialResult, allMutations, order);
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, order);
     // finally, delete the test suite file
     if (!new File(fileName).delete()) {
       System.err.println("Error: could not delete temporary file");
     }
     // Also delete the temporary cache and save the cache if needed
-    if (useCache) {
+    if (mUseCache) {
       if (!new File(cacheFileName).delete()) {
         System.err.println("Error: could not delete temporary cache file");
       }
-      if (saveCache) {
-        try {
-          // System.out.println("saving...");
-          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(
-              CACHE_FILENAME));
-          os.writeObject(cache);
-          os.close();
-        } catch (RuntimeException e) {
-          e.printStackTrace();
-        }
+      if (mSaveCache) {
+        writeCache(CACHE_FILENAME);
       }
     }
+    mCache = null;
     return ret;
   }
 }
