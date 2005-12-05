@@ -1,0 +1,4 @@
+# don't allow people to retrieve non-cgi executable files or our private data
+<FilesMatch ^(jumble-cgi)$>
+  deny from all
+</FilesMatch>
