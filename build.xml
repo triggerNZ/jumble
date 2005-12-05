@@ -30,7 +30,7 @@
       <zipfileset src="${lib.dir}/bcel.jar" />
       <zipfileset src="${lib.dir}/junit.jar" />
       <manifest>
-	<attribute name="Main-Class" value="jumble.fast.FastRunner" />
+	<attribute name="Main-Class" value="jumble.Jumble" />
       </manifest>
     </jar>
   </target>
