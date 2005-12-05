@@ -21,6 +21,10 @@ import jumble.util.Utils;
  */
 public class Jumble {
 
+  /** Prevent instantiation */
+  private Jumble() {
+  }
+
   /**
    * Main method.
    * 
