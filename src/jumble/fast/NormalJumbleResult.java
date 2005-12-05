@@ -22,15 +22,15 @@ public class NormalJumbleResult extends JumbleResult {
 
   private Mutation[] mAllMutations;
 
-  private TestOrder mOrder;
+  private long mTimeoutLength;
 
   public NormalJumbleResult(String className, List testClassNames,
-      TestResult initialResult, Mutation[] allMutations, TestOrder order) {
+      TestResult initialResult, Mutation[] allMutations, long timeout) {
     mClassName = className;
     mTestClassNames = testClassNames;
     mInitialResult = initialResult;
     mAllMutations = allMutations;
-    mOrder = order;
+    mTimeoutLength = timeout;
   }
 
   /** {@inheritDoc} */
@@ -65,7 +65,7 @@ public class NormalJumbleResult extends JumbleResult {
 
   /** {@inheritDoc} */
   public long getTimeoutLength() {
-    return FastRunner.computeTimeout(mOrder.getTotalRuntime());
+    return mTimeoutLength;
   }
 
   /** {@inheritDoc} */

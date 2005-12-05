@@ -421,7 +421,7 @@ public class FastRunner {
       }
     }
 
-    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, order);
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, computeTimeout(order.getTotalRuntime()));
     // finally, delete the test suite file
     if (!new File(fileName).delete()) {
       System.err.println("Error: could not delete temporary file");
