@@ -1,4 +1,4 @@
-package jumble;
+package jumble.mutation;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
