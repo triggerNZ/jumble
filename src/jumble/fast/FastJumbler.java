@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import jumble.Mutater;
+import jumble.mutation.Mutater;
 import jumble.util.Utils;
 
 import org.apache.bcel.classfile.JavaClass;

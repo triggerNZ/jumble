@@ -1,6 +1,6 @@
 package jumble.fast;
 
-import jumble.Mutation;
+import jumble.mutation.Mutation;
 import junit.framework.TestResult;
 
 /**

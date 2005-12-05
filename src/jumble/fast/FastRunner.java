@@ -6,30 +6,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
-import jumble.Mutater;
-import jumble.Mutation;
+import jumble.mutation.Mutater;
+import jumble.mutation.Mutation;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
-import jumble.util.Utils;
 import junit.framework.TestResult;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * A runner for the <CODE>FastJumbler</CODE>. Runs the FastJumbler in a new
- * JVM and detects timeouts. Consists mostly of static methods.
+ * JVM and detects timeouts.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
- * 
  */
 public class FastRunner {
 
@@ -56,173 +50,144 @@ public class FastRunner {
   /** The variable storing the failed tests - can get pretty big */
   FailedTestMap mCache = null;
 
-
-
+  
   /**
-   * Main method.
-   * 
-   * @param args
-   *          command line arguments. format is
-   * 
-   * <PRE>
-   * 
-   * java jumble.fast.FastRunner [OPTIONS] [CLASS] [TESTS]
-   * 
-   * CLASS the fully-qualified name of the class to mutate.
-   * 
-   * TESTS a list of test names to run on this class
-   * 
-   * OPTIONS -r Mutate return values. -k Mutate inline constants. -i Mutate
-   * increments. -x Exclude specified methods. -h Display this help message. -o
-   * Name of the class responsible for producing output. -n Do not order tests
-   * by runtime. -s Do not save cache. -l Do not load cache.
-   * 
-   * </PRE>
+   * Gets whether inline constants will be mutated.
+   *
+   * @return true if inline constants will be mutated.
    */
-  public static void main(String[] args) throws Exception {
-    try {
-      // Process arguments
-      FastRunner jumble = new FastRunner();
-
-      boolean help = Utils.getFlag('h', args);
-      String excludes = Utils.getOption('x', args);
-      boolean finishedTests = false;
-      String outputClass = Utils.getOption('o', args);
-
-      jumble.mInlineConstants = Utils.getFlag('k', args);
-      jumble.mReturnVals = Utils.getFlag('r', args);
-      jumble.mIncrements = Utils.getFlag('i', args);
-      jumble.mNoOrder = Utils.getFlag('n', args);
-      jumble.mLoadCache = !Utils.getFlag('l', args);
-      jumble.mSaveCache = !Utils.getFlag('s', args);
-      jumble.mUseCache = !Utils.getFlag('u', args);
-
-      String className;
-      List testList;
-
-      StringTokenizer tokens = new StringTokenizer(excludes, ",");
-
-      while (tokens.hasMoreTokens()) {
-        jumble.addExcludeMethod(tokens.nextToken());
-      }
-
-      if (help) {
-        printUsage();
-        return;
-      }
-
-      className = Utils.getNextArgument(args).replace('/', '.');
-      testList = new ArrayList();
-
-      // We need at least one test
-      try {
-          testList.add(Utils.getNextArgument(args).replace('/', '.'));
-      } catch (NoSuchElementException e) {
-          finishedTests = true;
-          // no test class given, guess its name
-          final String testName;
-          if (className.startsWith("Abstract")) {
-            testName = "Dummy" + className.substring(8) + "Test";
-          } else {
-            final int ab = className.indexOf(".Abstract");
-            if (ab != -1) {
-              testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9) + "Test";
-            } else {
-              testName = className + "Test";
-            }
-          }
-          testList.add(testName);
-      }
-
-      while (!finishedTests) {
-        try {
-          testList.add(Utils.getNextArgument(args));
-        } catch (NoSuchElementException e) {
-          finishedTests = true;
-        }
-      }
-      Utils.checkForRemainingOptions(args);
-      JumbleResult res = jumble.runJumble(className, testList);
-      JumbleResultPrinter printer = getPrinter(outputClass);
-      printer.printResult(res);
-
-    } catch (Exception e) {
-      printUsage();
-      System.out.println();
-      e.printStackTrace(System.out);
-    }
+  public boolean isInlineConstants() {
+    return mInlineConstants;
   }
 
   /**
-   * Returns a result printer instance as specified by <CODE>className</CODE>.
-   * The printer is constructed with <CODE>System.out</CODE> as the argument.
-   * If this is not allowed, then the no arguments constructor is ibvoked.
-   * 
-   * @param className
-   *          name of result printer class.
-   * @return a <CODE>JumbleResultPrinter</CODE> instance.
+   * Sets whether inline constants will be mutated.
+   *
+   * @param argInlineConstants true if inline constants should be mutated.
    */
-  private static JumbleResultPrinter getPrinter(String className) {
-    try {
-      final Class clazz = Class.forName(className);
-      try {
-        final Constructor c = clazz
-            .getConstructor(new Class[] {PrintStream.class });
-        return (JumbleResultPrinter) c.newInstance(new Object[] {System.out });
-      } catch (IllegalAccessException e) {
-        ; // too bad
-      } catch (InvocationTargetException e) {
-        ; // too bad
-      } catch (InstantiationException e) {
-        ; // too bad
-      } catch (NoSuchMethodException e) {
-        ; // too bad
-      }
-      try {
-        final Constructor c = clazz.getConstructor(new Class[0]);
-        return (JumbleResultPrinter) c.newInstance(new Object[0]);
-      } catch (IllegalAccessException e) {
-        System.err.println("Invalid output class. Exception: ");
-        e.printStackTrace();
-        return new SeanResultPrinter(System.out);
-      } catch (InvocationTargetException e) {
-        System.err.println("Invalid output class. Exception: ");
-        e.printStackTrace();
-        return new SeanResultPrinter(System.out);
-      } catch (InstantiationException e) {
-        System.err.println("Invalid output class. Exception: ");
-        e.printStackTrace();
-        return new SeanResultPrinter(System.out);
-      } catch (NoSuchMethodException e) {
-        System.err.println("Invalid output class. Exception: ");
-        e.printStackTrace();
-        return new SeanResultPrinter(System.out);
-      }
-    } catch (ClassNotFoundException e) {
-      return new SeanResultPrinter(System.out);
-    }
+  public void setInlineConstants(final boolean argInlineConstants) {
+    mInlineConstants = argInlineConstants;
   }
 
   /**
-   * Prints command line usage help for this class.
+   * Gets whether return values will be mutated.
+   *
+   * @return true if return values will be mutated.
    */
-  private static void printUsage() {
-    System.out.println("Usage:");
-    System.out.println("java jumble.fast.FastRunner [OPTIONS] [CLASS] [TESTS]");
-    System.out.println();
-
-    System.out.println("CLASS the fully-qualified name of the class to mutate.");
-    System.out.println();
-    System.out.println("TESTS a test suite file containing the tests.");
-    System.out.println();
-    System.out.println("OPTIONS");
-    System.out.println("         -r Mutate return values.");
-    System.out.println("         -k Mutate inline constants.");
-    System.out.println("         -i Mutate increments.");
-    System.out.println("         -x Exclude specified methods. ");
-    System.out.println("         -n Do not order tests according to runtime");
-    System.out.println("         -h Display this help message.");
+  public boolean isReturnVals() {
+    return mReturnVals;
   }
+
+  /**
+   * Sets whether return values will be mutated.
+   *
+   * @param argReturnVals true return values should be mutated.
+   */
+  public void setReturnVals(final boolean argReturnVals) {
+    mReturnVals = argReturnVals;
+  }
+
+  /**
+   * Gets whether increments will be mutated.
+   *
+   * @return true if increments will be mutated.
+   */
+  public boolean isIncrements() {
+    return mIncrements;
+  }
+
+  /**
+   * Sets whether increments will be mutated.
+   *
+   * @param argIncrements true if increments will be mutated.
+   */
+  public void setIncrements(final boolean argIncrements) {
+    mIncrements = argIncrements;
+  }
+
+
+
+  /**
+   * Gets the value of noOrder
+   *
+   * @return the value of noOrder
+   */
+  public boolean isNoOrder() {
+    return mNoOrder;
+  }
+
+  /**
+   * Sets the value of noOrder
+   *
+   * @param argNoOrder Value to assign to noOrder
+   */
+  public void setNoOrder(final boolean argNoOrder) {
+    mNoOrder = argNoOrder;
+  }
+
+  /**
+   * Gets the value of loadCache
+   *
+   * @return the value of loadCache
+   */
+  public boolean isLoadCache() {
+    return mLoadCache;
+  }
+
+  /**
+   * Sets the value of loadCache
+   *
+   * @param argLoadCache Value to assign to loadCache
+   */
+  public void setLoadCache(final boolean argLoadCache) {
+    mLoadCache = argLoadCache;
+  }
+
+  /**
+   * Gets the value of saveCache
+   *
+   * @return the value of saveCache
+   */
+  public boolean isSaveCache() {
+    return mSaveCache;
+  }
+
+  /**
+   * Sets the value of saveCache
+   *
+   * @param argSaveCache Value to assign to saveCache
+   */
+  public void setSaveCache(final boolean argSaveCache) {
+    mSaveCache = argSaveCache;
+  }
+
+  /**
+   * Gets the value of useCache
+   *
+   * @return the value of useCache
+   */
+  public boolean isUseCache() {
+    return mUseCache;
+  }
+
+  /**
+   * Sets the value of useCache
+   *
+   * @param argUseCache Value to assign to useCache
+   */
+  public void setUseCache(final boolean argUseCache) {
+    mUseCache = argUseCache;
+  }
+
+  /**
+   * Gets the set of excluded method names
+   *
+   * @return the set of excluded method names
+   */
+  public Set getExcludeMethods() {
+    return mExcludeMethods;
+  }
+
 
   /**
    * A function which computes the timeout for given that the original test took
@@ -276,6 +241,7 @@ public class FastRunner {
     mExcludeMethods.add(methodName);
   }
 
+  /** Constructs arguments to the FastJumbler */
   private String[] createArgs(String className, int currentMutation, String fileName, String cacheFileName) {
     ArrayList args = new ArrayList();
     // class name
@@ -320,6 +286,7 @@ public class FastRunner {
     }
     return (String[]) args.toArray(new String[args.size()]);
   }
+
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
@@ -409,7 +376,7 @@ public class FastRunner {
             break;
           } else {
             throw new RuntimeException("jumble.fast.FastJumbler returned "
-                + str + " instead of START");
+                                       + str + " instead of START");
           }
         }
       }
@@ -422,7 +389,7 @@ public class FastRunner {
         if (out == null) {
           if (after - before > timeout) {
             allMutations[currentMutation] = new Mutation("TIMEOUT", className,
-                currentMutation);
+                                                         currentMutation);
             childProcess.destroy();
             childProcess = null;
             break;
@@ -434,11 +401,11 @@ public class FastRunner {
           try {
             // We have output so go to the next loop iteration
             allMutations[currentMutation] = new Mutation(out, className,
-                currentMutation);
+                                                         currentMutation);
             if (mUseCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
               StringTokenizer tokens = new StringTokenizer(out.substring(6),
-                  ":");
+                                                           ":");
               String clazzName = tokens.nextToken();
               assert clazzName.equals(className);
               String methodName = tokens.nextToken();
@@ -473,118 +440,3 @@ public class FastRunner {
   }
 }
 
-class FailedTestResult extends JumbleResult {
-  private String mClassName;
-
-  private List mTestClassNames;
-
-  private TestResult mInitialResult;
-
-  public FailedTestResult(String className, List testClassNames,
-      TestResult result) {
-    mClassName = className;
-    mTestClassNames = testClassNames;
-    mInitialResult = result;
-  }
-
-  public String getClassName() {
-    return mClassName;
-  }
-
-  public Mutation[] getAllMutations() {
-    return null;
-  }
-
-  public String[] getTestClasses() {
-    return (String[]) mTestClassNames
-        .toArray(new String[mTestClassNames.size()]);
-  }
-
-  public long getTimeoutLength() {
-    return 0;
-  }
-
-  public TestResult getInitialTestResult() {
-    return mInitialResult;
-  }
-
-  public Mutation[] getCovered() {
-    return null;
-  }
-
-  public Mutation[] getMissed() {
-    return null;
-  }
-
-  public Mutation[] getTimeouts() {
-    return null;
-  }
-}
-
-class NormalJumbleResult extends JumbleResult {
-  private String mClassName;
-
-  private List mTestClassNames;
-
-  private TestResult mInitialResult;
-
-  private Mutation[] mAllMutations;
-
-  private TestOrder mOrder;
-
-  public NormalJumbleResult(String className, List testClassNames,
-      TestResult initialResult, Mutation[] allMutations, TestOrder order) {
-    mClassName = className;
-    mTestClassNames = testClassNames;
-    mInitialResult = initialResult;
-    mAllMutations = allMutations;
-    mOrder = order;
-  }
-
-  public String getClassName() {
-    return mClassName;
-  }
-
-  public TestResult getInitialTestResult() {
-    return mInitialResult;
-  }
-
-  public Mutation[] getAllMutations() {
-    return mAllMutations;
-  }
-
-  public Mutation[] getCovered() {
-    return filter(Mutation.PASS);
-  }
-
-  public Mutation[] getTimeouts() {
-    return filter(Mutation.TIMEOUT);
-  }
-
-  public Mutation[] getMissed() {
-    return filter(Mutation.FAIL);
-  }
-
-  public long getTimeoutLength() {
-    return FastRunner.computeTimeout(mOrder.getTotalRuntime());
-  }
-
-  public String[] getTestClasses() {
-    return (String[]) mTestClassNames
-        .toArray(new String[mTestClassNames.size()]);
-  }
-
-  private Mutation[] filter(int mutationType) {
-    Mutation[] all = getAllMutations();
-    ArrayList ret = new ArrayList();
-
-    for (int i = 0; i < all.length; i++) {
-      if (all[i].getStatus() == mutationType) {
-        ret.add(all[i]);
-      }
-    }
-
-    return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
-  }
-
-}

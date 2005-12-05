@@ -3,7 +3,7 @@ package jumble.fast;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import jumble.Mutater;
+import jumble.mutation.Mutater;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

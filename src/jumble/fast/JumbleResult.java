@@ -1,6 +1,6 @@
 package jumble.fast;
 
-import jumble.Mutation;
+import jumble.mutation.Mutation;
 import junit.framework.TestResult;
 
 /**
@@ -11,6 +11,7 @@ import junit.framework.TestResult;
  *  
  */
 public abstract class JumbleResult {
+
   /**
    * Gets the name of the class being Jumbled.
    * 

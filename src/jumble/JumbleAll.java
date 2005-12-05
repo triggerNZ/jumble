@@ -1,4 +1,6 @@
-package jumble.fast;
+package jumble;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import jumble.dependency.DependencyExtractor;
+import jumble.fast.FastRunner;
+import jumble.fast.JumbleResult;
 import jumble.util.BCELRTSI;
-
 import org.apache.bcel.Repository;
 
 /**

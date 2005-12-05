@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 
-import jumble.Mutater;
+import jumble.mutation.Mutater;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;

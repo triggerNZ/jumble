@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 
-import jumble.Mutation;
+import jumble.mutation.Mutation;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;

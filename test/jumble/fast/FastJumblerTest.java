@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import jumble.Mutater;
+import jumble.mutation.Mutater;
 import jumble.util.JavaRunner;
 import junit.framework.Test;
 import junit.framework.TestCase;

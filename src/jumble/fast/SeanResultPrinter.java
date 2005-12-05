@@ -2,7 +2,7 @@ package jumble.fast;
 
 import java.io.PrintStream;
 
-import jumble.Mutation;
+import jumble.mutation.Mutation;
 import junit.framework.TestResult;
 
 /**
