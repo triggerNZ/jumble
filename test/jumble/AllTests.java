@@ -14,11 +14,10 @@ public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    suite.addTest(MutaterTest.suite());
-  
+    suite.addTest(jumble.util.AllTests.suite());
+    suite.addTest(jumble.mutation.AllTests.suite());
     suite.addTest(jumble.dependency.AllTests.suite());
     suite.addTest(jumble.fast.AllTests.suite());
-    suite.addTest(jumble.util.AllTests.suite());
     return suite;
   }
   
