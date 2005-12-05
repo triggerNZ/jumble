@@ -218,7 +218,7 @@ checkerwebroot=/keachecker/html                         # Path on web server to 
 jumblesubdir=jumble                                     # Name of subdir containing raw output files for each class
 jumbledir=$checkerrootdir/$checker/$jumblesubdir        # Fully qualified directory
 rawfile=$checkerrootdir/$checker/jumblesummary          # File containing jumble summarized output
-jumblecgi="$jumblewebroot/jumble-cgi?checker=$checker"  # Prefix for this cgi-script
+jumblecgi="$jumblewebroot/jumble.cgi?checker=$checker"  # Prefix for this cgi-script
 
 if [ "$classname" ]; then
     if [ "$enqueue" == 1 ]; then
