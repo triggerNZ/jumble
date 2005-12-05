@@ -12,11 +12,9 @@ import junit.framework.TestResult;
  */
 public class FailedTestResult extends AbstractJumbleResult {
 
-  private String mClassName;
+  private final List mTestClassNames;
 
-  private List mTestClassNames;
-
-  private TestResult mInitialResult;
+  private final TestResult mInitialResult;
 
   public FailedTestResult(String className, List testClassNames, TestResult result) {
     super(className);
@@ -26,8 +24,7 @@ public class FailedTestResult extends AbstractJumbleResult {
 
   /** {@inheritDoc} */
   public String[] getTestClasses() {
-    return (String[]) mTestClassNames
-        .toArray(new String[mTestClassNames.size()]);
+    return (String[]) mTestClassNames.toArray(new String[mTestClassNames.size()]);
   }
 
   /** {@inheritDoc} */
