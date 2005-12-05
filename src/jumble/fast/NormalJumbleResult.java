@@ -12,9 +12,7 @@ import junit.framework.TestResult;
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
  */
-public class NormalJumbleResult extends JumbleResult {
-
-  private String mClassName;
+public class NormalJumbleResult extends AbstractJumbleResult {
 
   private List mTestClassNames;
 
@@ -26,16 +24,11 @@ public class NormalJumbleResult extends JumbleResult {
 
   public NormalJumbleResult(String className, List testClassNames,
       TestResult initialResult, Mutation[] allMutations, long timeout) {
-    mClassName = className;
+    super(className);
     mTestClassNames = testClassNames;
     mInitialResult = initialResult;
     mAllMutations = allMutations;
     mTimeoutLength = timeout;
-  }
-
-  /** {@inheritDoc} */
-  public String getClassName() {
-    return mClassName;
   }
 
   /** {@inheritDoc} */

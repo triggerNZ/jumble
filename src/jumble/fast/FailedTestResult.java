@@ -1,7 +1,6 @@
 package jumble.fast;
 
 import java.util.List;
-import jumble.mutation.Mutation;
 import junit.framework.TestResult;
 
 /**
@@ -11,7 +10,7 @@ import junit.framework.TestResult;
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
  */
-public class FailedTestResult extends JumbleResult {
+public class FailedTestResult extends AbstractJumbleResult {
 
   private String mClassName;
 
@@ -20,20 +19,9 @@ public class FailedTestResult extends JumbleResult {
   private TestResult mInitialResult;
 
   public FailedTestResult(String className, List testClassNames, TestResult result) {
-    mClassName = className;
+    super(className);
     mTestClassNames = testClassNames;
     mInitialResult = result;
-  }
-
-
-  /** {@inheritDoc} */
-  public String getClassName() {
-    return mClassName;
-  }
-
-  /** {@inheritDoc} */
-  public Mutation[] getAllMutations() {
-    return null;
   }
 
   /** {@inheritDoc} */
@@ -43,27 +31,8 @@ public class FailedTestResult extends JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public long getTimeoutLength() {
-    return 0;
-  }
-
-  /** {@inheritDoc} */
   public TestResult getInitialTestResult() {
     return mInitialResult;
   }
 
-  /** {@inheritDoc} */
-  public Mutation[] getCovered() {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public Mutation[] getMissed() {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public Mutation[] getTimeouts() {
-    return null;
-  }
 }
