@@ -103,7 +103,7 @@ function dosummarypage ()
 <body>
 
 <div>
-<table cellpadding=0 align=center><tr>
+<table width="100%" cellpadding=0 align=center><tr>
 <td>
 EOF
     cat jumble.js
