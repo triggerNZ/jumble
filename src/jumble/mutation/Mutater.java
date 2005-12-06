@@ -42,6 +42,7 @@ import org.apache.bcel.generic.IFNONNULL;
 import org.apache.bcel.generic.IINC;
 import org.apache.bcel.generic.IMUL;
 import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.IOR;
 import org.apache.bcel.generic.IREM;
 import org.apache.bcel.generic.IRETURN;
@@ -247,12 +248,9 @@ public class Mutater {
    * Is this an instruction we know how to mutate? Needs the entire chain since
    * in rare cases we need to examine context to see if mutation is allowable.
    * 
-   * @param ihs
-   *          current instruction chain
-   * @param offset
-   *          position in chain
-   * @param cpg
-   *          constant pool
+   * @param ihs current instruction chain
+   * @param offset position in chain
+   * @param cpg constant pool
    * @return true if instruction can be mutated
    */
   private boolean isMutatable(final InstructionHandle[] ihs, final int offset,
@@ -264,9 +262,25 @@ public class Mutater {
     // handle special situation of .class invocations
     if (canMutate && i instanceof ICONST && offset < ihs.length - 1) {
       final Instruction context = ihs[offset + 1].getInstruction();
-      if (context instanceof INVOKESTATIC
-          && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
+      if (context instanceof INVOKESTATIC && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
         return false;
+      }
+    }
+
+    // handle special situation of .desiredAssertionStatus invocations
+    // javac 1.5
+    if (canMutate && i instanceof ICONST) {
+      if (offset >= 2 && ((ICONST) i).getValue().intValue() == Constants.ICONST_1) {
+        final Instruction context = ihs[offset - 2].getInstruction();
+        if (context instanceof INVOKEVIRTUAL && "desiredAssertionStatus".equals(((INVOKEVIRTUAL) context).getMethodName(cpg))) {
+          return false;
+        }
+      }
+      if (offset >= 4 && ((ICONST) i).getValue().intValue() == Constants.ICONST_0) {
+        final Instruction context = ihs[offset - 4].getInstruction();
+        if (context instanceof INVOKEVIRTUAL && "desiredAssertionStatus".equals(((INVOKEVIRTUAL) context).getMethodName(cpg))) {
+          return false;
+        }
       }
     }
 
