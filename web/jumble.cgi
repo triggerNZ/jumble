@@ -103,7 +103,15 @@ function dosummarypage ()
 <body>
 
 <div>
-<h1><a href="$jumblewebroot/key.html">Jumble</a></h1>
+<table cellpadding=0 align=center><tr>
+<td>
+EOF
+    cat jumble.js
+    cat <<EOF
+</td>
+<td><h1 align=center><a href="$jumblewebroot/key.html">Jumble</a></h1></td>
+</tr>
+</table>
 <hr>
 EOF
 
