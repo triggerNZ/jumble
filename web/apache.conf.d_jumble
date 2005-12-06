@@ -1,0 +1,12 @@
+#
+# This configuration file belongs to jumble
+#
+# Edit the directory to reflect where jumble cgi is installed, and
+# drop this file into the apache conf.d
+#
+<Directory "/srv/www/htdocs/jumble">
+  AddHandler cgi-script .cgi
+  Options +ExecCGI
+  DirectoryIndex key.html
+  AllowOverride Limit
+</Directory>
