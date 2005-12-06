@@ -76,7 +76,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
     if (res.getAllMutations().length == 0) {
       out.println("Score: 100 (NO MUTATIONS POSSIBLE)");
     } else {
-      out.println("Score: " + res.getCovered().length
+      out.println("Score: " + (res.getCovered().length + res.getTimeouts().length)
           * 100 / res.getAllMutations().length);
     }
   }
