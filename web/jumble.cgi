@@ -23,25 +23,24 @@ function getpackage ()
     fi
 }
 
-function getscore ()
+function get_microavg ()
 {
     grep $1 $rawfile | gawk '{n+=$2; x+=$1*$2} END {if (n==0) {print "-1"} else {print int(x/n)}}'
 }
-function getscore1 ()
+function get_macroavg ()
 {
     grep $1 $rawfile | gawk '{n++; x+=$1} END {print int(x/n)}'
 }
-# Outputs a wee snippet of html showing the score, microaverage, and icon
+# Outputs a wee snippet of html showing the microaverage score, and icon
 function insertscore ()
 {
     local location=$1
-    score=$(getscore $location)
-    score1=$(getscore1 $location)
+    score=$(get_microavg $location)
     if [ $score == -1 ]; then
-        score=$score1;
+        score=$(get_macroavg $location)
     fi
     score2=$[$score/10]
-    echo "$score% <small>($score1%)</small> <img src=\"$jumblewebroot/$score2.gif\">"
+    echo "$score% <img src=\"$jumblewebroot/$score2.gif\">"
 }
 
 function insertnavtable ()
