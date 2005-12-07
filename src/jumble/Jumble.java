@@ -87,7 +87,7 @@ public class Jumble {
       } catch (NoSuchElementException e) {
           finishedTests = true;
           // no test class given, guess its name
-          final String testName;
+          String testName;
           if (className.startsWith("Abstract")) {
             testName = "Dummy" + className.substring(8) + "Test";
           } else {
@@ -97,6 +97,10 @@ public class Jumble {
             } else {
               testName = className + "Test";
             }
+          }
+          final int dollar = testName.indexOf('$');
+          if (dollar != -1) {
+            testName = testName.substring(0, dollar);
           }
           testList.add(testName);
       }
