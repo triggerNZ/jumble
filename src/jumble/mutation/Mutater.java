@@ -322,8 +322,7 @@ public class Mutater {
    * Set the names of all the methods to be ignored during mutation. Any method
    * named by a member of the given set will not be subject to mutation.
    * 
-   * @param ignore
-   *          Set a value of type 'final'
+   * @param ignore Set of ignored methods
    */
   public void setIgnoredMethods(final Set ignore) {
     mIgnored = ignore == null ? new HashSet() : ignore;
