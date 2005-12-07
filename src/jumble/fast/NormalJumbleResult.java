@@ -42,6 +42,11 @@ public class NormalJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
+  public int getNumberOfMutations() {
+    return mAllMutations.length;
+  }
+
+  /** {@inheritDoc} */
   public Mutation[] getCovered() {
     return filter(Mutation.PASS);
   }

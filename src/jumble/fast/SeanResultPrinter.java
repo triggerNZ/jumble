@@ -57,7 +57,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
       return;
     }
     
-    out.print("Mutation points = " + res.getAllMutations().length);
+    out.print("Mutation points = " + res.getNumberOfMutations());
     out.println(", unit test time limit " + (double) res.getTimeoutLength()
         / 1000 + "s");
 
@@ -77,7 +77,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
       out.println("Score: 100 (NO MUTATIONS POSSIBLE)");
     } else {
       out.println("Score: " + (res.getCovered().length + res.getTimeouts().length)
-          * 100 / res.getAllMutations().length);
+          * 100 / res.getNumberOfMutations());
     }
   }
 }

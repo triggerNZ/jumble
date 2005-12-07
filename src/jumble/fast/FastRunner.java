@@ -327,7 +327,7 @@ public class FastRunner {
         testClasses[i] = Class.forName((String) testClassNames.get(i));
       } catch (ClassNotFoundException e) {
         // test class did not exist
-        return new FailedTestResult(className, testClassNames, null);
+        return new FailedTestResult(className, testClassNames, null, mutationCount);
       }
     }
     initialResult = new TestResult();
@@ -341,7 +341,7 @@ public class FastRunner {
 
     // Now, if the tests failed, can return straight away
     if (!initialResult.wasSuccessful()) {
-      return new FailedTestResult(className, testClassNames, initialResult);
+      return new FailedTestResult(className, testClassNames, initialResult, mutationCount);
     }
 
     // Store the timing stuff in a temporary file

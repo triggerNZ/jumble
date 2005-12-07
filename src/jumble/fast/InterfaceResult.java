@@ -23,4 +23,5 @@ public class InterfaceResult extends AbstractJumbleResult {
   public boolean isInterface() {
     return true;
   }
+
 }

@@ -76,6 +76,10 @@ public class SeanResultPrinterTest extends TestCase {
       }
       return muts;
     }
+
+    public int getNumberOfMutations() {
+      return getAllMutations().length;
+    }
   }
 
   private class NormalResult extends AbstractDummyResult {

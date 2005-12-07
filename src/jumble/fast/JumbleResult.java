@@ -84,6 +84,13 @@ public abstract class JumbleResult {
   public abstract Mutation[] getAllMutations();
 
   /**
+   * Return the number of mutations points.
+   *
+   * @return number of mutation points.
+   */
+  public abstract int getNumberOfMutations();
+
+  /**
    * Was the class tested actually an interface.
    *
    * @return true for an interface.

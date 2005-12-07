@@ -16,10 +16,13 @@ public class FailedTestResult extends AbstractJumbleResult {
 
   private final TestResult mInitialResult;
 
-  public FailedTestResult(String className, List testClassNames, TestResult result) {
+  private int mMutationCount;
+
+  public FailedTestResult(String className, List testClassNames, TestResult result, int mcount) {
     super(className);
     mTestClassNames = testClassNames;
     mInitialResult = result;
+    mMutationCount = mcount;
   }
 
   /** {@inheritDoc} */
@@ -30,6 +33,11 @@ public class FailedTestResult extends AbstractJumbleResult {
   /** {@inheritDoc} */
   public TestResult getInitialTestResult() {
     return mInitialResult;
+  }
+
+  /** {@inheritDoc} */
+  public int getNumberOfMutations() {
+    return mMutationCount;
   }
 
 }

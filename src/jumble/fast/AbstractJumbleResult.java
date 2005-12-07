@@ -63,6 +63,11 @@ public class AbstractJumbleResult extends JumbleResult {
   }
 
   /** {@inheritDoc} */
+  public int getNumberOfMutations() {
+    return 0;
+  }
+
+  /** {@inheritDoc} */
   public boolean isInterface() {
     return false;
   }
