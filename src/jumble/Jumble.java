@@ -93,16 +93,16 @@ public class Jumble {
           } else {
             final int ab = className.indexOf(".Abstract");
             if (ab != -1) {
-              testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9) + "Test";
+              testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9);
             } else {
-              testName = className + "Test";
+              testName = className;
             }
           }
           final int dollar = testName.indexOf('$');
           if (dollar != -1) {
             testName = testName.substring(0, dollar);
           }
-          testList.add(testName);
+          testList.add(testName + "Test");
       }
 
       while (!finishedTests) {
