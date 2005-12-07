@@ -49,11 +49,13 @@ public class SeanResultPrinter extends AbstractResultPrinter {
     final TestResult result = res.getInitialTestResult();
     if (result == null) {
       out.println("Score: 0 (NO TEST CLASS)");
+      out.println("Mutation points = " + res.getNumberOfMutations());
       return;
     }
     
     if (!result.wasSuccessful()) {
       out.println("Score: 0 (TEST CLASS IS BROKEN)");
+      out.println("Mutation points = " + res.getNumberOfMutations());
       return;
     }
     
