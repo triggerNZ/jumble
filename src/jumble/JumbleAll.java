@@ -2,19 +2,12 @@ package jumble;
 
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
 import jumble.dependency.DependencyExtractor;
-import jumble.fast.FastRunner;
-import jumble.fast.JumbleResult;
 import jumble.util.BCELRTSI;
-import org.apache.bcel.Repository;
 
 /**
  * Class which performs Jumble tests for every class in the system.
@@ -37,7 +30,6 @@ public class JumbleAll {
   public static void main(String[] args) throws Exception {
     Set classNames = new HashSet();
     Set testNames = new HashSet();
-    Set dependentClasses = new HashSet();
 
     Set ignore = new HashSet();
     ignore.addAll(new DependencyExtractor().getIgnoredPackages());
