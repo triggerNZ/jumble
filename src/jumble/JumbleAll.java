@@ -38,7 +38,6 @@ public class JumbleAll {
     Set classNames = new HashSet();
     Set testNames = new HashSet();
     Set dependentClasses = new HashSet();
-    Map classTestMap = new HashMap();
 
     Set ignore = new HashSet();
     ignore.addAll(new DependencyExtractor().getIgnoredPackages());
@@ -58,69 +57,31 @@ public class JumbleAll {
     testNames.addAll(BCELRTSI.getAllDerivedClasses("junit.framework.TestCase",
         false));
 
-    // Remove all the test classes from the other classes
-    classNames.removeAll(testNames);
-
-    System.out.println("DONE: " + classNames.size() + " classes and "
-        + testNames.size() + " tests.");
-    System.out.println("Doing dependency analysis...");
-    // Now do the dependency analysis
-    DependencyExtractor extractor = new DependencyExtractor();
-    for (Iterator it = testNames.iterator(); it.hasNext();) {
-      String curTest = (String) it.next();
-      extractor.setIgnoredPackages(ignore);
-      Collection dependent = extractor.getAllDependencies(curTest, true);
-
-      for (Iterator dit = dependent.iterator(); dit.hasNext();) {
-        String curClass = (String) dit.next();
-        dependentClasses.add(curClass);
-        Collection tests;
-
-        if (classTestMap.containsKey(curClass)) {
-          tests = (Collection) classTestMap.get(curClass);
-        } else {
-          tests = new HashSet();
-          classTestMap.put(curClass, tests);
+    for (Iterator it = classNames.iterator(); it.hasNext();) {
+      String className = (String) it.next();
+      
+      for (Iterator it2 = ignore.iterator(); it2.hasNext();) {
+        String pack = (String) it2.next();
+        if (className.startsWith(pack)) {
+          it.remove();
+          break;
         }
-        tests.add(curTest);
       }
     }
+    
+    // Remove all the test classes from the other classes
+    classNames.removeAll(testNames);
+    
+    System.out.println("DONE: " + classNames.size() + " classes and "
+        + testNames.size() + " tests.");
 
-    System.out.println("DONE: " + dependentClasses.size() + " dependent "
-        + "classes.");
     System.out.println();
     System.out.println("RESULTS:");
     System.out.println();
 
-    FastRunner runner = new FastRunner();
-    runner.addExcludeMethod("main");
-    runner.addExcludeMethod("integrity");
-
     for (Iterator it = classNames.iterator(); it.hasNext();) {
       String className = (String) it.next();
-      System.out.print(className + ":");
-      if (Repository.lookupClass(className).isInterface()) {
-        System.out.println("100 (INTERFACE)");
-      } else if (classTestMap.containsKey(className)) {
-        List testList = new ArrayList((Collection) classTestMap.get(className));
-        if (DEBUG) {
-          System.out.print("(" + testList.size() + " tests" + ":");
-        }
-        JumbleResult res = runner.runJumble(className, testList);
-
-        if (res.getInitialTestResult().wasSuccessful()) {
-          if (res.getAllMutations().length == 0) {
-            System.out.println("100 (NO POSSIBLE MUTATIONS)");
-          } else {
-            System.out.println(res.getCovered().length * 100
-                / res.getAllMutations().length);
-          }
-        } else {
-          System.out.println("0 (TESTS FAILED)");
-        }
-      } else {
-        System.out.println("0 (NO TEST)");
-      }
+      Jumble.main(new String[] {className});
     }
   }
 }
