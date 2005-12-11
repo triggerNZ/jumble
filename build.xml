@@ -51,7 +51,7 @@
       <fileset dir="${ext.src.dir}" includes="com/reeltwo/config/*"/>
     </copy>
     -->
-    <javac srcdir="${ext.src.dir}" destdir="${build.dir}" source="1.5" depend="true" debug="true">
+    <javac srcdir="${ext.src.dir}" destdir="${build.dir}" source="1.4" target="1.4" depend="true" debug="true">
       <classpath>
         <fileset dir="${ext.lib.dir}" includes="**/*.jar" />
       </classpath>
