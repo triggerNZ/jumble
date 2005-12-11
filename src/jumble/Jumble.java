@@ -1,17 +1,17 @@
 package jumble;
 
+import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import jumble.fast.FastRunner;
 import jumble.fast.JumbleResult;
 import jumble.fast.JumbleResultPrinter;
 import jumble.fast.SeanResultPrinter;
-import jumble.util.Utils;
 
 /**
  * A CLI interface to the <CODE>FastRunner</CODE>.
@@ -39,10 +39,7 @@ public class Jumble {
    * 
    * TESTS a list of test names to run on this class
    * 
-   * OPTIONS -r Mutate return values. -k Mutate inline constants. -i Mutate
-   * increments. -x Exclude specified methods. -h Display this help message. -o
-   * Name of the class responsible for producing output. -n Do not order tests
-   * by runtime. -s Do not save cache. -l Do not load cache.
+   * OPTIONS 
    * 
    * </PRE>
    */
@@ -50,71 +47,72 @@ public class Jumble {
     try {
       // Process arguments
       FastRunner jumble = new FastRunner();
+      CLIFlags flags = new CLIFlags("FastRunner");
+      Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+      Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
+      Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
+      Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+      Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
+      Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
+      Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
+      Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
+      Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
+      Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
+      Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
+      testClassFlag.setMinCount(0);
+      testClassFlag.setMaxCount(Integer.MAX_VALUE);
 
-      boolean help = Utils.getFlag('h', args);
-      String excludes = Utils.getOption('x', args);
-      boolean finishedTests = false;
-      String outputClass = Utils.getOption('o', args);
+      flags.setFlags(args);
 
-      jumble.setInlineConstants(Utils.getFlag('k', args));
-      jumble.setReturnVals(Utils.getFlag('r', args));
-      jumble.setIncrements(Utils.getFlag('i', args));
-      jumble.setNoOrder(Utils.getFlag('n', args));
-      jumble.setLoadCache(!Utils.getFlag('l', args));
-      jumble.setSaveCache(!Utils.getFlag('s', args));
-      jumble.setUseCache(!Utils.getFlag('u', args));
+      jumble.setInlineConstants(inlFlag.isSet());
+      jumble.setReturnVals(retFlag.isSet());
+      jumble.setIncrements(incFlag.isSet());
+      jumble.setNoOrder(orderFlag.isSet());
+      jumble.setLoadCache(!loadFlag.isSet());
+      jumble.setSaveCache(!saveFlag.isSet());
+      jumble.setUseCache(!useFlag.isSet());
 
       String className;
       List testList;
 
-      StringTokenizer tokens = new StringTokenizer(excludes, ",");
-
-      while (tokens.hasMoreTokens()) {
-        jumble.addExcludeMethod(tokens.nextToken());
+      boolean finishedTests = false;
+      if (exFlag.isSet()) {
+        String[] tokens = ((String) exFlag.getValue()).split(",");
+        for (int i = 0; i < tokens.length; i++) {
+          jumble.addExcludeMethod(tokens[i]);
+        }
       }
 
-      if (help) {
-        printUsage();
-        return;
-      }
-
-      className = Utils.getNextArgument(args).replace('/', '.');
+      className = ((String) classFlag.getValue()).replace('/', '.');
       testList = new ArrayList();
 
       // We need at least one test
-      try {
-          testList.add(Utils.getNextArgument(args).replace('/', '.'));
-      } catch (NoSuchElementException e) {
-          finishedTests = true;
-          // no test class given, guess its name
-          String testName;
-          if (className.startsWith("Abstract")) {
-            testName = "Dummy" + className.substring(8) + "Test";
-          } else {
-            final int ab = className.indexOf(".Abstract");
-            if (ab != -1) {
-              testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9);
-            } else {
-              testName = className;
-            }
+      if (testClassFlag.isSet()) {
+        for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext(); ) {
+          testList.add(((String) it.next()).replace('/', '.'));
+        }
+      } else {
+        // no test class given, guess its name
+        String testName = className;
+        if (className.startsWith("Abstract")) {
+          testName = "Dummy" + className.substring(8);
+        } else {
+          final int ab = className.indexOf(".Abstract");
+          if (ab != -1) {
+            testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9);
           }
-          final int dollar = testName.indexOf('$');
-          if (dollar != -1) {
-            testName = testName.substring(0, dollar);
-          }
-          testList.add(testName + "Test");
+        }
+        final int dollar = testName.indexOf('$');
+        if (dollar != -1) {
+          testName = testName.substring(0, dollar);
+        }
+        testList.add(testName + "Test");
       }
 
-      while (!finishedTests) {
-        try {
-          testList.add(Utils.getNextArgument(args));
-        } catch (NoSuchElementException e) {
-          finishedTests = true;
-        }
-      }
-      Utils.checkForRemainingOptions(args);
       JumbleResult res = jumble.runJumble(className, testList);
-      JumbleResultPrinter printer = getPrinter(outputClass);
+      JumbleResultPrinter printer = printFlag.isSet() 
+        ? getPrinter((String) printFlag.getValue()) 
+        : new SeanResultPrinter(System.out);
       printer.printResult(res);
 
     } catch (Exception e) {
@@ -137,8 +135,7 @@ public class Jumble {
     try {
       final Class clazz = Class.forName(className);
       try {
-        final Constructor c = clazz
-            .getConstructor(new Class[] {PrintStream.class });
+        final Constructor c = clazz.getConstructor(new Class[] {PrintStream.class });
         return (JumbleResultPrinter) c.newInstance(new Object[] {System.out });
       } catch (IllegalAccessException e) {
         ; // too bad
@@ -155,23 +152,19 @@ public class Jumble {
       } catch (IllegalAccessException e) {
         System.err.println("Invalid output class. Exception: ");
         e.printStackTrace();
-        return new SeanResultPrinter(System.out);
       } catch (InvocationTargetException e) {
         System.err.println("Invalid output class. Exception: ");
         e.printStackTrace();
-        return new SeanResultPrinter(System.out);
       } catch (InstantiationException e) {
         System.err.println("Invalid output class. Exception: ");
         e.printStackTrace();
-        return new SeanResultPrinter(System.out);
       } catch (NoSuchMethodException e) {
         System.err.println("Invalid output class. Exception: ");
         e.printStackTrace();
-        return new SeanResultPrinter(System.out);
       }
     } catch (ClassNotFoundException e) {
-      return new SeanResultPrinter(System.out);
     }
+    throw new IllegalArgumentException("Couldn't create JumbleResultPrinter: " + className);
   }
 
   /**

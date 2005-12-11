@@ -6,18 +6,19 @@
  */
 package jumble.fast;
 
+
+
+import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags.Validator;
+import com.reeltwo.util.CLIFlags;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import jumble.mutation.Mutater;
-import jumble.util.Utils;
-
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.ClassLoader;
 
@@ -125,63 +126,64 @@ public class FastJumbler extends ClassLoader {
    * </PRE>
    */
   public static void main(String[] args) throws Exception {
-    // First, process all the command line options
-    final String className;
-    final Mutater m;
-    final int mutationCount;
-    final boolean countMode = Utils.getFlag('c', args);
-    final boolean returnVals = Utils.getFlag('r', args);
-    final boolean inlineConstants = Utils.getFlag('k', args);
-    final boolean increments = Utils.getFlag('i', args);
-    final String excludes = Utils.getOption('x', args);
-    final boolean help = Utils.getFlag('h', args);
-    //      final boolean save = !Utils.getFlag('s', args);
-    //      final boolean use = !Utils.getFlag('u', args);
-    //      final boolean load = !Utils.getFlag('l', args);
-    // Display help
-    if (help) {
-      printUsage();
-      return;
-    }
+    final CLIFlags flags = new CLIFlags("FastJumbler");
 
+    final Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
+    final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
+    final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+    final Flag countFlag = flags.registerOptional('c', "count-mode", "Just output the number of mutation points in the class.");
+
+    final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
+    final Flag startFlag = flags.registerRequired(Integer.class, "NUM", "The mutation point to start at.");
+    startFlag.setMinCount(0);
+    final Flag testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
+    testSuiteFlag.setMinCount(0);
+    final Flag cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
+    cacheFileFlag.setMinCount(0);
+    flags.setValidator(new Validator() {
+        public boolean isValid(CLIFlags f) {
+          if (!countFlag.isSet() 
+              && !(startFlag.isSet() && testSuiteFlag.isSet())) {
+            f.setParseMessage("When not in count-mode, a mutation start point and test suite file is required");
+            return false;
+          }
+          return true;
+        }
+      });
+    flags.setFlags(args);
+    
+    // First, process all the command line options
+    final String className = ((String) classFlag.getValue()).replace('/', '.');
+    final Mutater m = new Mutater(0);
     // Process excludes
     Set ignore = new HashSet();
-    if (!excludes.equals("")) {
-      StringTokenizer tokens = new StringTokenizer(excludes, ",");
-      while (tokens.hasMoreTokens()) {
-        ignore.add(tokens.nextToken());
+    if (exFlag.isSet()) {
+      String[] tokens = ((String) exFlag.getValue()).split(",");
+      for (int i = 0; i < tokens.length; i++) {
+        ignore.add(tokens[i]);
       }
-
+      m.setIgnoredMethods(ignore);
     }
-    className = Utils.getNextArgument(args).replace('/', '.');
-    m = new Mutater(0);
-
-    m.setIgnoredMethods(ignore);
-    m.setMutateIncrements(increments);
-    m.setMutateInlineConstants(inlineConstants);
-    m.setMutateReturnValues(returnVals);
-    mutationCount = m.countMutationPoints(className);
-
-    if (countMode) {
+    m.setMutateIncrements(incFlag.isSet());
+    m.setMutateInlineConstants(inlFlag.isSet());
+    m.setMutateReturnValues(retFlag.isSet());
+    
+    final int mutationCount = m.countMutationPoints(className);
+    if (countFlag.isSet()) {
       System.out.println(mutationCount);
       return;
     } else {
-      final int startPoint = Integer.parseInt(Utils.getNextArgument(args));
-      final String filename = Utils.getNextArgument(args);
-      String cacheFile;
-      try {
-        cacheFile = Utils.getNextArgument(args);
-      } catch (NoSuchElementException e) {
-        cacheFile = null;
-      }
+      final int startPoint = ((Integer) startFlag.getValue()).intValue();
+      final String filename = ((String) testSuiteFlag.getValue());
+      String cacheFile = cacheFileFlag.isSet() ? ((String) cacheFileFlag.getValue()) : null;
 
       final TestOrder order;
       final FailedTestMap cache;
 
       FastJumbler jumbler = new FastJumbler(className, m);
 
-      ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
-                                                                        filename));
+      ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
 
       order = (TestOrder) ois.readObject();
       ois.close();
@@ -201,22 +203,22 @@ public class FastJumbler extends ClassLoader {
       for (int i = startPoint; i < mutationCount; i++) {
         Mutater tempMutater = new Mutater(i);
         tempMutater.setIgnoredMethods(ignore);
-        tempMutater.setMutateIncrements(increments);
-        tempMutater.setMutateInlineConstants(inlineConstants);
-        tempMutater.setMutateReturnValues(returnVals);
+        tempMutater.setMutateIncrements(incFlag.isSet());
+        tempMutater.setMutateInlineConstants(inlFlag.isSet());
+        tempMutater.setMutateReturnValues(retFlag.isSet());
         jumbler.setMutater(tempMutater);
         jumbler = new FastJumbler(className, tempMutater);
         Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
         Method meth = clazz.getMethod("run", new Class[] {
-          jumbler.loadClass("jumble.fast.TestOrder"),
-          jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
-          String.class, int.class, boolean.class });
+                                        jumbler.loadClass("jumble.fast.TestOrder"),
+                                        jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
+                                        String.class, int.class, boolean.class });
         String out = (String) meth.invoke(null, new Object[] {
-          order.changeClassLoader(jumbler),
-          (cache == null ? null : cache.changeClassLoader(jumbler)),
-          className,
-          tempMutater.getMutatedMethodName(className),
-          new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
+                                            order.changeClassLoader(jumbler),
+                                            (cache == null ? null : cache.changeClassLoader(jumbler)),
+                                            className,
+                                            tempMutater.getMutatedMethodName(className),
+                                            new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
         System.out.println(out);
         if (cache != null && out.startsWith("PASS: ")) {
           StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
@@ -234,31 +236,4 @@ public class FastJumbler extends ClassLoader {
     }
   }
 
-  private static void printUsage() {
-    System.out.println("Usage:");
-    System.out
-        .println("java jumble.fast.FastJumbler [OPTIONS] [CLASS] [START] [TESTSUITE]");
-    System.out.println();
-
-    System.out
-        .println("CLASS the fully-qualified name of the class to mutate.");
-    System.out.println();
-    System.out
-        .println(" START an integer indicating the mutation point. Not necessary if we");
-    System.out.println("are in count mode.");
-    System.out.println();
-    System.out
-        .println("TESTSUITE a test suite file containing the tests. Not necessary if");
-    System.out.println("we are in count mode.");
-    System.out.println();
-    System.out.println("OPTIONS");
-    System.out
-        .println("         -c Count mode. The program outputs the number of possible mutations");
-    System.out.println("            in the class.");
-    System.out.println("         -r Mutate return values.");
-    System.out.println("         -k Mutate inline constants.");
-    System.out.println("         -i Mutate increments.");
-    System.out.println("         -x Exclude specified methods. ");
-    System.out.println("         -h Display this help message.");
-  }
 }
