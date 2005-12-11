@@ -1,5 +1,9 @@
 package jumble.dependency;
 
+
+
+import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,10 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
-import java.util.StringTokenizer;
-
-import jumble.util.Utils;
-
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantClass;
@@ -54,52 +54,34 @@ public class DependencyExtractor {
    *          the class to analyze for dependencies.
    */
   public static void main(String[] args) {
-    try {
-      String ignores = Utils.getOption('i', args);
-      Set ignoreSet = null;
-      
-      if (ignores.equals("")) {
-        ignores = Utils.getOption("ignore", args);
-      }
+    CLIFlags flags = new CLIFlags("DependencyExtractor");
+    Flag ignoreFlag = flags.registerOptional('i', "ignore", String.class, "METHOD", "Comma-separated list of packages to exclude.");
+    Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to analyse.");
+    flags.setFlags(args);
 
-      if (!ignores.equals("")) {
-        ignoreSet = new HashSet();
-        
-        StringTokenizer tokens = new StringTokenizer(ignores, ",");
-        
-        while (tokens.hasMoreTokens()) {
-          ignoreSet.add(tokens.nextToken());
-        }
-        
+    Set ignore = null;
+    if (ignoreFlag.isSet()) {
+      ignore = new HashSet();
+      String[] tokens = ((String) ignoreFlag.getValue()).split(",");
+      for (int i = 0; i < tokens.length; i++) {
+        ignore.add(tokens[i]);
       }
-      
-      String className = Utils.getNextArgument(args);
-      Utils.checkForRemainingOptions(args);
+    }
+    final String className = ((String) classFlag.getValue()).replace('/', '.');
 
-      System.out.println("Dependencies for " + className);
-      System.out.println();
-
-      
-      DependencyExtractor extractor = new DependencyExtractor();
-      
-      if (ignoreSet != null) {
-        extractor.setIgnoredPackages(ignoreSet);
-      }
-      
-      Collection dependencies = extractor.getAllDependencies(className, true);
-      Iterator it = dependencies.iterator();
-      while (it.hasNext()) {
-        System.out.println(it.next());
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.err.println();
-      System.err.println("Usage: java jumble.dependency.DependencyExtractor "
-          + " [-i [PACKAGENAMES]] CLASSNAME");
-      System.err.println("where CLASSNAME specifies the class to check for "
-          + "dependencies and the -i option, if included is followed by a "
-          + "comma-separated list of package name prefixes to ignore "
-          + "(no spaces between package names)");
+    System.out.println("Dependencies for " + className);
+    System.out.println();
+    
+    DependencyExtractor extractor = new DependencyExtractor();
+    
+    if (ignore != null) {
+      extractor.setIgnoredPackages(ignore);
+    }
+    
+    Collection dependencies = extractor.getAllDependencies(className, true);
+    Iterator it = dependencies.iterator();
+    while (it.hasNext()) {
+      System.out.println(it.next());
     }
   }
 
