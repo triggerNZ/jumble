@@ -163,6 +163,7 @@ public class Jumble {
         e.printStackTrace();
       }
     } catch (ClassNotFoundException e) {
+      ; // too bad
     }
     throw new IllegalArgumentException("Couldn't create JumbleResultPrinter: " + className);
   }
