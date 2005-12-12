@@ -28,20 +28,7 @@ public class Jumble {
   /**
    * Main method.
    * 
-   * @param args
-   *          command line arguments. format is
-   * 
-   * <PRE>
-   * 
-   * java jumble.fast.Jumble [OPTIONS] [CLASS] [TESTS]
-   * 
-   * CLASS the fully-qualified name of the class to mutate.
-   * 
-   * TESTS a list of test names to run on this class
-   * 
-   * OPTIONS 
-   * 
-   * </PRE>
+   * @param args command line arguments. Use -h to see the expected arguments.
    */
   public static void main(String[] args) throws Exception {
     // Process arguments
