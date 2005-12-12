@@ -33,7 +33,7 @@ public class Jumble {
   public static void main(String[] args) throws Exception {
     // Process arguments
     FastRunner jumble = new FastRunner();
-    CLIFlags flags = new CLIFlags("FastRunner");
+    CLIFlags flags = new CLIFlags("Jumble");
     Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
     Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
