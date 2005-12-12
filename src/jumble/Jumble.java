@@ -92,28 +92,52 @@ public class Jumble {
       }
     } else {
       // no test class given, guess its name
-      String testName = className;
-      if (className.startsWith("Abstract")) {
-        testName = "Dummy" + className.substring(8);
-        } else {
-          final int ab = className.indexOf(".Abstract");
-          if (ab != -1) {
-            testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9);
-          }
-        }
-        final int dollar = testName.indexOf('$');
-        if (dollar != -1) {
-          testName = testName.substring(0, dollar);
-        }
-        testList.add(testName + "Test");
-      }
-
-      JumbleResult res = jumble.runJumble(className, testList);
-      JumbleResultPrinter printer = printFlag.isSet() 
-        ? getPrinter((String) printFlag.getValue()) 
-        : new SeanResultPrinter(System.out);
-      printer.printResult(res);
+      testList.add(guessTestClassName(className));
+    }
+    
+    JumbleResult res = jumble.runJumble(className, testList);
+    JumbleResultPrinter printer = printFlag.isSet() 
+      ? getPrinter((String) printFlag.getValue()) 
+      : new SeanResultPrinter(System.out);
+    printer.printResult(res);
   }
+
+
+  /**
+   * Guesses the name of a test class used for testing a particular
+   * class.  It assumes the following conventions:<p>
+   *
+   * <ul>
+   *
+   * <li> Unit test classes end with <code>Test</code>
+   *
+   * <li> An abstract classes are named such as
+   * <code>AbstractFoo</code> and have a test class named such as
+   * <code>DummyFooTest</code>
+   *
+   * </ul>
+   *
+   * @param className a <code>String</code> value
+   * @return the name of the test class that is expected to test
+   * <code>className</code>.
+   */
+  public static String guessTestClassName(String className) {
+    String testName = className;
+    if (className.startsWith("Abstract")) {
+      testName = "Dummy" + className.substring(8);
+    } else {
+      final int ab = className.indexOf(".Abstract");
+      if (ab != -1) {
+        testName = className.substring(0, ab) + ".Dummy" + className.substring(ab + 9);
+      }
+    }
+    final int dollar = testName.indexOf('$');
+    if (dollar != -1) {
+      testName = testName.substring(0, dollar);
+    }
+    return testName + "Test";
+  }
+
 
   /**
    * Returns a result printer instance as specified by <CODE>className</CODE>.
