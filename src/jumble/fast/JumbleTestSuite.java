@@ -106,8 +106,7 @@ public class JumbleTestSuite extends FlatTestSuite {
   private String getMessage() {
     String message;
     try {
-      message = (String) getClass().getClassLoader().getClass().getMethod(
-                                                                          "getModification", null).invoke(getClass().getClassLoader(), null);
+      message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
     } catch (IllegalAccessException e) {
       message = "!!!" + e.getMessage();
     } catch (IllegalArgumentException e) {
