@@ -219,7 +219,7 @@ public class FastJumbler extends ClassLoader {
                                             className,
                                             tempMutater.getMutatedMethodName(className),
                                             new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
-        System.out.println(out);
+        System.out.println(out);  // This is the magic line that the parent JVM is looking for.
         if (cache != null && out.startsWith("PASS: ")) {
           StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
           String clazzName = tokens.nextToken();
