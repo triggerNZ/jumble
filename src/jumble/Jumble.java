@@ -53,7 +53,7 @@ public class Jumble {
     jumble.setInlineConstants(inlFlag.isSet());
     jumble.setReturnVals(retFlag.isSet());
     jumble.setIncrements(incFlag.isSet());
-    jumble.setNoOrder(orderFlag.isSet());
+    jumble.setOrdered(!orderFlag.isSet());
     jumble.setLoadCache(!loadFlag.isSet());
     jumble.setSaveCache(!saveFlag.isSet());
     jumble.setUseCache(!useFlag.isSet());

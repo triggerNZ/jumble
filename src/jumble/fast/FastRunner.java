@@ -40,7 +40,7 @@ public class FastRunner {
   /** Whether to mutate increments */
   private boolean mIncrements = true;
 
-  private boolean mNoOrder = false;
+  private boolean mOrdered = true;
 
   private boolean mLoadCache = true;
   private boolean mSaveCache = true;
@@ -109,21 +109,21 @@ public class FastRunner {
 
 
   /**
-   * Gets the value of noOrder
+   * Gets whether tests are ordered by their run time.
    *
-   * @return the value of noOrder
+   * @return true if tests are ordered by their run time.
    */
-  public boolean isNoOrder() {
-    return mNoOrder;
+  public boolean isOrdered() {
+    return mOrdered;
   }
 
   /**
-   * Sets the value of noOrder
+   * Sets whether tests are ordered by their run time.
    *
-   * @param argNoOrder Value to assign to noOrder
+   * @param argOrdered true if tests should be ordered by their run time.
    */
-  public void setNoOrder(final boolean argNoOrder) {
-    mNoOrder = argNoOrder;
+  public void setOrdered(final boolean argOrdered) {
+    mOrdered = argOrdered;
   }
 
   /**
@@ -369,7 +369,7 @@ public class FastRunner {
     }
 
     // Store the test suite information serialized in a temporary file
-    final TestOrder order = timingSuite.getOrder(!mNoOrder);
+    final TestOrder order = timingSuite.getOrder(mOrdered);
     final String fileName = "testSuite" + System.currentTimeMillis() + ".dat";
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
     oos.writeObject(order);
@@ -417,7 +417,7 @@ public class FastRunner {
           }
         } else {
           try {
-            // We have output so go to the next loop iteration
+            // We have output so go to the next mutation
             allMutations[currentMutation] = new Mutation(out, className, currentMutation);
             if (mUseCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
