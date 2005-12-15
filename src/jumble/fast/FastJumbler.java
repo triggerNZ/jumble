@@ -9,7 +9,6 @@ package jumble.fast;
 
 
 import com.reeltwo.util.CLIFlags.Flag;
-import com.reeltwo.util.CLIFlags.Validator;
 import com.reeltwo.util.CLIFlags;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -133,25 +132,11 @@ public class FastJumbler extends ClassLoader {
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
-    final Flag countFlag = flags.registerOptional('c', "count-mode", "Just output the number of mutation points in the class.");
-
     final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
     final Flag startFlag = flags.registerRequired(Integer.class, "NUM", "The mutation point to start at.");
-    startFlag.setMinCount(0);
     final Flag testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
-    testSuiteFlag.setMinCount(0);
     final Flag cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
     cacheFileFlag.setMinCount(0);
-    flags.setValidator(new Validator() {
-        public boolean isValid(CLIFlags f) {
-          if (!countFlag.isSet() 
-              && !(startFlag.isSet() && testSuiteFlag.isSet())) {
-            f.setParseMessage("When not in count-mode, a mutation start point and test suite file is required");
-            return false;
-          }
-          return true;
-        }
-      });
     flags.setFlags(args);
     
     // First, process all the command line options
@@ -171,69 +156,64 @@ public class FastJumbler extends ClassLoader {
     m.setMutateReturnValues(retFlag.isSet());
     
     final int mutationCount = m.countMutationPoints(className);
-    if (countFlag.isSet()) {
-      System.out.println(mutationCount);
-      return;
+    final int startPoint = ((Integer) startFlag.getValue()).intValue();
+    final String filename = ((String) testSuiteFlag.getValue());
+    String cacheFile = cacheFileFlag.isSet() ? ((String) cacheFileFlag.getValue()) : null;
+
+    final TestOrder order;
+    final FailedTestMap cache;
+
+    FastJumbler jumbler = new FastJumbler(className, m);
+
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
+
+    order = (TestOrder) ois.readObject();
+    ois.close();
+
+    if (cacheFile == null) {
+      cache = null;
     } else {
-      final int startPoint = ((Integer) startFlag.getValue()).intValue();
-      final String filename = ((String) testSuiteFlag.getValue());
-      String cacheFile = cacheFileFlag.isSet() ? ((String) cacheFileFlag.getValue()) : null;
-
-      final TestOrder order;
-      final FailedTestMap cache;
-
-      FastJumbler jumbler = new FastJumbler(className, m);
-
-      ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
-
-      order = (TestOrder) ois.readObject();
+      ois = new ObjectInputStream(new FileInputStream(cacheFile));
+      cache = (FailedTestMap) ois.readObject();
       ois.close();
+    }
 
-      if (cacheFile == null) {
-        cache = null;
-      } else {
-        ois = new ObjectInputStream(new FileInputStream(cacheFile));
-        cache = (FailedTestMap) ois.readObject();
-        ois.close();
-      }
+    // Let the parent JVM know that we are ready to start
+    System.out.println("START");
 
-      // Let the parent JVM know that we are ready to start
-      System.out.println("START");
+    // Now run all the tests for each mutation point
+    for (int i = startPoint; i < mutationCount; i++) {
+      Mutater tempMutater = new Mutater(i);
+      tempMutater.setIgnoredMethods(ignore);
+      tempMutater.setMutateIncrements(incFlag.isSet());
+      tempMutater.setMutateInlineConstants(inlFlag.isSet());
+      tempMutater.setMutateReturnValues(retFlag.isSet());
+      jumbler.setMutater(tempMutater);
+      jumbler = new FastJumbler(className, tempMutater);
+      Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
+      Method meth = clazz.getMethod("run", new Class[] {
+                                      jumbler.loadClass("jumble.fast.TestOrder"),
+                                      jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
+                                      String.class, int.class, boolean.class });
+      String out = (String) meth.invoke(null, new Object[] {
+                                          order.changeClassLoader(jumbler),
+                                          (cache == null ? null : cache.changeClassLoader(jumbler)),
+                                          className,
+                                          tempMutater.getMutatedMethodName(className),
+                                          new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
+      System.out.println(out);  // This is the magic line that the parent JVM is looking for.
 
-      // Now run all the tests for each mutation point
-      for (int i = startPoint; i < mutationCount; i++) {
-        Mutater tempMutater = new Mutater(i);
-        tempMutater.setIgnoredMethods(ignore);
-        tempMutater.setMutateIncrements(incFlag.isSet());
-        tempMutater.setMutateInlineConstants(inlFlag.isSet());
-        tempMutater.setMutateReturnValues(retFlag.isSet());
-        jumbler.setMutater(tempMutater);
-        jumbler = new FastJumbler(className, tempMutater);
-        Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
-        Method meth = clazz.getMethod("run", new Class[] {
-                                        jumbler.loadClass("jumble.fast.TestOrder"),
-                                        jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
-                                        String.class, int.class, boolean.class });
-        String out = (String) meth.invoke(null, new Object[] {
-                                            order.changeClassLoader(jumbler),
-                                            (cache == null ? null : cache.changeClassLoader(jumbler)),
-                                            className,
-                                            tempMutater.getMutatedMethodName(className),
-                                            new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
-        System.out.println(out);  // This is the magic line that the parent JVM is looking for.
-
-        if (cache != null && out.startsWith("PASS: ")) {
-          StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
-          String clazzName = tokens.nextToken();
-          assert clazzName.equals(className);
-          String methodName = tokens.nextToken();
-          //System.out.println(methodName);
-          int mutPoint = Integer.parseInt(tokens.nextToken());
-          //System.out.println(mutPoint);
-          String testName = tokens.nextToken();
-          //System.out.println(testName);
-          cache.addFailure(className, methodName, mutPoint, testName);
-        }
+      if (cache != null && out.startsWith("PASS: ")) {
+        StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
+        String clazzName = tokens.nextToken();
+        assert clazzName.equals(className);
+        String methodName = tokens.nextToken();
+        //System.out.println(methodName);
+        int mutPoint = Integer.parseInt(tokens.nextToken());
+        //System.out.println(mutPoint);
+        String testName = tokens.nextToken();
+        //System.out.println(testName);
+        cache.addFailure(className, methodName, mutPoint, testName);
       }
     }
   }
