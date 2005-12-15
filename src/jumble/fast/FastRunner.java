@@ -1,5 +1,6 @@
 package jumble.fast;
 
+import com.reeltwo.util.Debug;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -287,6 +288,45 @@ public class FastRunner {
     return (String[]) args.toArray(new String[args.size()]);
   }
 
+  private int countMutationPoints(String className) {
+    // Get the number of mutation points from the Jumbler
+    final Mutater m = new Mutater(0);
+    m.setIgnoredMethods(mExcludeMethods);
+    m.setMutateIncrements(mIncrements);
+    m.setMutateInlineConstants(mInlineConstants);
+    m.setMutateReturnValues(mReturnVals);
+    return m.countMutationPoints(className);
+  }
+
+  private boolean debugOutput(String out, String err) {
+    if (out != null) {
+      Debug.println("Child.out->" + out);
+    }
+    if (err != null) {
+      Debug.println("Child.err->" + err); 
+    }
+    return true; // So we can be enabled/disabled via assertion mechanism.
+  }
+
+  private void waitForStart(IOThread iot, IOThread eot) throws InterruptedException {
+    // read the "START" to let us know the JVM has started
+    // we don't want to time this.
+    // FIXME this looks dangerous. What if the test can't even get to the point of outputting START (e.g. class loading issues)
+    while (true) {
+      String str = iot.getNext();
+      String err = eot.getNext();
+      assert debugOutput(str, err);
+      if ((str == null) && (err == null)) {
+        Thread.sleep(10);
+      } else if ("START".equals(str)) {
+        break;
+      } else {
+        throw new RuntimeException("jumble.fast.FastJumbler returned "
+                                   + str + " instead of START");
+      }
+    }
+  }
+
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
@@ -299,29 +339,16 @@ public class FastRunner {
    */
   public JumbleResult runJumble(final String className, final List testClassNames) throws Exception {
 
-    Class[] testClasses = new Class[testClassNames.size()];
-    final TestResult initialResult;
-    final TimingTestSuite timingSuite;
-    final TestOrder order;
-    // Unique name for this test suite
-    final String fileName = "testSuite" + System.currentTimeMillis() + ".dat";
-    // Unique name for the cache
     final String cacheFileName = "cache" + System.currentTimeMillis() + ".dat";
 
     initCache();
 
-    // Get the number of mutation points from the Jumbler
-    final Mutater m = new Mutater(0);
-    m.setIgnoredMethods(mExcludeMethods);
-    m.setMutateIncrements(mIncrements);
-    m.setMutateInlineConstants(mInlineConstants);
-    m.setMutateReturnValues(mReturnVals);
-
-    final int mutationCount = m.countMutationPoints(className);
+    final int mutationCount = countMutationPoints(className);
     if (mutationCount == -1) {
       return new InterfaceResult(className); 
     }
 
+    Class[] testClasses = new Class[testClassNames.size()];
     for (int i = 0; i < testClasses.length; i++) {
       try {
         testClasses[i] = Class.forName((String) testClassNames.get(i));
@@ -330,31 +357,34 @@ public class FastRunner {
         return new FailedTestResult(className, testClassNames, null, mutationCount);
       }
     }
-    initialResult = new TestResult();
-    timingSuite = new TimingTestSuite(testClasses);
+
+    final TestResult initialResult = new TestResult();
+    final TimingTestSuite timingSuite = new TimingTestSuite(testClasses);
+    assert Debug.println("Parent. Starting initial run without mutating");
     timingSuite.run(initialResult);
-    order = timingSuite.getOrder();
-
-    if (mNoOrder) {
-      order.dropOrder();
-    }
-
+    assert Debug.println("Parent. Finished");
     // Now, if the tests failed, can return straight away
     if (!initialResult.wasSuccessful()) {
       return new FailedTestResult(className, testClassNames, initialResult, mutationCount);
     }
 
-    // Store the timing stuff in a temporary file
+    // Store the test suite information serialized in a temporary file
+    final TestOrder order = timingSuite.getOrder();
+    if (mNoOrder) {
+      order.dropOrder();
+    }
+    final String fileName = "testSuite" + System.currentTimeMillis() + ".dat";
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
     oos.writeObject(order);
     oos.close();
 
     // compute the timeout
-    long timeLeft = order.getTotalRuntime();
+    long totalRuntime = timingSuite.getTotalRuntime();
 
     final JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler");
     Process childProcess = null;
     IOThread iot = null;
+    IOThread eot = null;
     
     final Mutation[] allMutations = new Mutation[mutationCount];
     for (int currentMutation = 0; currentMutation < mutationCount; currentMutation++) {
@@ -365,31 +395,22 @@ public class FastRunner {
         childProcess = runner.start();
         iot = new IOThread(childProcess.getInputStream());
         iot.start();
-        // read the "START" to let us know the JVM has started
-        // we don't want to time this.
-        while (true) {
-          String str = iot.getNext();
-          // System.out.println(str);
-          if (str == null) {
-            Thread.sleep(10);
-          } else if (str.equals("START")) {
-            break;
-          } else {
-            throw new RuntimeException("jumble.fast.FastJumbler returned "
-                                       + str + " instead of START");
-          }
-        }
+        eot = new IOThread(childProcess.getErrorStream());
+        eot.start();
+        
+        waitForStart(iot, eot);
       }
       long before = System.currentTimeMillis();
       long after = before;
-      long timeout = computeTimeout(timeLeft);
+      long timeout = computeTimeout(totalRuntime);
       // Run until we time out
       while (true) {
         String out = iot.getNext();
+        String err = eot.getNext();
+        assert debugOutput(out, err);
         if (out == null) {
           if (after - before > timeout) {
-            allMutations[currentMutation] = new Mutation("TIMEOUT", className,
-                                                         currentMutation);
+            allMutations[currentMutation] = new Mutation("TIMEOUT", className, currentMutation);
             childProcess.destroy();
             childProcess = null;
             break;
@@ -400,8 +421,7 @@ public class FastRunner {
         } else {
           try {
             // We have output so go to the next loop iteration
-            allMutations[currentMutation] = new Mutation(out, className,
-                                                         currentMutation);
+            allMutations[currentMutation] = new Mutation(out, className, currentMutation);
             if (mUseCache && allMutations[currentMutation].isPassed()) {
               // Remove "PASS: " and tokenize
               StringTokenizer tokens = new StringTokenizer(out.substring(6),
@@ -421,7 +441,7 @@ public class FastRunner {
       }
     }
 
-    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, computeTimeout(order.getTotalRuntime()));
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, computeTimeout(totalRuntime));
     // finally, delete the test suite file
     if (!new File(fileName).delete()) {
       System.err.println("Error: could not delete temporary file");
