@@ -1,15 +1,17 @@
 package jumble.fast;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestFailure;
 import junit.framework.TestResult;
 
 /**
@@ -76,8 +78,9 @@ public class JumbleTestSuite extends FlatTestSuite {
     Test[] tests = getOrder();
     PrintStream newOut;
     PrintStream oldOut = System.out;
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
     if (mStopOutput) {
-      newOut = new PrintStream(new ByteArrayOutputStream());
+      newOut = new PrintStream(bos);
     } else {
       newOut = oldOut;
     }
@@ -86,9 +89,23 @@ public class JumbleTestSuite extends FlatTestSuite {
       TestCase t = (TestCase) tests[i];
 
       System.setOut(newOut);
+      bos.reset();
       t.run(result);
       System.setOut(oldOut);
       if (result.errorCount() > 0 || result.failureCount() > 0) {
+        if (false) {  // Debugging to allow seeing how the tests picked up the mutation
+          for (Enumeration e = result.errors(); e.hasMoreElements(); ) {
+            TestFailure f = (TestFailure) e.nextElement();
+            System.err.println("TEST FINISHED WITH ERROR: " + f.toString() + f.trace());
+          }
+          for (Enumeration e = result.failures(); e.hasMoreElements(); ) {
+            TestFailure f = (TestFailure) e.nextElement();
+            System.err.println("TEST FINISHED WITH FAILURE: " + f.toString() + f.trace());
+          }
+          if (bos.size() > 0) {
+            System.err.println("CAPTURED OUTPUT: " + bos.toString());
+          }
+        }
         return "PASS: " + mClass + ":" + mMethod + ":"
           + mMethodRelativeMutationPoint + ":" + t.getName();
       }
