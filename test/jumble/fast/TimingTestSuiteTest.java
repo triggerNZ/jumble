@@ -7,7 +7,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import experiments.TimedTests;
 
 /**
  * Tests the corresponding class
@@ -16,6 +15,27 @@ import experiments.TimedTests;
  * @version $Revision$
  */
 public class TimingTestSuiteTest extends TestCase {
+
+  private static final int MED_DELAY = 500;
+  private static final int LONG_DELAY = 2000;
+
+  public static class TimedTests extends TestCase {
+    // Warning, the declaration order of these tests is important to testGetOrder below
+    public final void testMedium() throws Exception {
+      System.out.println("Medium");
+      Thread.sleep(MED_DELAY);
+    }
+    
+    public final void testLong() throws Exception {
+      System.out.println("Long");
+      Thread.sleep(LONG_DELAY);
+    }
+    
+    public final void testShort() {
+      System.out.println("Short");
+    }
+  }
+
   private TimingTestSuite mSuite;
 
   private TestResult mResult;
@@ -25,8 +45,11 @@ public class TimingTestSuiteTest extends TestCase {
     mResult = new TestResult();
     PrintStream oldOut = System.out;
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
-    mSuite.run(mResult);
-    System.setOut(oldOut);
+    try {
+      mSuite.run(mResult);
+    } finally {
+      System.setOut(oldOut);
+    }
   }
 
   protected void tearDown() {
@@ -40,9 +63,9 @@ public class TimingTestSuiteTest extends TestCase {
     assertEquals(2, order.getTestIndex(0));
     assertEquals(0, order.getTestIndex(1));
     assertEquals(1, order.getTestIndex(2));
-    // A biTt dangerous
-    assertTrue(11000 <= mSuite.getTotalRuntime()
-        && mSuite.getTotalRuntime() < 12000);
+    // A bit dangerous
+    assertTrue(MED_DELAY + LONG_DELAY <= mSuite.getTotalRuntime());
+    assertTrue(mSuite.getTotalRuntime() < (MED_DELAY + LONG_DELAY * 1.5));
   }
 
   public final void testResult() {
