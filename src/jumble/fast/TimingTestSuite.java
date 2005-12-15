@@ -67,6 +67,17 @@ public class TimingTestSuite extends FlatTestSuite {
     }
   }
 
+  public long getTotalRuntime() {
+    if (mRuntimes == null) {
+      throw new RuntimeException("Cannot call getOrder() before the tests have been run");
+    }
+    long sum = 0;
+    for (int i = 0; i < mRuntimes.length; i++) {
+      sum += mRuntimes[i];
+    }
+    return sum;
+  }
+
   /**
    * Returns the tests sorted in order.
    * 
