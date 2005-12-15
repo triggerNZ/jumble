@@ -55,16 +55,6 @@ public class TestOrderTest extends TestCase {
     assertEquals(2, classes.length);
   }
 
-  public final void testGetRuntime() {
-    for (int i = 0; i < mOrder.getTestCount(); i++) {
-      assertEquals((i + 1) * 100, mOrder.getRuntime(i));
-    }
-  }
-
-  public final void testGetTotalRuntime() {
-    assertEquals(600, mOrder.getTotalRuntime());
-  }
-
   public final void testSavingAndLoading() throws Exception {
     // Write the object
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
@@ -83,8 +73,6 @@ public class TestOrderTest extends TestCase {
     testGetTestCount();
     testGetTestIndex();
     testGetTestClasses();
-    testGetRuntime();
-    testGetTotalRuntime();
   }
 
   public final void testChangeClassLoader() throws Exception {
