@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.StringTokenizer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -78,24 +77,6 @@ public class TestOrderTest extends TestCase {
   public final void testChangeClassLoader() throws Exception {
     Object newOrder = mOrder.changeClassLoader(new ClassLoader());
     assertNotSame(mOrder.getClass(), newOrder.getClass());
-  }
-
-  public final void testToString() {
-    String str = mOrder.toString();
-
-    StringTokenizer tokens = new StringTokenizer(str);
-    assertEquals("100", tokens.nextToken());
-    assertEquals("200", tokens.nextToken());
-    assertEquals("300", tokens.nextToken());
-  }
-
-  public final void testDropOrder() {
-    mOrder.dropOrder();
-
-    for (int i = 0; i < 3; i++) {
-      assertEquals(i, mOrder.getTestIndex(i));
-    }
-
   }
 
   public static Test suite() {

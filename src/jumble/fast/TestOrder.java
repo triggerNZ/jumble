@@ -35,11 +35,23 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
   private long[] mRuntimes;
 
   /**
+   * Creates a new TestOrder with the specified test classes and no
+   * particular ordering.
+   * 
+   * @param testClasses
+   */
+  public TestOrder(Class[] testClasses) {
+    this(testClasses, new long[testClasses.length]);
+    for (int i = 0; i < mOrder.length; i++) {
+      mOrder[i] = i;
+    }
+  }
+
+  /**
    * Creates a new TestOrder with the specified test classes and runtimes.
    * 
    * @param testClasses
-   * @param runtimes
-   *          the runtimes of the tests.
+   * @param runtimes the runtimes of the tests.
    */
   public TestOrder(Class[] testClasses, long[] runtimes) {
     mTestClasses = new String[testClasses.length];
@@ -171,37 +183,6 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     return mTestClasses;
   }
 
-  /**
-   * Gets the runtime of the <CODE>order</CODE> th test in order.
-   * 
-   * @param order
-   *          the ordered index of the test to run
-   * @return the runtime
-   */
-  public long getRuntime(int order) {
-    assert integrity();
-    return mRuntimes[getTestIndex(order)];
-  }
-
-  public long getTotalRuntime() {
-    assert integrity();
-
-    long sum = 0;
-    for (int i = 0; i < getTestCount(); i++) {
-      sum += getRuntime(i);
-    }
-    return sum;
-  }
-
-  public String toString() {
-    assert integrity();
-    StringBuffer buf = new StringBuffer();
-
-    for (int i = 0; i < getTestCount(); i++) {
-      buf.append(getRuntime(i) + "\n");
-    }
-    return buf.toString();
-  }
 
   /**
    * Integrity method. Checks this object for consistency. Should only be called
@@ -217,12 +198,11 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
       }
 
       int testCount = ts.testCount();
-      if (testCount == mOrder.length && testCount == mRuntimes.length) {
+      if (testCount == mOrder.length) {
         return true;
       } else {
         System.err.println("testCount: " + testCount);
         System.err.println("mOrder.length: " + mOrder.length);
-        System.err.println("mRuntimes.length: " + mRuntimes.length);
         System.err.println();
         
         return false;
@@ -231,16 +211,6 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
       System.err.println("EXCEPTION");
 
       return false;
-    }
-  }
-
-  /**
-   * Resets the order so that it is the default order. Useful when we want to
-   * quickly revert to default ordering.
-   */
-  public void dropOrder() {
-    for (int i = 0; i < mOrder.length; i++) {
-      mOrder[i] = i;
     }
   }
 

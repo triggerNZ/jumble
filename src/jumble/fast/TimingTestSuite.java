@@ -69,7 +69,7 @@ public class TimingTestSuite extends FlatTestSuite {
 
   public long getTotalRuntime() {
     if (mRuntimes == null) {
-      throw new RuntimeException("Cannot call getOrder() before the tests have been run");
+      throw new RuntimeException("Cannot call getTotalRuntime() before the tests have been run");
     }
     long sum = 0;
     for (int i = 0; i < mRuntimes.length; i++) {
@@ -92,9 +92,7 @@ public class TimingTestSuite extends FlatTestSuite {
     if (orderByTime) {
       return new TestOrder(mTestClasses, mRuntimes);
     } else {
-      TestOrder to = new TestOrder(mTestClasses, mRuntimes);
-      to.dropOrder();
-      return to;
+      return new TestOrder(mTestClasses);
     }
   }
 }
