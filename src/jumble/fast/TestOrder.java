@@ -42,9 +42,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    */
   public TestOrder(Class[] testClasses) {
     this(testClasses, new long[testClasses.length]);
-    for (int i = 0; i < mOrder.length; i++) {
-      mOrder[i] = i;
-    }
+    mOrder = createOrdering(testClasses.length);
   }
 
   /**
@@ -60,30 +58,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     }
     mRuntimes = runtimes;
 
-    SortPair[] sortPairs = new SortPair[mRuntimes.length];
-    mOrder = new int[mRuntimes.length];
-
-    for (int i = 0; i < sortPairs.length; i++) {
-      sortPairs[i] = new SortPair(i, mRuntimes[i]);
-    }
-
-    java.util.Arrays.sort(sortPairs, new Comparator() {
-      public int compare(Object o1, Object o2) {
-        SortPair p1 = (SortPair) o1;
-        SortPair p2 = (SortPair) o2;
-
-        if (p1.getTime() < p2.getTime()) {
-          return -1;
-        } else if (p1.getTime() == p2.getTime()) {
-          return 0;
-        } else {
-          return 1;
-        }
-      }
-    });
-    for (int i = 0; i < mOrder.length; i++) {
-      mOrder[i] = sortPairs[i].getPos();
-    }
+    mOrder = createOrdering(runtimes);
 
     TestSuite ts = new FlatTestSuite();
     try {
@@ -113,6 +88,44 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
 
     assert integrity();
   }
+
+  static int[] createOrdering(int length) {
+    int[] order = new int[length];
+    for (int i = 0; i < order.length; i++) {
+      order[i] = i;
+    }
+    return order;
+  }
+
+  /** Creates an ordering based on the runtimes */
+  static int[] createOrdering(long[] runtimes) {
+    int[] order = new int[runtimes.length];
+
+    SortPair[] sortPairs = new SortPair[runtimes.length];
+    for (int i = 0; i < sortPairs.length; i++) {
+      sortPairs[i] = new SortPair(i, runtimes[i]);
+    }
+
+    java.util.Arrays.sort(sortPairs, new Comparator() {
+        public int compare(Object o1, Object o2) {
+          SortPair p1 = (SortPair) o1;
+          SortPair p2 = (SortPair) o2;
+
+          if (p1.getTime() < p2.getTime()) {
+            return -1;
+          } else if (p1.getTime() == p2.getTime()) {
+            return 0;
+          } else {
+            return 1;
+          }
+        }
+      });
+    for (int i = 0; i < order.length; i++) {
+      order[i] = sortPairs[i].getPos();
+    }
+    return order;
+  }
+
 
   /**
    * Loads the class in a different class loader and clones the object.
