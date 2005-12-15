@@ -1,6 +1,5 @@
 package jumble.util;
 
-import java.util.List;
 import java.util.LinkedList;
 import java.io.InputStream;
 import java.io.BufferedReader;
@@ -16,9 +15,11 @@ import java.io.IOException;
  */
 public class IOThread extends Thread {
 
+  private static final String LS = System.getProperty("line.separator");
+
   public static final boolean DEBUG = false;
   private BufferedReader mOut;
-  private List mBuffer;
+  private LinkedList mBuffer;
 
   /**
    * A new thread.
@@ -36,7 +37,7 @@ public class IOThread extends Thread {
     try {
       while ((curLine = mOut.readLine()) != null) {  
         synchronized (this) {
-          mBuffer.add(0, curLine);
+          mBuffer.addLast(curLine);
         }
       }
       if (DEBUG) {
@@ -58,9 +59,27 @@ public class IOThread extends Thread {
       if (mBuffer.size() == 0) {
         return null;
       }
-      String ret = (String) mBuffer.get(mBuffer.size() - 1);
-      mBuffer.remove(mBuffer.size() - 1);
-      return ret;
+      return (String) mBuffer.removeFirst();
     }
+  }
+
+
+  /**
+   * Returns all the lines of text that are available. Otherwise
+   * returns null.
+   * @return the next line of text or null
+   */
+  public String getAvailable() {
+    synchronized (this) {
+      if (mBuffer.size() == 0) {
+        return null;
+      }
+      StringBuffer sb = new StringBuffer();
+      while (mBuffer.size() > 0) {
+        sb.append(mBuffer.removeFirst()).append(LS);
+      }
+      return sb.toString();
+    }
+    
   }
 }
