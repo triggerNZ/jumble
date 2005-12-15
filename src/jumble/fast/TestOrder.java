@@ -56,7 +56,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * Creates a new TestOrder with the specified test classes and ordering
    * 
    * @param testClasses
-   * @param runtimes the runtimes of the tests.
+   * @param order order permuation
    */
   public TestOrder(Class[] testClasses, int[] order) {
     mTestClasses = new String[testClasses.length];
