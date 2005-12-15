@@ -39,8 +39,7 @@ public class TimingTestSuite extends FlatTestSuite {
    * Constructs a test suite from the test classes given in <CODE>testClasses
    * </CODE>
    * 
-   * @param testClasses
-   *          an array of the classes of test suites to run
+   * @param testClasses an array of the classes of test suites to run
    */
   public TimingTestSuite(Class[] testClasses) {
     super();
@@ -72,13 +71,11 @@ public class TimingTestSuite extends FlatTestSuite {
    * Returns the tests sorted in order.
    * 
    * @return the ordered tests.
-   * @throws RuntimeException
-   *           if the tests have not been run yet
+   * @throws RuntimeException if the tests have not been run yet
    */
   public TestOrder getOrder() {
     if (mRuntimes == null) {
-      throw new RuntimeException("Cannot call getOrder() before the tests"
-          + " have been run");
+      throw new RuntimeException("Cannot call getOrder() before the tests have been run");
     }
 
     return new TestOrder(mTestClasses, mRuntimes);
