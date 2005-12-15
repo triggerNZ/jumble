@@ -79,16 +79,22 @@ public class TimingTestSuite extends FlatTestSuite {
   }
 
   /**
-   * Returns the tests sorted in order.
+   * Returns a test ordering
    * 
+   * @param orderByTime if the tests will be ordered according to the run time.
    * @return the ordered tests.
    * @throws RuntimeException if the tests have not been run yet
    */
-  public TestOrder getOrder() {
+  public TestOrder getOrder(boolean orderByTime) {
     if (mRuntimes == null) {
       throw new RuntimeException("Cannot call getOrder() before the tests have been run");
     }
-
-    return new TestOrder(mTestClasses, mRuntimes);
+    if (orderByTime) {
+      return new TestOrder(mTestClasses, mRuntimes);
+    } else {
+      TestOrder to = new TestOrder(mTestClasses, mRuntimes);
+      to.dropOrder();
+      return to;
+    }
   }
 }

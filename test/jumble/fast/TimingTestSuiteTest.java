@@ -35,14 +35,14 @@ public class TimingTestSuiteTest extends TestCase {
   }
 
   public final void testGetOrder() {
-    TestOrder order = mSuite.getOrder();
+    TestOrder order = mSuite.getOrder(true);
     assertEquals(3, order.getTestCount());
     assertEquals(2, order.getTestIndex(0));
     assertEquals(0, order.getTestIndex(1));
     assertEquals(1, order.getTestIndex(2));
     // A biTt dangerous
-    assertTrue(11000 <= order.getTotalRuntime()
-        && order.getTotalRuntime() < 12000);
+    assertTrue(11000 <= mSuite.getTotalRuntime()
+        && mSuite.getTotalRuntime() < 12000);
   }
 
   public final void testResult() {

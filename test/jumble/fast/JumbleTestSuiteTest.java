@@ -89,8 +89,7 @@ public class JumbleTestSuiteTest extends TestCase {
 
     System.setOut(out);
 
-    String s = JumbleTestSuite.run(timingSuite.getOrder(), null, null, null, 0,
-        false);
+    String s = JumbleTestSuite.run(timingSuite.getOrder(true), null, null, null, 0, false);
     assertTrue(s.startsWith("FAIL"));
     StringTokenizer tokens = new StringTokenizer(ba.toString());
     assertEquals("Short", tokens.nextToken());

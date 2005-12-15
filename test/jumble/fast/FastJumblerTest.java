@@ -60,7 +60,7 @@ public class FastJumblerTest extends TestCase {
     suite.run(new TestResult());
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
         mFileName));
-    out.writeObject(suite.getOrder());
+    out.writeObject(suite.getOrder(true));
     out.close();
   }
 

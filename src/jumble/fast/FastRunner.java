@@ -369,10 +369,7 @@ public class FastRunner {
     }
 
     // Store the test suite information serialized in a temporary file
-    final TestOrder order = timingSuite.getOrder();
-    if (mNoOrder) {
-      order.dropOrder();
-    }
+    final TestOrder order = timingSuite.getOrder(!mNoOrder);
     final String fileName = "testSuite" + System.currentTimeMillis() + ".dat";
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
     oos.writeObject(order);
