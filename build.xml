@@ -23,6 +23,7 @@
       <classpath>
         <pathelement location="${lib.dir}/bcel.jar"/>
         <pathelement location="${lib.dir}/junit.jar"/>
+        <pathelement location="${lib.dir}/reeltwo.jar"/>
       </classpath>
     </javac>
   </target>
@@ -32,6 +33,7 @@
       <fileset dir="${build.dir}" includes="**/*.class" />
       <zipfileset src="${lib.dir}/bcel.jar" />
       <zipfileset src="${lib.dir}/junit.jar" />
+      <zipfileset src="${lib.dir}/reeltwo.jar" />
       <manifest>
 	<attribute name="Main-Class" value="jumble.Jumble" />
       </manifest>
