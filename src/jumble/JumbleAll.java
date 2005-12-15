@@ -67,6 +67,8 @@ public class JumbleAll {
     System.out.println("DONE: " + classNames.size() + " classes and "
         + testNames.size() + " tests.");
 
+    System.err.println(classNames);
+    
     System.out.println();
     System.out.println("RESULTS:");
     System.out.println();
