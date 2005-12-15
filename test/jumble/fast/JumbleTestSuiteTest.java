@@ -21,6 +21,10 @@ public class JumbleTestSuiteTest extends TestCase {
   private static final int MED_DELAY = 500;
   private static final int LONG_DELAY = 2000;
 
+  /**
+   * <code>TimedTests</code> is a small set of tests that take varying
+   * times to execute.
+   */
   public static class TimedTests extends TestCase {
     // Warning, the declaration order of these tests is important to testGetOrder below
     public final void testMedium() throws Exception {
