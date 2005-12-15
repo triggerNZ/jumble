@@ -70,7 +70,7 @@ public class FastJumblerTest extends TestCase {
 
   public void testMain() throws Exception {
     JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
-        "experiments.JumblerExperiment", "0", mFileName, "-r", "-k", "-i" });
+                                         "experiments.JumblerExperiment", "-s", "0", mFileName, "-r", "-k", "-i" });
     Process p = runner.start();
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(p

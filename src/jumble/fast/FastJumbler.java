@@ -132,8 +132,8 @@ public class FastJumbler extends ClassLoader {
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+    final Flag startFlag = flags.registerRequired('s', "start", Integer.class, "NUM", "The mutation point to start at.");
     final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
-    final Flag startFlag = flags.registerRequired(Integer.class, "NUM", "The mutation point to start at.");
     final Flag testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
     final Flag cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
     cacheFileFlag.setMinCount(0);

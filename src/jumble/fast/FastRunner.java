@@ -243,6 +243,19 @@ public class FastRunner {
     }
   }
 
+  private void updateCache(Mutation mutation) {
+    if (mutation.isPassed()) {
+      // Remove "PASS: " and tokenize
+      StringTokenizer tokens = new StringTokenizer(mutation.getDescription().substring(6), ":");
+      String clazzName = tokens.nextToken();
+      assert clazzName.equals(mutation.getClassName());
+      String methodName = tokens.nextToken();
+      int mutPoint = Integer.parseInt(tokens.nextToken());
+      String testName = tokens.nextToken();
+      mCache.addFailure(clazzName, methodName, mutPoint, testName);
+    }
+  }
+
   private boolean writeCache(String cacheFileName) {
     try {
       File f = new File(cacheFileName);
@@ -266,10 +279,11 @@ public class FastRunner {
   /** Constructs arguments to the FastJumbler */
   private String[] createArgs(String className, int currentMutation, String fileName, String cacheFileName) {
     ArrayList args = new ArrayList();
+    // mutation point
+    args.add("-s");
+    args.add(String.valueOf(currentMutation));
     // class name
     args.add(className);
-    // mutation point
-    args.add(String.valueOf(currentMutation));
     // test suite filename
     args.add(fileName);
     
@@ -283,7 +297,6 @@ public class FastRunner {
     // exclude methods
     if (!mExcludeMethods.isEmpty()) {
       StringBuffer ex = new StringBuffer();
-      ex.append("-x ");
       Iterator it = mExcludeMethods.iterator();
       for (int i = 0; i < mExcludeMethods.size(); i++) {
         if (i == 0) {
@@ -292,6 +305,7 @@ public class FastRunner {
           ex.append("," + it.next());
         }
       }
+      args.add("-x");
       args.add(ex.toString());
     }
     // inline constants
@@ -446,22 +460,10 @@ public class FastRunner {
             after = System.currentTimeMillis();
           }
         } else {
-          try {
-            // We have output so go to the next mutation
-            allMutations[currentMutation] = new Mutation(out, className, currentMutation);
-            if (mUseCache && allMutations[currentMutation].isPassed()) {
-              // Remove "PASS: " and tokenize
-              StringTokenizer tokens = new StringTokenizer(out.substring(6),
-                                                           ":");
-              String clazzName = tokens.nextToken();
-              assert clazzName.equals(className);
-              String methodName = tokens.nextToken();
-              int mutPoint = Integer.parseInt(tokens.nextToken());
-              String testName = tokens.nextToken();
-              mCache.addFailure(className, methodName, mutPoint, testName);
-            }
-          } catch (RuntimeException e) {
-            throw e;
+          // We have output so go to the next mutation
+          allMutations[currentMutation] = new Mutation(out, className, currentMutation);
+          if (mUseCache) {
+            updateCache(allMutations[currentMutation]);
           }
           break;
         }
