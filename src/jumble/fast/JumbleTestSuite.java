@@ -38,8 +38,8 @@ public class JumbleTestSuite extends FlatTestSuite {
   /** Mutation Point */
   private int mMethodRelativeMutationPoint;
 
-  /** Should we surpress output? */
-  private boolean mStopOutput = true;
+  /** Should we dump extra output from the test runs? */
+  private boolean mVerbose;
 
   /**
    * Constructs test suite from the given order of tests.
@@ -51,13 +51,13 @@ public class JumbleTestSuite extends FlatTestSuite {
    */
   public JumbleTestSuite(TestOrder order, FailedTestMap cache,
                          String mutatedClass, String mutatedMethod, int mutationPoint,
-                         boolean stopOut) throws ClassNotFoundException {
+                         boolean verbose) throws ClassNotFoundException {
     super();
     mCache = cache;
     mOrder = order;
     mClass = mutatedClass;
     mMethod = mutatedMethod;
-    mStopOutput = stopOut;
+    mVerbose = verbose;
     mMethodRelativeMutationPoint = mutationPoint;
 
     // Create the test suites from the order
@@ -76,36 +76,43 @@ public class JumbleTestSuite extends FlatTestSuite {
   protected String run() {
     final TestResult result = new TestResult();
     Test[] tests = getOrder();
-    PrintStream newOut;
-    PrintStream oldOut = System.out;
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    if (mStopOutput) {
-      newOut = new PrintStream(bos);
-    } else {
-      newOut = oldOut;
-    }
+    PrintStream newOut = new PrintStream(bos);
+    PrintStream oldOut = System.out;
 
     for (int i = 0; i < testCount(); i++) {
       TestCase t = (TestCase) tests[i];
 
       System.setOut(newOut);
-      bos.reset();
-      t.run(result);
-      System.setOut(oldOut);
-      if (result.errorCount() > 0 || result.failureCount() > 0) {
-        if (false) {  // Debugging to allow seeing how the tests picked up the mutation
-          for (Enumeration e = result.errors(); e.hasMoreElements(); ) {
-            TestFailure f = (TestFailure) e.nextElement();
-            System.err.println("TEST FINISHED WITH ERROR: " + f.toString() + f.trace());
-          }
-          for (Enumeration e = result.failures(); e.hasMoreElements(); ) {
-            TestFailure f = (TestFailure) e.nextElement();
-            System.err.println("TEST FINISHED WITH FAILURE: " + f.toString() + f.trace());
-          }
-          if (bos.size() > 0) {
-            System.err.println("CAPTURED OUTPUT: " + bos.toString());
-          }
+      try {
+        bos.reset();
+        t.run(result);
+      } finally {
+        System.setOut(oldOut);
+      }
+
+      if (mVerbose) {  // Debugging to allow seeing how the tests picked up the mutation
+        for (Enumeration e = result.errors(); e.hasMoreElements(); ) {
+          TestFailure f = (TestFailure) e.nextElement();
+          System.err.println("TEST FINISHED WITH ERROR: " + f.toString());
+          System.err.print(f.trace());
         }
+        for (Enumeration e = result.failures(); e.hasMoreElements(); ) {
+          TestFailure f = (TestFailure) e.nextElement();
+          System.err.println("TEST FINISHED WITH FAILURE: " + f.toString());
+          System.err.print(f.trace());
+        }
+        if (bos.size() > 0) {
+          System.err.println("CAPTURED OUTPUT: " + bos.toString());
+        }
+        System.err.flush();
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          ; // Don't care
+        }
+      }
+      if (result.errorCount() > 0 || result.failureCount() > 0) {
         return "PASS: " + mClass + ":" + mMethod + ":"
           + mMethodRelativeMutationPoint + ":" + t.getName();
       }
@@ -144,27 +151,20 @@ public class JumbleTestSuite extends FlatTestSuite {
   /**
    * Run the tests for the given class.
    * 
-   * @param order
-   *          the order in which to run the tests.
+   * @param order the order in which to run the tests.
    * @param cache the cache
-   * @param mutatedClassName
-   *          the name of the class which was mutated
-   * @param mutatedMethodName
-   *          the name of the method which was mutated
-   * @param relativeMutationPoint
-   *          the mutation point location relative to the mutated method
-   * @param supressOutput
-   *          flag whether to surpress output during the test run. Should be
-   *          <CODE>true</CODE> for all Jumble runs.
+   * @param mutatedClassName the name of the class which was mutated
+   * @param mutatedMethodName the name of the method which was mutated
+   * @param relativeMutationPoint the mutation point location relative to the mutated method
    * @see TestOrder
    */
   public static String run(TestOrder order, FailedTestMap cache,
                            String mutatedClassName, String mutatedMethodName,
-                           int relativeMutationPoint, boolean supressOutput) {
+                           int relativeMutationPoint, boolean verbose) {
     try {
       JumbleTestSuite suite = new JumbleTestSuite(order, cache,
                                                   mutatedClassName, mutatedMethodName, relativeMutationPoint,
-                                                  supressOutput);
+                                                  verbose);
       String ret = suite.run();
 
       return ret;

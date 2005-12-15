@@ -42,6 +42,8 @@ public class FastRunner {
 
   private boolean mOrdered = true;
 
+  private boolean mVerbose = false;
+
   private boolean mLoadCache = true;
   private boolean mSaveCache = true;
   private boolean mUseCache = true;
@@ -50,6 +52,25 @@ public class FastRunner {
 
   /** The variable storing the failed tests - can get pretty big */
   FailedTestMap mCache = null;
+
+
+  /**
+   * Gets whether verbose mode is set.
+   *
+   * @return true if verbose mode is enabled.
+   */
+  public boolean isVerbose() {
+    return mVerbose;
+  }
+
+  /**
+   * Sets whether verbose mode is enabled.
+   *
+   * @param newVerbose true if verbose mode should be enabled.
+   */
+  public void setVerbose(final boolean newVerbose) {
+    mVerbose = newVerbose;
+  }
 
   
   /**
@@ -285,6 +306,10 @@ public class FastRunner {
     if (mIncrements) {
       args.add("-i");
     }
+    // verbose
+    if (mVerbose) {
+      args.add("-v");
+    }
     return (String[]) args.toArray(new String[args.size()]);
   }
 
@@ -299,11 +324,11 @@ public class FastRunner {
   }
 
   private boolean debugOutput(String out, String err) {
-    if (out != null) {
-      Debug.println("Child.out->" + out);
-    }
     if (err != null) {
-      Debug.println("Child.err->" + err); 
+      System.err.println("Child.err->" + err); 
+    }
+    if (out != null) {
+      System.err.println("Child.out->" + out);
     }
     return true; // So we can be enabled/disabled via assertion mechanism.
   }
@@ -313,16 +338,19 @@ public class FastRunner {
     // we don't want to time this.
     // FIXME this looks dangerous. What if the test can't even get to the point of outputting START (e.g. class loading issues)
     while (true) {
-      String str = iot.getNext();
-      String err = eot.getNext();
-      assert debugOutput(str, err);
-      if ((str == null) && (err == null)) {
+      String out = iot.getNext();
+      String err = eot.getAvailable();
+      if (mVerbose) {
+        debugOutput(out, err);
+      }
+      if ((out == null) && (err == null)) {
         Thread.sleep(10);
-      } else if ("START".equals(str)) {
+      } else if ("START".equals(out)) {
         break;
       } else {
         throw new RuntimeException("jumble.fast.FastJumbler returned "
-                                   + str + " instead of START");
+                                   + ((out != null) ? out : err + " on stderr") 
+                                   + " instead of START");
       }
     }
   }
@@ -403,11 +431,10 @@ public class FastRunner {
       // Run until we time out
       while (true) {
         String out = iot.getNext();
-        String err;
-        while ((err = eot.getNext()) != null) {
-          assert debugOutput(null, err);
+        String err = eot.getAvailable();
+        if (mVerbose) {
+          debugOutput(out, err);
         }
-        assert debugOutput(out, err);
         if (out == null) {
           if (after - before > timeout) {
             allMutations[currentMutation] = new Mutation("TIMEOUT", className, currentMutation);

@@ -34,6 +34,7 @@ public class Jumble {
     // Process arguments
     FastRunner jumble = new FastRunner();
     CLIFlags flags = new CLIFlags("Jumble");
+    Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
     Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
     Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
@@ -57,6 +58,7 @@ public class Jumble {
     jumble.setLoadCache(!loadFlag.isSet());
     jumble.setSaveCache(!saveFlag.isSet());
     jumble.setUseCache(!useFlag.isSet());
+    jumble.setVerbose(verboseFlag.isSet());
 
     String className;
     List testList;

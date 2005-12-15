@@ -129,6 +129,7 @@ public class FastJumbler extends ClassLoader {
     final CLIFlags flags = new CLIFlags("FastJumbler");
 
     final Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
@@ -218,7 +219,7 @@ public class FastJumbler extends ClassLoader {
                                             (cache == null ? null : cache.changeClassLoader(jumbler)),
                                             className,
                                             tempMutater.getMutatedMethodName(className),
-                                            new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.TRUE });
+                                            new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
         System.out.println(out);  // This is the magic line that the parent JVM is looking for.
 
         if (cache != null && out.startsWith("PASS: ")) {
