@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
  * @version $Revision$
  */
 public class TestOrder implements Serializable, ClassLoaderChanger {
+
   /** Number for serialization */
   private static final long serialVersionUID = 4401643897371182214L;
 
@@ -31,9 +32,6 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    */
   private int[] mOrder;
 
-  /** Runtimes for the tests */
-  private long[] mRuntimes;
-
   /**
    * Creates a new TestOrder with the specified test classes and no
    * particular ordering.
@@ -41,10 +39,9 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * @param testClasses
    */
   public TestOrder(Class[] testClasses) {
-    this(testClasses, new long[testClasses.length]);
-    mOrder = createOrdering(testClasses.length);
+    this(testClasses, createOrdering(testClasses.length));
   }
-
+  
   /**
    * Creates a new TestOrder with the specified test classes and runtimes.
    * 
@@ -52,43 +49,49 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * @param runtimes the runtimes of the tests.
    */
   public TestOrder(Class[] testClasses, long[] runtimes) {
+    this(testClasses, createOrdering(runtimes));
+  }
+
+  /**
+   * Creates a new TestOrder with the specified test classes and ordering
+   * 
+   * @param testClasses
+   * @param runtimes the runtimes of the tests.
+   */
+  public TestOrder(Class[] testClasses, int[] order) {
     mTestClasses = new String[testClasses.length];
     for (int i = 0; i < testClasses.length; i++) {
       mTestClasses[i] = testClasses[i].getName();
     }
-    mRuntimes = runtimes;
 
-    mOrder = createOrdering(runtimes);
+    mOrder = order;
 
+    // XXX What is this for?  Is it just for the side effects?
     TestSuite ts = new FlatTestSuite();
     try {
       ts.addTestSuite(Class.forName(mTestClasses[0]));
     } catch (Exception e) {
       e.printStackTrace();
     }
+
     // System.err.println("integrity: " + integrity());
     assert integrity();
-
   }
 
   /**
    * Constructor used to clone the object.
    * 
-   * @param testClasses
-   *          string of test classes
-   * @param order
-   *          order permuation
-   * @param runtimes
-   *          runtimes array
+   * @param testClasses string of test classes
+   * @param order order permuation
    */
-  public TestOrder(String[] testClasses, int[] order, long[] runtimes) {
+  public TestOrder(String[] testClasses, int[] order) {
     mTestClasses = testClasses;
     mOrder = order;
-    mRuntimes = runtimes;
 
     assert integrity();
   }
 
+  /** Creates a default ordering */
   static int[] createOrdering(int length) {
     int[] order = new int[length];
     for (int i = 0; i < order.length; i++) {
@@ -126,13 +129,13 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     return order;
   }
 
-
   /**
-   * Loads the class in a different class loader and clones the object.
+   * Clones this object using a different class loader to achieve
+   * class isolation.  In our application, the classloader will mutate
+   * the class being tested.
    * 
-   * @param loader
-   *          the new class loader
-   * @return a clone of <CODE>this</CODE> in the differen class loader
+   * @param loader the new class loader
+   * @return a clone of <CODE>this</CODE> in the different class loader
    */
   public Object changeClassLoader(ClassLoader loader)
       throws ClassNotFoundException {
@@ -142,8 +145,8 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     Class clazz = loader.loadClass(getClass().getName());
 
     try {
-      Constructor c = clazz.getConstructor(new Class[] {String[].class, int[].class, long[].class});
-      return c.newInstance(new Object[] {mTestClasses, mOrder, mRuntimes});
+      Constructor c = clazz.getConstructor(new Class[] {String[].class, int[].class});
+      return c.newInstance(new Object[] {mTestClasses, mOrder});
     } catch (InstantiationException e) {
       e.printStackTrace();
       throw new ClassNotFoundException("Error invoking constructor");
@@ -195,7 +198,6 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
     assert integrity();
     return mTestClasses;
   }
-
 
   /**
    * Integrity method. Checks this object for consistency. Should only be called
