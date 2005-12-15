@@ -403,7 +403,10 @@ public class FastRunner {
       // Run until we time out
       while (true) {
         String out = iot.getNext();
-        String err = eot.getNext();
+        String err;
+        while ((err = eot.getNext()) != null) {
+          assert debugOutput(null, err);
+        }
         assert debugOutput(out, err);
         if (out == null) {
           if (after - before > timeout) {
