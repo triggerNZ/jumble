@@ -446,7 +446,7 @@ public class FastRunner {
         testClasses[i] = Class.forName((String) testClassNames.get(i));
       } catch (ClassNotFoundException e) {
         // test class did not exist
-        return new FailedTestResult(mClassName, testClassNames, null, mMutationCount);
+        return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
     }
     
@@ -470,7 +470,7 @@ public class FastRunner {
       
       // Now, if the tests failed, can return straight away
       if (!initialResult.wasSuccessful()) {
-        return new FailedTestResult(mClassName, testClassNames, initialResult, mMutationCount);
+        return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
       
       mTotalRuntime = timingSuite.getTotalRuntime();

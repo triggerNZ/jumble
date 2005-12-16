@@ -1,27 +1,23 @@
 package jumble.fast;
 
 import java.util.List;
-import junit.framework.TestResult;
 
 /**
- * <code>FailedTestResult</code> is a JumbleResult for a failure (that
+ * <code>MissingTestsTestResult</code> is a JumbleResult for a failure (that
  * is a mutation that was not detected by tests).
  *
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
  */
-public class FailedTestResult extends AbstractJumbleResult {
+public class MissingTestsTestResult extends AbstractJumbleResult {
 
   private final List mTestClassNames;
 
-  private final TestResult mInitialResult;
-
   private int mMutationCount;
 
-  public FailedTestResult(String className, List testClassNames, TestResult result, int mcount) {
+  public MissingTestsTestResult(String className, List testClassNames, int mcount) {
     super(className);
     mTestClassNames = testClassNames;
-    mInitialResult = result;
     mMutationCount = mcount;
   }
 
@@ -31,13 +27,13 @@ public class FailedTestResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public TestResult getInitialTestResult() {
-    return mInitialResult;
+  public int getNumberOfMutations() {
+    return mMutationCount;
   }
 
   /** {@inheritDoc} */
-  public int getNumberOfMutations() {
-    return mMutationCount;
+  public boolean isMissingTestClass() {
+    return true;
   }
 
 }
