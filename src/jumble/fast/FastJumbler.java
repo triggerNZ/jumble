@@ -45,7 +45,8 @@ public class FastJumbler extends ClassLoader {
   private HashMap mCache;
 
   public FastJumbler(final String target, final Mutater mutater) {
-    super();
+    // Add these ignored classes to work around jakarta commons logging stupidity with class loaders.
+    super(new String[] {"org.apache", "org.xml", "org.w3c"});
     mTarget = target;
     mMutater = mutater;
     mCache = new HashMap();
