@@ -3,8 +3,8 @@ package jumble.fast;
 import java.util.List;
 
 /**
- * <code>MissingTestsTestResult</code> is a JumbleResult for a failure (that
- * is a mutation that was not detected by tests).
+ * <code>MissingTestsTestResult</code> is a JumbleResult for a failure
+ * due to test classes not being found.
  *
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
