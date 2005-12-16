@@ -18,7 +18,7 @@ public abstract class AbstractJumbleResultTest extends TestCase {
     JumbleResult[] res = getJumbleResults();
 
     for (int i = 0; i < res.length; i++) {
-      if (res[i].getInitialTestResult().wasSuccessful()) {
+      if (res[i].initialTestsPassed()) {
         assertNotSame(null, res[i].getCovered());
         assertNotSame(null, res[i].getMissed());
         assertNotSame(null, res[i].getTimeouts());

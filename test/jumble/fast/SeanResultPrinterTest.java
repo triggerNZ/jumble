@@ -47,7 +47,10 @@ public class SeanResultPrinterTest extends TestCase {
     assertEquals("T", in.readLine());
   }
 
-  private abstract class AbstractDummyResult extends JumbleResult {
+  private abstract class AbstractDummyResult extends AbstractJumbleResult {
+    public AbstractDummyResult() {
+      super("Dummy");
+    }
     public Mutation[] getAllMutations() {
       Mutation[] muts = new Mutation
         [(getCovered() != null ? getCovered().length : 0)

@@ -1,7 +1,6 @@
 package jumble.fast;
 
 import jumble.mutation.Mutation;
-import junit.framework.TestResult;
 
 /**
  * A class representing the results of a Jumble run.
@@ -10,28 +9,21 @@ import junit.framework.TestResult;
  * @version $Revision$
  *  
  */
-public abstract class JumbleResult {
+public interface JumbleResult {
 
   /**
    * Gets the name of the class being Jumbled.
    * 
    * @return the class name.
    */
-  public abstract String getClassName();
+  String getClassName();
 
   /**
    * Gets an array of the names of test classes run.
    * 
    * @return the test classes
    */
-  public abstract String[] getTestClasses();
-
-  /**
-   * Returns the results of the test on the unmodified class.
-   * 
-   * @return the original test results
-   */
-  public abstract TestResult getInitialTestResult();
+  String[] getTestClasses();
 
   /**
    * Determines whether the initial tests passes. Calls <CODE>
@@ -39,9 +31,7 @@ public abstract class JumbleResult {
    * 
    * @return true if the initial tests passed, false otherwise.
    */
-  public boolean initialTestsPassed() {
-    return getInitialTestResult().wasSuccessful();
-  }
+  boolean initialTestsPassed();
 
   /**
    * Gets an array of the actual mutations covered by the tests.
@@ -49,7 +39,7 @@ public abstract class JumbleResult {
    * @return array of the covered mutations or <CODE>null</CODE> if the code
    *         was not jumbled.
    */
-  public abstract Mutation[] getCovered();
+  Mutation[] getCovered();
 
   /**
    * Gets an array of mutations missed by the tests.
@@ -57,7 +47,7 @@ public abstract class JumbleResult {
    * @return array of the missed mutations or <CODE>null</CODE> if the code
    *         was not jumbled.
    */
-  public abstract Mutation[] getMissed();
+  Mutation[] getMissed();
 
   /**
    * Gets an array of mutations which caused the tests to time out. NOTE: A
@@ -66,14 +56,14 @@ public abstract class JumbleResult {
    * @return array of missed mutations or <CODE>null</CODE> if the code was
    *         not jumbled.
    */
-  public abstract Mutation[] getTimeouts();
+  Mutation[] getTimeouts();
 
   /**
    * Returns the length of time, in milliseconds of the timeout.
    * 
    * @return the length of the timeout
    */
-  public abstract long getTimeoutLength();
+  long getTimeoutLength();
 
   /**
    * Gets an array of all mutations.
@@ -81,21 +71,27 @@ public abstract class JumbleResult {
    * @return array of all the mutations or <CODE>null</CODE> if the code was
    *         not jumbled.
    */
-  public abstract Mutation[] getAllMutations();
+  Mutation[] getAllMutations();
 
   /**
    * Return the number of mutations points.
    *
    * @return number of mutation points.
    */
-  public abstract int getNumberOfMutations();
+  int getNumberOfMutations();
 
   /**
    * Was the class tested actually an interface.
    *
    * @return true for an interface.
    */
-  public boolean isInterface() {
-    return false;
-  }
+  boolean isInterface();
+
+  /**
+   * Were any test classes missing.
+   *
+   * @return true if any of the expected test classes were missing.
+   */
+  boolean isMissingTestClass();
+
 }

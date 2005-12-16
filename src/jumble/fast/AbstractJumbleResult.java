@@ -1,7 +1,6 @@
 package jumble.fast;
 
 import jumble.mutation.Mutation;
-import junit.framework.TestResult;
 
 /**
  * An abstract JumbleResult that defaults most methods.
@@ -9,7 +8,7 @@ import junit.framework.TestResult;
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
  */
-public class AbstractJumbleResult extends JumbleResult {
+public class AbstractJumbleResult implements JumbleResult {
 
   private final String mClassName;
 
@@ -33,8 +32,8 @@ public class AbstractJumbleResult extends JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public TestResult getInitialTestResult() {
-    return null;
+  public boolean initialTestsPassed() {
+    return true;
   }
 
   /** {@inheritDoc} */
@@ -71,4 +70,11 @@ public class AbstractJumbleResult extends JumbleResult {
   public boolean isInterface() {
     return false;
   }
+
+
+  /** {@inheritDoc} */
+  public boolean isMissingTestClass() {
+    return false;
+  }
+
 }
