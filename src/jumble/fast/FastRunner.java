@@ -527,7 +527,7 @@ public class FastRunner {
       allMutations[currentMutation] = readMutation(currentMutation, timeout);
     }
 
-    JumbleResult ret = new NormalJumbleResult(className, testClassNames, null, allMutations, timeout);
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);
 
     // finally, delete the test suite file
     if (!new File(mTestSuiteFileName).delete()) {

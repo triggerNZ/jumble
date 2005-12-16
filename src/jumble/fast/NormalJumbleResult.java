@@ -3,7 +3,6 @@ package jumble.fast;
 import java.util.ArrayList;
 import java.util.List;
 import jumble.mutation.Mutation;
-import junit.framework.TestResult;
 
 /**
  * <code>NormalJumbleResult</code> is a JumbleResult for a test pass
@@ -16,24 +15,15 @@ public class NormalJumbleResult extends AbstractJumbleResult {
 
   private List mTestClassNames;
 
-  private TestResult mInitialResult;
-
   private Mutation[] mAllMutations;
 
   private long mTimeoutLength;
 
-  public NormalJumbleResult(String className, List testClassNames,
-      TestResult initialResult, Mutation[] allMutations, long timeout) {
+  public NormalJumbleResult(String className, List testClassNames, Mutation[] allMutations, long timeout) {
     super(className);
     mTestClassNames = testClassNames;
-    mInitialResult = initialResult;
     mAllMutations = allMutations;
     mTimeoutLength = timeout;
-  }
-
-  /** {@inheritDoc} */
-  public TestResult getInitialTestResult() {
-    return mInitialResult;
   }
 
   /** {@inheritDoc} */
