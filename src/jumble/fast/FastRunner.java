@@ -398,6 +398,67 @@ public class FastRunner {
     waitForStart(mIot, mEot);
   }
 
+  /**
+   * Runs tests without mutating at all.  If all OK, write out
+   * testsuitefile for later use, otherwise return a JumbleResult 
+   */
+  private JumbleResult runInitialTests(List testClassNames) {
+    final int mutationCount = countMutationPoints();
+    if (mutationCount == -1) {
+      return new InterfaceResult(mClassName); 
+    }
+    
+    Class[] testClasses = new Class[testClassNames.size()];
+    for (int i = 0; i < testClasses.length; i++) {
+      try {
+        testClasses[i] = Class.forName((String) testClassNames.get(i));
+      } catch (ClassNotFoundException e) {
+        // test class did not exist
+        return new FailedTestResult(mClassName, testClassNames, null, mutationCount);
+      }
+    }
+    
+    assert Debug.println("Parent. Starting initial run without mutating");
+    
+    try {
+      FastJumbler jumbler = new FastJumbler(mClassName, createMutater(-1));
+      Class clazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
+      Object suite = clazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
+      Class trclazz = jumbler.loadClass(TestResult.class.getName());
+      Object trobj = trclazz.newInstance();
+      clazz.getMethod("run", new Class[] {trclazz}).invoke(suite, new Object[] {trobj});
+      boolean successful = ((Boolean) trclazz.getMethod("wasSuccessful", new Class[] {}).invoke(trobj, new Object[] {})).booleanValue();
+
+      TestResult initialResult = new TestResult();
+      final TimingTestSuite timingSuite = new TimingTestSuite(testClassNames);
+      timingSuite.run(initialResult);
+
+      assert Debug.println("Parent. Finished");
+      
+      
+      // Now, if the tests failed, can return straight away
+      if (!initialResult.wasSuccessful()) {
+        return new FailedTestResult(mClassName, testClassNames, initialResult, mutationCount);
+      }
+      
+      mTotalRuntime = timingSuite.getTotalRuntime();
+      
+      // Store the test suite information serialized in a temporary file so FastJumbler can load it.
+      final TestOrder order = timingSuite.getOrder(mOrdered);
+      ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFileName));
+      oos.writeObject(order);
+      oos.close();
+    
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      RuntimeException r = new IllegalStateException("Problem using reflection to set up run under another classloader");
+      r.initCause(e);
+      throw r;
+    }
+
+    return null;
+  }
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
@@ -418,52 +479,25 @@ public class FastRunner {
       initCache();
     }
 
-    final int mutationCount = countMutationPoints();
-    if (mutationCount == -1) {
-      return new InterfaceResult(className); 
+    JumbleResult initialResult = runInitialTests(testClassNames);
+    if (initialResult != null) {
+      return initialResult;
     }
 
-    Class[] testClasses = new Class[testClassNames.size()];
-    for (int i = 0; i < testClasses.length; i++) {
-      try {
-        testClasses[i] = Class.forName((String) testClassNames.get(i));
-      } catch (ClassNotFoundException e) {
-        // test class did not exist
-        return new FailedTestResult(className, testClassNames, null, mutationCount);
-      }
-    }
-
-    final TestResult initialResult = new TestResult();
-    final TimingTestSuite timingSuite = new TimingTestSuite(testClasses);
-    assert Debug.println("Parent. Starting initial run without mutating");
-    timingSuite.run(initialResult);
-    assert Debug.println("Parent. Finished");
-    // Now, if the tests failed, can return straight away
-    if (!initialResult.wasSuccessful()) {
-      return new FailedTestResult(className, testClassNames, initialResult, mutationCount);
-    }
-
-    // Store the test suite information serialized in a temporary file
-    final TestOrder order = timingSuite.getOrder(mOrdered);
-    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFileName));
-    oos.writeObject(order);
-    oos.close();
+    // compute the timeout
+    long timeout = computeTimeout(mTotalRuntime);
 
     mChildProcess = null;
     mIot = null;
     mEot = null;
     
-    // compute the timeout
-    long totalRuntime = timingSuite.getTotalRuntime();
-
-    final Mutation[] allMutations = new Mutation[mutationCount];
-    for (int currentMutation = 0; currentMutation < mutationCount; currentMutation++) {
+    final Mutation[] allMutations = new Mutation[mMutationCount];
+    for (int currentMutation = 0; currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));
       }
       long before = System.currentTimeMillis();
       long after = before;
-      long timeout = computeTimeout(totalRuntime);
       // Run until we time out
       while (true) {
         String out = mIot.getNext();
@@ -492,7 +526,7 @@ public class FastRunner {
       }
     }
 
-    JumbleResult ret = new NormalJumbleResult(className, testClassNames, initialResult, allMutations, computeTimeout(totalRuntime));
+    JumbleResult ret = new NormalJumbleResult(className, testClassNames, null, allMutations, timeout);
     // finally, delete the test suite file
     if (!new File(mTestSuiteFileName).delete()) {
       System.err.println("Error: could not delete temporary file");
