@@ -5,14 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestFailure;
-import junit.framework.TestResult;
 
 /**
  * A test suite which runs tests in order and inverts the result. Remembers the
@@ -74,7 +71,7 @@ public class JumbleTestSuite extends FlatTestSuite {
    * "FAIL" is returned.
    */
   protected String run() {
-    final TestResult result = new TestResult();
+    final JUnitTestResult result = new JUnitTestResult();
     Test[] tests = getOrder();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     PrintStream newOut = new PrintStream(bos);
@@ -92,16 +89,7 @@ public class JumbleTestSuite extends FlatTestSuite {
       }
 
       if (mVerbose) {  // Debugging to allow seeing how the tests picked up the mutation
-        for (Enumeration e = result.errors(); e.hasMoreElements(); ) {
-          TestFailure f = (TestFailure) e.nextElement();
-          System.err.println("TEST FINISHED WITH ERROR: " + f.toString());
-          System.err.print(f.trace());
-        }
-        for (Enumeration e = result.failures(); e.hasMoreElements(); ) {
-          TestFailure f = (TestFailure) e.nextElement();
-          System.err.println("TEST FINISHED WITH FAILURE: " + f.toString());
-          System.err.print(f.trace());
-        }
+        System.err.println(result);
         if (bos.size() > 0) {
           System.err.println("CAPTURED OUTPUT: " + bos.toString());
         }

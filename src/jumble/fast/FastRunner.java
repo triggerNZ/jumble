@@ -458,13 +458,17 @@ public class FastRunner {
       Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
       Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
       Class trClazz = jumbler.loadClass(TestResult.class.getName());
-      Object trObj = trClazz.newInstance();
+      Class jtrClazz = jumbler.loadClass(JUnitTestResult.class.getName());
+      Object trObj = jtrClazz.newInstance();
       suiteClazz.getMethod("run", new Class[] {trClazz}).invoke(suiteObj, new Object[] {trObj});
       boolean successful = ((Boolean) trClazz.getMethod("wasSuccessful", new Class[] {}).invoke(trObj, new Object[] {})).booleanValue();
       assert Debug.println("Parent. Finished");
       
       // Now, if the tests failed, can return straight away
       if (!successful) {
+        if (mVerbose) {
+          System.err.println(trObj);
+        }
         return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
       
