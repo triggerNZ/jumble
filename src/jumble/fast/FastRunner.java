@@ -399,6 +399,37 @@ public class FastRunner {
   }
 
 
+  /** Reads a mutation result from the child process */
+  private Mutation readMutation(int currentMutation, long timeout) throws InterruptedException {
+    long before = System.currentTimeMillis();
+    long after = before;
+    // Run until we have a result or time out
+    while (true) {
+      String out = mIot.getNext();
+      if (mVerbose) {
+        debugOutput(out, mEot.getAvailable());
+      }
+      if (out == null) {
+        if (after - before > timeout) {
+          mChildProcess.destroy();
+          mChildProcess = null;
+          return new Mutation("TIMEOUT", mClassName, currentMutation);
+        } else {
+          Thread.sleep(50);
+          after = System.currentTimeMillis();
+        }
+      } else {
+        // We have output so go to the next mutation
+        Mutation m = new Mutation(out, mClassName, currentMutation);
+        if (mUseCache) {
+          updateCache(m);
+        }
+        return m;
+      }
+    }
+  }
+
+
   /**
    * Runs tests without mutating at all.  If all OK, write out
    * testsuitefile for later use, otherwise return a JumbleResult 
@@ -497,37 +528,11 @@ public class FastRunner {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));
       }
-      long before = System.currentTimeMillis();
-      long after = before;
-      // Run until we time out
-      while (true) {
-        String out = mIot.getNext();
-        String err = mEot.getAvailable();
-        if (mVerbose) {
-          debugOutput(out, err);
-        }
-        if (out == null) {
-          if (after - before > timeout) {
-            allMutations[currentMutation] = new Mutation("TIMEOUT", className, currentMutation);
-            mChildProcess.destroy();
-            mChildProcess = null;
-            break;
-          } else {
-            Thread.sleep(50);
-            after = System.currentTimeMillis();
-          }
-        } else {
-          // We have output so go to the next mutation
-          allMutations[currentMutation] = new Mutation(out, className, currentMutation);
-          if (mUseCache) {
-            updateCache(allMutations[currentMutation]);
-          }
-          break;
-        }
-      }
+      allMutations[currentMutation] = readMutation(currentMutation, timeout);
     }
 
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, null, allMutations, timeout);
+
     // finally, delete the test suite file
     if (!new File(mTestSuiteFileName).delete()) {
       System.err.println("Error: could not delete temporary file");
@@ -535,7 +540,7 @@ public class FastRunner {
     // Also delete the temporary cache and save the cache if needed
     if (mUseCache) {
       if (!new File(mCacheFileName).delete()) {
-        System.err.println("Error: could not delete temporary cache file");
+        System.err.println("Error: could not delete temporary cache file " + mCacheFileName);
       }
       if (mSaveCache) {
         writeCache(CACHE_FILENAME);
