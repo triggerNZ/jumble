@@ -450,33 +450,29 @@ public class FastRunner {
       }
     }
     
-    assert Debug.println("Parent. Starting initial run without mutating");
     
     try {
+      // RED ALERT - heinous reflective execution of the initial tests in another classloader
+      assert Debug.println("Parent. Starting initial run without mutating");
       FastJumbler jumbler = new FastJumbler(mClassName, createMutater(-1));
-      Class clazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
-      Object suite = clazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
-      Class trclazz = jumbler.loadClass(TestResult.class.getName());
-      Object trobj = trclazz.newInstance();
-      clazz.getMethod("run", new Class[] {trclazz}).invoke(suite, new Object[] {trobj});
-      boolean successful = ((Boolean) trclazz.getMethod("wasSuccessful", new Class[] {}).invoke(trobj, new Object[] {})).booleanValue();
-
-      TestResult initialResult = new TestResult();
-      final TimingTestSuite timingSuite = new TimingTestSuite(testClassNames);
-      timingSuite.run(initialResult);
-
+      Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
+      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
+      Class trClazz = jumbler.loadClass(TestResult.class.getName());
+      Object trObj = trClazz.newInstance();
+      suiteClazz.getMethod("run", new Class[] {trClazz}).invoke(suiteObj, new Object[] {trObj});
+      boolean successful = ((Boolean) trClazz.getMethod("wasSuccessful", new Class[] {}).invoke(trObj, new Object[] {})).booleanValue();
       assert Debug.println("Parent. Finished");
       
-      
       // Now, if the tests failed, can return straight away
-      if (!initialResult.wasSuccessful()) {
+      if (!successful) {
         return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
       
-      mTotalRuntime = timingSuite.getTotalRuntime();
+      // Set the test runtime so we can calculate timeouts when running the mutated tests
+      mTotalRuntime = ((Long) suiteClazz.getMethod("getTotalRuntime", new Class[] {}).invoke(suiteObj, new Object[] {})).longValue();
       
       // Store the test suite information serialized in a temporary file so FastJumbler can load it.
-      final TestOrder order = timingSuite.getOrder(mOrdered);
+      Object order = suiteClazz.getMethod("getOrder", new Class[] {Boolean.TYPE}).invoke(suiteObj, new Object[] {Boolean.valueOf(mOrdered)});
       ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFileName));
       oos.writeObject(order);
       oos.close();
