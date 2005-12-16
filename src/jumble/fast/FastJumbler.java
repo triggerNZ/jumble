@@ -155,25 +155,19 @@ public class FastJumbler extends ClassLoader {
     m.setMutateInlineConstants(inlFlag.isSet());
     m.setMutateReturnValues(retFlag.isSet());
     
+
     final int mutationCount = m.countMutationPoints(className);
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
-    final String filename = ((String) testSuiteFlag.getValue());
-    String cacheFile = cacheFileFlag.isSet() ? ((String) cacheFileFlag.getValue()) : null;
-
-    final TestOrder order;
-    final FailedTestMap cache;
 
     FastJumbler jumbler = new FastJumbler(className, m);
 
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
-
-    order = (TestOrder) ois.readObject();
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream((String) testSuiteFlag.getValue()));
+    final TestOrder order = (TestOrder) ois.readObject();
     ois.close();
 
-    if (cacheFile == null) {
-      cache = null;
-    } else {
-      ois = new ObjectInputStream(new FileInputStream(cacheFile));
+    FailedTestMap cache = null;
+    if (cacheFileFlag.isSet()) {
+      ois = new ObjectInputStream(new FileInputStream((String) cacheFileFlag.getValue()));
       cache = (FailedTestMap) ois.readObject();
       ois.close();
     }
@@ -188,7 +182,7 @@ public class FastJumbler extends ClassLoader {
       tempMutater.setMutateIncrements(incFlag.isSet());
       tempMutater.setMutateInlineConstants(inlFlag.isSet());
       tempMutater.setMutateReturnValues(retFlag.isSet());
-      jumbler.setMutater(tempMutater);
+      //jumbler.setMutater(tempMutater);
       jumbler = new FastJumbler(className, tempMutater);
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
