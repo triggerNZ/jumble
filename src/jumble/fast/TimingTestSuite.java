@@ -1,5 +1,6 @@
 package jumble.fast;
 
+import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestResult;
 
@@ -34,6 +35,21 @@ public class TimingTestSuite extends FlatTestSuite {
    * the <CODE>TestOrder</CODE>
    */
   private Class[] mTestClasses;
+
+  /**
+   * Constructs a test suite from the test classes given in <CODE>testClasses
+   * </CODE>
+   * 
+   * @param testClassNames an array of the class names of test suites to run
+   */
+  public TimingTestSuite(List testClassNames) throws ClassNotFoundException {
+    super();
+    mTestClasses = new Class[testClassNames.size()];
+    for (int i = 0; i < mTestClasses.length; i++) {
+      mTestClasses[i] = getClass().getClassLoader().loadClass((String) testClassNames.get(i));
+      addTestSuite(mTestClasses[i]);
+    }
+  }
 
   /**
    * Constructs a test suite from the test classes given in <CODE>testClasses
