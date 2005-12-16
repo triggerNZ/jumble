@@ -387,6 +387,17 @@ public class FastRunner {
     }
   }
 
+  
+  private void startChildProcess(String[] args) throws IOException, InterruptedException {
+    mRunner.setArguments(args);
+    mChildProcess = mRunner.start();
+    mIot = new IOThread(mChildProcess.getInputStream());
+    mIot.start();
+    mEot = new IOThread(mChildProcess.getErrorStream());
+    mEot.start();
+    waitForStart(mIot, mEot);
+  }
+
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
@@ -438,43 +449,33 @@ public class FastRunner {
     oos.writeObject(order);
     oos.close();
 
+    mChildProcess = null;
+    mIot = null;
+    mEot = null;
+    
     // compute the timeout
     long totalRuntime = timingSuite.getTotalRuntime();
 
-    final JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler");
-    Process childProcess = null;
-    IOThread iot = null;
-    IOThread eot = null;
-    
     final Mutation[] allMutations = new Mutation[mutationCount];
     for (int currentMutation = 0; currentMutation < mutationCount; currentMutation++) {
-      // If no process is running, start a new one
-      if (childProcess == null) {
-        // start process
-        runner.setArguments(createArgs(currentMutation));
-        childProcess = runner.start();
-        iot = new IOThread(childProcess.getInputStream());
-        iot.start();
-        eot = new IOThread(childProcess.getErrorStream());
-        eot.start();
-        
-        waitForStart(iot, eot);
+      if (mChildProcess == null) {
+        startChildProcess(createArgs(currentMutation));
       }
       long before = System.currentTimeMillis();
       long after = before;
       long timeout = computeTimeout(totalRuntime);
       // Run until we time out
       while (true) {
-        String out = iot.getNext();
-        String err = eot.getAvailable();
+        String out = mIot.getNext();
+        String err = mEot.getAvailable();
         if (mVerbose) {
           debugOutput(out, err);
         }
         if (out == null) {
           if (after - before > timeout) {
             allMutations[currentMutation] = new Mutation("TIMEOUT", className, currentMutation);
-            childProcess.destroy();
-            childProcess = null;
+            mChildProcess.destroy();
+            mChildProcess = null;
             break;
           } else {
             Thread.sleep(50);
