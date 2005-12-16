@@ -3,8 +3,8 @@ package jumble.fast;
 import java.util.List;
 
 /**
- * <code>BrokenTestsTestResult</code> is a JumbleResult for a failure (that
- * is a mutation that was not detected by tests).
+ * <code>BrokenTestsTestResult</code> is a JumbleResult for a failure
+ * due tests failing prior to any mutations being applied.
  *
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
