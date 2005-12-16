@@ -6,8 +6,9 @@ import junit.framework.TestResult;
 
 
 /**
- * <code>JUnitTestResult</code> extends the standard TestResult class
- * with a decent <code>toString</code> method.
+ * <code>JUnitTestResult</code> extends the standard
+ * <code>TestResult</code> class with a decent <code>toString</code>
+ * method.
  *
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
