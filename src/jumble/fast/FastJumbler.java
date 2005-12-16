@@ -159,8 +159,6 @@ public class FastJumbler extends ClassLoader {
     final int mutationCount = m.countMutationPoints(className);
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
 
-    FastJumbler jumbler = new FastJumbler(className, m);
-
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream((String) testSuiteFlag.getValue()));
     final TestOrder order = (TestOrder) ois.readObject();
     ois.close();
@@ -183,7 +181,7 @@ public class FastJumbler extends ClassLoader {
       tempMutater.setMutateInlineConstants(inlFlag.isSet());
       tempMutater.setMutateReturnValues(retFlag.isSet());
       //jumbler.setMutater(tempMutater);
-      jumbler = new FastJumbler(className, tempMutater);
+      FastJumbler jumbler = new FastJumbler(className, tempMutater);
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
                                       jumbler.loadClass("jumble.fast.TestOrder"),
