@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
  * @version $Revision$
  *
  */
-public class ClassLoaderChangeableTestSuite extends TestSuite implements ClassLoaderChanger {
+public class ClassLoaderChangeableTestSuite extends TestSuite implements ClassLoaderCloneable {
 
   public ClassLoaderChangeableTestSuite(String className) throws ClassNotFoundException {
     super(Class.forName(className));

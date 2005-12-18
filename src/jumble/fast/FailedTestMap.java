@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jumble.util.ClassLoaderChanger;
+import jumble.util.ClassLoaderCloneable;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
  * @version $Revision$
  * 
  */
-public class FailedTestMap implements Serializable, ClassLoaderChanger {
+public class FailedTestMap implements Serializable, ClassLoaderCloneable {
   /**
    * The map itself: ClassName.MethodName(String) -> (mutationPoint(Integer) ->
    * testName(String))(Map)

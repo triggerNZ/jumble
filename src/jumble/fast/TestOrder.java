@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Comparator;
 
-import jumble.util.ClassLoaderChanger;
+import jumble.util.ClassLoaderCloneable;
 import junit.framework.TestSuite;
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Tin Pavlinic
  * @version $Revision$
  */
-public class TestOrder implements Serializable, ClassLoaderChanger {
+public class TestOrder implements Serializable, ClassLoaderCloneable {
 
   /** Number for serialization */
   private static final long serialVersionUID = 4401643897371182214L;

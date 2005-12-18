@@ -7,7 +7,7 @@ package jumble.util;
  * @author Tin Pavlinic
  * @version $Revision$
  */
-public interface ClassLoaderChanger {
+public interface ClassLoaderCloneable {
 
   /**
    * Returns a clone of the object as loaded by the specified class
