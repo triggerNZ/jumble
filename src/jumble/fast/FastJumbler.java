@@ -35,6 +35,7 @@ import org.apache.bcel.util.ClassLoader;
  * 
  */
 public class FastJumbler extends ClassLoader {
+
   /** Used to perform the actual mutation */
   private Mutater mMutater;
 
@@ -68,12 +69,10 @@ public class FastJumbler extends ClassLoader {
    * 
    * This method is public so we can test it
    * 
-   * @param clazz
-   *          modification target
+   * @param clazz modification target
    * @return possibly modified class
    */
   public JavaClass modifyClass(JavaClass clazz) {
-
     if (clazz.getClassName().equals(mTarget)) {
       try {
         if (mCache.containsKey(clazz.getClassName())) {
@@ -90,22 +89,11 @@ public class FastJumbler extends ClassLoader {
     return clazz;
   }
 
-  /**
-   * Sets the mutater. This is so we don't need to recreate the Jumbler every
-   * time
-   * 
-   * @param m
-   *          the new mutater.
-   */
-  public void setMutater(Mutater m) {
-    mMutater = m;
-  }
 
   /**
    * Main method.
    * 
-   * @param args
-   *          command line arguments. format is
+   * @param args command line arguments. format is
    * 
    * <PRE>
    * 
@@ -150,13 +138,12 @@ public class FastJumbler extends ClassLoader {
       for (int i = 0; i < tokens.length; i++) {
         ignore.add(tokens[i]);
       }
-      m.setIgnoredMethods(ignore);
     }
+
+    m.setIgnoredMethods(ignore);
     m.setMutateIncrements(incFlag.isSet());
     m.setMutateInlineConstants(inlFlag.isSet());
     m.setMutateReturnValues(retFlag.isSet());
-    
-
     final int mutationCount = m.countMutationPoints(className);
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
 
@@ -181,7 +168,6 @@ public class FastJumbler extends ClassLoader {
       tempMutater.setMutateIncrements(incFlag.isSet());
       tempMutater.setMutateInlineConstants(inlFlag.isSet());
       tempMutater.setMutateReturnValues(retFlag.isSet());
-      //jumbler.setMutater(tempMutater);
       FastJumbler jumbler = new FastJumbler(className, tempMutater);
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
@@ -189,8 +175,8 @@ public class FastJumbler extends ClassLoader {
                                       jumbler.loadClass("jumble.fast.FailedTestMap"), String.class,
                                       String.class, int.class, boolean.class });
       String out = (String) meth.invoke(null, new Object[] {
-                                          order.changeClassLoader(jumbler),
-                                          (cache == null ? null : cache.changeClassLoader(jumbler)),
+                                          order.clone(jumbler),
+                                          (cache == null ? null : cache.clone(jumbler)),
                                           className,
                                           tempMutater.getMutatedMethodName(className),
                                           new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });

@@ -128,39 +128,39 @@ public class FastJumblerTest extends TestCase {
     //printClass(c1);
     compareModification(original, c1, 3, new IDIV());
 
-    fj.setMutater(new Mutater(1));
+    fj = new FastJumbler("jumble.X2", new Mutater(1));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 5, new IMUL());
 
-    fj.setMutater(new Mutater(2));
+    fj = new FastJumbler("jumble.X2", new Mutater(2));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 6, new ISUB());
 
-    fj.setMutater(new Mutater(3));
+    fj = new FastJumbler("jumble.X2", new Mutater(3));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 9, new IMUL());
 
-    fj.setMutater(new Mutater(4));
+    fj = new FastJumbler("jumble.X2", new Mutater(4));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 11, new IMUL());
 
-    fj.setMutater(new Mutater(5));
+    fj = new FastJumbler("jumble.X2", new Mutater(5));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 12, new IADD());
 
-    fj.setMutater(new Mutater(6));
+    fj = new FastJumbler("jumble.X2", new Mutater(6));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 14, new ISHL());
 
-    fj.setMutater(new Mutater(7));
+    fj = new FastJumbler("jumble.X2", new Mutater(7));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 16, new ISHR());
 
-    fj.setMutater(new Mutater(8));
+    fj = new FastJumbler("jumble.X2", new Mutater(8));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 18, new IOR());
 
-    fj.setMutater(new Mutater(9));
+    fj = new FastJumbler("jumble.X2", new Mutater(9));
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 25, null);
   }
