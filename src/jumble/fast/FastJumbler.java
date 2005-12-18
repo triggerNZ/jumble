@@ -13,83 +13,27 @@ import com.reeltwo.util.CLIFlags;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 import jumble.mutation.Mutater;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.util.ClassLoader;
+import jumble.mutation.MutatingClassLoader;
 
 /**
- * A Jumble class loader which avoids the need to modify BCEL's <CODE>
- * ClassLoader</CODE>. Furthermore, it will avoid needing to reload all the
- * classes not that were not jumbled. The idea is: if we need to modify a given
- * class, we cache the unmodified version first. That way next time it is
- * loaded, we will use our cached unmodified version instead of BCEL's cached
- * modified version. All classes which are not modified can be loaded from
- * BCEL's cache.
+ * A class that gives process separation when running unit tests.  A
+ * parent virtual machine monitors the progress of the test runs and
+ * terminates this process in the event of infinite loops etc.  This
+ * class communicates to the parent process via standard output.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
  * 
  */
-public class FastJumbler extends ClassLoader {
+public class FastJumbler {
 
-  /** Used to perform the actual mutation */
-  private Mutater mMutater;
-
-  /** The name of the class being mutated */
-  private String mTarget;
-
-  /** The cache of fresh classes */
-  private HashMap mCache;
-
-  public FastJumbler(final String target, final Mutater mutater) {
-    // Add these ignored classes to work around jakarta commons logging stupidity with class loaders.
-    super(new String[] {"org.apache", "org.xml", "org.w3c"});
-    mTarget = target;
-    mMutater = mutater;
-    mCache = new HashMap();
-  }
-
-  /**
-   * Gets a string description of the modification produced.
-   * 
-   * @return the modification
-   */
-  public String getModification() {
-    return mMutater.getModification();
-  }
-
-  /**
-   * If the class matches the target then it is mutated, otherwise the class if
-   * returned unmodified. Overrides the corresponding method in the superclass.
-   * Classes are cached so that we always load a fresh version.
-   * 
-   * This method is public so we can test it
-   * 
-   * @param clazz modification target
-   * @return possibly modified class
-   */
-  public JavaClass modifyClass(JavaClass clazz) {
-    if (clazz.getClassName().equals(mTarget)) {
-      try {
-        if (mCache.containsKey(clazz.getClassName())) {
-          clazz = (JavaClass) mCache.get(clazz.getClassName());
-        } else {
-          mCache.put(clazz.getClassName(), clazz);
-        }
-        JavaClass ret = mMutater.jumbler(clazz);
-        return ret;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    return clazz;
-  }
-
-
+  // Private c'tor
+  private FastJumbler() { }
+  
   /**
    * Main method.
    * 
@@ -168,7 +112,8 @@ public class FastJumbler extends ClassLoader {
       tempMutater.setMutateIncrements(incFlag.isSet());
       tempMutater.setMutateInlineConstants(inlFlag.isSet());
       tempMutater.setMutateReturnValues(retFlag.isSet());
-      FastJumbler jumbler = new FastJumbler(className, tempMutater);
+      // jumbler.setMutater(tempMutater);
+      MutatingClassLoader jumbler = new MutatingClassLoader(className, tempMutater);
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
                                       jumbler.loadClass("jumble.fast.TestOrder"),

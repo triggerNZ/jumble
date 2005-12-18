@@ -14,8 +14,8 @@ public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-  
     suite.addTest(MutaterTest.suite());
+    suite.addTest(MutatingClassLoaderTest.suite());
 
     return suite;
   }

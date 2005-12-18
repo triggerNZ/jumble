@@ -1,9 +1,10 @@
 package jumble.fast;
 
+
 import java.lang.reflect.Method;
 import java.util.Set;
-
 import jumble.mutation.Mutater;
+import jumble.mutation.MutatingClassLoader;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -36,7 +37,7 @@ public class FailedTestMapTest extends TestCase {
   }
 
   public void testChangeClassLoader() throws Exception {
-    ClassLoader cl = new FastJumbler("DummyClass", new Mutater(0));
+    ClassLoader cl = new MutatingClassLoader("DummyClass", new Mutater(0));
     
     Object other = mMap.clone(cl);
     

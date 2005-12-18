@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import jumble.mutation.Mutater;
+import jumble.mutation.MutatingClassLoader;
 import jumble.mutation.Mutation;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
@@ -454,7 +455,7 @@ public class FastRunner {
     try {
       // RED ALERT - heinous reflective execution of the initial tests in another classloader
       assert Debug.println("Parent. Starting initial run without mutating");
-      FastJumbler jumbler = new FastJumbler(mClassName, createMutater(-1));
+      MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1));
       Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
       Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
       Class trClazz = jumbler.loadClass(TestResult.class.getName());
