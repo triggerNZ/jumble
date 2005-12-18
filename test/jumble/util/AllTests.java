@@ -14,7 +14,6 @@ public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(BCELRTSITest.suite());
-    suite.addTest(ClassLoaderChangeableTestSuiteTest.suite());
     suite.addTest(IOThreadTest.suite());
     suite.addTest(JavaRunnerTest.suite());
     suite.addTest(RTSITest.suite());
