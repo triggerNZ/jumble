@@ -15,11 +15,11 @@ import org.apache.bcel.util.ClassLoader;
 public class ClassLoaderChangeableTestSuiteTest extends TestCase {
 
   /*
-   * Test method for 'jumble.util.ClassLoaderChangeableTestSuite.changeClassLoader(ClassLoader)'
+   * Test method for 'jumble.util.ClassLoaderChangeableTestSuite.clone(ClassLoader)'
    */
   public final void testChangeClassLoader() throws Exception {
     java.lang.ClassLoader cl = new ClassLoader();
-    Object o = new ClassLoaderChangeableTestSuite("experiments.JumblerExperimentTest").changeClassLoader(cl);
+    Object o = new ClassLoaderChangeableTestSuite("experiments.JumblerExperimentTest").clone(cl);
     //System.out.println(o);   
     Method m = o.getClass().getMethod("testCount", new Class[0]);
     assertEquals(new Integer(2), m.invoke(o, new Object[0]));

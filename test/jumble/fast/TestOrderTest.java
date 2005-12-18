@@ -75,7 +75,7 @@ public class TestOrderTest extends TestCase {
   }
 
   public final void testChangeClassLoader() throws Exception {
-    Object newOrder = mOrder.changeClassLoader(new ClassLoader());
+    Object newOrder = mOrder.clone(new ClassLoader());
     assertNotSame(mOrder.getClass(), newOrder.getClass());
   }
 

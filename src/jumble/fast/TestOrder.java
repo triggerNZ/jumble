@@ -137,7 +137,7 @@ public class TestOrder implements Serializable, ClassLoaderChanger {
    * @param loader the new class loader
    * @return a clone of <CODE>this</CODE> in the different class loader
    */
-  public Object changeClassLoader(ClassLoader loader)
+  public Object clone(ClassLoader loader)
       throws ClassNotFoundException {
 
     assert integrity();

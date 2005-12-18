@@ -63,7 +63,7 @@ public class FailedTestMap implements Serializable, ClassLoaderChanger {
   /**
    * Gives us the same object loaded in a new class loader.
    */
-  public Object changeClassLoader(ClassLoader cl) throws ClassNotFoundException {
+  public Object clone(ClassLoader cl) throws ClassNotFoundException {
     Class clazz = cl.loadClass("jumble.fast.FailedTestMap");
 
     try {

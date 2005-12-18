@@ -38,7 +38,7 @@ public class FailedTestMapTest extends TestCase {
   public void testChangeClassLoader() throws Exception {
     ClassLoader cl = new FastJumbler("DummyClass", new Mutater(0));
     
-    Object other = mMap.changeClassLoader(cl);
+    Object other = mMap.clone(cl);
     
     assertEquals(other.getClass().getName(), mMap.getClass().getName());
     assertNotSame(other.getClass(), mMap.getClass());

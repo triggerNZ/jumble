@@ -19,5 +19,5 @@ public interface ClassLoaderChanger {
    * load the class or if the class cannot be cloned in the new
    * loader.
    */
-  Object changeClassLoader(ClassLoader loader) throws ClassNotFoundException;
+  Object clone(ClassLoader loader) throws ClassNotFoundException;
 }

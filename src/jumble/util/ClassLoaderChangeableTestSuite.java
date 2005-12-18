@@ -16,7 +16,7 @@ public class ClassLoaderChangeableTestSuite extends TestSuite implements ClassLo
     super(Class.forName(className));
   }
   
-  public Object changeClassLoader(ClassLoader cl) throws ClassNotFoundException {
+  public Object clone(ClassLoader cl) throws ClassNotFoundException {
     
     try {
       Class clazz = cl.loadClass("jumble.util.ClassLoaderChangeableTestSuite");
