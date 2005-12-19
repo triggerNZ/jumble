@@ -68,7 +68,7 @@ public class JumbleTestSuiteTest extends TestCase {
   }
 
   public void testX5TF() {
-    assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
+    assertEquals("FAIL",
         JumbleTestSuite.run(new TestOrder(new Class[] {jumble.X5TF.class},
             new long[] {0}), null, null, null, 0, false));
   }
@@ -89,7 +89,7 @@ public class JumbleTestSuiteTest extends TestCase {
   }
 
   public void testX5TQ() {
-    assertEquals("FAIL: !!!sun.misc.Launcher$AppClassLoader.getModification()",
+    assertEquals("FAIL",
         JumbleTestSuite.run(new TestOrder(new Class[] {jumble.X5TQ.class },
             new long[] {0, 1, 2}), null, null, null, 0, false));
   }
