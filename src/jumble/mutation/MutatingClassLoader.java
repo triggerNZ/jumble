@@ -20,6 +20,9 @@ public class MutatingClassLoader extends ClassLoader {
   /** The name of the class being mutated */
   private String mTarget;
 
+  /** Textual description of the modification made. */
+  private String mModification;
+
   /**
    * Creates a new <code>MutatingClassLoader</code> instance.
    *
@@ -41,7 +44,7 @@ public class MutatingClassLoader extends ClassLoader {
    * @return the modification
    */
   public String getModification() {
-    return mMutater.getModification();
+    return mModification;
   }
 
   /**
@@ -56,7 +59,10 @@ public class MutatingClassLoader extends ClassLoader {
    */
   public JavaClass modifyClass(JavaClass clazz) {
     if (clazz.getClassName().equals(mTarget)) {
-      return mMutater.jumbler(clazz);
+      synchronized (mMutater) {
+        clazz = mMutater.jumbler(clazz);
+        mModification = mMutater.getModification();
+      }
     }
     return clazz;
   }
