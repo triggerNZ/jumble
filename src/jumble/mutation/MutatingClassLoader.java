@@ -7,7 +7,8 @@ import org.apache.bcel.util.ClassLoader;
 
 /**
  * A <code>ClassLoader</code> which embeds a <code>Mutater</code> so
- * that applications can be run with a <code>Mutater</code> in place.
+ * that applications can be run with a single class undergoing
+ * mutation.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
@@ -23,6 +24,14 @@ public class MutatingClassLoader extends ClassLoader {
   /** The cache of fresh classes */
   private HashMap mCache;
 
+  /**
+   * Creates a new <code>MutatingClassLoader</code> instance.
+   *
+   * @param target the class name to be mutated.  Other classes will
+   * not be mutated.
+   * @param mutater a <code>Mutater</code> value that will carry out
+   * mutations.
+   */
   public MutatingClassLoader(final String target, final Mutater mutater) {
     // Add these ignored classes to work around jakarta commons logging stupidity with class loaders.
     super(new String[] {"org.apache", "org.xml", "org.w3c"});
