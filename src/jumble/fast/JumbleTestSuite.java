@@ -3,7 +3,6 @@ package jumble.fast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -89,7 +88,10 @@ public class JumbleTestSuite extends FlatTestSuite {
       }
 
       if (mVerbose) {  // Debugging to allow seeing how the tests picked up the mutation
-        System.err.println(result);
+        String rstr = result.toString();
+        if (rstr.length() > 0) {
+          System.err.println(result);
+        }
         if (bos.size() > 0) {
           System.err.println("CAPTURED OUTPUT: " + bos.toString());
         }
@@ -108,33 +110,10 @@ public class JumbleTestSuite extends FlatTestSuite {
         break;
       }
     }
-    // all tests passed, this mutation is a problem, report it
-    // this is made complicated because we must get the modification
-    // details from a class loaded in a different name space
-
-    return "FAIL: " + getMessage();
+    // all tests passed, this mutation is a problem, report it as a FAIL
+    return "FAIL";
   }
 
-  private String getMessage() {
-    String message;
-    try {
-      message = (String) getClass().getClassLoader().getClass().getMethod("getModification", null).invoke(getClass().getClassLoader(), null);
-    } catch (IllegalAccessException e) {
-      message = "!!!" + e.getMessage();
-    } catch (IllegalArgumentException e) {
-      message = "!!!" + e.getMessage();
-    } catch (InvocationTargetException e) {
-      message = "!!!" + e.getMessage();
-    } catch (NoSuchMethodException e) {
-      message = "!!!" + e.getMessage();
-    } catch (SecurityException e) {
-      message = "!!!" + e.getMessage();
-    }
-    if (message == null) {
-      message = "none: existing tests never caused class to be loaded";
-    }
-    return message;
-  }
 
   /**
    * Run the tests for the given class.
@@ -174,8 +153,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     Set frontTestNames = new HashSet();
 
     if (mCache != null) {
-      firstTestName = mCache.getLastFailure(mClass, mMethod,
-                                            mMethodRelativeMutationPoint);
+      firstTestName = mCache.getLastFailure(mClass, mMethod, mMethodRelativeMutationPoint);
       frontTestNames = mCache.getFailedTests(mClass, mMethod);
     }
 
