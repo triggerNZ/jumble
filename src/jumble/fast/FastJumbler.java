@@ -117,6 +117,14 @@ public class FastJumbler {
                                           className,
                                           tempMutater.getMutatedMethodName(className),
                                           new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
+      if (out.startsWith("FAIL")) {
+        // Get more details about the modification carried out.
+        String message = jumbler.getModification();
+        if (message == null) {
+          message = className + ":0: Existing tests never caused class to be loaded";
+        }
+        out = "FAIL: " + message;
+      }
       System.out.println(out);  // This is the magic line that the parent JVM is looking for.
 
       if (cache != null && out.startsWith("PASS: ")) {
