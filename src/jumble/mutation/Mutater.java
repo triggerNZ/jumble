@@ -86,107 +86,11 @@ import org.apache.bcel.generic.Type;
 public class Mutater {
 
   /**
-   * Lop off .class or .java from a string.
-   * 
-   * @param className
-   *          name of the class
-   * @return class name without extension
+   * Maps -1 -&gt; 1; 0 -&gt; 1; 1 -&gt; 0; 2 -&gt; 3; 3 -&gt; 4; 4 -&gt; 5; 5
+   * -&gt; -1. This mapping is careful to handle use as boolean cases correctly.
    */
-  public static String fixName(final String className) {
-    if (className.endsWith(".class")) {
-      return className.substring(0, className.length() - 6).replace('/', '.');
-    } else if (className.endsWith(".java")) {
-      return className.substring(0, className.length() - 5).replace('/', '.');
-    } else {
-      return className.replace('/', '.');
-    }
-  }
+  private static final int[] ICONST_MAP = new int[] {1, 1, 0, 3, 4, 5, -1};
 
-  /** Should ICONST instructions be changed. */
-  private boolean mMutateInlineConstants = false;
-
-  /** Should return instructions be changed. */
-  private boolean mMutateReturns = false;
-
-  /** Should IINC instructions be changed. */
-  private boolean mMutateIncrements = false;
-
-  public void setMutateIncrements(final boolean v) {
-    mMutateIncrements = v;
-    if (mMutateIncrements) {
-      mMutatable[Constants.IINC] = new NOP();
-    } else {
-      mMutatable[Constants.IINC] = null;
-    }
-  }
-
-  /**
-   * Set whether or not inline constants should be mutated.
-   * 
-   * @param v
-   *          true for mutation of inline constants
-   */
-  public void setMutateInlineConstants(final boolean v) {
-    mMutateInlineConstants = v;
-    if (mMutateInlineConstants) {
-      mMutatable[Constants.ICONST_0] = new NOP();
-      mMutatable[Constants.ICONST_1] = new NOP();
-      mMutatable[Constants.ICONST_2] = new NOP();
-      mMutatable[Constants.ICONST_3] = new NOP();
-      mMutatable[Constants.ICONST_4] = new NOP();
-      mMutatable[Constants.ICONST_5] = new NOP();
-      mMutatable[Constants.ICONST_M1] = new NOP();
-      mMutatable[Constants.FCONST_0] = new NOP();
-      mMutatable[Constants.FCONST_1] = new NOP();
-      mMutatable[Constants.FCONST_2] = new NOP();
-      mMutatable[Constants.DCONST_0] = new NOP();
-      mMutatable[Constants.DCONST_1] = new NOP();
-      mMutatable[Constants.LCONST_0] = new NOP();
-      mMutatable[Constants.LCONST_1] = new NOP();
-      mMutatable[Constants.BIPUSH] = new NOP();
-      mMutatable[Constants.SIPUSH] = new NOP();
-    } else {
-      mMutatable[Constants.ICONST_0] = null;
-      mMutatable[Constants.ICONST_1] = null;
-      mMutatable[Constants.ICONST_2] = null;
-      mMutatable[Constants.ICONST_3] = null;
-      mMutatable[Constants.ICONST_4] = null;
-      mMutatable[Constants.ICONST_5] = null;
-      mMutatable[Constants.ICONST_M1] = null;
-      mMutatable[Constants.FCONST_0] = null;
-      mMutatable[Constants.FCONST_1] = null;
-      mMutatable[Constants.FCONST_2] = null;
-      mMutatable[Constants.DCONST_0] = null;
-      mMutatable[Constants.DCONST_1] = null;
-      mMutatable[Constants.LCONST_0] = null;
-      mMutatable[Constants.LCONST_1] = null;
-      mMutatable[Constants.BIPUSH] = null;
-      mMutatable[Constants.SIPUSH] = null;
-    }
-  }
-
-  /**
-   * Set whether or not return values should be mutated.
-   * 
-   * @param v
-   *          true to mutate return values
-   */
-  public void setMutateReturnValues(final boolean v) {
-    mMutateReturns = v;
-    if (mMutateReturns) {
-      mMutatable[Constants.ARETURN] = new NOP();
-      mMutatable[Constants.DRETURN] = new NOP();
-      mMutatable[Constants.FRETURN] = new NOP();
-      mMutatable[Constants.IRETURN] = new NOP();
-      mMutatable[Constants.LRETURN] = new NOP();
-    } else {
-      mMutatable[Constants.ARETURN] = null;
-      mMutatable[Constants.DRETURN] = null;
-      mMutatable[Constants.FRETURN] = null;
-      mMutatable[Constants.IRETURN] = null;
-      mMutatable[Constants.LRETURN] = null;
-    }
-  }
 
   /**
    * Table of mutatable instructions. If defined and not a NOP this gives the
@@ -243,6 +147,108 @@ public class Mutater {
     mMutatable[Constants.IFNONNULL] = new NOP();
     mMutatable[Constants.IFNULL] = new NOP();
   }
+
+  /** Set of methods to be ignored (i.e. never mutated). */
+  private Set mIgnored;
+
+  /** Should ICONST instructions be changed. */
+  private boolean mMutateInlineConstants = false;
+
+  /** Should return instructions be changed. */
+  private boolean mMutateReturns = false;
+
+  /** Should IINC instructions be changed. */
+  private boolean mMutateIncrements = false;
+
+  /** The most recent modification. */
+  private String mModification = null;
+
+  /** Count down for mutation to apply. */
+  private int mCount = 0;
+
+
+  public Mutater(final int count) {
+    mCount = count;
+    setIgnoredMethods(null);
+  }
+
+
+
+  public void setMutateIncrements(final boolean v) {
+    mMutateIncrements = v;
+    if (mMutateIncrements) {
+      mMutatable[Constants.IINC] = new NOP();
+    } else {
+      mMutatable[Constants.IINC] = null;
+    }
+  }
+
+  /**
+   * Set whether or not inline constants should be mutated.
+   * 
+   * @param v true for mutation of inline constants
+   */
+  public void setMutateInlineConstants(final boolean v) {
+    mMutateInlineConstants = v;
+    if (mMutateInlineConstants) {
+      mMutatable[Constants.ICONST_0] = new NOP();
+      mMutatable[Constants.ICONST_1] = new NOP();
+      mMutatable[Constants.ICONST_2] = new NOP();
+      mMutatable[Constants.ICONST_3] = new NOP();
+      mMutatable[Constants.ICONST_4] = new NOP();
+      mMutatable[Constants.ICONST_5] = new NOP();
+      mMutatable[Constants.ICONST_M1] = new NOP();
+      mMutatable[Constants.FCONST_0] = new NOP();
+      mMutatable[Constants.FCONST_1] = new NOP();
+      mMutatable[Constants.FCONST_2] = new NOP();
+      mMutatable[Constants.DCONST_0] = new NOP();
+      mMutatable[Constants.DCONST_1] = new NOP();
+      mMutatable[Constants.LCONST_0] = new NOP();
+      mMutatable[Constants.LCONST_1] = new NOP();
+      mMutatable[Constants.BIPUSH] = new NOP();
+      mMutatable[Constants.SIPUSH] = new NOP();
+    } else {
+      mMutatable[Constants.ICONST_0] = null;
+      mMutatable[Constants.ICONST_1] = null;
+      mMutatable[Constants.ICONST_2] = null;
+      mMutatable[Constants.ICONST_3] = null;
+      mMutatable[Constants.ICONST_4] = null;
+      mMutatable[Constants.ICONST_5] = null;
+      mMutatable[Constants.ICONST_M1] = null;
+      mMutatable[Constants.FCONST_0] = null;
+      mMutatable[Constants.FCONST_1] = null;
+      mMutatable[Constants.FCONST_2] = null;
+      mMutatable[Constants.DCONST_0] = null;
+      mMutatable[Constants.DCONST_1] = null;
+      mMutatable[Constants.LCONST_0] = null;
+      mMutatable[Constants.LCONST_1] = null;
+      mMutatable[Constants.BIPUSH] = null;
+      mMutatable[Constants.SIPUSH] = null;
+    }
+  }
+
+  /**
+   * Set whether or not return values should be mutated.
+   * 
+   * @param v true to mutate return values
+   */
+  public void setMutateReturnValues(final boolean v) {
+    mMutateReturns = v;
+    if (mMutateReturns) {
+      mMutatable[Constants.ARETURN] = new NOP();
+      mMutatable[Constants.DRETURN] = new NOP();
+      mMutatable[Constants.FRETURN] = new NOP();
+      mMutatable[Constants.IRETURN] = new NOP();
+      mMutatable[Constants.LRETURN] = new NOP();
+    } else {
+      mMutatable[Constants.ARETURN] = null;
+      mMutatable[Constants.DRETURN] = null;
+      mMutatable[Constants.FRETURN] = null;
+      mMutatable[Constants.IRETURN] = null;
+      mMutatable[Constants.LRETURN] = null;
+    }
+  }
+
 
   /**
    * Is this an instruction we know how to mutate? Needs the entire chain since
@@ -315,9 +321,6 @@ public class Mutater {
     return j;
   }
 
-  /** Set of methods to be ignored (i.e. never mutated). */
-  private Set mIgnored;
-
   /**
    * Set the names of all the methods to be ignored during mutation. Any method
    * named by a member of the given set will not be subject to mutation.
@@ -329,17 +332,6 @@ public class Mutater {
   }
 
   private boolean checkNormalMethod(final Method m) {
-    /*
-     * if(m == null) System.out.println("null"); else if(m.isNative())
-     * System.out.println("native"); else if(m.isAbstract())
-     * System.out.println("abstract"); else if(mIgnored.contains(m.getName()))
-     * System.out.println("ignored"); else if(m.getName().indexOf("access$")!=
-     * -1) System.out.println("access"); else if(m.getLineNumberTable() == null)
-     * System.out.println("linenumber"); else if(m.getCode() == null)
-     * System.out.println("code"); else
-     * if(m.getLineNumberTable().getSourceLine(0) <= 0)
-     * System.out.println("invalid line number");
-     */
     return m != null && !m.isNative() && !m.isAbstract()
         && !mIgnored.contains(m.getName())
         && m.getName().indexOf("access$") == -1
@@ -357,12 +349,10 @@ public class Mutater {
     if (!checkNormalMethod(m)) {
       return 0;
     }
-    final InstructionList il = new MethodGen(m, className, cp)
-        .getInstructionList();
+    final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;
-    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp,
-        j)) {
+    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
       if (isMutatable(ihs, j, cp)) {
         count += 1;
       }
@@ -399,12 +389,6 @@ public class Mutater {
     }
     return count;
   }
-
-  /**
-   * Maps -1 -&gt; 1; 0 -&gt; 1; 1 -&gt; 0; 2 -&gt; 3; 3 -&gt; 4; 4 -&gt; 5; 5
-   * -&gt; -1. This mapping is careful to handle use as boolean cases correctly.
-   */
-  private static final int[] ICONST_MAP = new int[] {1, 1, 0, 3, 4, 5, -1};
 
   /** Mutate an ICONST instruction. */
   private static Instruction mutateICONST(final ICONST i,
@@ -593,9 +577,6 @@ public class Mutater {
     return "unknown";
   }
 
-  /** The most recent modification. */
-  private String mModification = null;
-
   /**
    * Return the most recent modification.
    * 
@@ -603,14 +584,6 @@ public class Mutater {
    */
   public String getModification() {
     return mModification;
-  }
-
-  /** Count down for mutation to apply. */
-  private int mCount = 0;
-
-  public Mutater(final int count) {
-    mCount = count;
-    setIgnoredMethods(null);
   }
 
   private Method jumble(Method m, final String className,
@@ -681,20 +654,15 @@ public class Mutater {
     return m;
   }
 
+
   public JavaClass jumbler(String cn) throws IOException {
     JavaClass clazz = Repository.lookupClass(cn);
     if (clazz == null) {
       throw new IOException("Class did not exist");
     }
     return jumbler(clazz);
-//    Method[] methods = clazz.getMethods();
-//    ConstantPoolGen cp = new ConstantPoolGen(clazz.getConstantPool());
-//    for (int i = 0; i < methods.length; i++) {
-//      methods[i] = jumble(methods[i], cn, cp);
-//    }
-//    clazz.setConstantPool(cp.getFinalConstantPool());
-//    return clazz;
   }
+
 
   public JavaClass jumbler(final JavaClass clazz) {
     JavaClass ret = clazz.copy();
@@ -711,9 +679,7 @@ public class Mutater {
   /**
    * Gets the name of the method currently being mutated for the given class.
    * 
-   * @param cl
-   *          the name of the class to mutate
-   * 
+   * @param cl the name of the class to mutate
    * @return mutated method name
    */
   public String getMutatedMethodName(String cl) {
@@ -750,8 +716,7 @@ public class Mutater {
    * Gets the mutation point, relative to the method being mutated. The method
    * is specified by <CODE>getMutatedMethodName(cl)</CODE>.
    * 
-   * @param cl
-   *          the class to to mutate.
+   * @param cl the class to to mutate.
    * @return the mutation point, relative to the mutated method.
    */
   public int getMethodRelativeMutationPoint(String cl) {
@@ -783,5 +748,24 @@ public class Mutater {
     // If we get here, then something went wrong
     throw new RuntimeException("Invalid mutation point");
   }
+
+
+  /**
+   * Lop off .class or .java from a string.
+   * 
+   * @param className
+   *          name of the class
+   * @return class name without extension
+   */
+  private static String fixName(final String className) {
+    if (className.endsWith(".class")) {
+      return className.substring(0, className.length() - 6).replace('/', '.');
+    } else if (className.endsWith(".java")) {
+      return className.substring(0, className.length() - 5).replace('/', '.');
+    } else {
+      return className.replace('/', '.');
+    }
+  }
+
 
 }
