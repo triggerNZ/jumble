@@ -1,7 +1,6 @@
 package jumble.mutation;
 
 
-import java.util.HashMap;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.ClassLoader;
 
@@ -21,9 +20,6 @@ public class MutatingClassLoader extends ClassLoader {
   /** The name of the class being mutated */
   private String mTarget;
 
-  /** The cache of fresh classes */
-  private HashMap mCache;
-
   /**
    * Creates a new <code>MutatingClassLoader</code> instance.
    *
@@ -37,7 +33,6 @@ public class MutatingClassLoader extends ClassLoader {
     super(new String[] {"org.apache", "org.xml", "org.w3c"});
     mTarget = target;
     mMutater = mutater;
-    mCache = new HashMap();
   }
 
   /**
@@ -61,17 +56,7 @@ public class MutatingClassLoader extends ClassLoader {
    */
   public JavaClass modifyClass(JavaClass clazz) {
     if (clazz.getClassName().equals(mTarget)) {
-      try {
-        if (mCache.containsKey(clazz.getClassName())) {
-          clazz = (JavaClass) mCache.get(clazz.getClassName());
-        } else {
-          mCache.put(clazz.getClassName(), clazz);
-        }
-        JavaClass ret = mMutater.jumbler(clazz);
-        return ret;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      return mMutater.jumbler(clazz);
     }
     return clazz;
   }
