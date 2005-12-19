@@ -7,7 +7,7 @@ import org.apache.bcel.util.ClassLoader;
 
 /**
  * A <code>ClassLoader</code> which embeds a <code>Mutater</code> so
- * that applications can be run with a mutater in place.
+ * that applications can be run with a <code>Mutater</code> in place.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
