@@ -29,35 +29,35 @@ public class MutaterTest extends TestCase {
   }
 
   public void testCountMutationPointsX0() {
-    assertEquals(0, new Mutater(0).countMutationPoints("jumble.X0"));
+    assertEquals(0, new Mutater().countMutationPoints("jumble.X0"));
   }
 
   public void testCountMutationPointsX0I() {
-    assertEquals(-1, new Mutater(0).countMutationPoints("jumble.X0I"));
+    assertEquals(-1, new Mutater().countMutationPoints("jumble.X0I"));
   }
 
   public void testCountMutationPointsX1() {
-    assertEquals(1, new Mutater(0).countMutationPoints("jumble.X1"));
+    assertEquals(1, new Mutater().countMutationPoints("jumble.X1"));
   }
 
   public void testCountMutationPointsX2() {
-    assertEquals(9, new Mutater(0).countMutationPoints("jumble.X2"));
+    assertEquals(9, new Mutater().countMutationPoints("jumble.X2"));
   }
 
   public void testCountMutationPointsX2r() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     m.setMutateReturnValues(true);
     assertEquals(10, m.countMutationPoints("jumble.X2"));
   }
 
   public void testCountMutationPointsX2i() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     assertEquals(11, m.countMutationPoints("jumble.X2"));
   }
 
   public void testCountMutationPointsX2ir() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     m.setMutateReturnValues(true);
     assertEquals(12, m.countMutationPoints("jumble.X2"));
@@ -110,7 +110,7 @@ public class MutaterTest extends TestCase {
   }
 
   public void testFindsClass() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     try {
       assertNotNull(m.jumbler("jumble.X3"));
     } catch (IOException e) {
@@ -119,7 +119,7 @@ public class MutaterTest extends TestCase {
   }
 
   public void testDoesntFindClass() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     try {
       m.jumbler("poxweed");
       fail("IO failed to fire");
@@ -209,7 +209,7 @@ public class MutaterTest extends TestCase {
 
   
   public void testGetMutatedMethodName() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     assertEquals("add(II)I", m.getMutatedMethodName("experiments.JumblerExperiment"));
 
     m = new Mutater(2);
@@ -228,7 +228,7 @@ public class MutaterTest extends TestCase {
   }
   
   public void testGetMethodRelativeMutationPoint() {
-    Mutater m = new Mutater(0);
+    Mutater m = new Mutater();
     assertEquals(0, m.getMethodRelativeMutationPoint("experiments.JumblerExperiment"));
 
     m = new Mutater(2);
