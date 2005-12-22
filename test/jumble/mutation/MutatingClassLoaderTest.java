@@ -496,7 +496,7 @@ public class MutatingClassLoaderTest extends TestCase {
    * @throws Exception
    *           if something goes wrong
    */
-  private static void printClass(JavaClass c) throws Exception {
+  protected static void printClass(JavaClass c) throws Exception {
     Method[] m = c.getMethods();
 
     for (int i = 0; i < m.length; i++) {
