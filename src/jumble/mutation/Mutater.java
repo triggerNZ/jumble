@@ -160,6 +160,7 @@ public class Mutater {
   /** Should IINC instructions be changed. */
   private boolean mMutateIncrements = false;
 
+
   /** The most recent modification. */
   private String mModification = null;
 
@@ -167,12 +168,19 @@ public class Mutater {
   private int mCount = 0;
 
 
-  public Mutater(final int count) {
-    mCount = count;
+  public Mutater() {
     setIgnoredMethods(null);
   }
 
+  public Mutater(final int count) {
+    this();
+    setMutationPoint(count);
+  }
 
+  public void setMutationPoint(final int count) {
+    mCount = count;
+    mModification = null;
+  }
 
   public void setMutateIncrements(final boolean v) {
     mMutateIncrements = v;
