@@ -63,7 +63,6 @@ public class Jumble {
     String className;
     List testList;
 
-    boolean finishedTests = false;
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
       for (int i = 0; i < tokens.length; i++) {
