@@ -27,27 +27,9 @@ public class FastJumbler {
   private FastJumbler() { }
   
   /**
-   * Main method.
+   * Main method.  Supply --help to get help on the expected arguments.
    * 
-   * @param args command line arguments. format is
-   * 
-   * <PRE>
-   * 
-   * java jumble.fast.FastJumbler [OPTIONS] [CLASS] [START] [TESTSUITE]
-   * 
-   * CLASS the fully-qualified name of the class to mutate.
-   * 
-   * START the mutation point to start at
-   * 
-   * TESTSUITE filename of the test suite to run. The file should contain
-   * serialized TestOrder objects
-   * 
-   * OPTIONS -c Count mode. The program outputs the number of possible mutations
-   * in the class. -r Mutate return values. -k Mutate inline constants. -i
-   * Mutate increments. -x Exclude specified methods. -h Display this help
-   * message.
-   * 
-   * </PRE>
+   * @param args command line arguments.
    */
   public static void main(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("FastJumbler");
@@ -66,7 +48,6 @@ public class FastJumbler {
     
     // First, process all the command line options
     final String className = ((String) classFlag.getValue()).replace('/', '.');
-    final Mutater m = new Mutater(0);
     // Process excludes
     Set ignore = new HashSet();
     if (exFlag.isSet()) {
@@ -76,11 +57,12 @@ public class FastJumbler {
       }
     }
 
-    m.setIgnoredMethods(ignore);
-    m.setMutateIncrements(incFlag.isSet());
-    m.setMutateInlineConstants(inlFlag.isSet());
-    m.setMutateReturnValues(retFlag.isSet());
-    final int mutationCount = m.countMutationPoints(className);
+    final Mutater mutater = new Mutater();
+    mutater.setIgnoredMethods(ignore);
+    mutater.setMutateIncrements(incFlag.isSet());
+    mutater.setMutateInlineConstants(inlFlag.isSet());
+    mutater.setMutateReturnValues(retFlag.isSet());
+    final int mutationCount = mutater.countMutationPoints(className);
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
 
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream((String) testSuiteFlag.getValue()));
@@ -99,13 +81,8 @@ public class FastJumbler {
 
     // Now run all the tests for each mutation point
     for (int i = startPoint; i < mutationCount; i++) {
-      Mutater tempMutater = new Mutater(i);
-      tempMutater.setIgnoredMethods(ignore);
-      tempMutater.setMutateIncrements(incFlag.isSet());
-      tempMutater.setMutateInlineConstants(inlFlag.isSet());
-      tempMutater.setMutateReturnValues(retFlag.isSet());
-      // jumbler.setMutater(tempMutater);
-      MutatingClassLoader jumbler = new MutatingClassLoader(className, tempMutater);
+      mutater.setMutationPoint(i);
+      MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater);
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
                                       jumbler.loadClass("jumble.fast.TestOrder"),
@@ -115,8 +92,8 @@ public class FastJumbler {
                                           order.clone(jumbler),
                                           (cache == null ? null : cache.clone(jumbler)),
                                           className,
-                                          tempMutater.getMutatedMethodName(className),
-                                          new Integer(tempMutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
+                                          mutater.getMutatedMethodName(className),
+                                          new Integer(mutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
       if (out.startsWith("FAIL")) {
         // Get more details about the modification carried out.
         String message = jumbler.getModification();
