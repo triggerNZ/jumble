@@ -393,8 +393,10 @@ public class FastRunner {
     mRunner.setArguments(args);
     mChildProcess = mRunner.start();
     mIot = new IOThread(mChildProcess.getInputStream());
+    mIot.setDaemon(true);
     mIot.start();
     mEot = new IOThread(mChildProcess.getErrorStream());
+    mEot.setDaemon(true);
     mEot.start();
     waitForStart(mIot, mEot);
   }
