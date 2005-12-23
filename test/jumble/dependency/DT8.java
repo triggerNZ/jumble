@@ -6,5 +6,5 @@ package jumble.dependency;
  * @version $Revision$
  */
 public class DT8 {
-  static final DT1[] sDt1 = null;
+  static final DT1[] SDT1 = null;
 }
