@@ -6,5 +6,5 @@ package jumble.dependency;
  * @version $Revision$
  */
 public class DT5 {
-  private DT1 mDt1;
+  protected DT1 mDt1;
 }

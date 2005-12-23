@@ -8,5 +8,5 @@ import experiments.JumblerExperiment;
  * @version $Revision$
  */
 public class DT1 {
-  JumblerExperiment mExp = new JumblerExperiment();
+  protected JumblerExperiment mExp = new JumblerExperiment();
 }
