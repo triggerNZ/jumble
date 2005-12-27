@@ -1,6 +1,5 @@
 package jumble.fast;
 
-import jumble.mutation.Mutation;
 
 /**
  * A class representing the results of a Jumble run.
@@ -39,7 +38,7 @@ public interface JumbleResult {
    * @return array of the covered mutations or <CODE>null</CODE> if the code
    *         was not jumbled.
    */
-  Mutation[] getCovered();
+  MutationResult[] getCovered();
 
   /**
    * Gets an array of mutations missed by the tests.
@@ -47,7 +46,7 @@ public interface JumbleResult {
    * @return array of the missed mutations or <CODE>null</CODE> if the code
    *         was not jumbled.
    */
-  Mutation[] getMissed();
+  MutationResult[] getMissed();
 
   /**
    * Gets an array of mutations which caused the tests to time out. NOTE: A
@@ -56,7 +55,7 @@ public interface JumbleResult {
    * @return array of missed mutations or <CODE>null</CODE> if the code was
    *         not jumbled.
    */
-  Mutation[] getTimeouts();
+  MutationResult[] getTimeouts();
 
   /**
    * Returns the length of time, in milliseconds of the timeout.
@@ -71,7 +70,7 @@ public interface JumbleResult {
    * @return array of all the mutations or <CODE>null</CODE> if the code was
    *         not jumbled.
    */
-  Mutation[] getAllMutations();
+  MutationResult[] getAllMutations();
 
   /**
    * Return the number of mutations points.

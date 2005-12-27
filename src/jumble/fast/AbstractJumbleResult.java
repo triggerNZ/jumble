@@ -1,6 +1,5 @@
 package jumble.fast;
 
-import jumble.mutation.Mutation;
 
 /**
  * An abstract JumbleResult that defaults most methods.
@@ -37,17 +36,17 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getCovered() {
+  public MutationResult[] getCovered() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getMissed() {
+  public MutationResult[] getMissed() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getTimeouts() {
+  public MutationResult[] getTimeouts() {
     return null;
   }
 
@@ -57,7 +56,7 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getAllMutations() {
+  public MutationResult[] getAllMutations() {
     return null;
   }
 

@@ -2,7 +2,6 @@ package jumble.fast;
 
 import java.io.PrintStream;
 
-import jumble.mutation.Mutation;
 
 /**
  * Class outputting jumble results in Sean's original jumble format
@@ -62,7 +61,7 @@ public class SeanResultPrinter extends AbstractResultPrinter {
         / 1000 + "s");
 
     for (int i = 0; i < res.getAllMutations().length; i++) {
-      Mutation currentMutation = res.getAllMutations()[i];
+      MutationResult currentMutation = res.getAllMutations()[i];
       if (currentMutation.isPassed()) {
         out.print(".");
       } else if (currentMutation.isTimedOut()) {

@@ -2,7 +2,6 @@ package jumble.fast;
 
 import java.util.ArrayList;
 import java.util.List;
-import jumble.mutation.Mutation;
 
 /**
  * <code>NormalJumbleResult</code> is a JumbleResult for a test pass
@@ -15,11 +14,11 @@ public class NormalJumbleResult extends AbstractJumbleResult {
 
   private List mTestClassNames;
 
-  private Mutation[] mAllMutations;
+  private MutationResult[] mAllMutations;
 
   private long mTimeoutLength;
 
-  public NormalJumbleResult(String className, List testClassNames, Mutation[] allMutations, long timeout) {
+  public NormalJumbleResult(String className, List testClassNames, MutationResult[] allMutations, long timeout) {
     super(className);
     mTestClassNames = testClassNames;
     mAllMutations = allMutations;
@@ -27,7 +26,7 @@ public class NormalJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getAllMutations() {
+  public MutationResult[] getAllMutations() {
     return mAllMutations;
   }
 
@@ -37,18 +36,18 @@ public class NormalJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getCovered() {
-    return filter(Mutation.PASS);
+  public MutationResult[] getCovered() {
+    return filter(MutationResult.PASS);
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getTimeouts() {
-    return filter(Mutation.TIMEOUT);
+  public MutationResult[] getTimeouts() {
+    return filter(MutationResult.TIMEOUT);
   }
 
   /** {@inheritDoc} */
-  public Mutation[] getMissed() {
-    return filter(Mutation.FAIL);
+  public MutationResult[] getMissed() {
+    return filter(MutationResult.FAIL);
   }
 
   /** {@inheritDoc} */
@@ -63,8 +62,8 @@ public class NormalJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  private Mutation[] filter(int mutationType) {
-    Mutation[] all = getAllMutations();
+  private MutationResult[] filter(int mutationType) {
+    MutationResult[] all = getAllMutations();
     ArrayList ret = new ArrayList();
 
     for (int i = 0; i < all.length; i++) {
@@ -73,7 +72,7 @@ public class NormalJumbleResult extends AbstractJumbleResult {
       }
     }
 
-    return (Mutation[]) ret.toArray(new Mutation[ret.size()]);
+    return (MutationResult[]) ret.toArray(new MutationResult[ret.size()]);
   }
 
 }

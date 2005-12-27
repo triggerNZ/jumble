@@ -1,16 +1,16 @@
-package jumble.mutation;
+package jumble.fast;
 
 /**
  * Class representing the result of a single mutation test
  * @author Tin Pavlinic
  * @version $Revision$
  */
-public class Mutation {
+public class MutationResult {
   public static final int PASS = 0;
   public static final int FAIL = 1;
   public static final int TIMEOUT = 2;
     
-  public Mutation(String s, String className, int point) {
+  public MutationResult(String s, String className, int point) {
     mClassName = className;
     mPoint = point;
         

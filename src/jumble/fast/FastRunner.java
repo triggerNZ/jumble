@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import jumble.mutation.Mutater;
 import jumble.mutation.MutatingClassLoader;
-import jumble.mutation.Mutation;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
 import junit.framework.TestResult;
@@ -257,7 +256,7 @@ public class FastRunner {
     }
   }
 
-  private void updateCache(Mutation mutation) {
+  private void updateCache(MutationResult mutation) {
     if (mutation.isPassed()) {
       // Remove "PASS: " and tokenize
       StringTokenizer tokens = new StringTokenizer(mutation.getDescription().substring(6), ":");
@@ -403,7 +402,7 @@ public class FastRunner {
 
 
   /** Reads a mutation result from the child process */
-  private Mutation readMutation(int currentMutation, long timeout) throws InterruptedException {
+  private MutationResult readMutation(int currentMutation, long timeout) throws InterruptedException {
     long before = System.currentTimeMillis();
     long after = before;
     // Run until we have a result or time out
@@ -416,14 +415,14 @@ public class FastRunner {
         if (after - before > timeout) {
           mChildProcess.destroy();
           mChildProcess = null;
-          return new Mutation("TIMEOUT", mClassName, currentMutation);
+          return new MutationResult("TIMEOUT", mClassName, currentMutation);
         } else {
           Thread.sleep(50);
           after = System.currentTimeMillis();
         }
       } else {
         // We have output so go to the next mutation
-        Mutation m = new Mutation(out, mClassName, currentMutation);
+        MutationResult m = new MutationResult(out, mClassName, currentMutation);
         if (mUseCache) {
           updateCache(m);
         }
@@ -526,7 +525,7 @@ public class FastRunner {
     mIot = null;
     mEot = null;
     
-    final Mutation[] allMutations = new Mutation[mMutationCount];
+    final MutationResult[] allMutations = new MutationResult[mMutationCount];
     for (int currentMutation = 0; currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));

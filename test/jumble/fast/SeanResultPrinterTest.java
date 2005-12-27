@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 
-import jumble.mutation.Mutation;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -51,8 +50,8 @@ public class SeanResultPrinterTest extends TestCase {
     public AbstractDummyResult() {
       super("Dummy");
     }
-    public Mutation[] getAllMutations() {
-      Mutation[] muts = new Mutation
+    public MutationResult[] getAllMutations() {
+      MutationResult[] muts = new MutationResult
         [(getCovered() != null ? getCovered().length : 0)
          + (getMissed() != null ? getMissed().length : 0)
          + (getTimeouts() != null ? getTimeouts().length : 0)];
@@ -86,15 +85,15 @@ public class SeanResultPrinterTest extends TestCase {
   }
 
   private class NormalResult extends AbstractDummyResult {
-    public Mutation[] getMissed() {
-      return new Mutation[] {new Mutation("FAIL", "java.util.LinkedList", 0)};
+    public MutationResult[] getMissed() {
+      return new MutationResult[] {new MutationResult("FAIL", "java.util.LinkedList", 0)};
     }
-    public Mutation[] getCovered() {
-      return new Mutation[] {new Mutation("PASS", "java.util.LinkedList", 1)};
+    public MutationResult[] getCovered() {
+      return new MutationResult[] {new MutationResult("PASS", "java.util.LinkedList", 1)};
     }
     
-    public Mutation [] getTimeouts() {
-      return new Mutation[] {new Mutation("TIMEOUT", "java.util.LinkedList", 2)};
+    public MutationResult [] getTimeouts() {
+      return new MutationResult[] {new MutationResult("TIMEOUT", "java.util.LinkedList", 2)};
     }
     
     public String getClassName() {
