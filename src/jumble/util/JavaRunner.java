@@ -93,15 +93,6 @@ public class JavaRunner {
     final String classpath = props.getProperty("java.class.path");
 
     //create the java command
-    //StringBuffer command = new StringBuffer();
-    //command.append(javahome + ls + "bin" + ls + "java ");
-    //command.append("-cp " + classpath + " ");
-    //command.append(getClassName());
-
-    //for (int i = 0; i < getArguments().length; i++) {
-    //  command.append(" " + getArguments()[i]);
-    //}
-    
     String[] command = new String[BASE_ARG_COUNT + getArguments().length];
     
     command[0] = javahome + ls + "bin" + ls + "java";
