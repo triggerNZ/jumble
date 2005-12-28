@@ -72,7 +72,6 @@ public class JavaRunnerTest extends TestCase {
     assertEquals("word3\tword4", out.readLine());
     assertEquals(null, out.readLine());
   }
-  
 
   public static Test suite() {
     TestSuite suite = new TestSuite(JavaRunnerTest.class);
