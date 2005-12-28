@@ -60,6 +60,19 @@ public class JavaRunnerTest extends TestCase {
     assertEquals(0, new JavaRunner("jumble.util.DisplayEnvironment")
         .getArguments().length);
   }
+  
+  public void testSpaces() throws IOException {
+    mProcess = new JavaRunner("jumble.util.DisplayArguments", new String[] {
+        "word1 word2", "word3\tword4"}).start();
+
+    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess
+        .getInputStream()));
+
+    assertEquals("word1 word2", out.readLine());
+    assertEquals("word3\tword4", out.readLine());
+    assertEquals(null, out.readLine());
+  }
+  
 
   public static Test suite() {
     TestSuite suite = new TestSuite(JavaRunnerTest.class);
