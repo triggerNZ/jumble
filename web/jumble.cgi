@@ -45,7 +45,7 @@ function insertscore ()
 function lastupdated ()
 {
     #gawk '{print $4}' <$rawfile | sort -r | head -1 | tr -d '()'
-    find $jumbledir/$packagepath -printf "%TY-%Tm-%Td %TH:%TM:%TS" | sort -r | head -1
+    find $jumbledir/$packagepath -printf "%TY-%Tm-%Td %TH:%TM:%TS\n" | sort -r | head -1
 }
 
 function insertnavtable ()
