@@ -44,7 +44,7 @@ function insertscore ()
 }
 function lastupdated ()
 {
-    gawk '{print $4}' <$rawfile | sort -n | head -1 | tr -d '()'
+    gawk '{print $4}' <$rawfile | sort -r | head -1 | tr -d '()'
 }
 
 function insertnavtable ()
