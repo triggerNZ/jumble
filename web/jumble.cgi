@@ -127,7 +127,7 @@ EOF
         echo "<b>Module:</b> <a href=\"$checkerwebroot/$checker/\">$checker</a><br>"
         echo "<b>Package:</b> $(getpackage "$packagepath")<br>"
         echo "<b>Average jumble score:</b> $(insertscore $jumblesubdir/$packagepath)<br>"
-        echo "<b>Last updated:</b> $(find $jumbledir -mindepth 0 -maxdepth 0 -printf "%TY-%Tm-%Td %TH:%TM:%TS")</p>"
+        echo "<b>Last updated:</b> $(find $jumbledir/$packagepath -mindepth 0 -maxdepth 0 -printf "%TY-%Tm-%Td %TH:%TM:%TS")</p>"
 
         echo "<table><tr valign=top><td>"
         insertnavtable
