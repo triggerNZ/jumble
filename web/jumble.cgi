@@ -44,7 +44,8 @@ function insertscore ()
 }
 function lastupdated ()
 {
-    gawk '{print $4}' <$rawfile | sort -r | head -1 | tr -d '()'
+    #gawk '{print $4}' <$rawfile | sort -r | head -1 | tr -d '()'
+    find $jumbledir/$packagepath -printf "%TY-%Tm-%Td %TH:%TM:%TS" | sort -r | head -1
 }
 
 function insertnavtable ()
@@ -132,7 +133,6 @@ EOF
         echo "<b>Package:</b> $(getpackage "$packagepath")<br>"
         echo "<b>Average jumble score:</b> $(insertscore $jumblesubdir/$packagepath)<br>"
         echo "<b>Last updated:</b> $(lastupdated)</p>"
-        #echo "<b>Last updated:</b> $(find $jumbledir/$packagepath -mindepth 0 -maxdepth 0 -printf "%TY-%Tm-%Td %TH:%TM:%TS")</p>"
 
         echo "<table><tr valign=top><td>"
         insertnavtable
