@@ -5,7 +5,7 @@ import java.util.List;
 import jumble.fast.MutationResult;
 
 /**
- * Listener which ignores all output. Used to maintain backward compatability
+ * Listener which ignores all output. Used to maintain backward compatibility
  * with the older non-listener output.
  * 
  * @author Tin Pavlinic
