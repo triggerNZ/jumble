@@ -12,8 +12,8 @@ import jumble.fast.MutationResult;
  * @version $Revision 1.0 $
  */
 public interface JumbleListener {
-  public void jumbleRunStarted(String className, List testNames);
-  public void performedInitialTest(int mutationCount, int status, long timeout);
-  public void jumbleRunEnded();
-  public void finishedMutation(MutationResult res);
+  void jumbleRunStarted(String className, List testNames);
+  void performedInitialTest(int mutationCount, int status, long timeout);
+  void jumbleRunEnded();
+  void finishedMutation(MutationResult res);
 }
