@@ -9,7 +9,5 @@ package experiments;
  */
 public class NoTestClass {
   public void method() {
-    int i = 0;
-    i++;
   }
 }

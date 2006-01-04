@@ -17,8 +17,6 @@ import com.reeltwo.util.Debug;
 public class PrinterListener implements JumbleListener {
   private PrintStream mStream;
 
-  private long mTimeout;
-
   private int mCovered = 0;
 
   private int mMutationCount;
