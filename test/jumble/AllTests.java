@@ -14,6 +14,8 @@ public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
+    suite.addTest(JumbleTest.suite());
+    
     suite.addTest(jumble.util.AllTests.suite());
     suite.addTest(jumble.mutation.AllTests.suite());
     suite.addTest(jumble.dependency.AllTests.suite());

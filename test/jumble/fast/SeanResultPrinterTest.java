@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 
+import jumble.ui.SeanResultPrinter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;

@@ -1,0 +1,6 @@
+Mutating experiments.JumblerExperiment
+Tests: experiments.JumblerExperimentTest
+Mutation points = 5, unit test time limit 2.1s
+..M FAIL: experiments.JumblerExperiment:25: - -> +
+..
+Score: 80
