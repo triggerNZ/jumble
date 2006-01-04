@@ -1,17 +1,20 @@
 package jumble;
 
-import com.reeltwo.util.CLIFlags.Flag;
-import com.reeltwo.util.CLIFlags;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import jumble.fast.FastRunner;
 import jumble.fast.JumbleResult;
 import jumble.fast.JumbleResultPrinter;
-import jumble.fast.SeanResultPrinter;
+import jumble.ui.PrinterListener;
+import jumble.ui.SeanResultPrinter;
+
+import com.reeltwo.util.CLIFlags;
+import com.reeltwo.util.CLIFlags.Flag;
 
 /**
  * A CLI interface to the <CODE>FastRunner</CODE>.
@@ -28,7 +31,8 @@ public class Jumble {
   /**
    * Main method.
    * 
-   * @param args command line arguments. Use -h to see the expected arguments.
+   * @param args
+   *          command line arguments. Use -h to see the expected arguments.
    */
   public static void main(String[] args) throws Exception {
     // Process arguments
@@ -48,6 +52,8 @@ public class Jumble {
     Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
+
+    Flag newOutputFlag = flags.registerOptional('n', "new-output-off", "Use the old output methods");
 
     flags.setFlags(args);
 
@@ -75,39 +81,40 @@ public class Jumble {
 
     // We need at least one test
     if (testClassFlag.isSet()) {
-      for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext(); ) {
+      for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext();) {
         testList.add(((String) it.next()).replace('/', '.'));
       }
     } else {
       // no test class given, guess its name
       testList.add(guessTestClassName(className));
     }
-    
-    JumbleResult res = jumble.runJumble(className, testList);
-    JumbleResultPrinter printer = printFlag.isSet() 
-      ? getPrinter((String) printFlag.getValue()) 
-      : new SeanResultPrinter(System.out);
-    printer.printResult(res);
+    if (!newOutputFlag.isSet()) {
+      jumble.runJumble(className, testList, new PrinterListener());
+    } else {
+      JumbleResult res = jumble.runJumble(className, testList);
+      JumbleResultPrinter printer = printFlag.isSet() ? getPrinter((String) printFlag.getValue()) : new SeanResultPrinter(System.out);
+      printer.printResult(res);
+    }
   }
 
-
   /**
-   * Guesses the name of a test class used for testing a particular
-   * class.  It assumes the following conventions:<p>
-   *
+   * Guesses the name of a test class used for testing a particular class. It
+   * assumes the following conventions:
+   * <p>
+   * 
    * <ul>
-   *
+   * 
    * <li> Unit test classes end with <code>Test</code>
-   *
-   * <li> An abstract classes are named such as
-   * <code>AbstractFoo</code> and have a test class named such as
-   * <code>DummyFooTest</code>
-   *
+   * 
+   * <li> An abstract classes are named such as <code>AbstractFoo</code> and
+   * have a test class named such as <code>DummyFooTest</code>
+   * 
    * </ul>
-   *
-   * @param className a <code>String</code> value
+   * 
+   * @param className
+   *          a <code>String</code> value
    * @return the name of the test class that is expected to test
-   * <code>className</code>.
+   *         <code>className</code>.
    */
   public static String guessTestClassName(String className) {
     String testName = className;
@@ -125,7 +132,6 @@ public class Jumble {
     }
     return testName + "Test";
   }
-
 
   /**
    * Returns a result printer instance as specified by <CODE>className</CODE>.
@@ -173,7 +179,6 @@ public class Jumble {
     throw new IllegalArgumentException("Couldn't create JumbleResultPrinter: " + className);
   }
 
-
   /**
    * A function which computes the timeout for given that the original test took
    * <CODE>runtime</CODE>
@@ -187,4 +192,3 @@ public class Jumble {
   }
 
 }
-

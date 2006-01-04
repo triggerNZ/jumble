@@ -1,6 +1,5 @@
 package jumble.fast;
 
-import com.reeltwo.util.Debug;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,11 +12,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import jumble.mutation.Mutater;
 import jumble.mutation.MutatingClassLoader;
+import jumble.ui.InitialTestStatus;
+import jumble.ui.JumbleListener;
+import jumble.ui.NullListener;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
 import junit.framework.TestResult;
+
+import com.reeltwo.util.Debug;
 
 /**
  * A runner for the <CODE>FastJumbler</CODE>. Runs the FastJumbler in a new
@@ -47,7 +52,9 @@ public class FastRunner {
   private boolean mVerbose = false;
 
   private boolean mLoadCache = true;
+
   private boolean mSaveCache = true;
+
   private boolean mUseCache = true;
 
   private Set mExcludeMethods = new HashSet();
@@ -56,22 +63,29 @@ public class FastRunner {
 
   /** The class being tested */
   private String mClassName;
+
   private String mCacheFileName;
+
   private String mTestSuiteFileName;
+
   private JavaRunner mRunner = new JavaRunner("jumble.fast.FastJumbler");
+
   private Process mChildProcess = null;
+
   private IOThread mIot = null;
+
   private IOThread mEot = null;
+
   private int mMutationCount;
+
   private long mTotalRuntime;
 
   /** The variable storing the failed tests - can get pretty big */
   FailedTestMap mCache = null;
 
-
   /**
    * Gets whether verbose mode is set.
-   *
+   * 
    * @return true if verbose mode is enabled.
    */
   public boolean isVerbose() {
@@ -80,17 +94,17 @@ public class FastRunner {
 
   /**
    * Sets whether verbose mode is enabled.
-   *
-   * @param newVerbose true if verbose mode should be enabled.
+   * 
+   * @param newVerbose
+   *          true if verbose mode should be enabled.
    */
   public void setVerbose(final boolean newVerbose) {
     mVerbose = newVerbose;
   }
 
-  
   /**
    * Gets whether inline constants will be mutated.
-   *
+   * 
    * @return true if inline constants will be mutated.
    */
   public boolean isInlineConstants() {
@@ -99,8 +113,9 @@ public class FastRunner {
 
   /**
    * Sets whether inline constants will be mutated.
-   *
-   * @param argInlineConstants true if inline constants should be mutated.
+   * 
+   * @param argInlineConstants
+   *          true if inline constants should be mutated.
    */
   public void setInlineConstants(final boolean argInlineConstants) {
     mInlineConstants = argInlineConstants;
@@ -108,7 +123,7 @@ public class FastRunner {
 
   /**
    * Gets whether return values will be mutated.
-   *
+   * 
    * @return true if return values will be mutated.
    */
   public boolean isReturnVals() {
@@ -117,8 +132,9 @@ public class FastRunner {
 
   /**
    * Sets whether return values will be mutated.
-   *
-   * @param argReturnVals true return values should be mutated.
+   * 
+   * @param argReturnVals
+   *          true return values should be mutated.
    */
   public void setReturnVals(final boolean argReturnVals) {
     mReturnVals = argReturnVals;
@@ -126,7 +142,7 @@ public class FastRunner {
 
   /**
    * Gets whether increments will be mutated.
-   *
+   * 
    * @return true if increments will be mutated.
    */
   public boolean isIncrements() {
@@ -135,18 +151,17 @@ public class FastRunner {
 
   /**
    * Sets whether increments will be mutated.
-   *
-   * @param argIncrements true if increments will be mutated.
+   * 
+   * @param argIncrements
+   *          true if increments will be mutated.
    */
   public void setIncrements(final boolean argIncrements) {
     mIncrements = argIncrements;
   }
 
-
-
   /**
    * Gets whether tests are ordered by their run time.
-   *
+   * 
    * @return true if tests are ordered by their run time.
    */
   public boolean isOrdered() {
@@ -155,8 +170,9 @@ public class FastRunner {
 
   /**
    * Sets whether tests are ordered by their run time.
-   *
-   * @param argOrdered true if tests should be ordered by their run time.
+   * 
+   * @param argOrdered
+   *          true if tests should be ordered by their run time.
    */
   public void setOrdered(final boolean argOrdered) {
     mOrdered = argOrdered;
@@ -164,7 +180,7 @@ public class FastRunner {
 
   /**
    * Gets the value of loadCache
-   *
+   * 
    * @return the value of loadCache
    */
   public boolean isLoadCache() {
@@ -173,8 +189,9 @@ public class FastRunner {
 
   /**
    * Sets the value of loadCache
-   *
-   * @param argLoadCache Value to assign to loadCache
+   * 
+   * @param argLoadCache
+   *          Value to assign to loadCache
    */
   public void setLoadCache(final boolean argLoadCache) {
     mLoadCache = argLoadCache;
@@ -182,7 +199,7 @@ public class FastRunner {
 
   /**
    * Gets the value of saveCache
-   *
+   * 
    * @return the value of saveCache
    */
   public boolean isSaveCache() {
@@ -191,8 +208,9 @@ public class FastRunner {
 
   /**
    * Sets the value of saveCache
-   *
-   * @param argSaveCache Value to assign to saveCache
+   * 
+   * @param argSaveCache
+   *          Value to assign to saveCache
    */
   public void setSaveCache(final boolean argSaveCache) {
     mSaveCache = argSaveCache;
@@ -200,7 +218,7 @@ public class FastRunner {
 
   /**
    * Gets the value of useCache
-   *
+   * 
    * @return the value of useCache
    */
   public boolean isUseCache() {
@@ -209,8 +227,9 @@ public class FastRunner {
 
   /**
    * Sets the value of useCache
-   *
-   * @param argUseCache Value to assign to useCache
+   * 
+   * @param argUseCache
+   *          Value to assign to useCache
    */
   public void setUseCache(final boolean argUseCache) {
     mUseCache = argUseCache;
@@ -218,13 +237,12 @@ public class FastRunner {
 
   /**
    * Gets the set of excluded method names
-   *
+   * 
    * @return the set of excluded method names
    */
   public Set getExcludeMethods() {
     return mExcludeMethods;
   }
-
 
   /**
    * A function which computes the timeout for given that the original test took
@@ -240,7 +258,7 @@ public class FastRunner {
 
   private void initCache() throws Exception {
     boolean loaded = false;
-      
+
     // Load the cache if it exists and is needed
     if (mLoadCache) {
       try {
@@ -299,14 +317,14 @@ public class FastRunner {
     args.add(mClassName);
     // test suite filename
     args.add(mTestSuiteFileName);
-    
+
     if (mUseCache) {
       // Write a temp cache
       if (writeCache(mCacheFileName)) {
         args.add(mCacheFileName);
       }
     }
-    
+
     // exclude methods
     if (!mExcludeMethods.isEmpty()) {
       StringBuffer ex = new StringBuffer();
@@ -340,7 +358,6 @@ public class FastRunner {
     return (String[]) args.toArray(new String[args.size()]);
   }
 
-
   private Mutater createMutater(int mutationpoint) {
     // Get the number of mutation points from the Jumbler
     final Mutater m = new Mutater(mutationpoint);
@@ -357,7 +374,7 @@ public class FastRunner {
 
   private boolean debugOutput(String out, String err) {
     if (err != null) {
-      System.err.println("Child.err->" + err); 
+      System.err.println("Child.err->" + err);
     }
     if (out != null) {
       System.err.println("Child.out->" + out);
@@ -368,7 +385,8 @@ public class FastRunner {
   private void waitForStart(IOThread iot, IOThread eot) throws InterruptedException {
     // read the "START" to let us know the JVM has started
     // we don't want to time this.
-    // FIXME this looks dangerous. What if the test can't even get to the point of outputting START (e.g. class loading issues)
+    // FIXME this looks dangerous. What if the test can't even get to the point
+    // of outputting START (e.g. class loading issues)
     while (true) {
       String out = iot.getNext();
       String err = eot.getAvailable();
@@ -380,14 +398,11 @@ public class FastRunner {
       } else if ("START".equals(out)) {
         break;
       } else {
-        throw new RuntimeException("jumble.fast.FastJumbler returned "
-                                   + ((out != null) ? out : err + " on stderr") 
-                                   + " instead of START");
+        throw new RuntimeException("jumble.fast.FastJumbler returned " + ((out != null) ? out : err + " on stderr") + " instead of START");
       }
     }
   }
 
-  
   private void startChildProcess(String[] args) throws IOException, InterruptedException {
     mRunner.setArguments(args);
     mChildProcess = mRunner.start();
@@ -399,7 +414,6 @@ public class FastRunner {
     mEot.start();
     waitForStart(mIot, mEot);
   }
-
 
   /** Reads a mutation result from the child process */
   private MutationResult readMutation(int currentMutation, long timeout) throws InterruptedException {
@@ -431,17 +445,16 @@ public class FastRunner {
     }
   }
 
-
   /**
-   * Runs tests without mutating at all.  If all OK, write out
-   * testsuitefile for later use, otherwise return a JumbleResult 
+   * Runs tests without mutating at all. If all OK, write out testsuitefile for
+   * later use, otherwise return a JumbleResult
    */
   private JumbleResult runInitialTests(List testClassNames) {
     mMutationCount = countMutationPoints();
     if (mMutationCount == -1) {
-      return new InterfaceResult(mClassName); 
+      return new InterfaceResult(mClassName);
     }
-    
+
     Class[] testClasses = new Class[testClassNames.size()];
     for (int i = 0; i < testClasses.length; i++) {
       try {
@@ -451,21 +464,21 @@ public class FastRunner {
         return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
     }
-    
-    
+
     try {
-      // RED ALERT - heinous reflective execution of the initial tests in another classloader
+      // RED ALERT - heinous reflective execution of the initial tests in
+      // another classloader
       assert Debug.println("Parent. Starting initial run without mutating");
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1));
       Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
-      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class}).newInstance(new Object[] {testClassNames});
+      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class }).newInstance(new Object[] {testClassNames });
       Class trClazz = jumbler.loadClass(TestResult.class.getName());
       Class jtrClazz = jumbler.loadClass(JUnitTestResult.class.getName());
       Object trObj = jtrClazz.newInstance();
-      suiteClazz.getMethod("run", new Class[] {trClazz}).invoke(suiteObj, new Object[] {trObj});
+      suiteClazz.getMethod("run", new Class[] {trClazz }).invoke(suiteObj, new Object[] {trObj });
       boolean successful = ((Boolean) trClazz.getMethod("wasSuccessful", new Class[] {}).invoke(trObj, new Object[] {})).booleanValue();
       assert Debug.println("Parent. Finished");
-      
+
       // Now, if the tests failed, can return straight away
       if (!successful) {
         if (mVerbose) {
@@ -473,16 +486,18 @@ public class FastRunner {
         }
         return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
-      
-      // Set the test runtime so we can calculate timeouts when running the mutated tests
+
+      // Set the test runtime so we can calculate timeouts when running the
+      // mutated tests
       mTotalRuntime = ((Long) suiteClazz.getMethod("getTotalRuntime", new Class[] {}).invoke(suiteObj, new Object[] {})).longValue();
-      
-      // Store the test suite information serialized in a temporary file so FastJumbler can load it.
-      Object order = suiteClazz.getMethod("getOrder", new Class[] {Boolean.TYPE}).invoke(suiteObj, new Object[] {Boolean.valueOf(mOrdered)});
+
+      // Store the test suite information serialized in a temporary file so
+      // FastJumbler can load it.
+      Object order = suiteClazz.getMethod("getOrder", new Class[] {Boolean.TYPE }).invoke(suiteObj, new Object[] {Boolean.valueOf(mOrdered) });
       ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFileName));
       oos.writeObject(order);
       oos.close();
-    
+
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
@@ -497,40 +512,103 @@ public class FastRunner {
   /**
    * Performs a Jumble run on the specified class with the specified tests.
    * 
-   * @param className the name of the class to Jumble
-   * @param testClassNames the names of the associated test classes
+   * @param className
+   *          the name of the class to Jumble
+   * @param testClassNames
+   *          the names of the associated test classes
    * @return the results of the Jumble run
-   * @throws Exception if something goes wrong
+   * @throws Exception
+   *           if something goes wrong
    * @see JumbleResult
+   * 
    */
   public JumbleResult runJumble(final String className, final List testClassNames) throws Exception {
+    return runJumbleProxy(className, testClassNames, null);
+  }
+
+  /**
+   * Performs a Jumble run on the specified class with the specified tests.
+   * 
+   * @param className
+   *          the name of the class to Jumble
+   * @param testClassNames
+   *          the names of the associated test classes
+   * @param listener
+   *          the listener associated with this Jumble run.
+   * @throws Exception
+   *           if something goes wrong
+   * @see JumbleResult
+   * @see JumbleListener
+   */
+  public void runJumble(final String className, final List testClassNames, JumbleListener listener) throws Exception {
+    runJumbleProxy(className, testClassNames, listener);
+  }
+
+  /**
+   * Performs a Jumble run on the specified class with the specified tests.
+   * 
+   * @param className
+   *          the name of the class to Jumble
+   * @param testClassNames
+   *          the names of the associated test classes
+   * @param listener
+   *          the listener associated with this Jumble run.
+   * @return the results of the Jumble run
+   * @throws Exception
+   *           if something goes wrong
+   * @see JumbleResult
+   * @see JumbleListener
+   */
+  private JumbleResult runJumbleProxy(final String className, final List testClassNames, JumbleListener listener) throws Exception {
+    if (listener == null) {
+      listener = new NullListener();
+    }
     mClassName = className;
     long ts = System.currentTimeMillis();
     mCacheFileName = "cache" + ts + ".dat";
     mTestSuiteFileName = "testSuite" + ts + ".dat";
-    
+
     if (mUseCache) {
       initCache();
     }
 
+    listener.jumbleRunStarted(mClassName, testClassNames);
+
     JumbleResult initialResult = runInitialTests(testClassNames);
     if (initialResult != null) {
+      final int status;
+
+      if (initialResult.isInterface()) {
+        status = InitialTestStatus.INTERFACE;
+      } else if (initialResult.isMissingTestClass()) {
+        status = InitialTestStatus.NO_TEST;
+      } else if (!initialResult.initialTestsPassed()) {
+        status = InitialTestStatus.FAILED;
+      } else {
+        // should never happen
+        throw new RuntimeException();
+      }
+
+      listener.performedInitialTest(status, mMutationCount, -1);
       return initialResult;
     }
 
     // compute the timeout
     long timeout = computeTimeout(mTotalRuntime);
 
+    listener.performedInitialTest(InitialTestStatus.OK, mMutationCount, timeout);
+
     mChildProcess = null;
     mIot = null;
     mEot = null;
-    
+
     final MutationResult[] allMutations = new MutationResult[mMutationCount];
     for (int currentMutation = 0; currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));
       }
       allMutations[currentMutation] = readMutation(currentMutation, timeout);
+      listener.finishedMutation(allMutations[currentMutation]);
     }
 
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);
@@ -548,8 +626,8 @@ public class FastRunner {
         writeCache(CACHE_FILENAME);
       }
     }
+    listener.jumbleRunEnded();
     mCache = null;
     return ret;
   }
 }
-

@@ -1,6 +1,9 @@
-package jumble.fast;
+package jumble.ui;
 
 import java.io.PrintStream;
+
+import jumble.fast.JumbleResult;
+import jumble.fast.MutationResult;
 
 
 /**

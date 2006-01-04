@@ -1,6 +1,9 @@
-package jumble.fast;
+package jumble.ui;
 
 import java.io.PrintStream;
+
+import jumble.fast.JumbleResult;
+import jumble.fast.JumbleResultPrinter;
 
 /**
  * Abstract class defining a result printer to a stream. Use <CODE>getStream()

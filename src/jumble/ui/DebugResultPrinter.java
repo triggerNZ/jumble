@@ -1,6 +1,8 @@
-package jumble.fast;
+package jumble.ui;
 
 import java.io.PrintStream;
+
+import jumble.fast.JumbleResult;
 
 /**
  * Result printer used for debugging
