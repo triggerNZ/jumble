@@ -24,19 +24,19 @@ import com.reeltwo.util.CLIFlags.Flag;
  * @version $Revision 1.0 $
  */
 public class SwingListener implements JumbleListener {
-  private JPanel mGUI;
+  private JPanel mGUI = null;
 
-  private JLabel mLabel;
+  private JLabel mLabel = null;
 
-  private JLabel mScoreLabel;
+  private JLabel mScoreLabel = null;
 
-  private JLabel mDoneLabel;
+  private JLabel mDoneLabel = null;
 
-  private JProgressBar mProgressBar;
+  private JProgressBar mProgressBar = null;
 
-  private int mMutationCount;
+  private int mMutationCount = 0;
 
-  private int mCurrentScore;
+  private int mCurrentScore = 0;
 
   public void jumbleRunStarted(String className, List testNames) {
     JFrame frame = new JFrame("Jumble");
@@ -89,7 +89,6 @@ public class SwingListener implements JumbleListener {
     Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
-    Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
     Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
