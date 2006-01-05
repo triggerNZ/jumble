@@ -590,6 +590,8 @@ public class FastRunner {
       }
 
       listener.performedInitialTest(status, mMutationCount, -1);
+      //Jumbling will not happen here
+      listener.jumbleRunEnded();
       return initialResult;
     }
 

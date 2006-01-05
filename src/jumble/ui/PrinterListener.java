@@ -27,6 +27,8 @@ public class PrinterListener implements JumbleListener {
 
   private List mTestNames;
 
+  private boolean mInitialTestsPassed;
+
   public PrinterListener() {
     this(System.out);
   }
@@ -36,12 +38,14 @@ public class PrinterListener implements JumbleListener {
   }
 
   public void jumbleRunEnded() {
-    mStream.println();
+    if (mInitialTestsPassed) {
+      mStream.println();
 
-    if (mMutationCount == 0) {
-      mStream.println("Score: 100 (NO MUTATIONS POSSIBLE)");
-    } else {
-      mStream.println("Score: " + (mCovered) * 100 / mMutationCount);
+      if (mMutationCount == 0) {
+        mStream.println("Score: 100 (NO MUTATIONS POSSIBLE)");
+      } else {
+        mStream.println("Score: " + (mCovered) * 100 / mMutationCount);
+      }
     }
     mStream.close();
   }
@@ -66,8 +70,9 @@ public class PrinterListener implements JumbleListener {
 
   public void performedInitialTest(int status, int mutationCount, long timeout) {
     assert status >= 0 && status < 4;
+    mInitialTestsPassed = status == InitialTestStatus.OK;
     mInitialStatus = status;
-    mMutationCount = mutationCount; 
+    mMutationCount = mutationCount;
     mStream.println("Mutating " + mClassName);
 
     if (mInitialStatus == InitialTestStatus.INTERFACE) {
