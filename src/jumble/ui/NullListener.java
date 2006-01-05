@@ -20,6 +20,6 @@ public class NullListener implements JumbleListener {
   public void finishedMutation(MutationResult res) {
   }
   
-  public void performedInitialTest(int mutationCount, int status, long timeout) {
+  public void performedInitialTest(int status, int mutationCount, long timeout) {
   }
 }

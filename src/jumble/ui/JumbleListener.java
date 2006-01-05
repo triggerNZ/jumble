@@ -13,7 +13,7 @@ import jumble.fast.MutationResult;
  */
 public interface JumbleListener {
   void jumbleRunStarted(String className, List testNames);
-  void performedInitialTest(int mutationCount, int status, long timeout);
+  void performedInitialTest(int status, int mutationCount, long timeout);
   void jumbleRunEnded();
   void finishedMutation(MutationResult res);
 }
