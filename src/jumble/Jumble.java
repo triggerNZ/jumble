@@ -1,20 +1,17 @@
 package jumble;
 
-import java.io.PrintStream;
+
+
+import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import jumble.fast.FastRunner;
-import jumble.fast.JumbleResult;
-import jumble.fast.JumbleResultPrinter;
+import jumble.ui.JumbleListener;
 import jumble.ui.PrinterListener;
-import jumble.ui.SeanResultPrinter;
-
-import com.reeltwo.util.CLIFlags;
-import com.reeltwo.util.CLIFlags.Flag;
 
 /**
  * A CLI interface to the <CODE>FastRunner</CODE>.
@@ -53,8 +50,6 @@ public class Jumble {
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
 
-    Flag newOutputFlag = flags.registerOptional('n', "new-output-off", "Use the old output methods");
-
     flags.setFlags(args);
 
     jumble.setInlineConstants(inlFlag.isSet());
@@ -88,13 +83,8 @@ public class Jumble {
       // no test class given, guess its name
       testList.add(guessTestClassName(className));
     }
-    if (!newOutputFlag.isSet()) {
-      jumble.runJumble(className, testList, new PrinterListener());
-    } else {
-      JumbleResult res = jumble.runJumble(className, testList);
-      JumbleResultPrinter printer = printFlag.isSet() ? getPrinter((String) printFlag.getValue()) : new SeanResultPrinter(System.out);
-      printer.printResult(res);
-    }
+    JumbleListener listener = printFlag.isSet() ? getListener((String) printFlag.getValue()) : new PrinterListener();
+    jumble.runJumble(className, testList, listener);
   }
 
   /**
@@ -134,32 +124,18 @@ public class Jumble {
   }
 
   /**
-   * Returns a result printer instance as specified by <CODE>className</CODE>.
-   * The printer is constructed with <CODE>System.out</CODE> as the argument.
-   * If this is not allowed, then the no arguments constructor is ibvoked.
+   * Returns a <code>JumbleListener</code> instance as specified by
+   * <CODE>className</CODE>.
    * 
-   * @param className
-   *          name of result printer class.
-   * @return a <CODE>JumbleResultPrinter</CODE> instance.
+   * @param className name of class to instantiate.
+   * @return a <CODE>JumbleListener</CODE> instance.
    */
-  private static JumbleResultPrinter getPrinter(String className) {
+  private static JumbleListener getListener(String className) {
     try {
       final Class clazz = Class.forName(className);
       try {
-        final Constructor c = clazz.getConstructor(new Class[] {PrintStream.class });
-        return (JumbleResultPrinter) c.newInstance(new Object[] {System.out });
-      } catch (IllegalAccessException e) {
-        ; // too bad
-      } catch (InvocationTargetException e) {
-        ; // too bad
-      } catch (InstantiationException e) {
-        ; // too bad
-      } catch (NoSuchMethodException e) {
-        ; // too bad
-      }
-      try {
         final Constructor c = clazz.getConstructor(new Class[0]);
-        return (JumbleResultPrinter) c.newInstance(new Object[0]);
+        return (JumbleListener) c.newInstance(new Object[0]);
       } catch (IllegalAccessException e) {
         System.err.println("Invalid output class. Exception: ");
         e.printStackTrace();
@@ -176,7 +152,7 @@ public class Jumble {
     } catch (ClassNotFoundException e) {
       ; // too bad
     }
-    throw new IllegalArgumentException("Couldn't create JumbleResultPrinter: " + className);
+    throw new IllegalArgumentException("Couldn't create JumbleListener: " + className);
   }
 
   /**
