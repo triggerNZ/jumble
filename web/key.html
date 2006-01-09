@@ -36,9 +36,11 @@ The modification of a conditional can cause infinite looping. Jumble detects thi
 <tr><td align="center"><tt>&gt;&gt;&gt;</tt></td><td align="center"><tt>&lt;&lt;</td></tr>
 </table>
 
+<li><b>Increments</b>: Increments, decrements, and the assignment increments and decrements are mutated to their opposite sign.  For example, <tt>i++</tt> becomes <tt>i--</tt>.
+
 <li><b>Literal Constants</b>: Jumble changes the value of literal constants used in <b>const</b> instructions and various <b>push</b> instructions. Because Jumble cannot tell from the class file whether such constants are ints, shorts, characters, bytes, or booleans, some confusion can occur when interpreting the output of these mutations. If the mutated value happens to corresponding to a printable ASCII character then this value appears in parenthesis after the numerical value. A value of 0 might also be a boolean false and a value of 1 a boolean true.</li>
 
-<li><b>Return Values</b>: Jumble can change return values. For primitive booleans, shorts, characters, integers, floats, and doubles non-zero returns can be changed to 0 and 0 returns are changed to 1. For objects non-null returns can be changed to null; for null returns a RuntimeException is invoked (this is because Jumble cannot reliable instantiate a valid object or arbitrary type).</li>
+<li><b>Return Values</b>: Jumble can change return values. For primitive booleans, shorts, characters, integers, floats, and doubles non-zero returns can be changed to 0 and 0 returns are changed to 1. For objects non-null returns can be changed to null; for null returns a RuntimeException is invoked (this is because Jumble cannot reliably instantiate a valid object or arbitrary type).</li>
 
 </ul>
 
@@ -47,7 +49,7 @@ The modification of a conditional can cause infinite looping. Jumble detects thi
 <table>
 <tr><td><img src="bad.gif" alt="[bad]"></td><td>X, no corresponding test class was found.</td></tr>
 <tr><td><img src="pointer.gif" alt="[pointer]"></td><td>No corresponding test class was found, but class possibly contains SWING/AWT code which is hard to JUnit test.</td></tr>
-<tr><td><img src="0.gif" alt="[0]"></td><td>F, very lazy student.</td></tr>
+<tr><td><img src="0.gif" alt="[0]"></td><td>F, very lazy programmer, code is worthless.</td></tr>
 <tr><td><img src="1.gif" alt="[0]"></td><td>E</td></tr>
 <tr><td><img src="2.gif" alt="[0]"></td><td>D-</td></tr>
 <tr><td><img src="3.gif" alt="[0]"></td><td>D</td></tr>
@@ -55,7 +57,7 @@ The modification of a conditional can cause infinite looping. Jumble detects thi
 <tr><td><img src="5.gif" alt="[0]"></td><td>C</td></tr>
 <tr><td><img src="6.gif" alt="[0]"></td><td>B</td></tr>
 <tr><td><img src="7.gif" alt="[0]"></td><td>A-</td></tr>
-<tr><td><img src="8.gif" alt="[0]"></td><td>A</td></tr>
+<tr><td><img src="8.gif" alt="[0]"></td><td>A, aim for this as a minimum in production code.</td></tr>
 <tr><td><img src="9.gif" alt="[0]"></td><td>A+</td></tr>
 <tr><td><img src="10.gif" alt="[0]"></td><td>A++, all mutations were detected.</td></tr>
 
@@ -127,7 +129,7 @@ Not really since an interface contains no code to mutate.  Jumble will report a 
 
 <b>What's the situation with abstract classes?</b><p>
 
-Confused.  At present Jumble does not test them even in situations where a test class does exist.<p>
+For the class <tt>AbstractFoo</tt>, Jumble will look for a test named <tt>DummyFooTest</tt>.  This is done because there could be an actual abstract test class named <tt>AbstractFooTest</tt>.
 
 <b>I cannot test something Jumble complains about?</b><p>
 
