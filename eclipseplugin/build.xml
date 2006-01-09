@@ -1,0 +1,24 @@
+<!-- build script to create Jumble Plugin -->
+<project name="jumble" default="export" basedir=".">
+	<target name="init">
+		<tstamp/>
+		<property name="destdir" value="../../plugin-export" />
+		<property name="plugin"  value="jumble" />
+		<property name="dest"  value="${destdir}/${plugin}" />
+	</target>
+
+	<target name="build" depends="init">
+    	<javac srcdir="src" destdir="bin"/>
+		<jar destfile="jumble.jar" basedir="bin"/>
+	</target>
+
+	<target name="export" depends="build">
+		<mkdir dir="${destdir}" />
+		<delete dir="${dest}" />
+		<mkdir dir="${dest}" />
+
+		<copy file="jumble.jar" todir="${dest}"/>
+		<copy file="plugin.xml" todir="${dest}"/>
+		<copy file="jumble-runtime.jar" todir="${dest}"/>
+	</target>
+</project>

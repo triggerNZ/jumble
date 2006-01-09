@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="jumble"
+   name="Jumble Plug-in"
+   version="1.0.0"
+   provider-name="Reel Two"
+   class="jumble.JumblePlugin">
+
+   <runtime>
+      <library name="jumble.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.ui"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            nameFilter="*.java"
+            id="jumble.contribution1">
+         <menu
+               label="Jumble"
+               path="additions"
+               id="jumble.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Jumble Class"
+               class="jumble.popup.actions.JumbleAction"
+               menubarPath="jumble.menu1/group1"
+               enablesFor="1"
+               id="jumble.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
