@@ -144,4 +144,8 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
       return new HashSet();
     }
   }
+
+  public String toString() {
+    return mCache.toString();
+  }
 }
