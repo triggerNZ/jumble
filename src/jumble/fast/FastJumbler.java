@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 import jumble.mutation.Mutater;
 import jumble.mutation.MutatingClassLoader;
 
@@ -78,11 +77,18 @@ public class FastJumbler {
 
     // Let the parent JVM know that we are ready to start
     System.out.println("START");
-
+    Thread.sleep(100);
     // Now run all the tests for each mutation point
     for (int i = startPoint; i < mutationCount; i++) {
       mutater.setMutationPoint(i);
+      String methodName = mutater.getMutatedMethodName(className);
+      int mutPoint = mutater.getMethodRelativeMutationPoint(className);
       MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater);
+      jumbler.loadClass(className);
+      String modification = mutater.getModification();
+      //System.err.println("INIT:" + modification);  // Communicate to parent the current mutation being attempted
+
+      // Do the run
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
       Method meth = clazz.getMethod("run", new Class[] {
                                       jumbler.loadClass("jumble.fast.TestOrder"),
@@ -92,30 +98,22 @@ public class FastJumbler {
                                           order.clone(jumbler),
                                           (cache == null ? null : cache.clone(jumbler)),
                                           className,
-                                          mutater.getMutatedMethodName(className),
-                                          new Integer(mutater.getMethodRelativeMutationPoint(className)), Boolean.valueOf(verboseFlag.isSet()) });
-      if (out.startsWith("FAIL")) {
-        // Get more details about the modification carried out.
-        String message = jumbler.getModification();
-        if (message == null) {
-          message = className + ":0: Existing tests never caused class to be loaded";
-        }
-        out = "FAIL: " + message;
-      }
-      System.out.println(out);  // This is the magic line that the parent JVM is looking for.
+                                          methodName,
+                                          new Integer(mutPoint), Boolean.valueOf(verboseFlag.isSet()) });
 
-      if (cache != null && out.startsWith("PASS: ")) {
-        StringTokenizer tokens = new StringTokenizer(out.substring(6), ":");
-        String clazzName = tokens.nextToken();
-        assert clazzName.equals(className);
-        String methodName = tokens.nextToken();
-        //System.out.println(methodName);
-        int mutPoint = Integer.parseInt(tokens.nextToken());
-        //System.out.println(mutPoint);
-        String testName = tokens.nextToken();
-        //System.out.println(testName);
-        cache.addFailure(className, methodName, mutPoint, testName);
+      // Communicate the outcome to the parent JVM.
+      if (out.startsWith("FAIL")) {
+        System.out.println("FAIL: " + modification);  // This is the magic line that the parent JVM is looking for.
+      } else if (out.startsWith("PASS: ")) {
+        String testName = out.substring(6);
+        if (cache != null) {
+          cache.addFailure(className, methodName, mutPoint, testName);
+        }
+        System.out.println("PASS: " + className + ":" + methodName + ":" + mutPoint + ":" + testName);  // This is the magic line that the parent JVM is looking for.
+      } else {
+        throw new RuntimeException("Unexpected result from JumbleTestSuite: " + out);
       }
+
     }
   }
 

@@ -103,8 +103,7 @@ public class JumbleTestSuite extends FlatTestSuite {
         }
       }
       if (result.errorCount() > 0 || result.failureCount() > 0) {
-        return "PASS: " + mClass + ":" + mMethod + ":"
-          + mMethodRelativeMutationPoint + ":" + t.getName();
+        return "PASS: " + t.getName();
       }
       if (result.shouldStop()) {
         break;
@@ -133,10 +132,9 @@ public class JumbleTestSuite extends FlatTestSuite {
                                                   mutatedClassName, mutatedMethodName, relativeMutationPoint,
                                                   verbose);
       String ret = suite.run();
-
       return ret;
     } catch (ClassNotFoundException e) {
-      return "FAIL: No test class: " + e.getMessage();
+      throw new RuntimeException(e); // Should have been picked up before now.
     }
   }
 
