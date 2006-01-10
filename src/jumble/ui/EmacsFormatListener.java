@@ -25,8 +25,6 @@ public class EmacsFormatListener implements JumbleListener {
 
   private String mClassName;
 
-  private List mTestNames;
-
   private boolean mInitialTestsPassed;
 
   public EmacsFormatListener() {
@@ -62,7 +60,6 @@ public class EmacsFormatListener implements JumbleListener {
   public void jumbleRunStarted(String className, List testClasses) {
     assert Debug.println("class: " + className + " tests: " + testClasses);
     mClassName = className;
-    mTestNames = testClasses;
   }
 
   public void performedInitialTest(int status, int mutationCount, long timeout) {
