@@ -22,6 +22,10 @@ import jumble.mutation.MutatingClassLoader;
  */
 public class FastJumbler {
 
+  public static final String INIT_PREFIX = "INIT: ";
+  public static final String PASS_PREFIX = "PASS: ";
+  public static final String FAIL_PREFIX = "FAIL: ";
+
   // Private c'tor
   private FastJumbler() { }
   
@@ -77,7 +81,7 @@ public class FastJumbler {
 
     // Let the parent JVM know that we are ready to start
     System.out.println("START");
-    Thread.sleep(100);
+
     // Now run all the tests for each mutation point
     for (int i = startPoint; i < mutationCount; i++) {
       mutater.setMutationPoint(i);
@@ -86,7 +90,8 @@ public class FastJumbler {
       MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater);
       jumbler.loadClass(className);
       String modification = mutater.getModification();
-      //System.err.println("INIT:" + modification);  // Communicate to parent the current mutation being attempted
+
+      System.out.println(INIT_PREFIX + modification);  // Communicate to parent the current mutation being attempted
 
       // Do the run
       Class clazz = jumbler.loadClass("jumble.fast.JumbleTestSuite");
@@ -103,13 +108,13 @@ public class FastJumbler {
 
       // Communicate the outcome to the parent JVM.
       if (out.startsWith("FAIL")) {
-        System.out.println("FAIL: " + modification);  // This is the magic line that the parent JVM is looking for.
+        System.out.println(FAIL_PREFIX + modification);  // This is the magic line that the parent JVM is looking for.
       } else if (out.startsWith("PASS: ")) {
         String testName = out.substring(6);
         if (cache != null) {
           cache.addFailure(className, methodName, mutPoint, testName);
         }
-        System.out.println("PASS: " + className + ":" + methodName + ":" + mutPoint + ":" + testName);  // This is the magic line that the parent JVM is looking for.
+        System.out.println(PASS_PREFIX + className + ":" + methodName + ":" + mutPoint + ":" + testName);  // This is the magic line that the parent JVM is looking for.
       } else {
         throw new RuntimeException("Unexpected result from JumbleTestSuite: " + out);
       }

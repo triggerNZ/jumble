@@ -14,20 +14,33 @@ public class MutationResult {
 
   public static final int TIMEOUT = 2;
 
-  public MutationResult(String s, String className, int point) {
+  private int mStatus;
+
+  private String mClassName;
+
+  private int mPoint;
+
+  // Describes the mutation applied
+  private String mDescription;
+
+  // Describes the test that detected the mutation
+  private String mTestDescription;
+
+
+
+  public MutationResult(int status, String className, int point, String description, String testDescription) {
+    this(status, className, point, description);
+    mTestDescription = testDescription;
+  }
+
+  public MutationResult(int status, String className, int point, String description) {
+    if (status != PASS && status != FAIL && status != TIMEOUT) {
+      throw new RuntimeException("Invalid mutation status: " + status);
+    }
     mClassName = className;
     mPoint = point;
-
-    mDescription = s;
-    if (s.startsWith("PASS")) {
-      mStatus = PASS;
-    } else if (s.startsWith("FAIL")) {
-      mStatus = FAIL;
-    } else if (s.startsWith("TIMEOUT")) {
-      mStatus = TIMEOUT;
-    } else {
-      throw new RuntimeException("Invalid mutation string: " + s);
-    }
+    mStatus = status;
+    mDescription = description;
   }
 
   public String getClassName() {
@@ -40,6 +53,10 @@ public class MutationResult {
 
   public String getDescription() {
     return mDescription;
+  }
+
+  public String getTestDescription() {
+    return mTestDescription;
   }
 
   public boolean isPassed() {
@@ -62,11 +79,4 @@ public class MutationResult {
     return getDescription();
   }
 
-  private String mDescription;
-
-  private int mStatus;
-
-  private String mClassName;
-
-  private int mPoint;
 }

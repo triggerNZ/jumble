@@ -276,8 +276,7 @@ public class FastRunner {
 
   private void updateCache(MutationResult mutation) {
     if (mutation.isPassed()) {
-      // Remove "PASS: " and tokenize
-      StringTokenizer tokens = new StringTokenizer(mutation.getDescription().substring(6), ":");
+      StringTokenizer tokens = new StringTokenizer(mutation.getTestDescription(), ":");
       String clazzName = tokens.nextToken();
       assert clazzName.equals(mutation.getClassName());
       String methodName = tokens.nextToken();
@@ -419,6 +418,7 @@ public class FastRunner {
   private MutationResult readMutation(int currentMutation, long timeout) throws InterruptedException {
     long before = System.currentTimeMillis();
     long after = before;
+    String modification = null;
     // Run until we have a result or time out
     while (true) {
       String out = mIot.getNext();
@@ -429,18 +429,29 @@ public class FastRunner {
         if (after - before > timeout) {
           mChildProcess.destroy();
           mChildProcess = null;
-          return new MutationResult("TIMEOUT", mClassName, currentMutation);
+          return new MutationResult(MutationResult.TIMEOUT, mClassName, currentMutation, modification);
         } else {
           Thread.sleep(50);
           after = System.currentTimeMillis();
         }
       } else {
-        // We have output so go to the next mutation
-        MutationResult m = new MutationResult(out, mClassName, currentMutation);
-        if (mUseCache) {
-          updateCache(m);
+        if (out.startsWith(FastJumbler.INIT_PREFIX)) {
+          modification = out.substring(FastJumbler.INIT_PREFIX.length());
+        } else {
+          int status = -1;
+          MutationResult m = null;
+          if (out.startsWith(FastJumbler.PASS_PREFIX)) {
+            status = MutationResult.PASS;
+            m = new MutationResult(status, mClassName, currentMutation, modification, out.substring(FastJumbler.PASS_PREFIX.length()));
+          } else if (out.startsWith(FastJumbler.FAIL_PREFIX)) {
+            status = MutationResult.FAIL;
+            m = new MutationResult(status, mClassName, currentMutation, modification);
+          }
+          if (mUseCache) {
+            updateCache(m);
+          }
+          return m;
         }
-        return m;
       }
     }
   }

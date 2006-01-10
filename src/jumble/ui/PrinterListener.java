@@ -58,7 +58,7 @@ public class PrinterListener implements JumbleListener {
       mStream.print("T");
       mCovered++;
     } else {
-      mStream.println("M " + res.getDescription());
+      mStream.println("M FAIL: " + res.getDescription());
     }
   }
 
