@@ -5,8 +5,6 @@ import java.util.List;
 
 import jumble.fast.MutationResult;
 
-import com.reeltwo.util.Debug;
-
 /**
  * Prints the results of a Jumble run in <code>Emacs</code> compatible
  * format.
@@ -38,7 +36,7 @@ public class EmacsFormatListener implements JumbleListener {
   public void jumbleRunEnded() {
     if (mInitialTestsPassed) {
       if (mMutationCount == 0) {
-        mStream.println("Score: 100 (NO MUTATIONS POSSIBLE)");
+        mStream.println("Score: 100");
       } else {
         mStream.println("Score: " + (mCovered) * 100 / mMutationCount);
       }
@@ -58,7 +56,6 @@ public class EmacsFormatListener implements JumbleListener {
   }
 
   public void jumbleRunStarted(String className, List testClasses) {
-    assert Debug.println("class: " + className + " tests: " + testClasses);
     mClassName = className;
   }
 
@@ -67,17 +64,19 @@ public class EmacsFormatListener implements JumbleListener {
     mInitialTestsPassed = status == InitialTestStatus.OK;
     mInitialStatus = status;
     mMutationCount = mutationCount;
-    mStream.println("Mutating " + mClassName + " (" + mMutationCount + " mutation points)");
+    mStream.print("Mutating " + mClassName);
 
     if (mInitialStatus == InitialTestStatus.INTERFACE) {
-      mStream.println("Score: 100 (INTERFACE)");
+      mStream.println(" (Interface)");
+      mStream.println("Score: 100");
     } else {
+      mStream.println(" (" + mMutationCount + " mutation points)");
       if (mInitialStatus == InitialTestStatus.NO_TEST) {
-        mStream.println(mClassName + ":0: (NO TEST CLASS)");
-        mStream.println("Score: 0 (NO TEST CLASS)");
+        mStream.println(mClassName + ":0: No test class");
+        mStream.println("Score: 0");
       } else if (mInitialStatus == InitialTestStatus.FAILED) {
-        mStream.println(mClassName + ":0: (TEST CLASS IS BROKEN)");
-        mStream.println("Score: 0 (TEST CLASS IS BROKEN)");
+        mStream.println(mClassName + ":0: Test class is broken");
+        mStream.println("Score: 0");
       }
     }
   }
