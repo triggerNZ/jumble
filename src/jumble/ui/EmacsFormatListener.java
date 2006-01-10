@@ -39,8 +39,6 @@ public class EmacsFormatListener implements JumbleListener {
 
   public void jumbleRunEnded() {
     if (mInitialTestsPassed) {
-      mStream.println();
-
       if (mMutationCount == 0) {
         mStream.println("Score: 100 (NO MUTATIONS POSSIBLE)");
       } else {
@@ -52,7 +50,10 @@ public class EmacsFormatListener implements JumbleListener {
 
   public void finishedMutation(MutationResult res) {
     if (res.isFailed()) {
-      mStream.println(res.getDescription());
+      String description = res.getDescription();
+      description = description.substring(description.indexOf(":"));
+      String sourceName = res.getClassName().replace(".", "/") + ".java";
+      mStream.println(sourceName + description);
     } else {
       mCovered++;
     }
@@ -74,12 +75,6 @@ public class EmacsFormatListener implements JumbleListener {
     if (mInitialStatus == InitialTestStatus.INTERFACE) {
       mStream.println("Score: 100 (INTERFACE)");
     } else {
-      mStream.print("Tests:");
-      for (int i = 0; i < mTestNames.size(); i++) {
-        mStream.print(" " + mTestNames.get(i));
-      }
-      mStream.println();
-
       if (mInitialStatus == InitialTestStatus.NO_TEST) {
         mStream.println(mClassName + ":0: (NO TEST CLASS)");
         mStream.println("Score: 0 (NO TEST CLASS)");
