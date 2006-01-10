@@ -627,12 +627,14 @@ public class FastRunner {
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);
 
     // finally, delete the test suite file
-    if (!new File(mTestSuiteFileName).delete()) {
+    File suiteFile = new File(mTestSuiteFileName);
+    if (suiteFile.exists() && !suiteFile.delete()) {
       System.err.println("Error: could not delete temporary file");
     }
     // Also delete the temporary cache and save the cache if needed
     if (mUseCache) {
-      if (!new File(mCacheFileName).delete()) {
+      File cacheFile = new File(mCacheFileName);
+      if (cacheFile.exists() && !cacheFile.delete()) {
         System.err.println("Error: could not delete temporary cache file " + mCacheFileName);
       }
       if (mSaveCache) {
