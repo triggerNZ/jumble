@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import jumble.fast.FastRunner;
+import jumble.ui.EmacsFormatListener;
 import jumble.ui.JumbleListener;
 import jumble.ui.PrinterListener;
 
@@ -40,6 +41,7 @@ public class Jumble {
     Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+    Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
     Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
     Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
@@ -83,7 +85,11 @@ public class Jumble {
       // no test class given, guess its name
       testList.add(guessTestClassName(className));
     }
-    JumbleListener listener = printFlag.isSet() ? getListener((String) printFlag.getValue()) : new PrinterListener();
+    JumbleListener listener = emacsFlag.isSet() 
+      ? new EmacsFormatListener() 
+      : !printFlag.isSet() 
+      ? new PrinterListener()
+      : getListener((String) printFlag.getValue());
     jumble.runJumble(className, testList, listener);
   }
 
