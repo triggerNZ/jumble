@@ -61,21 +61,21 @@ swap_timer = setInterval('swap();', 333);
     <table cellpadding=0 cellspacing=1 bgcolor="#dddddd" border=0>
         <tr>
           <td><img name="rt0" src="r2.0.0.png" border=0></td>
-          <td><img name="rt1" src="r2.1.0.png"></td>
-          <td><img name="rt2" src="r2.2.0.png"></td>
-          <td><img name="rt3" src="blank.png"></td>
+          <td><img name="rt1" src="r2.1.0.png" border=0></td>
+          <td><img name="rt2" src="r2.2.0.png" border=0></td>
+          <td><img name="rt3" src="blank.png" border=0></td>
         </tr>
         <tr>
-          <td><img name="rt4" src="r2.0.1.png"></td>
-          <td><img name="rt5" src="r2.1.1.png"></td>
-          <td><img name="rt6" src="r2.2.1.png"></td>
-          <td><img name="rt7" src="r2.3.1.png"></td>
+          <td><img name="rt4" src="r2.0.1.png" border=0></td>
+          <td><img name="rt5" src="r2.1.1.png" border=0></td>
+          <td><img name="rt6" src="r2.2.1.png" border=0></td>
+          <td><img name="rt7" src="r2.3.1.png" border=0></td>
         </tr>
         <tr>
-          <td><img name="rt8" src="r2.0.2.png"></td>
-          <td><img name="rt9" src="r2.1.2.png"></td>
-          <td><img name="rt10" src="r2.2.2.png"></td>
-          <td><img name="rt11" src="r2.3.2.png"></td>
+          <td><img name="rt8" src="r2.0.2.png" border=0></td>
+          <td><img name="rt9" src="r2.1.2.png" border=0></td>
+          <td><img name="rt10" src="r2.2.2.png" border=0></td>
+          <td><img name="rt11" src="r2.3.2.png" border=0></td>
         </tr>
     </table>
 </a>
