@@ -60,7 +60,7 @@ swap_timer = setInterval('swap();', 333);
 <a href="http://giger.nz.reeltwo.com/">
     <table cellpadding=0 cellspacing=1 bgcolor="#dddddd" border=0>
         <tr>
-          <td><img name="rt0" src="r2.0.0.png" border=0></td>
+          <td><a href="http://giger.nz.reeltwo.com/"><img name="rt0" src="r2.0.0.png" border=0></a></td>
           <td><img name="rt1" src="r2.1.0.png" border=0></td>
           <td><img name="rt2" src="r2.2.0.png" border=0></td>
           <td><img name="rt3" src="blank.png" border=0></td>
