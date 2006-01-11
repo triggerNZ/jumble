@@ -57,6 +57,7 @@
 swap_timer = setInterval('swap();', 333);
 //-->
 </SCRIPT>
+<a href="http://giger.nz.reeltwo.com/">
     <table cellpadding=0 cellspacing=1 bgcolor="#dddddd" border=0>
         <tr>
           <td><a href="http://giger.nz.reeltwo.com/"><img name="rt0" src="r2.0.0.png" border=0></a></td>
@@ -77,4 +78,5 @@ swap_timer = setInterval('swap();', 333);
           <td><a href="http://giger.nz.reeltwo.com/"><img name="rt11" src="r2.3.2.png" border=0></a></td>
         </tr>
     </table>
+</a>
 
