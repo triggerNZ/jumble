@@ -48,7 +48,7 @@ public class EmacsFormatListener implements JumbleListener {
     if (res.isFailed()) {
       String description = res.getDescription();
       description = description.substring(description.indexOf(":"));
-      String sourceName = res.getClassName().replace(".", "/") + ".java";
+      String sourceName = res.getClassName().replace('.', '/') + ".java";
       mStream.println(sourceName + description);
     } else {
       mCovered++;
