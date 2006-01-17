@@ -5,7 +5,7 @@ if [ ! "$HOME" ]; then
     export HOME=/home/$LOGNAME
 fi
 
-export JAVA_HOME=/usr/local/java/jdk
+export JAVA_HOME=/usr/local/java/jdk1.4
 export SYSNAME=cvscheck_jumble
 
 
