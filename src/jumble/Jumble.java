@@ -1,13 +1,11 @@
 package jumble;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import jumble.annotations.TestClasses;
 import jumble.fast.FastRunner;
 import jumble.ui.EmacsFormatListener;
 import jumble.ui.JumbleListener;
