@@ -1,18 +1,20 @@
 package jumble;
 
-
-
-import com.reeltwo.util.CLIFlags.Flag;
-import com.reeltwo.util.CLIFlags;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import jumble.annotations.TestClasses;
 import jumble.fast.FastRunner;
 import jumble.ui.EmacsFormatListener;
 import jumble.ui.JumbleListener;
 import jumble.ui.PrinterListener;
+
+import com.reeltwo.util.CLIFlags;
+import com.reeltwo.util.CLIFlags.Flag;
 
 /**
  * A CLI interface to the <CODE>FastRunner</CODE>.
@@ -85,11 +87,9 @@ public class Jumble {
       // no test class given, guess its name
       testList.add(guessTestClassName(className));
     }
-    JumbleListener listener = emacsFlag.isSet() 
-      ? new EmacsFormatListener() 
-      : !printFlag.isSet() 
-      ? new PrinterListener()
-      : getListener((String) printFlag.getValue());
+
+    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener() : !printFlag.isSet() ? new PrinterListener()
+        : getListener((String) printFlag.getValue());
     jumble.runJumble(className, testList, listener);
   }
 
@@ -130,10 +130,10 @@ public class Jumble {
   }
 
   /**
-   * Returns a <code>JumbleListener</code> instance as specified by
-   * <CODE>className</CODE>.
+   * Returns a <code>JumbleListener</code> instance as specified by <CODE>className</CODE>.
    * 
-   * @param className name of class to instantiate.
+   * @param className
+   *          name of class to instantiate.
    * @return a <CODE>JumbleListener</CODE> instance.
    */
   private static JumbleListener getListener(String className) {
