@@ -227,6 +227,9 @@ enqueue=$(getparam enqueue)
 jumblewebroot=/jumble                                   # Path on web server to jumble docs / images
 checkerrootdir=/share/reeltwo/html/keachecker/html      # Path on filesystem to root of all checker output files
 checkerwebroot=/keachecker/html                         # Path on web server to root of all checker output files
+if [ -f jumble.params ]; then
+    . jumble.params                                     # Load installation-specific version of the above parameters
+fi
 
 # These shouldn't need editing
 jumblesubdir=jumble                                     # Name of subdir containing raw output files for each class
