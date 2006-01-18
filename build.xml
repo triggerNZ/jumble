@@ -28,7 +28,7 @@
     </javac>
   </target>
 
-  <target name="jar" depends="compile">
+  <target name="jar" depends="compile" description="Generates a JAR file containing jumble and its dependencies">
     <jar destfile="jumble.jar">
       <fileset dir="${build.dir}" includes="**/*.class" />
       <zipfileset src="${lib.dir}/bcel.jar" />
@@ -40,7 +40,7 @@
     </jar>
   </target>
 
-  <target name="webdist">
+  <target name="webdist" description="Creates a ZIP file containing the code needed for the jumble web interface.">
     <zip destfile="jumbleweb.zip">
       <zipfileset dir="web" prefix="jumble" excludes="CVS" />
     </zip>
