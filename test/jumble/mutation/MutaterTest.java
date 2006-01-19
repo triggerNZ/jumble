@@ -73,11 +73,6 @@ public class MutaterTest extends TestCase {
     assertEquals(3, m.countMutationPoints("DebugNone"));
   }
   
-  public void testCountMutationPointsVars() {
-    Mutater m = new Mutater();
-    assertEquals(3, m.countMutationPoints("DebugVars"));
-  }
-  
   private void testDescriptions(int x, String s) throws IOException {
     Mutater m = new Mutater(x);
     assertEquals(null, m.getModification());
