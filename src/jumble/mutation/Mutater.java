@@ -342,7 +342,7 @@ public class Mutater {
 
   private boolean checkNormalMethod(final Method m) {
     return m != null && !m.isNative() && !m.isAbstract() && !mIgnored.contains(m.getName()) && m.getName().indexOf("access$") == -1
-    /* && m.getLineNumberTable() != null */&& m.getCode() != null;
+    /* && m.getLineNumberTable() != null */ && m.getCode() != null;
     /* && m.getLineNumberTable().getSourceLine(0) > 0; */
   }
 
