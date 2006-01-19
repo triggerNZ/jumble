@@ -49,8 +49,8 @@ public class JumbleTest extends TestCase {
     String expected = getExpectedOutput("jumble.NoDebug");
     String got = runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest");
     
-    StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
-    StringTokenizer tokens2 = new StringTokenizer(got, "\n");
+    StringTokenizer tokens1 = new StringTokenizer(expected, "\r\n");
+    StringTokenizer tokens2 = new StringTokenizer(got, "\r\n");
     
     assertEquals(tokens1.countTokens(), tokens2.countTokens());
     
