@@ -66,15 +66,4 @@ public class FlatTestSuite extends TestSuite {
       super.addTest(t);
     }
   }
-
-  /**
-   * Creates a new <code>FlatTestSuite</code>
-   * 
-   * If the class contains a static <code>suite()</code> method, then it
-   * flattens that and uses it. Otherwise it just calls the parent constructor.
-   */
-  public static FlatTestSuite newFlatTestSuite(Class testClass) {
-    //TODO: do this
-    return null;
-  }
 }
