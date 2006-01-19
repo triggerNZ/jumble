@@ -46,7 +46,23 @@ public class JumbleTest extends TestCase {
   }
 
   public void testNoDebug() throws Exception {
-    assertEquals(getExpectedOutput("jumble.NoDebug"), runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest"));
+    String expected = getExpectedOutput("jumble.NoDebug");
+    String got = runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest");
+    
+    StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
+    StringTokenizer tokens2 = new StringTokenizer(got, "\n");
+    
+    assertEquals(tokens1.countTokens(), tokens2.countTokens());
+    
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    tokens1.nextToken();
+    tokens2.nextToken();
+    
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
   public void testNoTestClass() throws Exception {
