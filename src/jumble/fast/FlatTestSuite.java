@@ -1,9 +1,3 @@
-/*
- * Created on 19/06/2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package jumble.fast;
 
 import junit.framework.Test;
@@ -25,7 +19,7 @@ public class FlatTestSuite extends TestSuite {
   }
 
   /**
-   * Constructs a new FlatTestSuite. Just calls the parent constructor.
+   * Constructs a new FlatTestSuite.
    * 
    * @param theClass
    *          the class to construct the test suite from.
@@ -71,5 +65,16 @@ public class FlatTestSuite extends TestSuite {
     } else {
       super.addTest(t);
     }
+  }
+
+  /**
+   * Creates a new <code>FlatTestSuite</code>
+   * 
+   * If the class contains a static <code>suite()</code> method, then it
+   * flattens that and uses it. Otherwise it just calls the parent constructor.
+   */
+  public static FlatTestSuite newFlatTestSuite(Class testClass) {
+    //TODO: do this
+    return null;
   }
 }

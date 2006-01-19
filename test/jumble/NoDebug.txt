@@ -1,0 +1,8 @@
+Mutating DebugNone
+Tests: experiments.JumblerExperimentTest
+Mutation points = 3, unit test time limit 2.0s
+M FAIL: DebugNone:0: negated conditional
+M FAIL: DebugNone:0: + -> -
+M FAIL: DebugNone:0: - -> +
+
+Score: 0

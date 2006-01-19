@@ -63,7 +63,20 @@ public class MutaterTest extends TestCase {
     assertEquals(12, m.countMutationPoints("jumble.X2"));
   }
 
+  public void testCountMutationPointsLines() {
+    Mutater m = new Mutater();
+    assertEquals(3, m.countMutationPoints("DebugLines"));
+  }
   
+  public void testCountMutationPointsNone() {
+    Mutater m = new Mutater();
+    assertEquals(3, m.countMutationPoints("DebugNone"));
+  }
+  
+  public void testCountMutationPointsVars() {
+    Mutater m = new Mutater();
+    assertEquals(3, m.countMutationPoints("DebugVars"));
+  }
   
   private void testDescriptions(int x, String s) throws IOException {
     Mutater m = new Mutater(x);
