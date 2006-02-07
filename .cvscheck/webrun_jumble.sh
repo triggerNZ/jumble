@@ -41,8 +41,8 @@ fi
 export LEVEL=2
 export DISABLE_JUMBLE=1    # Don't run jumble on itself
 
-(
+#(
     (sh $SCRIPTS/cvscheck.sh cvscheck_main 2>&1)
-) >/dev/null
+#) >/dev/null
 
 
