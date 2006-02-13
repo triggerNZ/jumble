@@ -204,9 +204,10 @@ function doclassenqueue ()
     echo "<body>"
 
     if [ -f "$jumblequeue" ]; then
-        echo "$classnamestd" | tee "$jumblequeue.cgiqueue" >"$jumblequeue.new"
-        grep -vwf "$jumblequeue.cgiqueue" <"$jumblequeue" >>"$jumblequeue.new"
-        mv "$jumblequeue.new" "$jumblequeue"
+        echo "$classnamestd" | tee "${jumblequeue}.cgiqueue$$" >"${jumblequeue}.new"
+        grep -vwf "${jumblequeue}.cgiqueue$$" <"$jumblequeue" >>"${jumblequeue}.new"
+        rm "${jumblequeue}.cgiqueue$$"
+        mv "${jumblequeue}.new" "$jumblequeue"
         chmod 666 "$jumblequeue"
         echo "<h2>$classname has been enqueued</h2>"
     else
