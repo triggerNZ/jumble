@@ -78,7 +78,7 @@ public class FastJumblerTest extends TestCase {
 
 
   public final void testSaveCache() throws Exception {
-    File f = new File("jumble-cache.dat");
+    File f = new File(System.getProperty("user.home"), ".jumble-cache.dat");
     assertTrue(!f.exists() || f.delete());
 
     ArrayList tests = new ArrayList();

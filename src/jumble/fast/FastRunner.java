@@ -34,7 +34,7 @@ import com.reeltwo.util.Debug;
 public class FastRunner {
 
   /** Filename for the cache */
-  public static final String CACHE_FILENAME = "jumble-cache.dat";
+  public static final File CACHE_FILE = new File(System.getProperty("user.home"), ".jumble-cache.dat");
 
   // Configuration properties
 
@@ -64,9 +64,9 @@ public class FastRunner {
   /** The class being tested */
   private String mClassName;
 
-  private String mCacheFileName;
+  private File mCacheFile;
 
-  private String mTestSuiteFileName;
+  private File mTestSuiteFile;
 
   private JavaRunner mRunner = new JavaRunner("jumble.fast.FastJumbler");
 
@@ -262,7 +262,7 @@ public class FastRunner {
     // Load the cache if it exists and is needed
     if (mLoadCache) {
       try {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CACHE_FILENAME));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CACHE_FILE));
         mCache = (FailedTestMap) ois.readObject();
         loaded = true;
       } catch (IOException e) {
@@ -286,13 +286,13 @@ public class FastRunner {
     }
   }
 
-  private boolean writeCache(String cacheFileName) {
+
+  private boolean writeCache(File f) {
     try {
-      File f = new File(cacheFileName);
       if (f.exists()) {
         f.delete();
       }
-      ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(cacheFileName));
+      ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(f));
       o.writeObject(mCache);
       o.close();
       return true;
@@ -315,12 +315,12 @@ public class FastRunner {
     // class name
     args.add(mClassName);
     // test suite filename
-    args.add(mTestSuiteFileName);
+    args.add(mTestSuiteFile.toString());
 
     if (mUseCache) {
       // Write a temp cache
-      if (writeCache(mCacheFileName)) {
-        args.add(mCacheFileName);
+      if (writeCache(mCacheFile)) {
+        args.add(mCacheFile.toString());
       }
     }
 
@@ -505,7 +505,7 @@ public class FastRunner {
       // Store the test suite information serialized in a temporary file so
       // FastJumbler can load it.
       Object order = suiteClazz.getMethod("getOrder", new Class[] {Boolean.TYPE }).invoke(suiteObj, new Object[] {Boolean.valueOf(mOrdered) });
-      ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFileName));
+      ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFile));
       oos.writeObject(order);
       oos.close();
 
@@ -575,9 +575,8 @@ public class FastRunner {
       listener = new NullListener();
     }
     mClassName = className;
-    long ts = System.currentTimeMillis();
-    mCacheFileName = "cache" + ts + ".dat";
-    mTestSuiteFileName = "testSuite" + ts + ".dat";
+    mCacheFile = File.createTempFile("cache", ".dat");
+    mTestSuiteFile = File.createTempFile("testSuite", ".dat");
 
     if (mUseCache) {
       initCache();
@@ -627,18 +626,16 @@ public class FastRunner {
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);
 
     // finally, delete the test suite file
-    File suiteFile = new File(mTestSuiteFileName);
-    if (suiteFile.exists() && !suiteFile.delete()) {
+    if (mTestSuiteFile.exists() && !mTestSuiteFile.delete()) {
       System.err.println("Error: could not delete temporary file");
     }
     // Also delete the temporary cache and save the cache if needed
     if (mUseCache) {
-      File cacheFile = new File(mCacheFileName);
-      if (cacheFile.exists() && !cacheFile.delete()) {
-        System.err.println("Error: could not delete temporary cache file " + mCacheFileName);
+      if (mCacheFile.exists() && !mCacheFile.delete()) {
+        System.err.println("Error: could not delete temporary cache file " + mCacheFile);
       }
       if (mSaveCache) {
-        writeCache(CACHE_FILENAME);
+        writeCache(CACHE_FILE);
       }
     }
     listener.jumbleRunEnded();
