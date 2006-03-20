@@ -116,7 +116,7 @@ EOF
 <td><h1 align=center>$checker Jumble</h1></td>
 </tr>
 <tr><td colspan=2> <hr>
-<a href="$jumblewebroot/key.html">Jumble</a> is a class level mutation testing tool working in conjunction with JUnit. The purpose of mutation testing is to provide a measure of the effectiveness of test cases. A single consequential mutation is performed on the code to be tested, the corresponding test cases are then executed. If the modified code fails the tests, then this increases confidence in the tests. Conversely, if the modified code passes the tests this indicates a testing deficiency.
+<a href="$jumblewebroot/key.html">Jumble</a> is a class level mutation testing tool working in conjunction with JUnit. The purpose of mutation testing is to provide a measure of the effectiveness of test cases. A single consequential mutation is performed on the code to be tested, the corresponding test cases are then executed. If the modified code fails the tests, then this increases confidence in the tests. Conversely, if the modified code passes the tests this indicates a testing deficiency.  This process is repeated for each of the possible mutation points and the overall test comprehensiveness is calculated.
 <hr></td></tr>
 </table>
 EOF
