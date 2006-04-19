@@ -30,8 +30,7 @@ public class FastJumblerTest extends TestCase {
     // Unique filename
     mFileName = "tmpTest" + System.currentTimeMillis() + ".dat";
 
-    TimingTestSuite suite = new TimingTestSuite(
-        new Class[] {JumblerExperimentTest.class });
+    TimingTestSuite suite = new TimingTestSuite(new Class[] {JumblerExperimentTest.class });
     suite.run(new TestResult());
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(mFileName));
     out.writeObject(suite.getOrder(true));
@@ -43,8 +42,8 @@ public class FastJumblerTest extends TestCase {
   }
 
   public void testMain() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
-                                         "experiments.JumblerExperiment", "-s", "0", mFileName, "-r", "-k", "-i" });
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-s", "0", mFileName, "-r", "-k",
+        "-i" });
     Process p = runner.start();
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -58,24 +57,39 @@ public class FastJumblerTest extends TestCase {
     p.destroy();
   }
 
+  public void testMain2() throws Exception {
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-s", "0", "-l", "1", mFileName,
+        "-r", "-k", "-i" });
+    Process p = runner.start();
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+    String line;
+
+    line = reader.readLine();
+    assertEquals("START", line);
+    line = reader.readLine();
+    assertEquals("INIT: experiments.JumblerExperiment:21: negated conditional", line);
+    line = reader.readLine();
+    assertEquals("PASS: experiments.JumblerExperiment:add(II)I:0:testAdd", line);
+    line = reader.readLine();
+    assertNull(line);
+  }
+
   /**
    * Test for a bug that was found - it seems that the classes are getting
    * corrupted.
    */
   public final void testRunMethodExistence() throws Exception {
     try {
-      final ClassLoader loader = new MutatingClassLoader(
-          "experiments.JumblerExperiment", new Mutater(0));
+      final ClassLoader loader = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(0));
       final Class clazz = loader.loadClass("jumble.fast.JumbleTestSuite");
-      clazz.getMethod("run", new Class[] {
-          loader.loadClass("jumble.fast.TestOrder"),
-          loader.loadClass("jumble.fast.FailedTestMap"), String.class,
+      clazz.getMethod("run", new Class[] {loader.loadClass("jumble.fast.TestOrder"), loader.loadClass("jumble.fast.FailedTestMap"), String.class,
           String.class, int.class, boolean.class });
     } catch (NoSuchMethodException e) {
       fail();
     }
   }
-
 
   public final void testSaveCache() throws Exception {
     File f = new File(System.getProperty("user.home"), ".jumble-cache.dat");
@@ -92,11 +106,10 @@ public class FastJumblerTest extends TestCase {
     FailedTestMap map = (FailedTestMap) ois.readObject();
     ois.close();
     assertTrue(f.delete());
-    //System.err.println(map);
+    // System.err.println(map);
     assertEquals("testAdd", map.getLastFailure("experiments.JumblerExperiment", "add(II)I", 0));
     assertEquals("testMultiply", map.getLastFailure("experiments.JumblerExperiment", "multiply(II)I", 0));
   }
-
 
   public static Test suite() {
     TestSuite suite = new TestSuite(FastJumblerTest.class);
