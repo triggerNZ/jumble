@@ -57,6 +57,9 @@ public class FastRunner {
 
   private boolean mUseCache = true;
 
+  /** Maximum number of mutations per JVM */
+  private int mMaxExternalMutations = -1;
+
   private Set mExcludeMethods = new HashSet();
 
   // State during run
@@ -286,7 +289,6 @@ public class FastRunner {
     }
   }
 
-
   private boolean writeCache(File f) {
     try {
       if (f.exists()) {
@@ -353,6 +355,11 @@ public class FastRunner {
     // verbose
     if (mVerbose) {
       args.add("-v");
+    }
+    
+    if (getMaxExternalMutations() >= 0) {
+      args.add("-l");
+      args.add("" + getMaxExternalMutations());
     }
     return (String[]) args.toArray(new String[args.size()]);
   }
@@ -600,7 +607,7 @@ public class FastRunner {
       }
 
       listener.performedInitialTest(status, mMutationCount, -1);
-      //Jumbling will not happen here
+      // Jumbling will not happen here
       listener.jumbleRunEnded();
       return initialResult;
     }
@@ -615,11 +622,20 @@ public class FastRunner {
     mEot = null;
 
     final MutationResult[] allMutations = new MutationResult[mMutationCount];
+    int count = 0;
+    final int max = getMaxExternalMutations();
     for (int currentMutation = 0; currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));
+        count = 0;
       }
+
       allMutations[currentMutation] = readMutation(currentMutation, timeout);
+      
+      if (max >= 0 && count++ >= max) {
+        mChildProcess = null;
+      }
+      
       listener.finishedMutation(allMutations[currentMutation]);
     }
 
@@ -641,5 +657,26 @@ public class FastRunner {
     listener.jumbleRunEnded();
     mCache = null;
     return ret;
+  }
+
+  /**
+   * Gets the maximum number of mutations performed by the external JVM.
+   * 
+   * @return the maximum number of external mutations. A negative value implies
+   *         no maximum.
+   */
+  public int getMaxExternalMutations() {
+    return mMaxExternalMutations;
+  }
+
+  /**
+   * Sets the maximum number of mutations performed by the external JVM.
+   * 
+   * @param maxExternalMutations
+   *          the maximum number of external mutations. A negative value implies
+   *          no maximum.
+   */
+  public void setMaxExternalMutations(int maxExternalMutations) {
+    mMaxExternalMutations = maxExternalMutations;
   }
 }

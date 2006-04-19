@@ -47,6 +47,8 @@ public class Jumble {
     Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
     Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
+    Flag lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX",
+        "Maximum number of mutations to run in the external JVM");
     Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
     Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
     testClassFlag.setMinCount(0);
@@ -63,6 +65,14 @@ public class Jumble {
     jumble.setUseCache(!useFlag.isSet());
     jumble.setVerbose(verboseFlag.isSet());
 
+    if (lengthFlag.isSet()) {
+      int val = ((Integer)lengthFlag.getValue()).intValue();
+      
+      if (val >= 0) {
+        jumble.setMaxExternalMutations(val);
+      }
+    }
+    
     String className;
     List testList;
 
