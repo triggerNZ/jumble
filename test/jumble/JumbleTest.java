@@ -3,6 +3,7 @@ package jumble;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import jumble.util.JavaRunner;
@@ -66,13 +67,35 @@ public class JumbleTest extends TestCase {
   }
 
   public void testNoTestClass() throws Exception {
-    assertEquals(getExpectedOutput("experiments.NoTestClass"), runCommandLineJumble("experiments.NoTestClass", 1));
+    assertEquals(getExpectedOutput("experiments.NoTestClass"), runCommandLineJumble("experiments.NoTestClass", -1));
   }
 
   public void testLength1() throws Exception {
     // Have to allow a some room for the unit test time limit to vary
     String expected = getExpectedOutput("experiments.JumblerExperiment");
     String got = runCommandLineJumble("experiments.JumblerExperiment", 1);
+    StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
+    StringTokenizer tokens2 = new StringTokenizer(got, "\n");
+
+    assertEquals(tokens1.countTokens(), tokens2.countTokens());
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+
+  }
+  
+  public void testLength2() throws Exception {
+    // Have to allow a some room for the unit test time limit to vary
+    String expected = getExpectedOutput("experiments.JumblerExperiment");
+    String got = runCommandLineJumble("experiments.JumblerExperiment", 2);
+    assertEquals(expected, got);
     StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
     StringTokenizer tokens2 = new StringTokenizer(got, "\n");
 
@@ -105,7 +128,8 @@ public class JumbleTest extends TestCase {
   }
 
   private String runCommandLineJumble(String className, int max) throws Exception {
-    String[] args = max >= 0 ? new String[] {className } : new String[] {className, "-m", "" + max};
+    String[] args = max < 0 ? new String[] {className } : new String[] {className, "-m", "" + max};
+
     JavaRunner runner = new JavaRunner("jumble.Jumble", args);
     Process p = runner.start();
 
