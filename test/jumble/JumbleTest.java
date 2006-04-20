@@ -95,7 +95,7 @@ public class JumbleTest extends TestCase {
     // Have to allow a some room for the unit test time limit to vary
     String expected = getExpectedOutput("experiments.JumblerExperiment");
     String got = runCommandLineJumble("experiments.JumblerExperiment", 2);
-    assertEquals(expected, got);
+
     StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
     StringTokenizer tokens2 = new StringTokenizer(got, "\n");
 
