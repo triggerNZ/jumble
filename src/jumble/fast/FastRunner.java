@@ -356,7 +356,7 @@ public class FastRunner {
     if (mVerbose) {
       args.add("-v");
     }
-    
+
     if (getMaxExternalMutations() >= 0) {
       args.add("-l");
       args.add("" + getMaxExternalMutations());
@@ -629,13 +629,11 @@ public class FastRunner {
         startChildProcess(createArgs(currentMutation));
         count = 0;
       }
-
       allMutations[currentMutation] = readMutation(currentMutation, timeout);
       
-      if (max >= 0 && count++ >= max) {
+      if (max >= 0 && ++count >= max) {
         mChildProcess = null;
       }
-      
       listener.finishedMutation(allMutations[currentMutation]);
     }
 
