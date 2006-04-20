@@ -66,13 +66,13 @@ public class Jumble {
     jumble.setVerbose(verboseFlag.isSet());
 
     if (lengthFlag.isSet()) {
-      int val = ((Integer)lengthFlag.getValue()).intValue();
-      
+      int val = ((Integer) lengthFlag.getValue()).intValue();
+
       if (val >= 0) {
         jumble.setMaxExternalMutations(val);
       }
     }
-    
+
     String className;
     List testList;
 
