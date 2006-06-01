@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**
- * Test class used for testing Junble's use of the suite() method.
+ * Test class used for testing Jumble's use of the <code>suite()</code> method.
  * 
  * @author Tin Pavlinic
  * @version $Revision 1.0 $
