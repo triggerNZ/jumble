@@ -45,6 +45,26 @@ public class JumbleTest extends TestCase {
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
+  public void testSillySuite() throws Exception {
+    // Have to allow a some room for the unit test time limit to vary
+    String expected = readAll(getClass().getClassLoader().getResourceAsStream("jumble/SillySuite.txt"));
+    String got = runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperimentSillySuiteTest");
+    StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
+    StringTokenizer tokens2 = new StringTokenizer(got, "\n");
+
+    assertEquals(tokens1.countTokens(), tokens2.countTokens());
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+  }
+
   public void testNoDebug() throws Exception {
     String expected = getExpectedOutput("jumble.NoDebug");
     String got = runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest");
@@ -89,7 +109,7 @@ public class JumbleTest extends TestCase {
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
 
   }
-  
+
   public void testLength2() throws Exception {
     // Have to allow a some room for the unit test time limit to vary
     String expected = getExpectedOutput("experiments.JumblerExperiment");
@@ -127,7 +147,7 @@ public class JumbleTest extends TestCase {
   }
 
   private String runCommandLineJumble(String className, int max) throws Exception {
-    String[] args = max < 0 ? new String[] {className } : new String[] {className, "-m", "" + max};
+    String[] args = max < 0 ? new String[] {className } : new String[] {className, "-m", "" + max };
 
     JavaRunner runner = new JavaRunner("jumble.Jumble", args);
     Process p = runner.start();

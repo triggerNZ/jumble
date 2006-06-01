@@ -1,6 +1,0 @@
-Mutating experiments.Annotation
-Tests: experiments.AnnotationTester
-Mutation points = 5, unit test time limit 2.1s
-..M FAIL: experiments.Annotation:28: - -> +
-..
-Score: 80

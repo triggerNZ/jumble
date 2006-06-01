@@ -17,8 +17,6 @@ public class FlatTestSuiteTest extends TestCase {
 
   public final void setUp() {
     mTest = new FlatTestSuite();
-    mTest.addTestSuite(JumblerExperimentTest.class);
-    mTest.addTestSuite(JumblerExperimentSecondTest.class);
   }
 
   public void tearDown() {
@@ -26,7 +24,23 @@ public class FlatTestSuiteTest extends TestCase {
   }
 
   public final void testCountTestCases() {
-    assertEquals(3, mTest.countTestCases());
+    checkTestCases(3, new Class[] {JumblerExperimentTest.class, JumblerExperimentSecondTest.class });
+  }
+
+  public void testNoSuite() {
+    checkTestCases(2, new Class[] {NoSuiteT.class });
+  }
+
+  public void testMismatchingSuite() {
+    checkTestCases(2, new Class[] {MismatchingSuiteT.class });
+  }
+
+  private void checkTestCases(int cases, Class[] testClasses) {
+    for (int i = 0; i < testClasses.length; i++) {
+      mTest.addTestSuite(testClasses[i]);
+    }
+
+    assertEquals(cases, mTest.countTestCases());
   }
 
   public static Test suite() {

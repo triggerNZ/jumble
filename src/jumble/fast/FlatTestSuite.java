@@ -1,5 +1,9 @@
 package jumble.fast;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -19,13 +23,41 @@ public class FlatTestSuite extends TestSuite {
   }
 
   /**
-   * Constructs a new FlatTestSuite.
+   * Constructs a new FlatTestSuite. Checks for a <code>suite()</code> method.
+   * If it exists, it uses that, otherwise uses JUnit's reflection method.
    * 
    * @param theClass
    *          the class to construct the test suite from.
    */
   public FlatTestSuite(final Class theClass) {
-    super(theClass);
+    Method suiteMethod;
+    try {
+      suiteMethod = theClass.getMethod("suite", new Class[] {});
+      if ((suiteMethod.getModifiers() & Modifier.STATIC) == 0) {
+        // No nonstatic methods
+        suiteMethod = null;
+      } else if ((suiteMethod.getModifiers() & Modifier.PUBLIC) == 0) {
+        // No nonpublic methods
+        suiteMethod = null;
+      }
+    } catch (NoSuchMethodException e) {
+      suiteMethod = null;
+    }
+
+    if (suiteMethod == null) {
+      addTest(new TestSuite(theClass));
+    } else {
+      try {
+        Test suite = (Test) suiteMethod.invoke(null, new Object[] {});
+        addTest(suite);
+      } catch (InvocationTargetException e) {
+        // Should never happen - static method
+        throw new RuntimeException("Dumb programmer", e);
+      } catch (IllegalAccessException e) {
+        // Should never happen - public method
+        throw new RuntimeException("Dumb programmer", e);
+      }
+    }
   }
 
   /**
@@ -65,5 +97,13 @@ public class FlatTestSuite extends TestSuite {
     } else {
       super.addTest(t);
     }
+  }
+
+  /**
+   * Adds the test suite specified by a class using the <code>suite()</code>
+   * method first.
+   */
+  public void addTestSuite(Class testClass) {
+    addTest(new FlatTestSuite(testClass));
   }
 }

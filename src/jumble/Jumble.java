@@ -96,6 +96,7 @@ public class Jumble {
       testList.add(guessTestClassName(className));
     }
 
+
     JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener() : !printFlag.isSet() ? new PrinterListener()
         : getListener((String) printFlag.getValue());
     jumble.runJumble(className, testList, listener);
