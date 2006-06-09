@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -80,6 +81,10 @@ public class SwingListener implements JumbleListener {
     }
   }
 
+  public void error(String errorMsg) {
+    JOptionPane.showMessageDialog(null, errorMsg, "ERROR", JOptionPane.ERROR_MESSAGE);
+  }
+  
   public static void main(String[] args) throws Exception {
     // Process arguments
     FastRunner jumble = new FastRunner();

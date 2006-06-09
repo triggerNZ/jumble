@@ -16,4 +16,5 @@ public interface JumbleListener {
   void performedInitialTest(int status, int mutationCount, long timeout);
   void jumbleRunEnded();
   void finishedMutation(MutationResult res);
+  void error(String errorMessage);
 }

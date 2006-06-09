@@ -20,6 +20,7 @@ import jumble.ui.JumbleListener;
 import jumble.ui.NullListener;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
+import jumble.util.JumbleUtils;
 import junit.framework.TestResult;
 
 import com.reeltwo.util.Debug;
@@ -534,23 +535,6 @@ public class FastRunner {
    *          the name of the class to Jumble
    * @param testClassNames
    *          the names of the associated test classes
-   * @return the results of the Jumble run
-   * @throws Exception
-   *           if something goes wrong
-   * @see JumbleResult
-   * 
-   */
-  public JumbleResult runJumble(final String className, final List testClassNames) throws Exception {
-    return runJumbleProxy(className, testClassNames, null);
-  }
-
-  /**
-   * Performs a Jumble run on the specified class with the specified tests.
-   * 
-   * @param className
-   *          the name of the class to Jumble
-   * @param testClassNames
-   *          the names of the associated test classes
    * @param listener
    *          the listener associated with this Jumble run.
    * @throws Exception
@@ -560,6 +544,46 @@ public class FastRunner {
    */
   public void runJumble(final String className, final List testClassNames, JumbleListener listener) throws Exception {
     runJumbleProxy(className, testClassNames, listener);
+  }
+
+  /**
+   * Goes through class names to find out if they can be resolved. Also checks
+   * that all declared test classes are actually test cases.
+   * 
+   * @param out
+   *          listener where the error is reported.
+   * @param className
+   *          name of the class being jumbled.
+   * @param testClassNames
+   *          list of test class names.
+   * @return
+   */
+  private boolean checkClasses(JumbleListener out, String className, List testClassNames) {
+    boolean ok = true;
+
+    try {
+      Class clazz = Class.forName(className);
+      if (!clazz.isInterface()) {
+        for (int i = 0; i < testClassNames.size(); i++) {
+          String testName = (String) testClassNames.get(i);
+          Class test = null;
+          try {
+            test = Class.forName(testName);
+          } catch (ClassNotFoundException e) {
+            ; // Do nothing. No test class is handled elswhere
+          }
+          if (test != null && !JumbleUtils.isTestClass(test)) {
+            out.error(testName + " is not a test class.");
+            ok = false;
+          }
+        }
+      }
+    } catch (ClassNotFoundException e) {
+      out.error("Class " + className + " not found.");
+      ok = false;
+    }
+
+    return ok;
   }
 
   /**
@@ -581,6 +605,11 @@ public class FastRunner {
     if (listener == null) {
       listener = new NullListener();
     }
+
+    if (!checkClasses(listener, className, testClassNames)) {
+      return null;
+    }
+
     mClassName = className;
     mCacheFile = File.createTempFile("cache", ".dat");
     mTestSuiteFile = File.createTempFile("testSuite", ".dat");
@@ -630,7 +659,7 @@ public class FastRunner {
         count = 0;
       }
       allMutations[currentMutation] = readMutation(currentMutation, timeout);
-      
+
       if (max >= 0 && ++count >= max) {
         mChildProcess = null;
       }

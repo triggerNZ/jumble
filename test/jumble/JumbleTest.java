@@ -25,6 +25,15 @@ public class JumbleTest extends TestCase {
     assertEquals(getExpectedOutput("experiments.Interface"), runCommandLineJumble("experiments.Interface", -1));
   }
 
+  public void testNonTestTestClass() throws Exception {
+    assertEquals("ERROR: experiments.JumblerExperiment is not a test class.", runCommandLineJumble("experiments.JumblerExperiment",
+        "experiments.JumblerExperiment").trim());
+  }
+
+  public void testNonExistentClass() throws Exception {
+    assertEquals("ERROR: Class nonexistent.Class not found.", runCommandLineJumble("nonexistent.Class", "nonexistent.ClassTest").trim());
+  }
+
   public void testJumblerExperiment() throws Exception {
     // Have to allow a some room for the unit test time limit to vary
     String expected = getExpectedOutput("experiments.JumblerExperiment");

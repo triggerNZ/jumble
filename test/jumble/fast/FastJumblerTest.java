@@ -98,7 +98,7 @@ public class FastJumblerTest extends TestCase {
     ArrayList tests = new ArrayList();
     tests.add("experiments.JumblerExperimentTest");
     FastRunner runner = new FastRunner();
-    runner.runJumble("experiments.JumblerExperiment", tests);
+    runner.runJumble("experiments.JumblerExperiment", tests, null);
 
     assertTrue(f.exists());
 

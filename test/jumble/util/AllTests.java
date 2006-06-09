@@ -17,6 +17,7 @@ public class AllTests extends TestSuite {
     suite.addTest(IOThreadTest.suite());
     suite.addTest(JavaRunnerTest.suite());
     suite.addTest(RTSITest.suite());
+    suite.addTest(JumbleUtilsTest.suite());
     return suite;
   }
 

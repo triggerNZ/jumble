@@ -22,4 +22,7 @@ public class NullListener implements JumbleListener {
   
   public void performedInitialTest(int status, int mutationCount, long timeout) {
   }
+  
+  public void error(String message) {
+  }
 }

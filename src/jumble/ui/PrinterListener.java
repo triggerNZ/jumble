@@ -101,4 +101,8 @@ public class PrinterListener implements JumbleListener {
     mStream.print("Mutation points = " + mMutationCount);
     mStream.println(", unit test time limit " + (double) timeout / 1000 + "s");
   }
+  
+  public void error(String errorMsg) {
+    mStream.println("ERROR: " + errorMsg);
+  }
 }

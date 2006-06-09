@@ -376,7 +376,6 @@ public class Mutater {
     final JavaClass clazz = Repository.lookupClass(className);
 
     if (clazz == null) {
-      System.out.println("Error: could not retrieve " + className);
       return -1;
     }
     // if is an interface, return -1 to distinguish from 0 point classes
@@ -714,7 +713,6 @@ public class Mutater {
     final JavaClass clazz = Repository.lookupClass(className);
 
     if (clazz == null) {
-      System.out.println("Error: could not retrieve " + className);
       return -1;
     }
 

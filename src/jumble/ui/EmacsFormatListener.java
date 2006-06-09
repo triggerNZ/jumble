@@ -6,9 +6,8 @@ import java.util.List;
 import jumble.fast.MutationResult;
 
 /**
- * Prints the results of a Jumble run in <code>Emacs</code> compatible
- * format.
- *
+ * Prints the results of a Jumble run in <code>Emacs</code> compatible format.
+ * 
  * @author <a href="mailto:len@reeltwo.com">Len Trigg</a>
  * @version $Revision$
  */
@@ -79,5 +78,9 @@ public class EmacsFormatListener implements JumbleListener {
         mStream.println("Score: 0");
       }
     }
+  }
+
+  public void error(String errorMsg) {
+    mStream.println("ERROR: " + errorMsg);
   }
 }
