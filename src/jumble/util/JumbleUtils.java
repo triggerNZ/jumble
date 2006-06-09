@@ -23,7 +23,7 @@ public class JumbleUtils {
    * @return true if the class is a test class, false otherwise.
    */
   public static boolean isTestClass(Class clazz) {
-    Set<Class> interfaceSet = new HashSet<Class>();
+    Set interfaceSet = new HashSet();
     Class tmp = clazz;
 
     while (tmp != Object.class) {
@@ -34,7 +34,7 @@ public class JumbleUtils {
       tmp = tmp.getSuperclass();
     }
 
-    Class[] interfaces = interfaceSet.toArray(new Class[interfaceSet.size()]);
+    Class[] interfaces = (Class[]) interfaceSet.toArray(new Class[interfaceSet.size()]);
 
     for (int i = 0; i < interfaces.length; i++) {
       if (interfaces[i] == Test.class) {
