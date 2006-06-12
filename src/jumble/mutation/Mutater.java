@@ -342,7 +342,7 @@ public class Mutater {
 
   private boolean checkNormalMethod(final Method m) {
     return m != null && !m.isNative() && !m.isAbstract() && !mIgnored.contains(m.getName()) && m.getName().indexOf("access$") == -1
-    /* && m.getLineNumberTable() != null */ && m.getCode() != null;
+    /* && m.getLineNumberTable() != null */&& m.getCode() != null;
     /* && m.getLineNumberTable().getSourceLine(0) > 0; */
   }
 
@@ -471,10 +471,12 @@ public class Mutater {
     } else if (ret instanceof FRETURN) {
       // +1.0, negate
       il.append(new FCONST(1.0F));
+      il.append(new FADD());
       il.append(new FNEG());
     } else if (ret instanceof DRETURN) {
       // +1.0, negate
       il.append(new DCONST(1.0));
+      il.append(new DADD());
       il.append(new DNEG());
     } else if (ret instanceof ARETURN) {
       // if result is non-null make it null, otherwise hard case

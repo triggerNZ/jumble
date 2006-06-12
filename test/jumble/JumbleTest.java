@@ -27,11 +27,11 @@ public class JumbleTest extends TestCase {
 
   public void testNonTestTestClass() throws Exception {
     assertEquals("ERROR: experiments.JumblerExperiment is not a test class.", runCommandLineJumble("experiments.JumblerExperiment",
-        "experiments.JumblerExperiment").trim());
+        "experiments.JumblerExperiment", false).trim());
   }
 
   public void testNonExistentClass() throws Exception {
-    assertEquals("ERROR: Class nonexistent.Class not found.", runCommandLineJumble("nonexistent.Class", "nonexistent.ClassTest").trim());
+    assertEquals("ERROR: Class nonexistent.Class not found.", runCommandLineJumble("nonexistent.Class", "nonexistent.ClassTest", false).trim());
   }
 
   public void testJumblerExperiment() throws Exception {
@@ -57,7 +57,7 @@ public class JumbleTest extends TestCase {
   public void testSillySuite() throws Exception {
     // Have to allow a some room for the unit test time limit to vary
     String expected = readAll(getClass().getClassLoader().getResourceAsStream("jumble/SillySuite.txt"));
-    String got = runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperimentSillySuiteTest");
+    String got = runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperimentSillySuiteTest", false);
     StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
     StringTokenizer tokens2 = new StringTokenizer(got, "\n");
 
@@ -76,7 +76,7 @@ public class JumbleTest extends TestCase {
 
   public void testNoDebug() throws Exception {
     String expected = getExpectedOutput("jumble.NoDebug");
-    String got = runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest");
+    String got = runCommandLineJumble("DebugNone", "experiments.JumblerExperimentTest", false);
 
     StringTokenizer tokens1 = new StringTokenizer(expected, "\r\n");
     StringTokenizer tokens2 = new StringTokenizer(got, "\r\n");
@@ -96,6 +96,18 @@ public class JumbleTest extends TestCase {
 
   public void testNoTestClass() throws Exception {
     assertEquals(getExpectedOutput("experiments.NoTestClass"), runCommandLineJumble("experiments.NoTestClass", -1));
+  }
+
+  //Test for floating point return value bug
+  public void testFloatReturn() throws Exception {
+    String out = runCommandLineJumble("experiments.FloatReturn", "experiments.FloatReturnTest", true);
+    StringTokenizer tokens = new StringTokenizer(out, "\n");
+
+    assertEquals("Mutating experiments.FloatReturn", tokens.nextToken().trim());
+    assertEquals("Tests: experiments.FloatReturnTest", tokens.nextToken().trim());
+    assertNotNull(tokens.nextToken()); // skip timing
+    assertEquals("..", tokens.nextToken().trim());
+    assertEquals("Score: 100", tokens.nextToken().trim());
   }
 
   public void testLength1() throws Exception {
@@ -164,8 +176,14 @@ public class JumbleTest extends TestCase {
     return readAll(p.getInputStream());
   }
 
-  private String runCommandLineJumble(String className, String testName) throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.Jumble", new String[] {className, testName });
+  private String runCommandLineJumble(String className, String testName, boolean returns) throws Exception {
+    String[] args = new String[returns ? 3 : 2];
+    args[0] = className;
+    args[1] = returns ? "-r" : testName;
+    if (returns) {
+      args[2] = testName;
+    }
+    JavaRunner runner = new JavaRunner("jumble.Jumble", args);
     Process p = runner.start();
 
     return readAll(p.getInputStream());
