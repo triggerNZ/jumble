@@ -11,12 +11,15 @@ import junit.framework.TestSuite;
  * @version $Revision 1.0 $
  */
 public class FloatReturnTest extends TestCase {
+  private static final float FLOAT_THRESHOLD = 1.0e-20f;
+  private static final double DOUBLE_THRESHOLD = 1.0e-20;
+  
   public void testFloat() {
-    assertEquals(-1.0f, new FloatReturn().getFloat());
+    assertEquals(-1.0f, new FloatReturn().getFloat(), FLOAT_THRESHOLD);
   }
 
   public void testDouble() {
-    assertEquals(-1.0, new FloatReturn().getDouble());
+    assertEquals(-1.0, new FloatReturn().getDouble(), DOUBLE_THRESHOLD);
   }
 
   public static Test suite() {
