@@ -83,10 +83,10 @@ public class MutaterTest extends TestCase {
   }
 
   public void testDescriptionsNegs() throws IOException {
-    testDescriptions(0, "experiments.instruction.INeg:6: removed negation", "experiments.instruction.INeg", false, false, true);
-    testDescriptions(0, "experiments.instruction.DNeg:6: removed negation", "experiments.instruction.DNeg", false, false, true);
-    testDescriptions(0, "experiments.instruction.FNeg:6: removed negation", "experiments.instruction.FNeg", false, false, true);
-    testDescriptions(0, "experiments.instruction.LNeg:6: removed negation", "experiments.instruction.LNeg", false, false, true);
+    testDescriptions(0, "experiments.instruction.INeg:10: removed negation", "experiments.instruction.INeg", false, false, true);
+    testDescriptions(0, "experiments.instruction.DNeg:10: removed negation", "experiments.instruction.DNeg", false, false, true);
+    testDescriptions(0, "experiments.instruction.FNeg:10: removed negation", "experiments.instruction.FNeg", false, false, true);
+    testDescriptions(0, "experiments.instruction.LNeg:10: removed negation", "experiments.instruction.LNeg", false, false, true);
   }
 
   public void testDescriptionsX2() throws IOException {
