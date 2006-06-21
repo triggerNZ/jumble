@@ -41,6 +41,7 @@ import org.apache.bcel.generic.IFEQ;
 import org.apache.bcel.generic.IFNONNULL;
 import org.apache.bcel.generic.IINC;
 import org.apache.bcel.generic.IMUL;
+import org.apache.bcel.generic.INEG;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.IOR;
@@ -61,6 +62,7 @@ import org.apache.bcel.generic.LAND;
 import org.apache.bcel.generic.LCONST;
 import org.apache.bcel.generic.LDIV;
 import org.apache.bcel.generic.LMUL;
+import org.apache.bcel.generic.LNEG;
 import org.apache.bcel.generic.LOR;
 import org.apache.bcel.generic.LREM;
 import org.apache.bcel.generic.LRETURN;
@@ -159,6 +161,9 @@ public class Mutater {
   /** Should IINC instructions be changed. */
   private boolean mMutateIncrements = false;
 
+  /** Should NEG instructions be changed */
+  private boolean mMutateNegs = false;
+
   /** The most recent modification. */
   private String mModification = null;
 
@@ -177,6 +182,28 @@ public class Mutater {
   public void setMutationPoint(final int count) {
     mCount = count;
     mModification = null;
+  }
+
+  /**
+   * Sets whether NEG instructions should be mutated.
+   * 
+   * @param mutateNegs
+   *          flag indicating whether to mutate NEG instructions.
+   */
+  public void setMutateNegs(boolean mutateNegs) {
+    mMutateNegs = mutateNegs;
+
+    if (mMutateNegs) {
+      mMutatable[Constants.INEG] = new NOP();
+      mMutatable[Constants.DNEG] = new NOP();
+      mMutatable[Constants.FNEG] = new NOP();
+      mMutatable[Constants.LNEG] = new NOP();
+    } else {
+      mMutatable[Constants.INEG] = null;
+      mMutatable[Constants.DNEG] = null;
+      mMutatable[Constants.FNEG] = null;
+      mMutatable[Constants.LNEG] = null;
+    }
   }
 
   public void setMutateIncrements(final boolean v) {
@@ -342,7 +369,7 @@ public class Mutater {
 
   private boolean checkNormalMethod(final Method m) {
     return m != null && !m.isNative() && !m.isAbstract() && !mIgnored.contains(m.getName()) && m.getName().indexOf("access$") == -1
-    /* && m.getLineNumberTable() != null */ && m.getCode() != null;
+    /* && m.getLineNumberTable() != null */&& m.getCode() != null;
     /* && m.getLineNumberTable().getSourceLine(0) > 0; */
   }
 
@@ -599,6 +626,10 @@ public class Mutater {
         if (i instanceof IfInstruction) {
           mod += "negated conditional";
           ihs[j].setInstruction(((IfInstruction) i).negate());
+        } else if (i instanceof INEG || i instanceof DNEG || i instanceof FNEG || i instanceof LNEG) {
+          // Negation instruction
+          mod += "removed negation";
+          ihs[j].setInstruction(new NOP());
         } else if (i instanceof ArithmeticInstruction) {
           // binary operand integer instruction
           final Instruction inew = mutateIntegerArithmetic((ArithmeticInstruction) i, cp);
