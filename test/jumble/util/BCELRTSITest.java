@@ -37,7 +37,7 @@ public class BCELRTSITest extends TestCase {
   }
   
   
-  public void testInstanceOf() {
+  public void testInstanceOf() throws ClassNotFoundException {
     checkInstance("java.util.LinkedList", "java.util.Collection");
     checkInstance("java.util.LinkedList", "java.lang.Object");
     
@@ -47,7 +47,7 @@ public class BCELRTSITest extends TestCase {
   }
   
   
-  private void checkNonInstance(String classA, String classB) {
+  private void checkNonInstance(String classA, String classB) throws ClassNotFoundException {
     JavaClass a = Repository.lookupClass(classA);
     JavaClass b = Repository.lookupClass(classB);
     assert a != null;
@@ -55,7 +55,7 @@ public class BCELRTSITest extends TestCase {
     assertFalse(BCELRTSI.instanceOf(a, b));
   }
   
-  private void checkInstance(String classA, String classB) {
+  private void checkInstance(String classA, String classB) throws ClassNotFoundException {
     JavaClass a = Repository.lookupClass(classA);
     JavaClass b = Repository.lookupClass(classB);
     assert a != null;
