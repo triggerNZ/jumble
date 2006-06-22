@@ -1,11 +1,9 @@
 package jumble;
 
 
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import jumble.dependency.DependencyExtractor;
 import jumble.util.BCELRTSI;
 
@@ -32,7 +30,7 @@ public class JumbleAll {
     Set testNames = new HashSet();
 
     Set ignore = new HashSet();
-    ignore.addAll(new DependencyExtractor().getIgnoredPackages());
+    ignore.addAll(new DependencyExtractor(System.getProperty("java.class.path")).getIgnoredPackages());
     ignore.add("junit.awtui");
     ignore.add("junit.framework");
     ignore.add("junit.extensions");
