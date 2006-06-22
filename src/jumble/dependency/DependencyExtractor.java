@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
-import org.apache.bcel.Repository;
+import org.apache.bcel.util.Repository;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.ConstantPool;
@@ -21,6 +21,8 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ArrayType;
 import org.apache.bcel.generic.Type;
+import org.apache.bcel.util.ClassPath;
+import org.apache.bcel.util.SyntheticRepository;
 
 /**
  * Class for extracting dependencies from class files
@@ -35,6 +37,10 @@ public class DependencyExtractor {
 
   /** CONSTANT_Utf8 value. */
   private static final byte CONSTANT_UTF8 = 1;
+
+  private final ClassPath mClassPath;
+
+  private final Repository mRepository;
 
   /** The name of the class being analyzed. */
   private String mClassName;
@@ -56,6 +62,7 @@ public class DependencyExtractor {
   public static void main(String[] args) {
     CLIFlags flags = new CLIFlags("DependencyExtractor");
     Flag ignoreFlag = flags.registerOptional('i', "ignore", String.class, "METHOD", "Comma-separated list of packages to exclude.");
+    Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
     Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to analyse.");
     flags.setFlags(args);
 
@@ -72,7 +79,7 @@ public class DependencyExtractor {
     System.out.println("Dependencies for " + className);
     System.out.println();
     
-    DependencyExtractor extractor = new DependencyExtractor();
+    DependencyExtractor extractor = new DependencyExtractor((String) classpathFlag.getValue());
     
     if (ignore != null) {
       extractor.setIgnoredPackages(ignore);
@@ -88,10 +95,12 @@ public class DependencyExtractor {
   /**
    * Constructor
    */
-  public DependencyExtractor() {
+  public DependencyExtractor(String classPath) {
     mCache = new HashMap();
     mIgnoredPackages = new HashSet();
-
+    mClassPath = new ClassPath(classPath);
+    mRepository = SyntheticRepository.getInstance(mClassPath);
+    
     mIgnoredPackages.add("java");
     mIgnoredPackages.add("javax");
     mIgnoredPackages.add("sun");
@@ -143,7 +152,7 @@ public class DependencyExtractor {
     }
     className = cleanClassName(className);
 
-    JavaClass clazz = Repository.lookupClass(className);
+    JavaClass clazz = loadClass(className);
     
     if (clazz == null) {
       System.err.println("Could not find " + className);
@@ -188,8 +197,21 @@ public class DependencyExtractor {
       ret = new ArrayList(filterSystemClasses(ret));
     }
     mCache.put(className, ret);
-    Repository.clearCache();
     return ret;
+  }
+
+  private JavaClass loadClass(String className) {
+    try {
+      JavaClass clazz = mRepository.findClass(className);
+
+      if (clazz == null) {
+        return mRepository.loadClass(className);
+      } else {
+        return clazz;
+      }
+    } catch (ClassNotFoundException ex) { 
+      return null; 
+    }
   }
 
   /**
