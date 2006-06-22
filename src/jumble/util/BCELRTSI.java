@@ -127,28 +127,32 @@ public class BCELRTSI {
   private static Collection filterSuperclass(Collection classes,
       String superclassName) {
     Collection ret = new HashSet();
+    
+    try {
+      JavaClass superclass = Repository.lookupClass(superclassName);
+      
+      assert superclass != null;
+      for (Iterator it = classes.iterator(); it.hasNext();) {
+        String className = (String) it.next();
+        JavaClass clazz = null;
+        clazz = Repository.lookupClass(className);
+        assert clazz != null;
+        
+        try {
 
-    JavaClass superclass = Repository.lookupClass(superclassName);
-
-    assert superclass != null;
-    for (Iterator it = classes.iterator(); it.hasNext();) {
-      String className = (String) it.next();
-      JavaClass clazz = null;
-      clazz = Repository.lookupClass(className);
-      assert clazz != null;
-
-      try {
-
-        if (instanceOf(clazz, superclass)) {
-          ret.add(clazz.getClassName());
+          if (instanceOf(clazz, superclass)) {
+            ret.add(clazz.getClassName());
+          }
+          
+        } catch (Exception e) {
+          System.err.println(clazz.getClassName() + " : "
+                             + superclass.getClassName());
         }
-
-      } catch (Exception e) {
-        System.err.println(clazz.getClassName() + " : "
-            + superclass.getClassName());
       }
+      Repository.clearCache();
+    } catch (ClassNotFoundException cnfe) {
+      throw new RuntimeException(cnfe);
     }
-    Repository.clearCache();
     return ret;
   }
 
