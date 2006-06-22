@@ -19,7 +19,7 @@ public class DependencyExtractorTest extends TestCase {
   private DependencyExtractor mExtractor;
 
   public void setUp() {
-    mExtractor = new DependencyExtractor();
+    mExtractor = new DependencyExtractor(System.getProperty("java.class.path"));
   }
 
   public void tearDown() {
