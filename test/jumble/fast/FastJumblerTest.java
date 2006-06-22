@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import jumble.mutation.Mutater;
-import jumble.mutation.MutatingClassLoader;
 import jumble.util.JavaRunner;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -38,12 +36,18 @@ public class FastJumblerTest extends TestCase {
   }
 
   public final void tearDown() {
+    //System.err.println(mFileName);
     assertTrue(new File(mFileName).delete());
   }
 
   public void testMain() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-s", "0", mFileName, "-r", "-k",
-        "-i" });
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
+                                         "experiments.JumblerExperiment", 
+                                         "-c", System.getProperty("java.class.path"),
+                                         "-s", "0", 
+                                         "-r", "-k", "-i", "-v",
+                                         mFileName,
+                                       });
     Process p = runner.start();
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -58,8 +62,13 @@ public class FastJumblerTest extends TestCase {
   }
 
   public void testMain2() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-s", "0", "-l", "1", mFileName,
-        "-r", "-k", "-i" });
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
+                                         "experiments.JumblerExperiment", 
+                                         "-c", System.getProperty("java.class.path"),
+                                         "-s", "0", "-l", "1", 
+                                         "-r", "-k", "-i",
+                                         mFileName,
+                                       });
     Process p = runner.start();
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -76,20 +85,6 @@ public class FastJumblerTest extends TestCase {
     assertNull(line);
   }
 
-  /**
-   * Test for a bug that was found - it seems that the classes are getting
-   * corrupted.
-   */
-  public final void testRunMethodExistence() throws Exception {
-    try {
-      final ClassLoader loader = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(0));
-      final Class clazz = loader.loadClass("jumble.fast.JumbleTestSuite");
-      clazz.getMethod("run", new Class[] {loader.loadClass("jumble.fast.TestOrder"), loader.loadClass("jumble.fast.FailedTestMap"), String.class,
-          String.class, int.class, boolean.class });
-    } catch (NoSuchMethodException e) {
-      fail();
-    }
-  }
 
   public final void testSaveCache() throws Exception {
     File f = new File(System.getProperty("user.home"), ".jumble-cache.dat");

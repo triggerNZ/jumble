@@ -37,7 +37,7 @@ public class FailedTestMapTest extends TestCase {
   }
 
   public void testChangeClassLoader() throws Exception {
-    ClassLoader cl = new MutatingClassLoader("DummyClass", new Mutater(0));
+    ClassLoader cl = new MutatingClassLoader("DummyClass", new Mutater(0), System.getProperty("java.class.path"));
     
     Object other = mMap.clone(cl);
     

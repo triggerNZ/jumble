@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.util.Comparator;
 
 import jumble.util.ClassLoaderCloneable;
-import junit.framework.TestSuite;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -65,17 +64,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
     }
 
     mOrder = order;
-
-    // XXX What is this for?  Is it just for the side effects?
-    TestSuite ts = new FlatTestSuite();
-    try {
-      ts.addTestSuite(Class.forName(mTestClasses[0]));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    // System.err.println("integrity: " + integrity());
-    assert integrity();
   }
 
   /**
@@ -87,8 +75,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
   public TestOrder(String[] testClasses, int[] order) {
     mTestClasses = testClasses;
     mOrder = order;
-
-    assert integrity();
   }
 
   /** Creates a default ordering */
@@ -125,6 +111,7 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
       });
     for (int i = 0; i < order.length; i++) {
       order[i] = sortPairs[i].getPos();
+      //System.err.println("order[" + i + "]=" + order[i]);
     }
     return order;
   }
@@ -139,8 +126,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
    */
   public Object clone(ClassLoader loader)
       throws ClassNotFoundException {
-
-    assert integrity();
 
     Class clazz = loader.loadClass(getClass().getName());
 
@@ -168,7 +153,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
    * @return the number of tests.
    */
   public int getTestCount() {
-    assert integrity();
     return mOrder.length;
   }
 
@@ -180,7 +164,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
    * @return the index of the <CODE>order</CODE> th test
    */
   public int getTestIndex(int order) {
-    assert integrity();
     try {
       return mOrder[order];
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -195,38 +178,7 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
    * @return the test classes
    */
   public String[] getTestClasses() {
-    assert integrity();
     return mTestClasses;
-  }
-
-  /**
-   * Integrity method. Checks this object for consistency. Should only be called
-   * while debugging.
-   * 
-   * @return true if the object is consistent, false otherwise.
-   */
-  public boolean integrity() {
-    try {
-      TestSuite ts = new FlatTestSuite();
-      for (int i = 0; i < mTestClasses.length; i++) {
-        ts.addTestSuite(Class.forName(mTestClasses[i]));
-      }
-
-      int testCount = ts.testCount();
-      if (testCount == mOrder.length) {
-        return true;
-      } else {
-        System.err.println("testCount: " + testCount);
-        System.err.println("mOrder.length: " + mOrder.length);
-        System.err.println();
-        
-        return false;
-      }
-    } catch (Throwable e) {
-      System.err.println("EXCEPTION");
-
-      return false;
-    }
   }
 
   /**

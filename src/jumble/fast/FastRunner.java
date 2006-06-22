@@ -58,6 +58,8 @@ public class FastRunner {
 
   private boolean mUseCache = true;
 
+  private String mClassPath = System.getProperty("java.class.path");
+
   /** Maximum number of mutations per JVM */
   private int mMaxExternalMutations = -1;
 
@@ -86,6 +88,25 @@ public class FastRunner {
 
   /** The variable storing the failed tests - can get pretty big */
   FailedTestMap mCache = null;
+
+
+  /**
+   * Returns the classpath used to load test and source classes.
+   *
+   * @return the classpath string.
+   */
+  public String getClassPath() {
+    return mClassPath;
+  }
+
+  /**
+   * Sets the classpath used to load test and source classes.
+   *
+   * @param classpath a <code>String</code> value
+   */
+  public void setClassPath(String classpath) {
+    mClassPath = classpath;
+  }
 
   /**
    * Gets whether verbose mode is set.
@@ -312,9 +333,13 @@ public class FastRunner {
   /** Constructs arguments to the FastJumbler */
   private String[] createArgs(int currentMutation) {
     ArrayList args = new ArrayList();
+    args.add("--" + FastJumbler.FLAG_CLASSPATH);
+    args.add(mClassPath);
+
     // mutation point
-    args.add("-s");
+    args.add("--" + FastJumbler.FLAG_START);
     args.add(String.valueOf(currentMutation));
+
     // class name
     args.add(mClassName);
     // test suite filename
@@ -338,28 +363,28 @@ public class FastRunner {
           ex.append("," + it.next());
         }
       }
-      args.add("-x");
+      args.add("--" + FastJumbler.FLAG_EXCLUDE);
       args.add(ex.toString());
     }
     // inline constants
     if (mInlineConstants) {
-      args.add("-k");
+      args.add("--" + FastJumbler.FLAG_INLINE_CONSTS);
     }
     // return values
     if (mReturnVals) {
-      args.add("-r");
+      args.add("--" + FastJumbler.FLAG_RETURN_VALS);
     }
     // increments
     if (mIncrements) {
-      args.add("-i");
+      args.add("--" + FastJumbler.FLAG_INCREMENTS);
     }
     // verbose
     if (mVerbose) {
-      args.add("-v");
+      args.add("--" + FastJumbler.FLAG_VERBOSE);
     }
 
     if (getMaxExternalMutations() >= 0) {
-      args.add("-l");
+      args.add("--" + FastJumbler.FLAG_LENGTH);
       args.add("" + getMaxExternalMutations());
     }
     return (String[]) args.toArray(new String[args.size()]);
@@ -375,8 +400,8 @@ public class FastRunner {
     return m;
   }
 
-  private int countMutationPoints() {
-    return createMutater(0).countMutationPoints(mClassName);
+  private int countMutationPoints(MutatingClassLoader loader, String classname) throws ClassNotFoundException {
+    return loader.countMutationPoints(classname);
   }
 
   private boolean debugOutput(String out, String err) {
@@ -469,28 +494,30 @@ public class FastRunner {
    * later use, otherwise return a JumbleResult
    */
   private JumbleResult runInitialTests(List testClassNames) {
-    mMutationCount = countMutationPoints();
-    if (mMutationCount == -1) {
-      return new InterfaceResult(mClassName);
-    }
 
-    Class[] testClasses = new Class[testClassNames.size()];
-    for (int i = 0; i < testClasses.length; i++) {
-      try {
-        testClasses[i] = Class.forName((String) testClassNames.get(i));
-      } catch (ClassNotFoundException e) {
-        // test class did not exist
-        return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
-      }
-    }
-
+    assert Debug.println("Using classpath: " + mClassPath);
+    MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
     try {
+      mMutationCount = countMutationPoints(jumbler, mClassName);
+      if (mMutationCount == -1) {
+        return new InterfaceResult(mClassName);
+      }
+
       // RED ALERT - heinous reflective execution of the initial tests in
       // another classloader
+      Class[] testClasses = new Class[testClassNames.size()];
+      for (int i = 0; i < testClassNames.size(); i++) {
+        try {
+          testClasses[i] = jumbler.loadClass((String) testClassNames.get(i));
+        } catch (ClassNotFoundException e) {
+          // test class did not exist
+          return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
+        }
+      }
       assert Debug.println("Parent. Starting initial run without mutating");
-      MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1));
       Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
-      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class }).newInstance(new Object[] {testClassNames });
+      //Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class }).newInstance(new Object[] {testClassNames });
+      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {Class[].class }).newInstance(new Object[] {testClasses });
       Class trClazz = jumbler.loadClass(TestResult.class.getName());
       Class jtrClazz = jumbler.loadClass(JUnitTestResult.class.getName());
       Object trObj = jtrClazz.newInstance();
@@ -562,13 +589,14 @@ public class FastRunner {
     boolean ok = true;
 
     try {
-      Class clazz = Class.forName(className);
+      MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
+      Class clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {
           String testName = (String) testClassNames.get(i);
           Class test = null;
           try {
-            test = Class.forName(testName);
+            test = jumbler.loadClass(testName);
           } catch (ClassNotFoundException e) {
             ; // Do nothing. No test class is handled elswhere
           }

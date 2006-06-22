@@ -36,12 +36,14 @@ import org.apache.bcel.util.ByteSequence;
  */
 public class MutatingClassLoaderTest extends TestCase {
 
+  static final String CLASSPATH = System.getProperty("java.class.path");
+
   public void testNoMutation() throws Exception {
     JavaClass original = new ClassParser(getClass().getClassLoader()
         .getResourceAsStream("experiments/JumblerExperiment.class"),
         "JumblerExperiment.class").parse();
 
-    MutatingClassLoader j = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(-1));
+    MutatingClassLoader j = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(-1), CLASSPATH);
     JavaClass a = j.modifyClass(original);
     compareJavaClasses(original, a);
     JavaClass b = j.modifyClass(original);
@@ -51,67 +53,134 @@ public class MutatingClassLoaderTest extends TestCase {
     compareJavaClasses(c, b);
   }
 
+  public void testClassLoading() throws Exception {
+    MutatingClassLoader j = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(-1), CLASSPATH);
+    Class clazz = j.loadClass("java.lang.Object");
+    assertNotNull(clazz);
+    clazz = j.loadClass("java.util.ArrayList");
+    assertNotNull(clazz);
+    clazz = j.loadClass("jumble.fast.TimingTestSuite");
+    assertNotNull(clazz);
+
+    j = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(-1), "");
+    clazz = j.loadClass("java.lang.Object");
+    assertNotNull(clazz);
+    clazz = j.loadClass("java.util.ArrayList");
+    assertNotNull(clazz);
+    // Jumble classes are also available, because we always load them from the parent classloader
+    clazz = j.loadClass("jumble.fast.TimingTestSuite");
+    assertNotNull(clazz);
+
+    // Should have a test here where we load from a new explicit
+    // classpath. Perhaps copy a class file to a temporary directory
+    // and use that dir as the classpath.
+
+//     try {
+//       clazz = j.loadClass("jumble.fast.TimingTestSuite");
+//       fail("Expected ClassNotFoundException");
+//     } catch (ClassNotFoundException e) {
+//       ; // Expected
+//     }
+  }
+
+  public void testListAllModifications() throws ClassNotFoundException {
+    String className = "experiments.JumblerExperiment";
+    Mutater mutater = new Mutater(-1);
+    mutater.setMutateIncrements(true);
+    mutater.setMutateInlineConstants(true);
+    mutater.setMutateReturnValues(true);
+    //System.err.println(CLASSPATH);
+
+    MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, CLASSPATH);
+    final int mutationCount = jumbler.countMutationPoints(className);
+    assertEquals(12, mutationCount);
+
+    // First list things when not performing any modifications
+    for (int i = 0; i < mutationCount; i++) {
+      mutater.setMutationPoint(i);
+      String methodName = mutater.getMutatedMethodName(className);
+      assertNotNull(methodName);
+      int mutPoint = mutater.getMethodRelativeMutationPoint(className);
+      assertTrue(mutPoint != -1);
+      String modification = mutater.getModification();
+      assertNull(modification);
+      //System.err.println(methodName + "##" + mutPoint + "##" + modification);
+    }    
+
+    // Now list when performing modifications
+    for (int i = 0; i < mutationCount; i++) {
+      mutater.setMutationPoint(i);
+      jumbler = new MutatingClassLoader(className, mutater, CLASSPATH);
+      jumbler.loadClass(className);
+      String methodName = mutater.getMutatedMethodName(className);
+      assertNotNull(methodName);
+      int mutPoint = mutater.getMethodRelativeMutationPoint(className);
+      assertTrue(mutPoint != -1);
+      String modification = mutater.getModification();
+      assertNotNull(modification);
+      //System.err.println(methodName + "##" + mutPoint + "##" + modification);
+    }    
+  }
+
+
   public final void testJumbler() throws Exception {
     JavaClass original = Repository.lookupClass("jumble.X2");
 
-    MutatingClassLoader fj = new MutatingClassLoader("jumble.X2", new Mutater(0));
+    MutatingClassLoader fj = new MutatingClassLoader("jumble.X2", new Mutater(0), CLASSPATH);
 
     JavaClass c1 = fj.modifyClass(original);
-    //printClass(original);
-    //System.out.println("-------------------");
-    //printClass(c1);
+//     printClass(original);
+//     System.out.println("-------------------");
+//     printClass(c1);
     compareModification(original, c1, 3, new IDIV());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(1));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(1), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 5, new IMUL());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(2));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(2), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 6, new ISUB());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(3));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(3), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 9, new IMUL());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(4));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(4), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 11, new IMUL());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(5));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(5), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 12, new IADD());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(6));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(6), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 14, new ISHL());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(7));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(7), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 16, new ISHR());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(8));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(8), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 18, new IOR());
 
-    fj = new MutatingClassLoader("jumble.X2", new Mutater(9));
+    fj = new MutatingClassLoader("jumble.X2", new Mutater(9), CLASSPATH);
     c1 = fj.modifyClass(original);
     compareModification(original, c1, 25, null);
   }
 
   private void compareModification(JavaClass orig, JavaClass mod,
-      int mutationPoint, Instruction expected) throws Exception {
+                                   int mutationPoint, Instruction expected) throws Exception {
     int point = 0;
 
     InstructionComparator comp = Instruction.getComparator();
     Method[] methods = orig.getMethods();
 
     for (int i = 0; i < methods.length; i++) {
-
       ByteSequence origCode = new ByteSequence(methods[i].getCode().getCode());
-
-      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode()
-          .getCode());
+      ByteSequence modCode = new ByteSequence(mod.getMethods()[i].getCode().getCode());
 
       while (origCode.available() > 0) {
         final Instruction i1 = Instruction.readInstruction(origCode);
@@ -124,9 +193,9 @@ public class MutatingClassLoaderTest extends TestCase {
         }
         point++;
       }
-
     }
   }
+
 
   /**
    * Asserts that the classes a and b are equal

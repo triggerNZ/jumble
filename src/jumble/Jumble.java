@@ -43,6 +43,7 @@ public class Jumble {
     Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
     Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
     Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
+    Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
     Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
@@ -64,6 +65,7 @@ public class Jumble {
     jumble.setSaveCache(!saveFlag.isSet());
     jumble.setUseCache(!useFlag.isSet());
     jumble.setVerbose(verboseFlag.isSet());
+    jumble.setClassPath((String) classpathFlag.getValue());
 
     if (lengthFlag.isSet()) {
       int val = ((Integer) lengthFlag.getValue()).intValue();
@@ -147,7 +149,7 @@ public class Jumble {
    */
   private static JumbleListener getListener(String className) {
     try {
-      final Class clazz = Class.forName(className);
+      final Class clazz = Class.forName(className); // Class to be found in jumble.jar
       try {
         final Constructor c = clazz.getConstructor(new Class[0]);
         return (JumbleListener) c.newInstance(new Object[0]);

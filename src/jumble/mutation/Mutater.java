@@ -1,11 +1,9 @@
 package jumble.mutation;
 
-import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.bcel.Constants;
-import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
@@ -76,6 +74,9 @@ import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.ReturnInstruction;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.generic.Type;
+import org.apache.bcel.util.ByteSequence;
+import org.apache.bcel.util.Repository;
+import org.apache.bcel.util.SyntheticRepository;
 
 /**
  * Mutation tester. Given a class file can either count the number of possible
@@ -170,6 +171,9 @@ public class Mutater {
   /** Count down for mutation to apply. */
   private int mCount = 0;
 
+  //private Repository mRepository = null;
+  private Repository mRepository = SyntheticRepository.getInstance();
+
   public Mutater() {
     setIgnoredMethods(null);
   }
@@ -177,6 +181,10 @@ public class Mutater {
   public Mutater(final int count) {
     this();
     setMutationPoint(count);
+  }
+  
+  public void setRepository(Repository repository) {
+    mRepository = repository;
   }
 
   public void setMutationPoint(final int count) {
@@ -369,7 +377,7 @@ public class Mutater {
 
   private boolean checkNormalMethod(final Method m) {
     return m != null && !m.isNative() && !m.isAbstract() && !mIgnored.contains(m.getName()) && m.getName().indexOf("access$") == -1
-    /* && m.getLineNumberTable() != null */&& m.getCode() != null;
+    /* && m.getLineNumberTable() != null */ && m.getCode() != null;
     /* && m.getLineNumberTable().getSourceLine(0) > 0; */
   }
 
@@ -397,10 +405,10 @@ public class Mutater {
   /**
    * Compute the total number of possible mutation points in the class.
    */
-  public int countMutationPoints(final String cl) {
+  public int countMutationPoints(final String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
     int count = 0;
-    final JavaClass clazz = Repository.lookupClass(className);
+    final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
       return -1;
@@ -606,13 +614,13 @@ public class Mutater {
     return mModification;
   }
 
-  private Method jumble(Method m, final String className, final ConstantPoolGen cp) {
-
+  private int jumble(Method[] methods, int methodidx, final String className, final ConstantPoolGen cp, int count) {
+    
     // check if modification is appropriate
-    if (mCount < 0 || !checkNormalMethod(m)) {
-      return m;
+    Method m = methods[methodidx];
+    if (count < 0 || !checkNormalMethod(m)) {
+      return count;
     }
-
     final MethodGen mg = new MethodGen(m, className, cp);
     final InstructionList il = mg.getInstructionList();
     final InstructionHandle[] ihs = il.getInstructionHandles();
@@ -620,7 +628,7 @@ public class Mutater {
 
     for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
       final Instruction i = ihs[j].getInstruction();
-      if (isMutatable(ihs, j, cp) && mCount-- == 0) {
+      if (isMutatable(ihs, j, cp) && count-- == 0) {
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         String mod = className + ":" + lineNumber + ": ";
         if (i instanceof IfInstruction) {
@@ -664,22 +672,19 @@ public class Mutater {
           }
         }
         mModification = mod;
-        // System.err.println("Made modification: " + mModification);
+        //System.err.println("Made modification: " + mModification);
         break;
       }
     }
 
     mg.setMaxStack(); // this is needed for the return mods
-    m = mg.getMethod();
+    methods[methodidx] = mg.getMethod();
     il.dispose();
-    return m;
+    return count;
   }
 
-  public JavaClass jumbler(String cn) throws IOException {
-    JavaClass clazz = Repository.lookupClass(cn);
-    if (clazz == null) {
-      throw new IOException("Class did not exist");
-    }
+  public JavaClass jumbler(String cn) throws ClassNotFoundException {
+    JavaClass clazz = mRepository.loadClass(cn);
     return jumbler(clazz);
   }
 
@@ -688,11 +693,40 @@ public class Mutater {
 
     Method[] methods = ret.getMethods();
     ConstantPoolGen cp = new ConstantPoolGen(ret.getConstantPool());
+    int count = mCount;
     for (int i = 0; i < methods.length; i++) {
-      methods[i] = jumble(methods[i], ret.getClassName(), cp);
+      count = jumble(methods, i, ret.getClassName(), cp, count);
     }
     ret.setConstantPool(cp.getFinalConstantPool());
+    /*
+    String s1 = printClass(clazz);
+    String s2 = printClass(ret);
+    if (!s1.equals(s2)) {
+      System.err.println("==== Original class ====\n" + s1);
+      System.err.println("==== Modified class ====\n" + s2);
+      System.err.println("====");
+    } else {
+      System.err.println("==== No modification made ====");
+    }
+    */
     return ret;
+  }
+
+  protected static String printClass(JavaClass c) {
+    StringBuffer sb = new StringBuffer();
+    try {
+      Method[] m = c.getMethods();
+      for (int i = 0; i < m.length; i++) {
+        sb.append(m[i].getName()).append("\n");
+        ByteSequence code = new ByteSequence(m[i].getCode().getCode());
+        while (code.available() > 0) {
+          sb.append("\t").append(Instruction.readInstruction(code)).append("\n");
+        }
+      }
+    } catch (Throwable e) {
+      sb.append("Couldn't print class").append("\n");
+    }
+    return sb.toString();
   }
 
   /**
@@ -702,10 +736,10 @@ public class Mutater {
    *          the name of the class to mutate
    * @return mutated method name
    */
-  public String getMutatedMethodName(String cl) {
+  public String getMutatedMethodName(String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
     int count = 0;
-    final JavaClass clazz = Repository.lookupClass(className);
+    final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
       System.out.println("Error: could not retrieve " + className);
@@ -732,6 +766,20 @@ public class Mutater {
     throw new RuntimeException("Invalid mutation point");
   }
 
+  private JavaClass lookupClass(String className) {
+    try {
+      JavaClass clazz = mRepository.findClass(className);
+
+      if (clazz == null) {
+        return mRepository.loadClass(className);
+      } else {
+        return clazz;
+      }
+    } catch (ClassNotFoundException ex) { 
+      return null; 
+    }
+  }
+
   /**
    * Gets the mutation point, relative to the method being mutated. The method
    * is specified by <CODE>getMutatedMethodName(cl)</CODE>.
@@ -740,10 +788,10 @@ public class Mutater {
    *          the class to to mutate.
    * @return the mutation point, relative to the mutated method.
    */
-  public int getMethodRelativeMutationPoint(String cl) {
+  public int getMethodRelativeMutationPoint(String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
     int count = 0;
-    final JavaClass clazz = Repository.lookupClass(className);
+    final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
       return -1;

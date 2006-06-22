@@ -45,7 +45,7 @@ public class JumbleTestSuite extends FlatTestSuite {
    * @throws ClassNotFoundException
    *           if <CODE>order</CODE> is malformed.
    */
-  public JumbleTestSuite(TestOrder order, FailedTestMap cache,
+  public JumbleTestSuite(ClassLoader loader, TestOrder order, FailedTestMap cache,
                          String mutatedClass, String mutatedMethod, int mutationPoint,
                          boolean verbose) throws ClassNotFoundException {
     super();
@@ -59,8 +59,13 @@ public class JumbleTestSuite extends FlatTestSuite {
     // Create the test suites from the order
     String[] classNames = mOrder.getTestClasses();
     for (int i = 0; i < classNames.length; i++) {
-      addTestSuite(Class.forName(classNames[i]));
+      addTestSuite(loader.loadClass(classNames[i]));
     }
+    
+//     for (int i = 0; i < testCount(); i++) {
+//       System.err.println("Test " + i + " is " + ((TestCase)testAt(i)).getName());
+//     }
+//     System.err.println("Total tests: " + testCount());
   }
 
   /**
@@ -124,11 +129,11 @@ public class JumbleTestSuite extends FlatTestSuite {
    * @param relativeMutationPoint the mutation point location relative to the mutated method
    * @see TestOrder
    */
-  public static String run(TestOrder order, FailedTestMap cache,
+  public static String run(ClassLoader loader, TestOrder order, FailedTestMap cache,
                            String mutatedClassName, String mutatedMethodName,
                            int relativeMutationPoint, boolean verbose) {
     try {
-      JumbleTestSuite suite = new JumbleTestSuite(order, cache,
+      JumbleTestSuite suite = new JumbleTestSuite(loader, order, cache,
                                                   mutatedClassName, mutatedMethodName, relativeMutationPoint,
                                                   verbose);
       String ret = suite.run();
@@ -159,8 +164,8 @@ public class JumbleTestSuite extends FlatTestSuite {
     List back = new ArrayList();
 
     for (int i = 0; i < testCount(); i++) {
-      TestCase curTest = (TestCase) testAt(mOrder.getTestIndex(i));
-
+      int indx = mOrder.getTestIndex(i);
+      TestCase curTest = (TestCase) testAt(indx);
       if (first != null && curTest.getName().equals(firstTestName)) {
         first = curTest;
       } else if (frontTestNames.contains(curTest.getName())) {

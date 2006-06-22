@@ -3,7 +3,6 @@ package jumble.mutation;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.io.IOException;
 import org.apache.bcel.classfile.JavaClass;
 import java.util.Random;
 
@@ -28,52 +27,61 @@ public class MutaterTest extends TestCase {
     junit.textui.TestRunner.run(suite());
   }
 
-  public void testCountMutationPointsX0() {
+  public void testCountMutationPointsX0() throws ClassNotFoundException {
     assertEquals(0, new Mutater().countMutationPoints("jumble.X0"));
   }
 
-  public void testCountMutationPointsX0I() {
+  public void testCountMutationPointsX0I() throws ClassNotFoundException {
     assertEquals(-1, new Mutater().countMutationPoints("jumble.X0I"));
   }
 
-  public void testCountMutationPointsX1() {
+  public void testCountMutationPointsX1() throws ClassNotFoundException {
     assertEquals(1, new Mutater().countMutationPoints("jumble.X1"));
   }
 
-  public void testCountMutationPointsX2() {
+  public void testCountMutationPointsX2() throws ClassNotFoundException {
     assertEquals(9, new Mutater().countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2r() {
+  public void testCountMutationPointsX2r() throws ClassNotFoundException {
     Mutater m = new Mutater();
     m.setMutateReturnValues(true);
     assertEquals(10, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2i() {
+  public void testCountMutationPointsX2i() throws ClassNotFoundException {
     Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     assertEquals(11, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2ir() {
+  public void testCountMutationPointsX2ir() throws ClassNotFoundException {
     Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     m.setMutateReturnValues(true);
     assertEquals(12, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsLines() {
+  public void testCountMutationPointsLines() throws ClassNotFoundException {
     Mutater m = new Mutater();
     assertEquals(3, m.countMutationPoints("DebugLines"));
   }
-
-  public void testCountMutationPointsNone() {
+  
+  public void testCountMutationPointsNone() throws ClassNotFoundException {
     Mutater m = new Mutater();
     assertEquals(3, m.countMutationPoints("DebugNone"));
   }
+  
+  private void testDescriptions(int x, String s) throws ClassNotFoundException {
+    Mutater m = new Mutater(x);
+    assertEquals(null, m.getModification());
+    m.setMutateInlineConstants(true);
+    m.setMutateReturnValues(true);
+    m.jumbler("jumble.X2");
+    assertEquals(m.getModification(), s, m.getModification());
+  }
 
-  public void testCountNegs() {
+  public void testCountNegs() throws ClassNotFoundException {
     Mutater m = new Mutater();
     m.setMutateNegs(true);
     assertEquals(1, m.countMutationPoints("experiments.instruction.INeg"));
@@ -82,14 +90,14 @@ public class MutaterTest extends TestCase {
     assertEquals(1, m.countMutationPoints("experiments.instruction.LNeg"));
   }
 
-  public void testDescriptionsNegs() throws IOException {
+  public void testDescriptionsNegs() throws ClassNotFoundException {
     testDescriptions(0, "experiments.instruction.INeg:10: removed negation", "experiments.instruction.INeg", false, false, true);
     testDescriptions(0, "experiments.instruction.DNeg:10: removed negation", "experiments.instruction.DNeg", false, false, true);
     testDescriptions(0, "experiments.instruction.FNeg:10: removed negation", "experiments.instruction.FNeg", false, false, true);
     testDescriptions(0, "experiments.instruction.LNeg:10: removed negation", "experiments.instruction.LNeg", false, false, true);
   }
 
-  public void testDescriptionsX2() throws IOException {
+  public void testDescriptionsX2() throws ClassNotFoundException {
     String className = "jumble.X2";
 
     testDescriptions(0, "jumble.X2:6: * -> /", className);
@@ -107,7 +115,7 @@ public class MutaterTest extends TestCase {
     testDescriptions(500, null, className);
   }
 
-  private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws IOException {
+  private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws ClassNotFoundException {
     Mutater m = new Mutater(x);
     assertEquals(null, m.getModification());
     m.setMutateInlineConstants(constants);
@@ -117,12 +125,12 @@ public class MutaterTest extends TestCase {
     assertEquals(m.getModification(), s, m.getModification());
   }
 
-  private void testDescriptions(int x, String s, String className) throws IOException {
+  private void testDescriptions(int x, String s, String className) throws ClassNotFoundException {
     testDescriptions(x, s, className, true, true, false); // negs are a new
     // feature
   }
 
-  public void testDescriptionsX3() throws IOException {
+  public void testDescriptionsX3() throws ClassNotFoundException {
     final String className = "jumble.X3";
     testDescriptions(0, "jumble.X3:6: 3 -> 4", className);
     testDescriptions(1, "jumble.X3:6: * -> /", className);
@@ -137,8 +145,8 @@ public class MutaterTest extends TestCase {
     Mutater m = new Mutater();
     try {
       assertNotNull(m.jumbler("jumble.X3"));
-    } catch (IOException e) {
-      fail("IO problem");
+    } catch (ClassNotFoundException e) {
+      fail ("IO problem");
     }
   }
 
@@ -147,12 +155,12 @@ public class MutaterTest extends TestCase {
     try {
       m.jumbler("poxweed");
       fail("IO failed to fire");
-    } catch (IOException e) {
-      // ok
+    } catch (ClassNotFoundException e) {
+       // ok
     }
   }
 
-  private void testDescriptions4(int x, String s) throws IOException {
+  private void testDescriptions4(int x, String s) throws ClassNotFoundException {
     Mutater m = new Mutater(x);
     assertEquals(null, m.getModification());
     m.setMutateInlineConstants(true);
@@ -161,7 +169,7 @@ public class MutaterTest extends TestCase {
     assertEquals(m.getModification(), s, m.getModification());
   }
 
-  public void testDescriptionsX4() throws IOException {
+  public void testDescriptionsX4() throws ClassNotFoundException {
     testDescriptions4(0, "jumble.X4:6: * -> /");
     testDescriptions4(1, "jumble.X4:6: / -> *");
     testDescriptions4(2, "jumble.X4:6: + -> -");
@@ -231,7 +239,8 @@ public class MutaterTest extends TestCase {
   // hash("jumble.X4", 10, 1824724605084526440L);
   // }
 
-  public void testGetMutatedMethodName() {
+  
+  public void testGetMutatedMethodName() throws ClassNotFoundException {
     Mutater m = new Mutater();
     assertEquals("add(II)I", m.getMutatedMethodName("experiments.JumblerExperiment"));
 
@@ -249,8 +258,8 @@ public class MutaterTest extends TestCase {
       ; // ok
     }
   }
-
-  public void testGetMethodRelativeMutationPoint() {
+  
+  public void testGetMethodRelativeMutationPoint() throws ClassNotFoundException {
     Mutater m = new Mutater();
     assertEquals(0, m.getMethodRelativeMutationPoint("experiments.JumblerExperiment"));
 

@@ -1,8 +1,17 @@
 package jumble.mutation;
 
 
+//import org.apache.bcel.util.ClassPath;
+import com.reeltwo.util.Debug;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Hashtable;
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.util.ClassLoader;
+import org.apache.bcel.util.ClassPath;
+import org.apache.bcel.util.Repository;
+import org.apache.bcel.util.SyntheticRepository;
+
 
 /**
  * A <code>ClassLoader</code> which embeds a <code>Mutater</code> so
@@ -15,13 +24,30 @@ import org.apache.bcel.util.ClassLoader;
 public class MutatingClassLoader extends ClassLoader {
 
   /** Used to perform the actual mutation */
-  private Mutater mMutater;
+  private final Mutater mMutater;
 
   /** The name of the class being mutated */
-  private String mTarget;
+  private final String mTarget;
+
+  private final String[] mIgnoredPackages = new String[] {
+    "java.",
+    //"javax.",
+    "sun.",
+    "junit.",
+    //"org.apache", 
+    //"org.xml", 
+    //"org.w3c"
+  };
+
+  private final Hashtable mClasses = new Hashtable();
+  private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
+  private final Repository mRepository;
+
+  private final ClassPath mClassPath;
 
   /** Textual description of the modification made. */
   private String mModification;
+
 
   /**
    * Creates a new <code>MutatingClassLoader</code> instance.
@@ -30,12 +56,17 @@ public class MutatingClassLoader extends ClassLoader {
    * not be mutated.
    * @param mutater a <code>Mutater</code> value that will carry out
    * mutations.
+   * @param classpath a <code>String</code> value supplying the
+   * classes visible to the classloader.
    */
-  public MutatingClassLoader(final String target, final Mutater mutater) {
+  public MutatingClassLoader(final String target, final Mutater mutater, final String classpath) {
     // Add these ignored classes to work around jakarta commons logging stupidity with class loaders.
-    super(new String[] {"org.apache", "org.xml", "org.w3c"});
     mTarget = target;
     mMutater = mutater;
+    mClassPath = new ClassPath(classpath);
+    //mRepository = SyntheticRepository.getInstance();
+    mRepository = SyntheticRepository.getInstance(mClassPath);
+    mMutater.setRepository(mRepository);
   }
 
   /**
@@ -45,6 +76,56 @@ public class MutatingClassLoader extends ClassLoader {
    */
   public String getModification() {
     return mModification;
+  }
+
+  public int countMutationPoints(String className) throws ClassNotFoundException {
+    loadClass(className);
+    return mMutater.countMutationPoints(className);
+  }
+
+  protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
+    Class cl = null;
+
+    if ((cl = (Class) mClasses.get(className)) == null) {
+      // Classes we're forcing to be loaded by mDeferTo
+      for (int i = 0; i < mIgnoredPackages.length; i++) {
+        if (className.startsWith(mIgnoredPackages[i])) {
+          cl = mDeferTo.loadClass(className);
+          break;
+        }
+      }
+
+      if (cl == null) {
+        JavaClass clazz = null;
+
+        // Try loading from our repository
+        try {
+          if ((clazz = mRepository.loadClass(className)) != null) {
+            clazz = modifyClass(clazz);
+          }
+        } catch (ClassNotFoundException e) {
+          ; // OK, because we'll let Class.forName handle it
+        }
+
+        if (clazz != null) {
+          assert Debug.println("MCL loading class: " + className);
+          byte[] bytes  = clazz.getBytes();
+          cl = defineClass(className, bytes, 0, bytes.length);
+        } else {
+          //cl = Class.forName(className);
+          assert Debug.println("Deferring loading of class: " + className);
+          cl = mDeferTo.loadClass(className);
+        }
+      }
+      
+      if (resolve) {
+        resolveClass(cl);
+      }
+    }
+
+    mClasses.put(className, cl);
+
+    return cl;
   }
 
   /**
@@ -65,5 +146,27 @@ public class MutatingClassLoader extends ClassLoader {
       }
     }
     return clazz;
+  }
+
+  public URL getResource(String name) {
+    //System.err.println("Getting resource: " + name);
+    try {
+      return mClassPath.getResource(name);
+    } catch (IOException e) {
+      assert Debug.trace(e);
+      assert Debug.println(e.getMessage());
+      return null;
+    }
+  }
+
+  public InputStream getResourceAsStream(String name) {
+    //System.err.println("Getting resource as stream: " + name);
+    try {
+      return mClassPath.getResourceAsStream(name);
+    } catch (IOException e) {
+      assert Debug.trace(e);
+      assert Debug.println(e.getMessage());
+      return null;
+    }
   }
 }
