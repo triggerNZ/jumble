@@ -3,7 +3,6 @@ package jumble.mutation;
 
 //import org.apache.bcel.util.ClassPath;
 import com.reeltwo.util.Debug;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
@@ -150,23 +149,11 @@ public class MutatingClassLoader extends ClassLoader {
 
   public URL getResource(String name) {
     //System.err.println("Getting resource: " + name);
-    try {
-      return mClassPath.getResource(name);
-    } catch (IOException e) {
-      assert Debug.trace(e);
-      assert Debug.println(e.getMessage());
-      return null;
-    }
+    return mClassPath.getResource(name);
   }
 
   public InputStream getResourceAsStream(String name) {
     //System.err.println("Getting resource as stream: " + name);
-    try {
-      return mClassPath.getResourceAsStream(name);
-    } catch (IOException e) {
-      assert Debug.trace(e);
-      assert Debug.println(e.getMessage());
-      return null;
-    }
+    return mClassPath.getResourceAsStream(name);
   }
 }
