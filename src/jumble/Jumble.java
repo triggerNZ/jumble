@@ -99,7 +99,7 @@ public class Jumble {
     }
 
 
-    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener() : !printFlag.isSet() ? new PrinterListener()
+    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new PrinterListener()
         : getListener((String) printFlag.getValue());
     jumble.runJumble(className, testList, listener);
   }

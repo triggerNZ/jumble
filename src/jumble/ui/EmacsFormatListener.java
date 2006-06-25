@@ -1,9 +1,12 @@
 package jumble.ui;
 
+
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-
 import jumble.fast.MutationResult;
+import org.apache.bcel.util.ClassPath.ClassFile;
+import org.apache.bcel.util.ClassPath;
 
 /**
  * Prints the results of a Jumble run in <code>Emacs</code> compatible format.
@@ -24,12 +27,17 @@ public class EmacsFormatListener implements JumbleListener {
 
   private boolean mInitialTestsPassed;
 
-  public EmacsFormatListener() {
-    this(System.out);
+  private ClassPath mClassPath;
+
+  private String mBaseDir = System.getProperty("user.dir");
+
+  public EmacsFormatListener(String classPath) {
+    this(classPath, System.out);
   }
 
-  public EmacsFormatListener(PrintStream output) {
+  public EmacsFormatListener(String classPath, PrintStream output) {
     mStream = output;
+    mClassPath = new ClassPath(classPath);
   }
 
   public void jumbleRunEnded() {
@@ -48,6 +56,19 @@ public class EmacsFormatListener implements JumbleListener {
       String description = res.getDescription();
       description = description.substring(description.indexOf(":"));
       String sourceName = res.getClassName().replace('.', '/') + ".java";
+      try {
+        // Try to resolve the class name relative to the classpath
+        ClassFile cf = mClassPath.getClassFile(res.getClassName());
+        sourceName = cf.getPath();
+        sourceName = sourceName.replaceAll("\\.class$", ".java");
+        if (sourceName.startsWith(mBaseDir)) {
+          sourceName = sourceName.substring(mBaseDir.length() + 1);
+        }
+      } catch (IOException e) {
+        // Use the sourceName that we have.
+      }
+      // Convert inner class to the outer source file
+      sourceName = sourceName.replaceAll("\\$[^.]+\\.", ".");
       mStream.println(sourceName + description);
     } else {
       mCovered++;
