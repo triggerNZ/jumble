@@ -497,6 +497,8 @@ public class FastRunner {
 
     assert Debug.println("Using classpath: " + mClassPath);
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
+    ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(jumbler);
     try {
       mMutationCount = countMutationPoints(jumbler, mClassName);
       if (mMutationCount == -1) {
@@ -550,6 +552,8 @@ public class FastRunner {
       RuntimeException r = new IllegalStateException("Problem using reflection to set up run under another classloader");
       r.initCause(e);
       throw r;
+    } finally {
+      Thread.currentThread().setContextClassLoader(oldLoader);
     }
 
     return null;
