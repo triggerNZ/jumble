@@ -28,7 +28,7 @@ public class FastJumblerTest extends TestCase {
     // Unique filename
     mFileName = "tmpTest" + System.currentTimeMillis() + ".dat";
 
-    TimingTestSuite suite = new TimingTestSuite(new Class[] {JumblerExperimentTest.class });
+    TimingTestSuite suite = new TimingTestSuite(getClass().getClassLoader(), new String[] {JumblerExperimentTest.class.getName() });
     suite.run(new TestResult());
     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(mFileName));
     out.writeObject(suite.getOrder(true));

@@ -103,7 +103,7 @@ public class JumbleTestSuiteTest extends TestCase {
     PrintStream oldOut = System.out;
 
     // first run the tests to get timing information (throw away output)
-    TimingTestSuite timingSuite = new TimingTestSuite(new Class[] {TimedTests.class});
+    TimingTestSuite timingSuite = new TimingTestSuite(getClass().getClassLoader(), new String[] {TimedTests.class.getName()});
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
     try {
       timingSuite.run(new TestResult());

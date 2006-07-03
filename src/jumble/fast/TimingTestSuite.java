@@ -1,6 +1,5 @@
 package jumble.fast;
 
-import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestResult;
 
@@ -36,32 +35,21 @@ public class TimingTestSuite extends FlatTestSuite {
    */
   private Class[] mTestClasses;
 
-  /**
-   * Constructs a test suite from the test classes given in <CODE>testClasses
-   * </CODE>
-   * 
-   * @param testClassNames an array of the class names of test suites to run
-   */
-  public TimingTestSuite(List testClassNames) throws ClassNotFoundException {
-    super();
-    mTestClasses = new Class[testClassNames.size()];
-    for (int i = 0; i < mTestClasses.length; i++) {
-      mTestClasses[i] = getClass().getClassLoader().loadClass((String) testClassNames.get(i));
-      addTestSuite(mTestClasses[i]);
-    }
-  }
 
   /**
    * Constructs a test suite from the test classes given in <CODE>testClasses
    * </CODE>
    * 
-   * @param testClasses an array of the classes of test suites to run
+   * @param loader a <code>ClassLoader</code> used to load the test classes.
+   * @param classNames an array of the names of classes of test suites to run
+   * @exception ClassNotFoundException if an error occurs.
    */
-  public TimingTestSuite(Class[] testClasses) {
+  public TimingTestSuite(ClassLoader loader, String[] classNames) throws ClassNotFoundException {
     super();
-    mTestClasses = testClasses;
-    for (int i = 0; i < testClasses.length; i++) {
-      addTestSuite(testClasses[i]);
+    mTestClasses = new Class[classNames.length];
+    for (int i = 0; i < classNames.length; i++) {
+      mTestClasses[i] = loader.loadClass(classNames[i]);
+      addTestSuite(mTestClasses[i]);
     }
   }
 
