@@ -133,11 +133,17 @@ public class JumbleTestSuite extends FlatTestSuite {
                            String mutatedClassName, String mutatedMethodName,
                            int relativeMutationPoint, boolean verbose) {
     try {
-      JumbleTestSuite suite = new JumbleTestSuite(loader, order, cache,
-                                                  mutatedClassName, mutatedMethodName, relativeMutationPoint,
-                                                  verbose);
-      String ret = suite.run();
-      return ret;
+      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+      Thread.currentThread().setContextClassLoader(loader);
+      try {
+        JumbleTestSuite suite = new JumbleTestSuite(loader, order, cache,
+                                                    mutatedClassName, mutatedMethodName, relativeMutationPoint,
+                                                    verbose);
+        String ret = suite.run();
+        return ret;
+      } finally {
+        Thread.currentThread().setContextClassLoader(oldLoader);
+      }
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e); // Should have been picked up before now.
     }
