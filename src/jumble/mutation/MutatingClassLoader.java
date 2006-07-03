@@ -148,12 +148,24 @@ public class MutatingClassLoader extends ClassLoader {
   }
 
   public URL getResource(String name) {
-    //System.err.println("Getting resource: " + name);
-    return mClassPath.getResource(name);
+    URL resource = mClassPath.getResource(name);
+    if (resource == null) {
+      resource = mDeferTo.getResource(name);
+      assert Debug.println("Getting resource from parent: " + name + " " + resource);
+    } else {
+      assert Debug.println("Getting resource: " + name + " " + resource);
+    }
+    return resource;
   }
 
   public InputStream getResourceAsStream(String name) {
-    //System.err.println("Getting resource as stream: " + name);
-    return mClassPath.getResourceAsStream(name);
+    InputStream resource = mClassPath.getResourceAsStream(name);
+    if (resource == null) {
+      resource = mDeferTo.getResourceAsStream(name);
+      assert Debug.println("Getting resource as stream from parent: " + name + " " + resource);
+    } else {
+      assert Debug.println("Getting resource as stream: " + name + " " + resource);
+    }
+    return resource;
   }
 }
