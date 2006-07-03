@@ -21,7 +21,6 @@ import jumble.ui.NullListener;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
 import jumble.util.JumbleUtils;
-import junit.framework.TestResult;
 
 import com.reeltwo.util.Debug;
 
@@ -504,44 +503,35 @@ public class FastRunner {
       if (mMutationCount == -1) {
         return new InterfaceResult(mClassName);
       }
-
-      // RED ALERT - heinous reflective execution of the initial tests in
-      // another classloader
-      Class[] testClasses = new Class[testClassNames.size()];
-      for (int i = 0; i < testClassNames.size(); i++) {
-        try {
-          testClasses[i] = jumbler.loadClass((String) testClassNames.get(i));
-        } catch (ClassNotFoundException e) {
-          // test class did not exist
-          return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
-        }
+      TimingTestSuite suite = null;
+      try {
+        suite = new TimingTestSuite(jumbler, (String[]) testClassNames.toArray(new String[testClassNames.size()]));
+      } catch (ClassNotFoundException e) {
+        // test class did not exist
+        return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
       assert Debug.println("Parent. Starting initial run without mutating");
-      Class suiteClazz = jumbler.loadClass("jumble.fast.TimingTestSuite");
-      //Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {List.class }).newInstance(new Object[] {testClassNames });
-      Object suiteObj = suiteClazz.getDeclaredConstructor(new Class[] {Class[].class }).newInstance(new Object[] {testClasses });
-      Class trClazz = jumbler.loadClass(TestResult.class.getName());
-      Class jtrClazz = jumbler.loadClass(JUnitTestResult.class.getName());
-      Object trObj = jtrClazz.newInstance();
-      suiteClazz.getMethod("run", new Class[] {trClazz }).invoke(suiteObj, new Object[] {trObj });
-      boolean successful = ((Boolean) trClazz.getMethod("wasSuccessful", new Class[] {}).invoke(trObj, new Object[] {})).booleanValue();
+
+      JUnitTestResult result = new JUnitTestResult();
+      suite.run(result);
+      boolean successful = result.wasSuccessful();
       assert Debug.println("Parent. Finished");
 
       // Now, if the tests failed, can return straight away
       if (!successful) {
         if (mVerbose) {
-          System.err.println(trObj);
+          System.err.println(result);
         }
         return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
 
       // Set the test runtime so we can calculate timeouts when running the
       // mutated tests
-      mTotalRuntime = ((Long) suiteClazz.getMethod("getTotalRuntime", new Class[] {}).invoke(suiteObj, new Object[] {})).longValue();
+      mTotalRuntime = suite.getTotalRuntime();
 
       // Store the test suite information serialized in a temporary file so
       // FastJumbler can load it.
-      Object order = suiteClazz.getMethod("getOrder", new Class[] {Boolean.TYPE }).invoke(suiteObj, new Object[] {Boolean.valueOf(mOrdered) });
+      Object order = suite.getOrder(mOrdered);
       ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFile));
       oos.writeObject(order);
       oos.close();
