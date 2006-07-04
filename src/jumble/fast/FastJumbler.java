@@ -158,7 +158,10 @@ public class FastJumbler {
       // Check non-heap usage and possibly bail out.
       if (nonheapDelta > 0 && available < (nonheapDelta * 5)) {
         // Communicate to the parent JVM if there's not enough non-heap memory to continue.
-        System.out.println(SIGNAL_MAX_REACHED + "  Non-Heap used:" + usage.getUsed()/1024 + "KB delta:" + nonheapDelta/1024 + "KB avail:" + available/1024 + "KB");
+        System.out.println(SIGNAL_MAX_REACHED 
+                           + "  Non-Heap used:" + usage.getUsed() / 1024 
+                           + "KB delta:" + nonheapDelta / 1024 
+                           + "KB avail:" + available / 1024 + "KB");
         break;
       }
 
