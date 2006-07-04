@@ -5,7 +5,7 @@ if [ ! "$HOME" ]; then
     export HOME=/home/$LOGNAME
 fi
 
-export JAVA_HOME=/usr/local/java/jdk1.4
+export JAVA_HOME=/usr/local/java/jdk1.5
 export SYSNAME=cvscheck_jumble
 
 
@@ -33,7 +33,9 @@ export DOC_MODULES=" "
 export JAVADOC_MODULES="jumble/src"
 
 # Options controlling how things get run
-export JIKES_OPTS="+E +P -source 1.4 -deprecation"
+export COMPILERS="javacall_1_5"
+export JAVAC_OPTS="-source 1.5"
+export JAVADOC_OPTS="-source 1.5"
 if [ "$USER" == "syscheck" ]; then
     export EMAIL_NOTIFY=1
     export IM_NOTIFY=1
