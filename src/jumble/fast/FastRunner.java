@@ -73,7 +73,7 @@ public class FastRunner {
 
   private File mTestSuiteFile;
 
-  private JavaRunner mRunner = new JavaRunner("jumble.fast.FastJumbler");
+  private JavaRunner mRunner;
 
   private Process mChildProcess = null;
 
@@ -88,6 +88,18 @@ public class FastRunner {
   /** The variable storing the failed tests - can get pretty big */
   FailedTestMap mCache = null;
 
+  public FastRunner() {
+    mRunner = new JavaRunner("jumble.fast.FastJumbler");
+    mRunner.setJvmArguments(new String[] {
+        // This lets us run more mutation tests in each sub-JVM
+        // without running out of space for classes.  Also consider
+        // setting setMaxExternalMutations.
+        "-XX:PermSize=128m",
+
+        // Supply the classpath for the Sub-JVM to use.
+        "-cp", System.getProperty("java.class.path"),
+      });
+  }
 
   /**
    * Returns the classpath used to load test and source classes.
