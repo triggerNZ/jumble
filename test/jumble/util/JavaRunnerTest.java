@@ -57,8 +57,14 @@ public class JavaRunnerTest extends TestCase {
   }
 
   public void testConstructor() {
-    assertEquals(0, new JavaRunner("jumble.util.DisplayEnvironment")
-        .getArguments().length);
+    JavaRunner jr = new JavaRunner("jumble.util.DisplayEnvironment");
+    String[] args = jr.getArguments();
+    assertEquals(0, args.length);
+
+    args = jr.getJvmArguments();
+    assertEquals(2, args.length);
+    assertEquals("-cp", args[0]);
+    assertEquals(System.getProperty("java.class.path"), args[1]);
   }
   
   public void testSpaces() throws IOException {
