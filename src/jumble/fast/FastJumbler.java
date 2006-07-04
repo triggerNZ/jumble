@@ -105,7 +105,7 @@ public class FastJumbler {
 
     MemoryMXBean mxbean = ManagementFactory.getMemoryMXBean();
     MemoryUsage usage = mxbean.getNonHeapMemoryUsage();
-    long nonheapDelta = -1;
+    long nonheapDelta;
 
     // Let the parent JVM know that we are ready to start
     System.out.println(SIGNAL_START);
