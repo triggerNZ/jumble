@@ -82,7 +82,7 @@ public class FastJumblerTest extends TestCase {
     line = reader.readLine();
     assertEquals("PASS: experiments.JumblerExperiment:add(II)I:0:testAdd", line);
     line = reader.readLine();
-    assertNull(line);
+    assertEquals(FastJumbler.SIGNAL_MAX_REACHED, line);
   }
 
 

@@ -1,5 +1,8 @@
 package jumble.fast;
 
+
+
+import com.reeltwo.util.Debug;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import jumble.mutation.Mutater;
 import jumble.mutation.MutatingClassLoader;
 import jumble.ui.InitialTestStatus;
@@ -21,8 +23,6 @@ import jumble.ui.NullListener;
 import jumble.util.IOThread;
 import jumble.util.JavaRunner;
 import jumble.util.JumbleUtils;
-
-import com.reeltwo.util.Debug;
 
 /**
  * A runner for the <CODE>FastJumbler</CODE>. Runs the FastJumbler in a new
@@ -438,10 +438,10 @@ public class FastRunner {
       }
       if ((out == null) && (err == null)) {
         Thread.sleep(10);
-      } else if ("START".equals(out)) {
+      } else if (FastJumbler.SIGNAL_START.equals(out)) {
         break;
       } else {
-        throw new RuntimeException("jumble.fast.FastJumbler returned " + ((out != null) ? out : err + " on stderr") + " instead of START");
+        throw new RuntimeException("jumble.fast.FastJumbler returned " + ((out != null) ? out : err + " on stderr") + " instead of " + FastJumbler.SIGNAL_START);
       }
     }
   }
@@ -479,7 +479,9 @@ public class FastRunner {
           after = System.currentTimeMillis();
         }
       } else {
-        if (out.startsWith(FastJumbler.INIT_PREFIX)) {
+        if (out.startsWith(FastJumbler.SIGNAL_MAX_REACHED)) {
+          return null; // Child JVM requested continuing in a new JVM
+        } else if (out.startsWith(FastJumbler.INIT_PREFIX)) {
           modification = out.substring(FastJumbler.INIT_PREFIX.length());
         } else {
           int status = -1;
@@ -491,10 +493,12 @@ public class FastRunner {
             status = MutationResult.FAIL;
             m = new MutationResult(status, mClassName, currentMutation, modification);
           }
-          if (mUseCache) {
-            updateCache(m);
+          if (m != null) {
+            if (mUseCache) {
+              updateCache(m);
+            }
+            return m;
           }
-          return m;
         }
       }
     }
@@ -511,6 +515,7 @@ public class FastRunner {
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
     try {
+      
       mMutationCount = countMutationPoints(jumbler, mClassName);
       if (mMutationCount == -1) {
         return new InterfaceResult(mClassName);
@@ -692,12 +697,23 @@ public class FastRunner {
         startChildProcess(createArgs(currentMutation));
         count = 0;
       }
-      allMutations[currentMutation] = readMutation(currentMutation, timeout);
-
-      if (max >= 0 && ++count >= max) {
+      MutationResult thisResult = readMutation(currentMutation, timeout);
+      if (thisResult == null) {
         mChildProcess = null;
+        if (count == 0) {
+          System.err.println("WARNING: Child JVM requested restart before completing any mutations!!");
+        } else {
+          // Restart current mutation in a new JVM
+          currentMutation--;
+        }
+      } else {
+        allMutations[currentMutation] = thisResult;
+        count++;
+        if (max >= 0 && count >= max) {
+          mChildProcess = null;
+        }
+        listener.finishedMutation(thisResult);
       }
-      listener.finishedMutation(allMutations[currentMutation]);
     }
 
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);

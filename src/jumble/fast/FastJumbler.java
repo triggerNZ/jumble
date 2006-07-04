@@ -4,6 +4,9 @@ import com.reeltwo.util.CLIFlags.Flag;
 import com.reeltwo.util.CLIFlags;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.util.HashSet;
 import java.util.Set;
 import jumble.mutation.Mutater;
@@ -26,6 +29,11 @@ public class FastJumbler {
   public static final String PASS_PREFIX = "PASS: ";
 
   public static final String FAIL_PREFIX = "FAIL: ";
+
+  public static final String SIGNAL_START = "START";
+
+  public static final String SIGNAL_MAX_REACHED = "MAX_REACHED";
+
 
   // Private c'tor
   private FastJumbler() {
@@ -95,12 +103,17 @@ public class FastJumbler {
       ois.close();
     }
 
+    MemoryMXBean mxbean = ManagementFactory.getMemoryMXBean();
+    MemoryUsage usage = mxbean.getNonHeapMemoryUsage();
+    long nonheapDelta = -1;
+
     // Let the parent JVM know that we are ready to start
-    System.out.println("START");
+    System.out.println(SIGNAL_START);
     // Now run all the tests for each mutation point
     int count = 0;
     for (int i = startPoint; i < mutationCount; i++) {
       if (count++ >= length && lengthFlag.isSet()) {
+        System.out.println(SIGNAL_MAX_REACHED);
         break;
       }
       mutater.setMutationPoint(i);
@@ -111,9 +124,8 @@ public class FastJumbler {
       assert (mutPoint != -1) : "Couldn't get method relative mutation point";
       String modification = mutater.getModification();
 
-      System.out.println(INIT_PREFIX + modification); // Communicate to parent
-      // the current mutation
-      // being attempted
+      // Communicate to parent the current mutation being attempted
+      System.out.println(INIT_PREFIX + modification); 
 
       // Do the run
       String out = JumbleTestSuite.run(jumbler,
@@ -125,28 +137,29 @@ public class FastJumbler {
       
       // Communicate the outcome to the parent JVM.
       if (out.startsWith("FAIL")) {
-        System.out.println(FAIL_PREFIX + modification); // This is the magic
-        // line that the parent
-        // JVM is looking for.
+        // This is the magic line that the parent JVM is looking for.
+        System.out.println(FAIL_PREFIX + modification); 
       } else if (out.startsWith("PASS: ")) {
         String testName = out.substring(6);
         if (cache != null) {
           cache.addFailure(className, methodName, mutPoint, testName);
         }
-        System.out.println(PASS_PREFIX + className + ":" + methodName + ":" + mutPoint + ":" + testName); // This
-        // is
-        // the
-        // magic
-        // line
-        // that
-        // the
-        // parent
-        // JVM
-        // is
-        // looking
-        // for.
+        // This is the magic line that the parent JVM is looking for.
+        System.out.println(PASS_PREFIX + className + ":" + methodName + ":" + mutPoint + ":" + testName); 
       } else {
         throw new RuntimeException("Unexpected result from JumbleTestSuite: " + out);
+      }
+
+      long oldUsed = usage.getUsed();
+      usage = mxbean.getNonHeapMemoryUsage();
+      nonheapDelta = usage.getUsed() - oldUsed;
+      long available = usage.getMax() - usage.getUsed();
+      // System.err.println("Non-Heap used:" + usage.getUsed()/1024 + "KB delta:" + nonheapDelta/1024 + "KB avail:" + available/1024 + "KB");
+      // Check non-heap usage and possibly bail out.
+      if (nonheapDelta > 0 && available < (nonheapDelta * 5)) {
+        // Communicate to the parent JVM if there's not enough non-heap memory to continue.
+        System.out.println(SIGNAL_MAX_REACHED + "  Non-Heap used:" + usage.getUsed()/1024 + "KB delta:" + nonheapDelta/1024 + "KB avail:" + available/1024 + "KB");
+        break;
       }
 
     }
