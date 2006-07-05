@@ -32,24 +32,6 @@ public class IOThreadTest extends TestCase {
     p.destroy();
   }
 
-  public void testJumbleMultiRunner() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.JumbleMultiRunner");
-    runner
-        .setArguments(new String[] {"-r -k -i experiments.JumblerExperiment "
-            + "experiments.JumblerExperimentTest "
-            + "experiments.JumblerExperimentEmptyTest "
-            + "experiments.JumblerExperimentSecondTest 0"});
-
-    Process p = runner.start();
-    IOThread iot = new IOThread(p.getInputStream());
-    iot.start();
-
-    for (int i = 0; i < 10; i++) {
-      Thread.sleep(500);
-    }
-    p.destroy();
-  }
-
   public static Test suite() {
     TestSuite suite = new TestSuite(IOThreadTest.class);
     return suite;
