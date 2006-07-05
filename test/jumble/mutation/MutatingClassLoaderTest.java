@@ -93,7 +93,7 @@ public class MutatingClassLoaderTest extends TestCase {
 
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, CLASSPATH);
     final int mutationCount = jumbler.countMutationPoints(className);
-    assertEquals(12, mutationCount);
+    assertEquals(13, mutationCount);
 
     // First list things when not performing any modifications
     for (int i = 0; i < mutationCount; i++) {
