@@ -16,6 +16,7 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DADD;
 import org.apache.bcel.generic.DCONST;
 import org.apache.bcel.generic.DDIV;
+import org.apache.bcel.generic.DLOAD;
 import org.apache.bcel.generic.DMUL;
 import org.apache.bcel.generic.DNEG;
 import org.apache.bcel.generic.DREM;
@@ -69,6 +70,7 @@ import org.apache.bcel.generic.LSHR;
 import org.apache.bcel.generic.LSUB;
 import org.apache.bcel.generic.LUSHR;
 import org.apache.bcel.generic.LXOR;
+import org.apache.bcel.generic.LoadInstruction;
 import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.ReturnInstruction;
@@ -165,6 +167,9 @@ public class Mutater {
   /** Should NEG instructions be changed */
   private boolean mMutateNegs = false;
 
+  /** Should variable loading instructions be mutated */
+  private boolean mMutateVariables = false;
+
   /** The most recent modification. */
   private String mModification = null;
 
@@ -190,6 +195,24 @@ public class Mutater {
   public void setMutationPoint(final int count) {
     mCount = count;
     mModification = null;
+  }
+
+  public void setMutateVariables(boolean mutateVariables) {
+    mMutateVariables = mutateVariables;
+
+    if (mMutateVariables) {
+      mMutatable[Constants.DLOAD] = new NOP();
+      mMutatable[Constants.DLOAD_0] = new NOP();
+      mMutatable[Constants.DLOAD_1] = new NOP();
+      mMutatable[Constants.DLOAD_2] = new NOP();
+      mMutatable[Constants.DLOAD_3] = new NOP();
+    } else {
+      mMutatable[Constants.DLOAD] = null;
+      mMutatable[Constants.DLOAD_0] = null;
+      mMutatable[Constants.DLOAD_1] = null;
+      mMutatable[Constants.DLOAD_2] = null;
+      mMutatable[Constants.DLOAD_3] = null;
+    }
   }
 
   /**
@@ -393,7 +416,7 @@ public class Mutater {
     final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;
-    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
+    for (int j = 0; j < ihs.length; j = skipAhead(ihs, cp, j)) {
       if (isMutatable(ihs, j, cp)) {
         count += 1;
       }
@@ -528,6 +551,15 @@ public class Mutater {
     return il;
   }
 
+  private InstructionList mutateLOAD(LoadInstruction i) {
+    InstructionList ret = new InstructionList();
+    
+    if (i instanceof DLOAD) {
+      ret.append(new DNEG());
+    }
+    return ret;
+  }
+
   /**
    * Produce a human description of an instruction.
    * 
@@ -626,12 +658,16 @@ public class Mutater {
     final InstructionHandle[] ihs = il.getInstructionHandles();
     final InstructionFactory ifactory = new InstructionFactory(cp);
 
-    for (int j = skipAhead(ihs, cp, 0); j < ihs.length; j = skipAhead(ihs, cp, j)) {
+    for (int j = 0; j < ihs.length; j = skipAhead(ihs, cp, j)) {
       final Instruction i = ihs[j].getInstruction();
       if (isMutatable(ihs, j, cp) && count-- == 0) {
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         String mod = className + ":" + lineNumber + ": ";
-        if (i instanceof IfInstruction) {
+        if (i instanceof LoadInstruction) {
+          //modify value AFTER loading it
+          mod += "modified loaded variable";
+          il.append(ihs[j], mutateLOAD((LoadInstruction) i));
+        } else if (i instanceof IfInstruction) {
           mod += "negated conditional";
           ihs[j].setInstruction(((IfInstruction) i).negate());
         } else if (i instanceof INEG || i instanceof DNEG || i instanceof FNEG || i instanceof LNEG) {
