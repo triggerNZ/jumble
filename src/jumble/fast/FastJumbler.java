@@ -150,18 +150,20 @@ public class FastJumbler {
         throw new RuntimeException("Unexpected result from JumbleTestSuite: " + out);
       }
 
-      long oldUsed = usage.getUsed();
+      long oldUsed = usage.getUsed() / 1024;
       usage = mxbean.getNonHeapMemoryUsage();
-      nonheapDelta = usage.getUsed() - oldUsed;
-      long available = usage.getMax() - usage.getUsed();
-      // System.err.println("Non-Heap used:" + usage.getUsed()/1024 + "KB delta:" + nonheapDelta/1024 + "KB avail:" + available/1024 + "KB");
+      nonheapDelta = usage.getUsed() / 1024 - oldUsed;
+      long available = (usage.getMax() - usage.getUsed()) / 1024;
+      if (verboseFlag.isSet()) {
+        System.err.println("Non-Heap used:" + usage.getUsed() + "KB delta:" + nonheapDelta + "KB avail:" + available + "KB");
+      }
       // Check non-heap usage and possibly bail out.
-      if (nonheapDelta > 0 && available < (nonheapDelta * 5)) {
+      if (nonheapDelta > 0 && available < ((nonheapDelta * 5) + 15000)) {
         // Communicate to the parent JVM if there's not enough non-heap memory to continue.
         System.out.println(SIGNAL_MAX_REACHED 
-                           + "  Non-Heap used:" + usage.getUsed() / 1024 
-                           + "KB delta:" + nonheapDelta / 1024 
-                           + "KB avail:" + available / 1024 + "KB");
+                           + "  Non-Heap used:" + usage.getUsed() 
+                           + "KB delta:" + nonheapDelta
+                           + "KB avail:" + available + "KB");
         break;
       }
 
