@@ -99,6 +99,17 @@ public class FastRunner {
         // Supply the classpath for the Sub-JVM to use.
         "-cp", System.getProperty("java.class.path"),
       });
+
+    // Add a shutdown hook so that if this JVM is interrupted, any
+    // child process will be destroyed.
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+        public void run() {
+          Process childProcess = mChildProcess;
+          if (childProcess != null) {
+            childProcess.destroy();
+          }
+        }
+      });
   }
 
   /**
@@ -714,6 +725,9 @@ public class FastRunner {
         }
         listener.finishedMutation(thisResult);
       }
+    }
+    if (mChildProcess != null) {
+      mChildProcess = null;
     }
 
     JumbleResult ret = new NormalJumbleResult(className, testClassNames, allMutations, timeout);
