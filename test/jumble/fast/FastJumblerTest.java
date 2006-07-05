@@ -36,39 +36,32 @@ public class FastJumblerTest extends TestCase {
   }
 
   public final void tearDown() {
-    //System.err.println(mFileName);
+    // System.err.println(mFileName);
     assertTrue(new File(mFileName).delete());
   }
 
   public void testMain() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
-                                         "experiments.JumblerExperiment", 
-                                         "-c", System.getProperty("java.class.path"),
-                                         "-s", "0", 
-                                         "-r", "-k", "-i", "-v",
-                                         mFileName,
-                                       });
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-c",
+        System.getProperty("java.class.path"), "-s", "0", "-r", "-k", "-i", mFileName, });
     Process p = runner.start();
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    String line = reader.readLine();
+    BufferedReader outReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    BufferedReader errReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+
+    String line = outReader.readLine();
     assertEquals("START", line);
-    line = reader.readLine();
+    line = outReader.readLine();
     assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.INIT_PREFIX));
-    line = reader.readLine();
+    line = outReader.readLine();
     assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.PASS_PREFIX));
-    reader.close();
+    outReader.close();
     p.destroy();
   }
 
   public void testMain2() throws Exception {
-    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {
-                                         "experiments.JumblerExperiment", 
-                                         "-c", System.getProperty("java.class.path"),
-                                         "-s", "0", "-l", "1", 
-                                         "-r", "-k", "-i",
-                                         mFileName,
-                                       });
+    JavaRunner runner = new JavaRunner("jumble.fast.FastJumbler", new String[] {"experiments.JumblerExperiment", "-c",
+        System.getProperty("java.class.path"), "-s", "0", "-l", "1", "-r", "-k", "-i", mFileName, });
     Process p = runner.start();
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -84,7 +77,6 @@ public class FastJumblerTest extends TestCase {
     line = reader.readLine();
     assertEquals(FastJumbler.SIGNAL_MAX_REACHED, line);
   }
-
 
   public final void testSaveCache() throws Exception {
     File f = new File(System.getProperty("user.home"), ".jumble-cache.dat");
@@ -103,7 +95,7 @@ public class FastJumblerTest extends TestCase {
     assertTrue(f.delete());
     // System.err.println(map);
     assertEquals("testAdd", map.getLastFailure("experiments.JumblerExperiment", "add(II)I", 0));
-    assertEquals("testMultiply", map.getLastFailure("experiments.JumblerExperiment", "multiply(II)I", 0));
+    assertEquals("testMultiply", map.getLastFailure("experiments.JumblerExperiment", "multiply(II)I", 1));
   }
 
   public static Test suite() {
