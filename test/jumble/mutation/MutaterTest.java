@@ -107,7 +107,7 @@ public class MutaterTest extends TestCase {
 //    
 //    
 //  }
-  //TODO: do these tests
+  //FIXME: do these tests
 //  public void testCountAssert() {
 //    Mutater m = new Mutater();
 //    assertEquals(1, m.countMutationPoints("experiments.instruction.Assert"));
