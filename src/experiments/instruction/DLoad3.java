@@ -1,6 +1,6 @@
 package experiments.instruction;
 /**
- * Class used for testing the mutater.
+ * Class used for testing.
  * @author Tin Pavlinic
  * @version $Revision 1.0 $
  */
