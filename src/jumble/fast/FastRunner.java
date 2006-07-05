@@ -106,6 +106,9 @@ public class FastRunner {
         public void run() {
           Process childProcess = mChildProcess;
           if (childProcess != null) {
+            if (mVerbose) {
+              System.err.println("Shutting down child process");
+            }
             childProcess.destroy();
           }
         }
