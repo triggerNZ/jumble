@@ -40,6 +40,7 @@ public class BCELRTSITest extends TestCase {
   public void testInstanceOf() throws ClassNotFoundException {
     checkInstance("java.util.LinkedList", "java.util.Collection");
     checkInstance("java.util.LinkedList", "java.lang.Object");
+    checkInstance("java.util.LinkedList", "java.util.List");
     
     checkNonInstance("java.lang.Object", "java.util.LinkedList");
     checkNonInstance("java.util.LinkedList", "java.lang.String");

@@ -43,4 +43,16 @@ public class JumbleUtils {
     }
     return false;
   }
+
+  /**
+   * Gets whether assertions are currently enabled.
+   * 
+   * @return whether assertions are currently enabled
+   * 
+   */
+  public static boolean isAssertionsEnabled() {
+    boolean assertionsEnabled = false;
+    assert assertionsEnabled = true;
+    return assertionsEnabled;
+  }
 }

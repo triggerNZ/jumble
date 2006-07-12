@@ -1,6 +1,5 @@
 package jumble.util;
 
-
 import com.reeltwo.util.Debug;
 import java.io.IOException;
 import java.util.Properties;
@@ -24,7 +23,8 @@ public class JavaRunner {
   /**
    * Constructor.
    * 
-   * @param className The name of the class to run
+   * @param className
+   *          The name of the class to run
    */
   public JavaRunner(String className) {
     this(className, new String[0]);
@@ -33,8 +33,10 @@ public class JavaRunner {
   /**
    * Constructor
    * 
-   * @param className of the class to run
-   * @param arguments the arguments to pass to the main method.
+   * @param className
+   *          of the class to run
+   * @param arguments
+   *          the arguments to pass to the main method.
    */
   public JavaRunner(String className, String[] arguments) {
     mClassName = className;
@@ -44,9 +46,13 @@ public class JavaRunner {
     String ls = props.getProperty("file.separator");
     mJvmBin = props.getProperty("java.home") + ls + "bin" + ls + "java";
 
-    mJvmArgs = new String[2];
+    mJvmArgs = new String[JumbleUtils.isAssertionsEnabled() ? 3 : 2];
     mJvmArgs[0] = "-cp";
     mJvmArgs[1] = props.getProperty("java.class.path");
+    if (JumbleUtils.isAssertionsEnabled()) {
+      mJvmArgs[2] = "-ea";
+      
+    }
   }
 
   /**
@@ -61,7 +67,8 @@ public class JavaRunner {
   /**
    * Sets the class to run
    * 
-   * @param newName name of the new class to run. Must contain a main method.
+   * @param newName
+   *          name of the new class to run. Must contain a main method.
    */
   public void setClassName(String newName) {
     mClassName = newName;
@@ -77,11 +84,12 @@ public class JavaRunner {
   }
 
   /**
-   * Sets the arguments to pass to the JVM.  The default JVM arguments
-   * includes the classpath for the JVM to use, so if you supply new
-   * JVM arguments, you should probably include classpath settings.
+   * Sets the arguments to pass to the JVM. The default JVM arguments includes
+   * the classpath for the JVM to use, so if you supply new JVM arguments, you
+   * should probably include classpath settings.
    * 
-   * @param args the new arguments.
+   * @param args
+   *          the new arguments.
    */
   public void setJvmArguments(String[] args) {
     mJvmArgs = args;
@@ -99,7 +107,8 @@ public class JavaRunner {
   /**
    * Sets the arguments to pass to the main method
    * 
-   * @param args the new arguments.
+   * @param args
+   *          the new arguments.
    */
   public void setArguments(String[] args) {
     mArgs = args;
@@ -109,7 +118,8 @@ public class JavaRunner {
    * Starts the java process.
    * 
    * @return the running java process
-   * @throws IOException if something goes wrong.
+   * @throws IOException
+   *           if something goes wrong.
    */
   public Process start() throws IOException {
     String[] command = getExecArgs();
@@ -118,16 +128,16 @@ public class JavaRunner {
   }
 
   /**
-   * Creates the actual arguments used to start the process.  This
-   * incorporates the user-supplied arguments plus the explicit
-   * location of the JVM, and the classpath to supply.
-   *
+   * Creates the actual arguments used to start the process. This incorporates
+   * the user-supplied arguments plus the explicit location of the JVM, and the
+   * classpath to supply.
+   * 
    * @return a <code>String[]</code> value
    */
   private String[] getExecArgs() {
     final int baseArgs = 2 + (mJvmArgs == null ? 0 : mJvmArgs.length);
 
-    //create the java command
+    // create the java command
     String[] command = new String[baseArgs + getArguments().length];
     int idx = 0;
     command[idx++] = mJvmBin;
