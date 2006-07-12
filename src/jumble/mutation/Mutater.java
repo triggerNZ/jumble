@@ -37,6 +37,7 @@ import org.apache.bcel.generic.IAND;
 import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.IDIV;
 import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.IFNE;
 import org.apache.bcel.generic.IFNONNULL;
 import org.apache.bcel.generic.IINC;
 import org.apache.bcel.generic.IMUL;
@@ -292,6 +293,10 @@ public class Mutater {
     }
   }
 
+  private static boolean checkAssertInstruction(final ConstantPoolGen cpg, final Instruction ins) {
+    return ins instanceof INVOKEVIRTUAL && "desiredAssertionStatus".equals(((INVOKEVIRTUAL) ins).getMethodName(cpg));
+  }
+
   /**
    * Is this an instruction we know how to mutate? Needs the entire chain since
    * in rare cases we need to examine context to see if mutation is allowable.
@@ -320,20 +325,16 @@ public class Mutater {
     // handle special situation of .desiredAssertionStatus invocations
     // javac 1.5
     if (i instanceof ICONST) {
-      if (offset >= 2 && ((ICONST) i).getValue().intValue() == Constants.ICONST_1) {
-        final Instruction context = ihs[offset - 2].getInstruction();
-        if (context instanceof INVOKEVIRTUAL && "desiredAssertionStatus".equals(((INVOKEVIRTUAL) context).getMethodName(cpg))) {
-          return false;
-        }
+      if (offset >= 2 && ((ICONST) i).getValue().intValue() == 1 && checkAssertInstruction(cpg, ihs[offset - 2].getInstruction())) {
+        return false;
       }
-      if (offset >= 4 && ((ICONST) i).getValue().intValue() == Constants.ICONST_0) {
-        final Instruction context = ihs[offset - 4].getInstruction();
-        if (context instanceof INVOKEVIRTUAL && "desiredAssertionStatus".equals(((INVOKEVIRTUAL) context).getMethodName(cpg))) {
-          return false;
-        }
+      if (offset >= 4 && ((ICONST) i).getValue().intValue() == 0 && checkAssertInstruction(cpg, ihs[offset - 4].getInstruction())) {
+        return false;
       }
     }
-
+    if (i instanceof IFNE && offset >= 1 && checkAssertInstruction(cpg, ihs[offset - 1].getInstruction())) {
+      return false;
+    }
     return true;
   }
 
