@@ -1,10 +1,10 @@
 package jumble.util;
-
+/**
+ * Class for testing java runner.
+ * @author Tin Pavlinic
+ * @version $Revision 1.0 $
+ */
 public class CheckAssertions2 {
-
-  /**
-   * @param args
-   */
   public static void main(String[] args) {
     assert print("Assertions on");
   }
