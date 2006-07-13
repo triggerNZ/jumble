@@ -58,9 +58,9 @@ public class JavaRunnerTest extends TestCase {
 
     args = jr.getJvmArguments();
     if (JumbleUtils.isAssertionsEnabled()) {
-      assertEquals(2, args.length);
-    } else {
       assertEquals(3, args.length);
+    } else {
+      assertEquals(2, args.length);
     }
     assertEquals("-cp", args[0]);
     assertEquals(System.getProperty("java.class.path"), args[1]);
