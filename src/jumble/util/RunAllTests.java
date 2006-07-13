@@ -54,7 +54,7 @@ public class RunAllTests {
     boolean useJars = false;
     boolean noRun = false;
     boolean error = false;
-    final Set packages = new HashSet();
+    final Set<String> packages = new HashSet<String>();
     for (int i = 0; i < args.length; i++) {
       final String arg = args[i];
       final char prefix = arg.charAt(0);
@@ -99,7 +99,7 @@ public class RunAllTests {
   
   private final TestSuite mSuite;
   
-  private RunAllTests(final Set packages, final boolean useJars, final boolean verbose, final Appendable out) throws IOException {
+  private RunAllTests(final Set<String> packages, final boolean useJars, final boolean verbose, final Appendable out) throws IOException {
     mVerbose = verbose;
     mOut = out;
     mSuite = new TestSuite();
@@ -107,15 +107,15 @@ public class RunAllTests {
       if (mVerbose) {
         mOut.append("No packages specified finding all Test classes." + LS);
       }
-      final Collection names = BCELRTSI.getAllDerivedClasses(TEST_NAME, useJars);
+      final Collection<String> names = BCELRTSI.getAllDerivedClasses(TEST_NAME, useJars);
       addNames(names);
     } else {
-      for (Iterator it = packages.iterator(); it.hasNext(); ) {
-        final String packge = (String) it.next();
+      for (Iterator<String> it = packages.iterator(); it.hasNext(); ) {
+        final String packge = it.next();
         if (mVerbose) {
           mOut.append("Package \"" + packge + "\"" + LS);
         }
-        final Collection names = BCELRTSI.getAllDerivedClasses(TEST_NAME, packge, useJars);
+        final Collection<String> names = BCELRTSI.getAllDerivedClasses(TEST_NAME, packge, useJars);
         addNames(names);
       }
     }
@@ -128,9 +128,9 @@ public class RunAllTests {
    * @param name
    * @throws IOException
    */
-  private void addNames(final Collection names) throws IOException {
-    for (Iterator jt = names.iterator(); jt.hasNext(); ) {
-      final String name = (String) jt.next();
+  private void addNames(final Collection<String> names) throws IOException {
+    for (Iterator<String> it = names.iterator(); it.hasNext(); ) {
+      final String name = it.next();
       if (mVerbose) {
         mOut.append("  \"" + name + "\"" + LS);
       }

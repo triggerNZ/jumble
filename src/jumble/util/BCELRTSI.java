@@ -42,7 +42,7 @@ public class BCELRTSI {
    *          flag indicating whether to load classes from jar files
    * @return all the visible classes.
    */
-  public static Collection getAllClasses(boolean openJars) {
+  public static Collection<String> getAllClasses(boolean openJars) {
     return getAllClasses(null, openJars);
   }
 
@@ -56,8 +56,8 @@ public class BCELRTSI {
    *          flag indicating whether to load classes from jar files
    * @return all the visible classes in the package.
    */
-  public static Collection getAllClasses(String packageName, boolean openJars) {
-    Collection ret = new HashSet();
+  public static Collection<String> getAllClasses(String packageName, boolean openJars) {
+    final Collection<String> ret = new HashSet<String>();
     for (StringTokenizer tokens = new StringTokenizer(CLASSPATH, PS); tokens
         .hasMoreTokens();) {
       String curPath = tokens.nextToken();
@@ -85,9 +85,9 @@ public class BCELRTSI {
    *          flag indicating whether to load classes from jar files
    * @return all the visible classes deriving from the superclass.
    */
-  public static Collection getAllDerivedClasses(String superclassName,
+  public static Collection<String> getAllDerivedClasses(String superclassName,
       boolean openJars) {
-    Collection c = filterSuperclass(getAllClasses(openJars), superclassName);
+    final Collection<String> c = filterSuperclass(getAllClasses(openJars), superclassName);
 
     c.remove(superclassName);
     return c;
@@ -107,9 +107,9 @@ public class BCELRTSI {
    * @return all the visible classes deriving from the superclass in the
    *         package.
    */
-  public static Collection getAllDerivedClasses(String superclassName,
+  public static Collection<String> getAllDerivedClasses(String superclassName,
       String packageName, boolean openJars) {
-    Collection c = filterSuperclass(getAllClasses(packageName, openJars),
+    final Collection<String> c = filterSuperclass(getAllClasses(packageName, openJars),
         superclassName);
     c.remove(superclassName);
     return c;
@@ -124,16 +124,16 @@ public class BCELRTSI {
    *          superclass name.
    * @return the filtered collection of class names.
    */
-  private static Collection filterSuperclass(Collection classes,
+  private static Collection<String> filterSuperclass(Collection<String> classes,
       String superclassName) {
-    Collection ret = new HashSet();
+    final Collection<String> ret = new HashSet<String>();
     
     try {
       JavaClass superclass = Repository.lookupClass(superclassName);
       
       assert superclass != null;
-      for (Iterator it = classes.iterator(); it.hasNext();) {
-        String className = (String) it.next();
+      for (Iterator<String> it = classes.iterator(); it.hasNext();) {
+        String className = it.next();
         JavaClass clazz = null;
         clazz = Repository.lookupClass(className);
         assert clazz != null;
@@ -165,11 +165,11 @@ public class BCELRTSI {
    *          the jar file.
    * @return the classes in the package in the jar file.
    */
-  private static Collection getClassesFromJar(String packageName,
+  private static Collection<String> getClassesFromJar(String packageName,
       String filename) {
     JarFile jar = null;
     try {
-      Collection ret = new HashSet();
+      final Collection<String> ret = new HashSet<String>();
       jar = new JarFile(filename);
 
       for (Enumeration e = jar.entries(); e.hasMoreElements();) {
@@ -215,7 +215,7 @@ public class BCELRTSI {
    *          the directory path.
    * @return collection of classes in the directory.
    */
-  private static Collection getClassesFromDir(String packageName,
+  private static Collection<String> getClassesFromDir(String packageName,
       String filename) {
     if (packageName == null) {
       // hard case. need to recurse through the directory structure
@@ -223,15 +223,15 @@ public class BCELRTSI {
       return recursePackages(filename, new File(filename));
     } else {
       // easy case - go to the package location and get all the files
-      String finalDir = filename + FS + packageName.replace('.', FS.charAt(0));
+      final String finalDir = filename + FS + packageName.replace('.', FS.charAt(0));
       File dir = new File(finalDir);
 
       if (!dir.exists()) {
         // System.err.println("NOT FOUND: " + dir.getAbsolutePath());
-        return new HashSet();
+        return new HashSet<String>();
       }
 
-      Collection ret = new HashSet();
+      final Collection<String> ret = new HashSet<String>();
       File[] files = dir.listFiles(new ClassFileFilter());
       for (int i = 0; i < files.length; i++) {
         // Lop off .class
@@ -258,8 +258,8 @@ public class BCELRTSI {
    *          the directory we are currently in
    * @return collection of classes.
    */
-  private static Collection recursePackages(String baseDirName, File currentDir) {
-    Collection ret = new HashSet();
+  private static Collection<String> recursePackages(String baseDirName, File currentDir) {
+    final Collection<String> ret = new HashSet<String>();
 
     File[] dirs = currentDir.listFiles(new DirectoryFilter());
     File[] classes = currentDir.listFiles(new ClassFileFilter());
