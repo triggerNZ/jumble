@@ -11,7 +11,6 @@ import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 
 /**
  * Executes all Junit based test classes that are in the class path or in a specified
@@ -24,6 +23,16 @@ import junit.textui.TestRunner;
  * @version $Revision$
  */
 public class RunAllTests {
+
+  /**
+   * 
+   */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /**
+   * 
+   */
+  private static final Object[] NO_OBJECTS = new Object[0];
 
   /**
    * 
@@ -101,7 +110,7 @@ public class RunAllTests {
       final Collection names = BCELRTSI.getAllDerivedClasses(TEST_NAME, useJars);
       addNames(names);
     } else {
-      for(Iterator it = packages.iterator(); it.hasNext(); ) {
+      for (Iterator it = packages.iterator(); it.hasNext(); ) {
         final String packge = (String) it.next();
         if (mVerbose) {
           mOut.append("Package \"" + packge + "\"" + LS);
@@ -140,7 +149,7 @@ public class RunAllTests {
       }
       final Method method;
       try {
-        method = cl.getMethod("suite", null);
+        method = cl.getMethod("suite", NO_CLASSES);
       } catch (SecurityException e) {
         continue;
       } catch (NoSuchMethodException e) {
@@ -151,15 +160,15 @@ public class RunAllTests {
         continue;
       }
       final int modifiers = method.getModifiers();
-      if(!Modifier.isStatic(modifiers)) {
+      if (!Modifier.isStatic(modifiers)) {
         mOut.append("    suite() method found but not static" + LS);
       }
-      if(!Modifier.isPublic(modifiers)) {
+      if (!Modifier.isPublic(modifiers)) {
         mOut.append("    suite() method found but not public" + LS);
       }
       final Test test;
         try {
-          test = (Test) method.invoke(null, null);
+          test = (Test) method.invoke(null, NO_OBJECTS);
         } catch (IllegalArgumentException e) {
           throw new RuntimeException("Error invoking suite() method for name=" + name, e);
         } catch (IllegalAccessException e) {
