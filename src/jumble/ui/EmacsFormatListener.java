@@ -111,7 +111,8 @@ public class EmacsFormatListener implements JumbleListener {
     if (names.length == 1) {
       return " " + names[0];
     } else {
-      StringBuffer sb = new StringBuffer(" [");
+      StringBuffer sb = new StringBuffer(" ");
+      sb.append('[');
       for (String name : names) {
         sb.append(name).append(' ');
       }
