@@ -1,11 +1,12 @@
 package jumble.ui;
 
-import java.io.PrintStream;
-import java.util.List;
 
-import jumble.fast.MutationResult;
 
 import com.reeltwo.util.Debug;
+import java.io.PrintStream;
+import java.util.List;
+import jumble.fast.JumbleResult;
+import jumble.fast.MutationResult;
 
 /**
  * Prints the results of a Jumble run to a <code>PrintStream</code>, this
@@ -20,8 +21,6 @@ public class PrinterListener implements JumbleListener {
   private int mCovered = 0;
 
   private int mMutationCount;
-
-  private int mInitialStatus;
 
   private String mClassName;
 
@@ -68,14 +67,12 @@ public class PrinterListener implements JumbleListener {
     mTestNames = testClasses;
   }
 
-  public void performedInitialTest(int status, int mutationCount, long timeout) {
-    assert status >= 0 && status < 4;
-    mInitialTestsPassed = status == InitialTestStatus.OK;
-    mInitialStatus = status;
+  public void performedInitialTest(JumbleResult result, int mutationCount) {
+    mInitialTestsPassed = result.initialTestsPassed();
     mMutationCount = mutationCount;
     mStream.println("Mutating " + mClassName);
 
-    if (mInitialStatus == InitialTestStatus.INTERFACE) {
+    if (result.isInterface()) {
       mStream.println("Score: 100 (INTERFACE)");
       return;
     }
@@ -86,20 +83,20 @@ public class PrinterListener implements JumbleListener {
     }
     mStream.println();
 
-    if (mInitialStatus == InitialTestStatus.NO_TEST) {
+    if (result.isMissingTestClass()) {
       mStream.println("Score: 0 (NO TEST CLASS)");
       mStream.println("Mutation points = " + mMutationCount);
       return;
     }
 
-    if (mInitialStatus == InitialTestStatus.FAILED) {
+    if (!mInitialTestsPassed) {
       mStream.println("Score: 0 (TEST CLASS IS BROKEN)");
       mStream.println("Mutation points = " + mMutationCount);
       return;
     }
 
     mStream.print("Mutation points = " + mMutationCount);
-    mStream.println(", unit test time limit " + (double) timeout / 1000 + "s");
+    mStream.println(", unit test time limit " + (double) result.getTimeoutLength() / 1000 + "s");
   }
   
   public void error(String errorMsg) {

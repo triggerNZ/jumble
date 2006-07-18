@@ -1,7 +1,8 @@
 package jumble.ui;
 
-import java.util.List;
 
+import java.util.List;
+import jumble.fast.JumbleResult;
 import jumble.fast.MutationResult;
 
 /**
@@ -20,7 +21,7 @@ public class NullListener implements JumbleListener {
   public void finishedMutation(MutationResult res) {
   }
   
-  public void performedInitialTest(int status, int mutationCount, long timeout) {
+  public void performedInitialTest(JumbleResult result, int mutationCount) {
   }
   
   public void error(String message) {

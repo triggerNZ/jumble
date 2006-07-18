@@ -4,6 +4,7 @@ package jumble.ui;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import jumble.fast.JumbleResult;
 import jumble.fast.MutationResult;
 import org.apache.bcel.util.ClassPath.ClassFile;
 import org.apache.bcel.util.ClassPath;
@@ -20,8 +21,6 @@ public class EmacsFormatListener implements JumbleListener {
   private int mCovered = 0;
 
   private int mMutationCount;
-
-  private int mInitialStatus;
 
   private String mClassName;
 
@@ -51,24 +50,29 @@ public class EmacsFormatListener implements JumbleListener {
     mStream.close();
   }
 
+  private String findSourceName(String className) {
+    String sourceName = className.replace('.', '/') + ".java";
+    try {
+      // Try to resolve the class name relative to the classpath
+      ClassFile cf = mClassPath.getClassFile(className);
+      sourceName = cf.getPath();
+      sourceName = sourceName.replaceAll("\\.class$", ".java");
+      if (sourceName.startsWith(mBaseDir)) {
+        sourceName = sourceName.substring(mBaseDir.length() + 1);
+      }
+    } catch (IOException e) {
+      // Use the sourceName that we have.
+    }
+    // Convert inner class to the outer source file
+    sourceName = sourceName.replaceAll("\\$[^.]+\\.", ".");
+    return sourceName;
+  }
+
   public void finishedMutation(MutationResult res) {
     if (res.isFailed()) {
       String description = res.getDescription();
       description = description.substring(description.indexOf(":"));
-      String sourceName = res.getClassName().replace('.', '/') + ".java";
-      try {
-        // Try to resolve the class name relative to the classpath
-        ClassFile cf = mClassPath.getClassFile(res.getClassName());
-        sourceName = cf.getPath();
-        sourceName = sourceName.replaceAll("\\.class$", ".java");
-        if (sourceName.startsWith(mBaseDir)) {
-          sourceName = sourceName.substring(mBaseDir.length() + 1);
-        }
-      } catch (IOException e) {
-        // Use the sourceName that we have.
-      }
-      // Convert inner class to the outer source file
-      sourceName = sourceName.replaceAll("\\$[^.]+\\.", ".");
+      String sourceName = findSourceName(res.getClassName());
       mStream.println(sourceName + description);
     } else {
       mCovered++;
@@ -79,25 +83,40 @@ public class EmacsFormatListener implements JumbleListener {
     mClassName = className;
   }
 
-  public void performedInitialTest(int status, int mutationCount, long timeout) {
-    assert status >= 0 && status < 4;
-    mInitialTestsPassed = status == InitialTestStatus.OK;
-    mInitialStatus = status;
+  public void performedInitialTest(JumbleResult result, int mutationCount) {
+    mInitialTestsPassed = result.initialTestsPassed();
     mMutationCount = mutationCount;
-    mStream.print("Mutating " + mClassName);
+    String sourceName = findSourceName(mClassName);
+    mStream.print("Mutating " + sourceName);
 
-    if (mInitialStatus == InitialTestStatus.INTERFACE) {
+    if (result.isInterface()) {
       mStream.println(" (Interface)");
       mStream.println("Score: 100");
     } else {
       mStream.println(" (" + mMutationCount + " mutation points)");
-      if (mInitialStatus == InitialTestStatus.NO_TEST) {
-        mStream.println(mClassName + ":0: No test class");
+      if (result.isMissingTestClass()) {
+        mStream.println(sourceName + ":0: No test class" + toString(result.getTestClasses()));
         mStream.println("Score: 0");
-      } else if (mInitialStatus == InitialTestStatus.FAILED) {
-        mStream.println(mClassName + ":0: Test class is broken");
+      } else if (!mInitialTestsPassed) {
+        mStream.println(sourceName + ":0: Test class is broken" + toString(result.getTestClasses()));
         mStream.println("Score: 0");
       }
+    }
+  }
+  
+  private String toString(String[] names) {
+    if (names == null || names.length == 0) {
+      return "";
+    }
+    if (names.length == 1) {
+      return " " + names[0];
+    } else {
+      StringBuffer sb = new StringBuffer(" [");
+      for (String name : names) {
+        sb.append(name).append(' ');
+      }
+      sb.append(']');
+      return sb.toString();
     }
   }
 

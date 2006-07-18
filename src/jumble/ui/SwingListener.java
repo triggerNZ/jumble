@@ -1,22 +1,23 @@
 package jumble.ui;
 
+
+
+
+import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-
 import jumble.Jumble;
 import jumble.fast.FastRunner;
+import jumble.fast.JumbleResult;
 import jumble.fast.MutationResult;
-
-import com.reeltwo.util.CLIFlags;
-import com.reeltwo.util.CLIFlags.Flag;
 
 /**
  * A Jumble listener which displays a GUI representation of the run.
@@ -60,7 +61,7 @@ public class SwingListener implements JumbleListener {
     frame.setVisible(true);
   }
 
-  public void performedInitialTest(int status, int mutationCount, long timeout) {
+  public void performedInitialTest(JumbleResult result, int mutationCount) {
     mCurrentScore = 0;
     mMutationCount = mutationCount;
     mProgressBar.setMaximum(mMutationCount);

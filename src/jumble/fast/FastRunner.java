@@ -687,8 +687,7 @@ public class FastRunner {
         // should never happen
         throw new RuntimeException();
       }
-
-      listener.performedInitialTest(status, mMutationCount, -1);
+      listener.performedInitialTest(initialResult, mMutationCount);
       // Jumbling will not happen here
       listener.jumbleRunEnded();
       return initialResult;
@@ -697,7 +696,7 @@ public class FastRunner {
     // compute the timeout
     long timeout = computeTimeout(mTotalRuntime);
 
-    listener.performedInitialTest(InitialTestStatus.OK, mMutationCount, timeout);
+    listener.performedInitialTest(new InitialOKJumbleResult(className, testClassNames, timeout), mMutationCount);
 
     mChildProcess = null;
     mIot = null;

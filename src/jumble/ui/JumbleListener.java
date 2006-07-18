@@ -1,7 +1,8 @@
 package jumble.ui;
 
-import java.util.List;
 
+import java.util.List;
+import jumble.fast.JumbleResult;
 import jumble.fast.MutationResult;
 
 /**
@@ -9,11 +10,11 @@ import jumble.fast.MutationResult;
  * they are run and not at the end.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public interface JumbleListener {
   void jumbleRunStarted(String className, List testNames);
-  void performedInitialTest(int status, int mutationCount, long timeout);
+  void performedInitialTest(JumbleResult result, int mutationCount);
   void jumbleRunEnded();
   void finishedMutation(MutationResult res);
   void error(String errorMessage);

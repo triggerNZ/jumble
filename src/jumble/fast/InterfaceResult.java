@@ -24,4 +24,9 @@ public class InterfaceResult extends AbstractJumbleResult {
     return true;
   }
 
+  /** {@inheritDoc} */
+  public boolean initialTestsPassed() {
+    return false;
+  }
+
 }

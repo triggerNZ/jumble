@@ -36,4 +36,9 @@ public class MissingTestsTestResult extends AbstractJumbleResult {
     return true;
   }
 
+  /** {@inheritDoc} */
+  public boolean initialTestsPassed() {
+    return false;
+  }
+
 }
