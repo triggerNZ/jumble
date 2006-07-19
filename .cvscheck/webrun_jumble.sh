@@ -20,24 +20,18 @@ else
 fi
 
 # Description of modules in CVS
-export MAIN_MODULE="jumble/trunk"
-if [ -f "$CODEHOME/$MAIN_MODULE/CVS/Root" ]; then
-    export CVSROOT=$(cat "$CODEHOME/$MAIN_MODULE/CVS/Root")
-else
-    export CVSROOT=:pserver:$LOGNAME@giger:/home/cvs-repository2
-fi
+export MAIN_MODULE="jumble"
+export CVSROOT=
 if [ -f "$CODEHOME/$MAIN_MODULE/.svn/entries" ]; then
-    export CVSROOT=
     export SVNROOT=$(cat "$CODEHOME/$MAIN_MODULE/.svn/entries" | sed '/^ *url=/!d;s/^ *url="//;s/".*$//')
 else
-    export SVNROOT="file:///home2/len/.svnroot/$MAIN_MODULE"
-    export CVSROOT=
+    export SVNROOT="file:///home/subversion-repository2/$MAIN_MODULE/trunk"
 fi
-export SRC_MODULES="jumble/trunk/src"
-export LIB_MODULES="jumble/trunk/lib"
-export TEST_MODULES="jumble/trunk/test"
+export SRC_MODULES="jumble/src"
+export LIB_MODULES="jumble/lib"
+export TEST_MODULES="jumble/test"
 export DOC_MODULES=" "
-export JAVADOC_MODULES="jumble/trunk/src"
+export JAVADOC_MODULES="jumble/src"
 
 # Options controlling how things get run
 export COMPILERS="javacall_1_5"
