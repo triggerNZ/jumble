@@ -25,7 +25,7 @@ export CVSROOT=
 if [ -f "$CODEHOME/$MAIN_MODULE/.svn/entries" ]; then
     export SVNROOT=$(cat "$CODEHOME/$MAIN_MODULE/.svn/entries" | sed '/^ *url=/!d;s/^ *url="//;s/".*$//')
 else
-    export SVNROOT="file:///home/subversion-repository2/$MAIN_MODULE/trunk"
+    export SVNROOT="svn://giger/home/subversion-repository2/$MAIN_MODULE/trunk"
 fi
 export SRC_MODULES="jumble/src"
 export LIB_MODULES="jumble/lib"
