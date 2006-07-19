@@ -19,7 +19,7 @@ else
     export CODEHOME=$HOME/reeltwo_sandboxes
 fi
 
-# Description of modules in CVS
+# Description of modules in subversion
 export MAIN_MODULE="jumble"
 export CVSROOT=
 if [ -f "$CODEHOME/$MAIN_MODULE/.svn/entries" ]; then
