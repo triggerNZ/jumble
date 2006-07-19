@@ -81,7 +81,7 @@ import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
 
 /**
- * Mutation tester. Given a class file can either count the number of possible
+ * Given a class file can either count the number of possible
  * mutation points or perform a mutations. Mutations can be specified by number
  * or selected at random.
  * 
