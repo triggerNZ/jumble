@@ -658,7 +658,7 @@ public class Mutater {
   /**
    * Handle mutations of the constant pool.
    */
-  private void mutateConstant(final ConstantPoolGen cp, int i) {
+  private void mutateConstant(final String className, final ConstantPoolGen cp, int i) {
     final Constant c = cp.getConstant(i);
     String mod = className + ":0: Constant Pool ";
     if (c instanceof ConstantString) {
@@ -668,10 +668,10 @@ public class Mutater {
       final String current = utf.getBytes();
       if ("__jumble__".equals(current)) {
         cp.setConstant(index, new ConstantUtf8("__jumble__"));
-        mod = mod + current + "\" -> \"__jumble__\"";
+        mod = mod + "\"" + current + "\" -> \"__jumble__\"";
       } else {
         cp.setConstant(index, new ConstantUtf8("___jumble___"));
-        mod = mod + current + "\" -> \"___jumble___\"";
+        mod = mod + "\"" + current + "\" -> \"___jumble___\"";
       }
     } else if (c instanceof ConstantLong) {
       final long current = ((ConstantLong) c).getBytes();
@@ -778,7 +778,7 @@ public class Mutater {
       // first deal with constant pool
       for (int i = 0; i < cp.getSize(); i++) {
         if (isMutatable(cp.getConstant(i)) && count-- == 0) {
-          mutateConstant(cp, i);
+          mutateConstant(ret.getClassName(), cp, i);
         }
       }
     }
