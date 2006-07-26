@@ -41,6 +41,7 @@ public class Jumble {
     Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+    Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
     Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
     Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
@@ -60,6 +61,7 @@ public class Jumble {
     jumble.setInlineConstants(inlFlag.isSet());
     jumble.setReturnVals(retFlag.isSet());
     jumble.setIncrements(incFlag.isSet());
+    jumble.setCPool(cpoolFlag.isSet());
     jumble.setOrdered(!orderFlag.isSet());
     jumble.setLoadCache(!loadFlag.isSet());
     jumble.setSaveCache(!saveFlag.isSet());

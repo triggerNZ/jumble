@@ -44,6 +44,7 @@ public class FastJumbler {
   static final String FLAG_RETURN_VALS = "return-vals";
   static final String FLAG_INLINE_CONSTS = "inline-consts";
   static final String FLAG_INCREMENTS = "increments";
+  static final String FLAG_CPOOL = "cpool";
   static final String FLAG_START = "start";
   static final String FLAG_LENGTH = "length";
   static final String FLAG_CLASSPATH = "classpath";
@@ -61,6 +62,7 @@ public class FastJumbler {
     final Flag verboseFlag = flags.registerOptional('v', FLAG_VERBOSE, "Provide extra output during run.");
     final Flag retFlag = flags.registerOptional('r', FLAG_RETURN_VALS, "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', FLAG_INLINE_CONSTS, "Mutate inline constants.");
+    final Flag cpoolFlag = flags.registerOptional('w', FLAG_CPOOL, "Mutate constant pool entries.");
     final Flag incFlag = flags.registerOptional('i', FLAG_INCREMENTS, "Mutate increments.");
     final Flag startFlag = flags.registerRequired('s', FLAG_START, Integer.class, "NUM", "The mutation point to start at.");
     final Flag lengthFlag = flags.registerOptional('l', FLAG_LENGTH, Integer.class, "LEN", "The number of mutation points to execute");
@@ -88,6 +90,7 @@ public class FastJumbler {
     final Mutater mutater = new Mutater(-1);
     mutater.setIgnoredMethods(ignore);
     mutater.setMutateIncrements(incFlag.isSet());
+    mutater.setMutateCPool(cpoolFlag.isSet());
     mutater.setMutateInlineConstants(inlFlag.isSet());
     mutater.setMutateReturnValues(retFlag.isSet());
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, classpath);

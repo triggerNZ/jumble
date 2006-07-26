@@ -78,6 +78,17 @@ import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
+import org.apache.bcel.classfile.ConstantMethodref;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantCP;
+import org.apache.bcel.classfile.ConstantClass;
+import org.apache.bcel.classfile.ConstantNameAndType;
+import org.apache.bcel.classfile.ConstantString;
+import org.apache.bcel.classfile.ConstantInteger;
+import org.apache.bcel.classfile.ConstantLong;
+import org.apache.bcel.classfile.ConstantFloat;
+import org.apache.bcel.classfile.ConstantDouble;
+import org.apache.bcel.classfile.ConstantUtf8;
 
 /**
  * Given a class file can either count the number of possible
@@ -166,6 +177,9 @@ public class Mutater {
   /** Should NEG instructions be changed */
   private boolean mMutateNegs = false;
 
+  /** Should the constant pool be changed. */
+  private boolean mCPool = false;
+
   /** The most recent modification. */
   private String mModification = null;
 
@@ -191,6 +205,15 @@ public class Mutater {
   public void setMutationPoint(final int count) {
     mCount = count;
     mModification = null;
+  }
+
+  /**
+   * Sets whether mutations should be made in the constant pool.
+   *
+   * @param v true to mutate the constant pool
+   */
+  public void setMutateCPool(final boolean v) {
+    mCPool = v;
   }
 
   /**
@@ -383,10 +406,29 @@ public class Mutater {
   }
 
   /**
+   * Test if a constant in the pool is mutatable.
+   */
+  private boolean isMutatable(final Constant c) {
+    return c != null && (c instanceof ConstantString || c instanceof ConstantLong || c instanceof ConstantInteger || c instanceof ConstantFloat || c instanceof ConstantDouble); 
+  }
+
+  /**
+   * Count the number of mutation points in the constant pool.
+   */
+  private int countMutationPoints(final ConstantPoolGen cp) {
+    int count = 0;
+    for (int i = 0; i < cp.getSize(); i++) {
+      if (isMutatable(cp.getConstant(i))) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
    * Count number of mutation points in a method.
    */
   private int countMutationPoints(final Method m, final String className, final ConstantPoolGen cp) {
-
     // check this is a method that it makes sense to mutate
     if (!checkNormalMethod(m)) {
       return 0;
@@ -408,7 +450,6 @@ public class Mutater {
    */
   public int countMutationPoints(final String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
-    int count = 0;
     final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
@@ -421,10 +462,8 @@ public class Mutater {
 
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
-    /*
-     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
-     */
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+    int count = mCPool ? countMutationPoints(cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
     }
@@ -615,8 +654,45 @@ public class Mutater {
     return mModification;
   }
 
+
+  /**
+   * Handle mutations of the constant pool.
+   */
+  private void mutateConstant(final ConstantPoolGen cp, int i) {
+    final Constant c = cp.getConstant(i);
+    if (c instanceof ConstantString) {
+      // in this case need to actually step to the UTF8 constant for the string
+      final int index = ((ConstantString) c).getStringIndex();
+      final ConstantUtf8 utf = (ConstantUtf8) cp.getConstant(index);
+      final String current = utf.getBytes();
+      if ("__jumble__".equals(current)) {
+        cp.setConstant(index, new ConstantUtf8("__jumble__"));
+      } else {
+        cp.setConstant(index, new ConstantUtf8("___jumble___"));
+      }
+      mModification = "Constant Pool \"" + current + "\" -> \"__jumble__\"";
+    } else if (c instanceof ConstantLong) {
+      final long current = ((ConstantLong) c).getBytes();
+      cp.setConstant(i, new ConstantLong(current + 1));
+      mModification = "Constant Pool " + current + " -> " + (current + 1);
+    } else if (c instanceof ConstantInteger) {
+      final int current = ((ConstantInteger) c).getBytes();
+      cp.setConstant(i, new ConstantInteger(current + 1));
+      mModification = "Constant Pool " + current + " -> " + (current + 1);
+    } else if (c instanceof ConstantFloat) {
+      final float current = ((ConstantFloat) c).getBytes();
+      cp.setConstant(i, new ConstantFloat(current + 1));
+      mModification = "Constant Pool " + current + " -> " + (current + 1);
+    } else if (c instanceof ConstantDouble) {
+      final double current = ((ConstantDouble) c).getBytes();
+      cp.setConstant(i, new ConstantDouble(current + 1));
+      mModification = "Constant Pool " + current + " -> " + (current + 1);
+    }
+  }
+
+
   private int jumble(Method[] methods, int methodidx, final String className, final ConstantPoolGen cp, int count) {
-    
+
     // check if modification is appropriate
     Method m = methods[methodidx];
     if (count < 0 || !checkNormalMethod(m)) {
@@ -695,6 +771,14 @@ public class Mutater {
     Method[] methods = ret.getMethods();
     ConstantPoolGen cp = new ConstantPoolGen(ret.getConstantPool());
     int count = mCount;
+    if (mCPool) {
+      // first deal with constant pool
+      for (int i = 0; i < cp.getSize(); i++) {
+        if (isMutatable(cp.getConstant(i)) && count-- == 0) {
+          mutateConstant(cp, i);
+        }
+      }
+    }
     for (int i = 0; i < methods.length; i++) {
       count = jumble(methods, i, ret.getClassName(), cp, count);
     }
@@ -739,7 +823,6 @@ public class Mutater {
    */
   public String getMutatedMethodName(String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
-    int count = 0;
     final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
@@ -749,10 +832,8 @@ public class Mutater {
 
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
-    /*
-     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
-     */
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+    int count = mCPool ? countMutationPoints(cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
 
@@ -791,7 +872,6 @@ public class Mutater {
    */
   public int getMethodRelativeMutationPoint(String cl) throws ClassNotFoundException {
     final String className = fixName(cl);
-    int count = 0;
     final JavaClass clazz = lookupClass(className);
 
     if (clazz == null) {
@@ -800,10 +880,8 @@ public class Mutater {
 
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
-    /*
-     * if (mConstants) { count = countMutationPoints(cpool.getConstantPool()); }
-     */
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+    int count = mCPool ? countMutationPoints(cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       int oldCount = count;
       count += countMutationPoints(methods[i], className, cp);

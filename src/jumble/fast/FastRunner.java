@@ -47,6 +47,9 @@ public class FastRunner {
   /** Whether to mutate increments */
   private boolean mIncrements = true;
 
+  /** Whether to mutate constant pool */
+  private boolean mCPool = true;
+
   private boolean mOrdered = true;
 
   private boolean mVerbose = false;
@@ -207,6 +210,25 @@ public class FastRunner {
    */
   public void setIncrements(final boolean argIncrements) {
     mIncrements = argIncrements;
+  }
+
+  /**
+   * Gets whether constant pool will be mutated.
+   * 
+   * @return true if constant pool will be mutated.
+   */
+  public boolean isCPool() {
+    return mCPool;
+  }
+
+  /**
+   * Sets whether constant pool will be mutated.
+   * 
+   * @param argIncrements
+   *          true if constants will be mutated.
+   */
+  public void setCPool(final boolean argIncrements) {
+    mCPool = argIncrements;
   }
 
   /**
@@ -403,6 +425,10 @@ public class FastRunner {
     if (mIncrements) {
       args.add("--" + FastJumbler.FLAG_INCREMENTS);
     }
+    // increments
+    if (mCPool) {
+      args.add("--" + FastJumbler.FLAG_CPOOL);
+    }
     // verbose
     if (mVerbose) {
       args.add("--" + FastJumbler.FLAG_VERBOSE);
@@ -420,6 +446,7 @@ public class FastRunner {
     final Mutater m = new Mutater(mutationpoint);
     m.setIgnoredMethods(mExcludeMethods);
     m.setMutateIncrements(mIncrements);
+    m.setMutateCPool(mCPool);
     m.setMutateInlineConstants(mInlineConstants);
     m.setMutateReturnValues(mReturnVals);
     return m;
