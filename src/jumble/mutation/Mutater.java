@@ -660,6 +660,7 @@ public class Mutater {
    */
   private void mutateConstant(final ConstantPoolGen cp, int i) {
     final Constant c = cp.getConstant(i);
+    String mod = className + ":0: Constant Pool ";
     if (c instanceof ConstantString) {
       // in this case need to actually step to the UTF8 constant for the string
       final int index = ((ConstantString) c).getStringIndex();
@@ -667,27 +668,29 @@ public class Mutater {
       final String current = utf.getBytes();
       if ("__jumble__".equals(current)) {
         cp.setConstant(index, new ConstantUtf8("__jumble__"));
+        mod = mod + current + "\" -> \"__jumble__\"";
       } else {
         cp.setConstant(index, new ConstantUtf8("___jumble___"));
+        mod = mod + current + "\" -> \"___jumble___\"";
       }
-      mModification = "Constant Pool \"" + current + "\" -> \"__jumble__\"";
     } else if (c instanceof ConstantLong) {
       final long current = ((ConstantLong) c).getBytes();
       cp.setConstant(i, new ConstantLong(current + 1));
-      mModification = "Constant Pool " + current + " -> " + (current + 1);
+      mod = mod + current + " -> " + (current + 1);
     } else if (c instanceof ConstantInteger) {
       final int current = ((ConstantInteger) c).getBytes();
       cp.setConstant(i, new ConstantInteger(current + 1));
-      mModification = "Constant Pool " + current + " -> " + (current + 1);
+      mod = mod + current + " -> " + (current + 1);
     } else if (c instanceof ConstantFloat) {
       final float current = ((ConstantFloat) c).getBytes();
       cp.setConstant(i, new ConstantFloat(current + 1));
-      mModification = "Constant Pool " + current + " -> " + (current + 1);
+      mod = mod + current + " -> " + (current + 1);
     } else if (c instanceof ConstantDouble) {
       final double current = ((ConstantDouble) c).getBytes();
       cp.setConstant(i, new ConstantDouble(current + 1));
-      mModification = "Constant Pool " + current + " -> " + (current + 1);
+      mod = mod + current + " -> " + (current + 1);
     }
+    mModification = mod;
   }
 
 
