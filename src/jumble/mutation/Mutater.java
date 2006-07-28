@@ -408,42 +408,47 @@ public class Mutater {
   }
 
   /** Records the first line in the code that uses a constant. */
-  private int[] mConstantFirstRef;
+  private int[] mConstantFirstRef = null;
+
+  private void initConstantRef(final Method[] methods, final String className, final ConstantPoolGen cp) {
+    if (mConstantFirstRef == null) {
+      mConstantFirstRef = new int[cp.getSize()];
+      Arrays.fill(mConstantFirstRef, -1);
+      if (methods != null) {
+        for (int i = 0; i < methods.length; i++) {
+          final Method m = methods[i];
+          final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
+          final InstructionHandle[] ihs = il.getInstructionHandles();
+          for (int j = 0; j < ihs.length; j++) {
+            final Instruction ins = ihs[j].getInstruction();
+            if (ins instanceof CPInstruction) {
+              final int index = ((CPInstruction) ins).getIndex();
+              if (mConstantFirstRef[index] == -1) {
+                mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
 
   /**
    * Test if a constant in the pool is mutatable.
    */
-  private boolean isMutatable(final Constant c) {
-    return c != null && (c instanceof ConstantString || c instanceof ConstantLong || c instanceof ConstantInteger || c instanceof ConstantFloat || c instanceof ConstantDouble); 
+  private boolean isMutatable(final Constant c, final int i) {
+    return mConstantFirstRef[i] != -1 && c != null && (c instanceof ConstantString || c instanceof ConstantLong || c instanceof ConstantInteger || c instanceof ConstantFloat || c instanceof ConstantDouble); 
   }
 
   /**
    * Count the number of mutation points in the constant pool.
    */
   private int countMutationPoints(final Method[] methods, final String className, final ConstantPoolGen cp) {
-    // find the first reference to each constant
-    mConstantFirstRef = new int[cp.getSize()];
-    Arrays.fill(mConstantFirstRef, -1);
-    if (methods != null) {
-      for (int i = 0; i < methods.length; i++) {
-        final Method m = methods[i];
-        final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
-        final InstructionHandle[] ihs = il.getInstructionHandles();
-        for (int j = 0; j < ihs.length; j++) {
-          final Instruction ins = ihs[j].getInstruction();
-          if (ins instanceof CPInstruction) {
-            final int index = ((CPInstruction) ins).getIndex();
-            if (mConstantFirstRef[index] == -1) {
-              mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
-            }
-          }
-        }
-      }
-    }
-
+    initConstantRef(methods, className, cp);
     int count = 0;
     for (int i = 0; i < cp.getSize(); i++) {
-      if (mConstantFirstRef[i] != -1 && isMutatable(cp.getConstant(i))) {
+      if (isMutatable(cp.getConstant(i), i)) {
         count++;
       }
     }
@@ -801,8 +806,9 @@ public class Mutater {
     int count = mCount;
     if (mCPool) {
       // first deal with constant pool
+      initConstantRef(methods, ret.getClassName(), cp);
       for (int i = 0; i < cp.getSize(); i++) {
-        if (isMutatable(cp.getConstant(i)) && count-- == 0) {
+        if (isMutatable(cp.getConstant(i), i) && count-- == 0) {
           mutateConstant(ret.getClassName(), cp, i);
         }
       }
