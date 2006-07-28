@@ -660,7 +660,7 @@ public class Mutater {
    */
   private void mutateConstant(final String className, final ConstantPoolGen cp, int i) {
     final Constant c = cp.getConstant(i);
-    String mod = className + ":0: Constant Pool ";
+    String mod = className + ":0: CP[" + i + "] ";
     if (c instanceof ConstantString) {
       // in this case need to actually step to the UTF8 constant for the string
       final int index = ((ConstantString) c).getStringIndex();
