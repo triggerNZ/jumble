@@ -89,6 +89,8 @@ import org.apache.bcel.classfile.ConstantLong;
 import org.apache.bcel.classfile.ConstantFloat;
 import org.apache.bcel.classfile.ConstantDouble;
 import org.apache.bcel.classfile.ConstantUtf8;
+import java.util.Arrays;
+import org.apache.bcel.generic.CPInstruction;
 
 /**
  * Given a class file can either count the number of possible
@@ -405,6 +407,9 @@ public class Mutater {
     /* && m.getLineNumberTable().getSourceLine(0) > 0; */
   }
 
+  /** Records the first line in the code that uses a constant. */
+  private int[] mConstantFirstRef;
+
   /**
    * Test if a constant in the pool is mutatable.
    */
@@ -415,10 +420,30 @@ public class Mutater {
   /**
    * Count the number of mutation points in the constant pool.
    */
-  private int countMutationPoints(final ConstantPoolGen cp) {
+  private int countMutationPoints(final Method[] methods, final String className, final ConstantPoolGen cp) {
+    // find the first reference to each constant
+    mConstantFirstRef = new int[cp.getSize()];
+    Arrays.fill(mConstantFirstRef, -1);
+    if (methods != null) {
+      for (int i = 0; i < methods.length; i++) {
+        final Method m = methods[i];
+        final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
+        final InstructionHandle[] ihs = il.getInstructionHandles();
+        for (int j = 0; j < ihs.length; j++) {
+          final Instruction ins = ihs[j].getInstruction();
+          if (ins instanceof CPInstruction) {
+            final int index = ((CPInstruction) ins).getIndex();
+            if (mConstantFirstRef[index] == -1) {
+              mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
+            }
+          }
+        }
+      }
+    }
+
     int count = 0;
     for (int i = 0; i < cp.getSize(); i++) {
-      if (isMutatable(cp.getConstant(i))) {
+      if (mConstantFirstRef[i] != -1 && isMutatable(cp.getConstant(i))) {
         count++;
       }
     }
@@ -463,7 +488,7 @@ public class Mutater {
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
-    int count = mCPool ? countMutationPoints(cp) : 0;
+    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
     }
@@ -660,7 +685,7 @@ public class Mutater {
    */
   private void mutateConstant(final String className, final ConstantPoolGen cp, int i) {
     final Constant c = cp.getConstant(i);
-    String mod = className + ":0: CP[" + i + "] ";
+    String mod = className + ":" + mConstantFirstRef[i] + ": CP[" + i + "] ";
     if (c instanceof ConstantString) {
       // in this case need to actually step to the UTF8 constant for the string
       final int index = ((ConstantString) c).getStringIndex();
@@ -836,7 +861,7 @@ public class Mutater {
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
-    int count = mCPool ? countMutationPoints(cp) : 0;
+    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
 
@@ -884,7 +909,7 @@ public class Mutater {
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
-    int count = mCPool ? countMutationPoints(cp) : 0;
+    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       int oldCount = count;
       count += countMutationPoints(methods[i], className, cp);
