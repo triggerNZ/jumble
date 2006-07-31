@@ -52,7 +52,7 @@ public class JumbleUtils {
    */
   public static boolean isAssertionsEnabled() {
     boolean assertionsEnabled = false;
-    assert assertionsEnabled = true;
+    assert (assertionsEnabled = true) == true;
     return assertionsEnabled;
   }
 }
