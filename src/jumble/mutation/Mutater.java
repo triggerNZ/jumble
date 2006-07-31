@@ -417,15 +417,17 @@ public class Mutater {
       if (methods != null) {
         for (int i = 0; i < methods.length; i++) {
           final Method m = methods[i];
-          final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
-          if (il != null) {
-            final InstructionHandle[] ihs = il.getInstructionHandles();
-            for (int j = 0; j < ihs.length; j++) {
-              final Instruction ins = ihs[j].getInstruction();
-              if (ins instanceof CPInstruction) {
-                final int index = ((CPInstruction) ins).getIndex();
-                if (mConstantFirstRef[index] == -1) {
-                  mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
+          if (checkNormalMethod(m)) {
+            final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
+            if (il != null) {
+              final InstructionHandle[] ihs = il.getInstructionHandles();
+              for (int j = 0; j < ihs.length; j++) {
+                final Instruction ins = ihs[j].getInstruction();
+                if (ins instanceof CPInstruction) {
+                  final int index = ((CPInstruction) ins).getIndex();
+                  if (mConstantFirstRef[index] == -1) {
+                    mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
+                  }
                 }
               }
             }
