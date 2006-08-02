@@ -6,7 +6,7 @@ import junit.framework.TestCase;
  * NoMutationPoints test class.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class NoMutationPointsTest extends TestCase {
   public void testNothing() {

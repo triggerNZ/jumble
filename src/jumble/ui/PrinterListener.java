@@ -13,7 +13,7 @@ import jumble.fast.MutationResult;
  * will usually be <code>System.out</code>.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class PrinterListener implements JumbleListener {
   private PrintStream mStream;

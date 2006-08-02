@@ -2,7 +2,7 @@ package jumble.util;
 /**
  * Class for testing java runner.
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class CheckAssertions2 {
   public static void main(String[] args) {

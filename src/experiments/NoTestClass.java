@@ -4,7 +4,7 @@ package experiments;
  * A class with no corresponding test class.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  * 
  */
 public class NoTestClass {

@@ -9,7 +9,7 @@ import junit.framework.Test;
  * Class containing several utility methods useful to Jumble.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class JumbleUtils {
   private JumbleUtils() {

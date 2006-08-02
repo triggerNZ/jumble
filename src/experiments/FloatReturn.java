@@ -4,7 +4,7 @@ package experiments;
  * Class for Jumble testing.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class FloatReturn {
   public float getFloat() {

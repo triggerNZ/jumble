@@ -4,7 +4,7 @@ package jumble.ui;
  * Class full of constants describing the result of an initial test run.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class InitialTestStatus {
   //Prevent instantiation

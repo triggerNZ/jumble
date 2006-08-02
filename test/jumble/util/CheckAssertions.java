@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
  * Class for testing assertions.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class CheckAssertions {
   public static void main(String[] args) throws IOException {

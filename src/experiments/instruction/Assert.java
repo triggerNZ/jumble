@@ -4,7 +4,7 @@ package experiments.instruction;
  * Class for Jumble testing.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class Assert {
   public void method() {

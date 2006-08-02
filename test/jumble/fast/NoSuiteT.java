@@ -6,7 +6,7 @@ import junit.framework.TestCase;
  * Class used for testing.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class NoSuiteT extends TestCase {
   public void test1() {

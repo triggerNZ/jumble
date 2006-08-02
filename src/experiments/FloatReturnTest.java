@@ -8,7 +8,7 @@ import junit.framework.TestSuite;
  * Test for jumble testing.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class FloatReturnTest extends TestCase {
   private static final float FLOAT_THRESHOLD = 1.0e-20f;

@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Test class used for testing Jumble's use of the <code>suite()</code> method.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class JumblerExperimentSillySuiteTest extends TestCase {
   public static Test suite() {

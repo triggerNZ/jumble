@@ -23,7 +23,7 @@ import jumble.fast.MutationResult;
  * A Jumble listener which displays a GUI representation of the run.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class SwingListener implements JumbleListener {
   private JPanel mGUI = null;

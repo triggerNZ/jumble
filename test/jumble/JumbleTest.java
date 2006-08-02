@@ -14,7 +14,7 @@ import junit.framework.TestSuite;
  * Tests the corresonding class.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class JumbleTest extends TestCase {
   public void testBroken() throws Exception {

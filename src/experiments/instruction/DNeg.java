@@ -2,7 +2,7 @@ package experiments.instruction;
 /**
  * Class used for testing.
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class DNeg {
   public double method() {

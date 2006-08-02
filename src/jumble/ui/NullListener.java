@@ -10,7 +10,7 @@ import jumble.fast.MutationResult;
  * with the older non-listener output.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class NullListener implements JumbleListener {
   public void jumbleRunStarted(String testName, List testClasses) {

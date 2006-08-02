@@ -8,7 +8,7 @@ import junit.framework.TestSuite;
  * Class used for testing.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class MismatchingSuiteT extends TestCase {
   public void test1() {

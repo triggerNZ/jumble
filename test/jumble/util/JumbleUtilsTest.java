@@ -8,7 +8,7 @@ import junit.framework.TestSuite;
  * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
- * @version $Revision 1.0 $
+ * @version $Revision$
  */
 public class JumbleUtilsTest extends TestCase {
   public void testIsTestClass() {
