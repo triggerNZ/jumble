@@ -59,6 +59,7 @@ import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LADD;
 import org.apache.bcel.generic.LAND;
 import org.apache.bcel.generic.LCONST;
+import org.apache.bcel.generic.LDC;
 import org.apache.bcel.generic.LDIV;
 import org.apache.bcel.generic.LMUL;
 import org.apache.bcel.generic.LNEG;
@@ -87,6 +88,7 @@ import org.apache.bcel.classfile.ConstantDouble;
 import org.apache.bcel.classfile.ConstantUtf8;
 import java.util.Arrays;
 import org.apache.bcel.generic.CPInstruction;
+import org.apache.bcel.generic.INVOKESPECIAL;
 
 /**
  * Given a class file can either count the number of possible
@@ -420,6 +422,13 @@ public class Mutater {
               for (int j = 0; j < ihs.length; j++) {
                 final Instruction ins = ihs[j].getInstruction();
                 if (ins instanceof CPInstruction) {
+                  // skip those which are messages for Assertion Error
+                  if (ins instanceof LDC && j + 1 < ihs.length) {
+                    final Instruction i2 = ihs[j + 1].getInstruction();
+                    if (i2 instanceof INVOKESPECIAL && ((INVOKESPECIAL) i2).getReferenceType(cp).toString().equals("java.lang.AssertionError")) {
+                      continue;
+                    }
+                  }
                   final int index = ((CPInstruction) ins).getIndex();
                   if (mConstantFirstRef[index] == -1) {
                     mConstantFirstRef[index] = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
