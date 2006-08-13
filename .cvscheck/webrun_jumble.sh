@@ -37,6 +37,7 @@ export JAVADOC_MODULES="jumble/src"
 export COMPILERS="javacall_1_5"
 export JAVAC_OPTS="-source 1.5"
 export JAVADOC_OPTS="-source 1.5"
+export PLOT_PACKAGE_DEPENDENCIES_OPTS='jumble jumble 3 3'
 if [ "$USER" == "syscheck" ]; then
     export EMAIL_NOTIFY=1
     export IM_NOTIFY=1
