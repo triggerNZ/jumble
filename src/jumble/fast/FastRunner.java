@@ -65,7 +65,10 @@ public class FastRunner {
   /** Maximum number of mutations per JVM */
   private int mMaxExternalMutations = -1;
 
-  /** Index of the first mutation to attempt. */
+  /** 
+   * Index of the first mutation to attempt. Mainly useful for
+   * testing when there is a problematic mutation. 
+   */
   private int mFirstMutation = 0;
 
   private Set mExcludeMethods = new HashSet();
