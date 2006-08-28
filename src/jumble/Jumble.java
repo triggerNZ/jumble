@@ -44,6 +44,7 @@ public class Jumble {
     Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
     Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
+    Flag firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt. Negative values are ignored.");
     Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
     Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
@@ -71,9 +72,14 @@ public class Jumble {
 
     if (lengthFlag.isSet()) {
       int val = ((Integer) lengthFlag.getValue()).intValue();
-
       if (val >= 0) {
         jumble.setMaxExternalMutations(val);
+      }
+    }
+    if (firstFlag.isSet()) {
+      int val = ((Integer) firstFlag.getValue()).intValue();
+      if (val >= 0) {
+        jumble.setFirstMutation(val);
       }
     }
 
