@@ -65,6 +65,9 @@ public class FastRunner {
   /** Maximum number of mutations per JVM */
   private int mMaxExternalMutations = -1;
 
+  /** Index of the first mutation to attempt. */
+  private int mFirstMutation = 0;
+
   private Set mExcludeMethods = new HashSet();
 
   // State during run
@@ -732,7 +735,7 @@ public class FastRunner {
     final MutationResult[] allMutations = new MutationResult[mMutationCount];
     int count = 0;
     final int max = getMaxExternalMutations();
-    for (int currentMutation = 0; currentMutation < mMutationCount; currentMutation++) {
+    for (int currentMutation = getFirstMutation(); currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
         startChildProcess(createArgs(currentMutation));
         count = 0;
@@ -798,5 +801,23 @@ public class FastRunner {
    */
   public void setMaxExternalMutations(int maxExternalMutations) {
     mMaxExternalMutations = maxExternalMutations;
+  }
+
+  /**
+   * Get the index of the first mutation to attempt.
+   *
+   * @return the first mutation index.
+   */
+  public int getFirstMutation() {
+    return mFirstMutation;
+  }
+
+  /**
+   * Set the index of the first mutation to attempt.
+   *
+   * @param newFirstMutation the new FirstMutation value.
+   */
+  public void setFirstMutation(final int newFirstMutation) {
+    mFirstMutation = newFirstMutation;
   }
 }
