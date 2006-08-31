@@ -90,6 +90,9 @@ import java.util.Arrays;
 import org.apache.bcel.generic.CPInstruction;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.classfile.ConstantNameAndType;
+import org.apache.bcel.generic.LOOKUPSWITCH;
+import org.apache.bcel.generic.TABLESWITCH;
+import org.apache.bcel.generic.Select;
 
 /**
  * Given a class file can either count the number of possible
@@ -178,6 +181,9 @@ public class Mutater {
   /** Should NEG instructions be changed */
   private boolean mMutateNegs = false;
 
+  /** Should SWITCH instructions be changed */
+  private boolean mMutateSwitch = false;
+
   /** Should the constant pool be changed. */
   private boolean mCPool = false;
 
@@ -220,23 +226,27 @@ public class Mutater {
   /**
    * Sets whether NEG instructions should be mutated.
    * 
-   * @param mutateNegs
-   *          flag indicating whether to mutate NEG instructions.
+   * @param mutateNegs flag indicating whether to mutate NEG instructions.
    */
   public void setMutateNegs(boolean mutateNegs) {
     mMutateNegs = mutateNegs;
+    final NOP nop = mMutateNegs ? new NOP() : null;
+    mMutatable[Constants.INEG] = nop;
+    mMutatable[Constants.DNEG] = nop;
+    mMutatable[Constants.FNEG] = nop;
+    mMutatable[Constants.LNEG] = nop;
+  }
 
-    if (mMutateNegs) {
-      mMutatable[Constants.INEG] = new NOP();
-      mMutatable[Constants.DNEG] = new NOP();
-      mMutatable[Constants.FNEG] = new NOP();
-      mMutatable[Constants.LNEG] = new NOP();
-    } else {
-      mMutatable[Constants.INEG] = null;
-      mMutatable[Constants.DNEG] = null;
-      mMutatable[Constants.FNEG] = null;
-      mMutatable[Constants.LNEG] = null;
-    }
+  /**
+   * Sets whether SWITCH instructions should be mutated.
+   * 
+   * @param mutateSwitch flag indicating whether to mutate SWITCH instructions.
+   */
+  public void setMutateSwitch(boolean mutateSwitch) {
+    mMutateSwitch = mutateSwitch;
+    final NOP nop = mMutateSwitch ? new NOP() : null;
+    mMutatable[Constants.TABLESWITCH] = nop;
+    mMutatable[Constants.LOOKUPSWITCH] = nop;
   }
 
   public void setMutateIncrements(final boolean v) {
@@ -251,69 +261,42 @@ public class Mutater {
   /**
    * Set whether or not inline constants should be mutated.
    * 
-   * @param v
-   *          true for mutation of inline constants
+   * @param v true for mutation of inline constants
    */
   public void setMutateInlineConstants(final boolean v) {
     mMutateInlineConstants = v;
-    if (mMutateInlineConstants) {
-      mMutatable[Constants.ICONST_0] = new NOP();
-      mMutatable[Constants.ICONST_1] = new NOP();
-      mMutatable[Constants.ICONST_2] = new NOP();
-      mMutatable[Constants.ICONST_3] = new NOP();
-      mMutatable[Constants.ICONST_4] = new NOP();
-      mMutatable[Constants.ICONST_5] = new NOP();
-      mMutatable[Constants.ICONST_M1] = new NOP();
-      mMutatable[Constants.FCONST_0] = new NOP();
-      mMutatable[Constants.FCONST_1] = new NOP();
-      mMutatable[Constants.FCONST_2] = new NOP();
-      mMutatable[Constants.DCONST_0] = new NOP();
-      mMutatable[Constants.DCONST_1] = new NOP();
-      mMutatable[Constants.LCONST_0] = new NOP();
-      mMutatable[Constants.LCONST_1] = new NOP();
-      mMutatable[Constants.BIPUSH] = new NOP();
-      mMutatable[Constants.SIPUSH] = new NOP();
-    } else {
-      mMutatable[Constants.ICONST_0] = null;
-      mMutatable[Constants.ICONST_1] = null;
-      mMutatable[Constants.ICONST_2] = null;
-      mMutatable[Constants.ICONST_3] = null;
-      mMutatable[Constants.ICONST_4] = null;
-      mMutatable[Constants.ICONST_5] = null;
-      mMutatable[Constants.ICONST_M1] = null;
-      mMutatable[Constants.FCONST_0] = null;
-      mMutatable[Constants.FCONST_1] = null;
-      mMutatable[Constants.FCONST_2] = null;
-      mMutatable[Constants.DCONST_0] = null;
-      mMutatable[Constants.DCONST_1] = null;
-      mMutatable[Constants.LCONST_0] = null;
-      mMutatable[Constants.LCONST_1] = null;
-      mMutatable[Constants.BIPUSH] = null;
-      mMutatable[Constants.SIPUSH] = null;
-    }
+    final NOP nop = mMutateInlineConstants ? new NOP() : null;
+    mMutatable[Constants.ICONST_0] = nop;
+    mMutatable[Constants.ICONST_1] = nop;
+    mMutatable[Constants.ICONST_2] = nop;
+    mMutatable[Constants.ICONST_3] = nop;
+    mMutatable[Constants.ICONST_4] = nop;
+    mMutatable[Constants.ICONST_5] = nop;
+    mMutatable[Constants.ICONST_M1] = nop;
+    mMutatable[Constants.FCONST_0] = nop;
+    mMutatable[Constants.FCONST_1] = nop;
+    mMutatable[Constants.FCONST_2] = nop;
+    mMutatable[Constants.DCONST_0] = nop;
+    mMutatable[Constants.DCONST_1] = nop;
+    mMutatable[Constants.LCONST_0] = nop;
+    mMutatable[Constants.LCONST_1] = nop;
+    mMutatable[Constants.BIPUSH] = nop;
+    mMutatable[Constants.SIPUSH] = nop;
   }
 
   /**
    * Set whether or not return values should be mutated.
    * 
-   * @param v
-   *          true to mutate return values
+   * @param v true to mutate return values
    */
   public void setMutateReturnValues(final boolean v) {
     mMutateReturns = v;
-    if (mMutateReturns) {
-      mMutatable[Constants.ARETURN] = new NOP();
-      mMutatable[Constants.DRETURN] = new NOP();
-      mMutatable[Constants.FRETURN] = new NOP();
-      mMutatable[Constants.IRETURN] = new NOP();
-      mMutatable[Constants.LRETURN] = new NOP();
-    } else {
-      mMutatable[Constants.ARETURN] = null;
-      mMutatable[Constants.DRETURN] = null;
-      mMutatable[Constants.FRETURN] = null;
-      mMutatable[Constants.IRETURN] = null;
-      mMutatable[Constants.LRETURN] = null;
-    }
+    final NOP nop = mMutateReturns ? new NOP() : null;
+    mMutatable[Constants.ARETURN] = nop;
+    mMutatable[Constants.DRETURN] = nop;
+    mMutatable[Constants.FRETURN] = nop;
+    mMutatable[Constants.IRETURN] = nop;
+    mMutatable[Constants.LRETURN] = nop;
   }
 
   private static boolean checkAssertInstruction(final ConstantPoolGen cpg, final Instruction ins) {
@@ -323,25 +306,27 @@ public class Mutater {
   /**
    * Is this an instruction we know how to mutate? Needs the entire chain since
    * in rare cases we need to examine context to see if mutation is allowable.
+   * Returns the number of mutation points in the instruction (this can be
+   * bigger than 1 (e.g. switch statements).
    * 
    * @param ihs current instruction chain
    * @param offset position in chain
    * @param cpg constant pool
-   * @return true if instruction can be mutated
+   * @return number of mutation points in the given instruction
    */
-  private boolean isMutatable(final InstructionHandle[] ihs, final int offset, final ConstantPoolGen cpg) {
+  private int isMutatable(final InstructionHandle[] ihs, final int offset, final ConstantPoolGen cpg) {
     final Instruction i = ihs[offset].getInstruction();
 
     // handle general mutability
     if (mMutatable[i.getOpcode()] == null) {
-      return false;
+      return 0;
     }
 
     // handle special situation of .class invocations
     if (i instanceof ICONST && offset < ihs.length - 1) {
       final Instruction context = ihs[offset + 1].getInstruction();
       if (context instanceof INVOKESTATIC && "class".equals(((INVOKESTATIC) context).getMethodName(cpg))) {
-        return false;
+        return 0;
       }
     }
 
@@ -349,16 +334,23 @@ public class Mutater {
     // javac 1.5
     if (i instanceof ICONST) {
       if (offset >= 2 && ((ICONST) i).getValue().intValue() == 1 && checkAssertInstruction(cpg, ihs[offset - 2].getInstruction())) {
-        return false;
+        return 0;
       }
       if (offset >= 4 && ((ICONST) i).getValue().intValue() == 0 && checkAssertInstruction(cpg, ihs[offset - 4].getInstruction())) {
-        return false;
+        return 0;
       }
     }
     if (i instanceof IFNE && offset >= 1 && checkAssertInstruction(cpg, ihs[offset - 1].getInstruction())) {
-      return false;
+      return 0;
     }
-    return true;
+
+    // switch statements have multiple points
+    if (i instanceof Select) {
+      return ((Select) i).getMatchs().length;
+    }
+
+    // everything else 1 point
+    return 1;
   }
 
   /**
@@ -476,9 +468,7 @@ public class Mutater {
     final InstructionHandle[] ihs = il.getInstructionHandles();
     int count = 0;
     for (int j = 0; j < ihs.length; j = skipAhead(ihs, cp, j)) {
-      if (isMutatable(ihs, j, cp)) {
-        count += 1;
-      }
+      count += isMutatable(ihs, j, cp);
     }
     il.dispose();
     return count;
@@ -773,7 +763,10 @@ public class Mutater {
 
     for (int j = 0; j < ihs.length; j = skipAhead(ihs, cp, j)) {
       final Instruction i = ihs[j].getInstruction();
-      if (isMutatable(ihs, j, cp) && count-- == 0) {
+      // TODO needs modification to support SWITCH
+      final int points = isMutatable(ihs, j, cp);
+      if (points !=0 && (count -= points) <= 0) {
+        // not count is < 0 only for a few instructions like TABLESWITCH
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         String mod = className + ":" + lineNumber + ": ";
         if (i instanceof IfInstruction) {
@@ -791,6 +784,17 @@ public class Mutater {
         } else if (i instanceof ReturnInstruction) {
           mod += describe(i);
           il.insert(ihs[j], mutateRETURN((ReturnInstruction) i, ifactory));
+        } else if (i instanceof Select) {
+          final Select select = (Select) i;
+          final int[] matches = select.getMatchs();
+          final InstructionHandle[] handles = select.getTargets();
+          final InstructionHandle defHandle = select.getTarget();
+          mod += "switch case " + matches[-1 - count] + " -> " + ++matches[-1 - count];
+          if (select instanceof TABLESWITCH) {
+            ihs[j].setInstruction(new TABLESWITCH(matches, handles, defHandle));
+          } else {
+            ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, defHandle));
+          }
         } else {
           final Instruction inew;
           if (i instanceof ICONST) {
@@ -806,7 +810,6 @@ public class Mutater {
           } else if (i instanceof SIPUSH) {
             inew = mutateSIPUSH((SIPUSH) i, cp);
           } else if (i instanceof IINC) {
-            // added by tin
             inew = mutateIINC((IINC) i, cp);
           } else {
             inew = null;
