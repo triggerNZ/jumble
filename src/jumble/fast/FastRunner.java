@@ -50,6 +50,9 @@ public class FastRunner {
   /** Whether to mutate constant pool */
   private boolean mCPool = true;
 
+  /** Whether to mutate switches */
+  private boolean mSwitches = true;
+
   private boolean mOrdered = true;
 
   private boolean mVerbose = false;
@@ -230,11 +233,28 @@ public class FastRunner {
   /**
    * Sets whether constant pool will be mutated.
    * 
-   * @param argIncrements
-   *          true if constants will be mutated.
+   * @param cpool true if constants will be mutated.
    */
-  public void setCPool(final boolean argIncrements) {
-    mCPool = argIncrements;
+  public void setCPool(final boolean cpool) {
+    mCPool = cpool;
+  }
+
+  /**
+   * Sets whether switches will be mutated.
+   * 
+   * @param switches true if switches will be mutated.
+   */
+  public void setSwitch(final boolean switches) {
+    mSwitches = switches;
+  }
+
+  /**
+   * Gets whether switches will be mutated.
+   * 
+   * @return true if switches will be mutated.
+   */
+  public boolean isSwitch() {
+    return mSwitches;
   }
 
   /**
@@ -249,8 +269,7 @@ public class FastRunner {
   /**
    * Sets whether tests are ordered by their run time.
    * 
-   * @param argOrdered
-   *          true if tests should be ordered by their run time.
+   * @param argOrdered true if tests should be ordered by their run time.
    */
   public void setOrdered(final boolean argOrdered) {
     mOrdered = argOrdered;
@@ -431,9 +450,13 @@ public class FastRunner {
     if (mIncrements) {
       args.add("--" + FastJumbler.FLAG_INCREMENTS);
     }
-    // increments
+    // constant pool
     if (mCPool) {
       args.add("--" + FastJumbler.FLAG_CPOOL);
+    }
+    // switches
+    if (mSwitches) {
+      args.add("--" + FastJumbler.FLAG_SWITCHES);
     }
     // verbose
     if (mVerbose) {
@@ -453,6 +476,7 @@ public class FastRunner {
     m.setIgnoredMethods(mExcludeMethods);
     m.setMutateIncrements(mIncrements);
     m.setMutateCPool(mCPool);
+    m.setMutateSwitch(mSwitches);
     m.setMutateInlineConstants(mInlineConstants);
     m.setMutateReturnValues(mReturnVals);
     return m;
