@@ -81,42 +81,21 @@ public class MutaterTest extends TestCase {
     assertEquals(m.getModification(), s, m.getModification());
   }
 
-//  /**
-//   * Test which demonstrates the <code>skipAhead()</code> bug. Also
-//   * tests variable mutations.
-//   */
-//  public void testCountVars() throws ClassNotFoundException {
-//    Mutater m = new Mutater();
-//    m.setMutateVariables(true);
-//    
-//    //DLOAD
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.DLoad"));
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.DLoad0"));
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.DLoad1"));
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.DLoad2"));
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.DLoad3"));
-//  }
-//  
-//  public void testDescriptionVars() throws ClassNotFoundException {
-//    //DLOAD
-//    testDescriptions(0, "experiments.instruction.DLoad:9: modified loaded variable", "experiments.instruction.DLoad", false, false, false, true);
-//    testDescriptions(0, "experiments.instruction.DLoad0:9: modified loaded variable", "experiments.instruction.DLoad0", false, false, false, true);
-//    testDescriptions(0, "experiments.instruction.DLoad1:9: modified loaded variable", "experiments.instruction.DLoad1", false, false, false, true);
-//    testDescriptions(0, "experiments.instruction.DLoad2:9: modified loaded variable", "experiments.instruction.DLoad2", false, false, false, true);
-//    testDescriptions(0, "experiments.instruction.DLoad3:9: modified loaded variable", "experiments.instruction.DLoad3", false, false, false, true);
-//    
-//    
-//  }
-  //FIXME: do these tests
-//  public void testCountAssert() {
-//    Mutater m = new Mutater();
-//    assertEquals(1, m.countMutationPoints("experiments.instruction.Assert"));
-//  }
-//  
-//  public void testDescriptionsAssert() throws IOException {
-//    testDescriptions(0, "experiments.instruction.Assert:11: removed negation", "experiments.instruction.Assert", false, false, false);
-//  }
-  
+  private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws ClassNotFoundException {
+
+    Mutater m = new Mutater(x);
+    assertEquals(null, m.getModification());
+    m.setMutateInlineConstants(constants);
+    m.setMutateReturnValues(returns);
+    m.setMutateNegs(negs);
+    m.jumbler(className);
+    assertEquals(m.getModification(), s, m.getModification());
+  }
+
+
+  private void testDescriptions(int x, String s, String className) throws ClassNotFoundException {
+    testDescriptions(x, s, className, true, true, false);
+  }
 
   public void testCountNegs() throws ClassNotFoundException {
     Mutater m = new Mutater();
@@ -151,23 +130,6 @@ public class MutaterTest extends TestCase {
     testDescriptions(10, "jumble.X2:6: & -> |", className);
     testDescriptions(11, "jumble.X2:6: changed return value (ireturn)", className);
     testDescriptions(500, null, className);
-  }
-
-  private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws ClassNotFoundException {
-
-    Mutater m = new Mutater(x);
-    assertEquals(null, m.getModification());
-    m.setMutateInlineConstants(constants);
-    m.setMutateReturnValues(returns);
-    m.setMutateNegs(negs);
-    m.jumbler(className);
-    assertEquals(m.getModification(), s, m.getModification());
-  }
-
-
-  private void testDescriptions(int x, String s, String className) throws ClassNotFoundException {
-    testDescriptions(x, s, className, true, true, false); // negs are a new
-    // feature
   }
 
   public void testDescriptionsX3() throws ClassNotFoundException {
