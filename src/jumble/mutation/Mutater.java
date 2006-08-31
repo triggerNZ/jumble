@@ -89,6 +89,7 @@ import org.apache.bcel.classfile.ConstantUtf8;
 import java.util.Arrays;
 import org.apache.bcel.generic.CPInstruction;
 import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.classfile.ConstantNameAndType;
 
 /**
  * Given a class file can either count the number of possible
@@ -483,6 +484,25 @@ public class Mutater {
     return count;
   }
 
+  /*
+   * Look for the special case of a synthetic class used to support a
+   * switch statement on an Enum.  These classes are just an automatically
+   * generated mapping between Enum ordinals and values in the switch
+   * and it doesn't really make sense for them to be unit tested.
+   */
+  private boolean isSwitchClass(final String cl, final ConstantPool cpool) {
+    if (cl.indexOf('$') == -1) {
+      return false;
+    }
+    for (int i = 0; i < cpool.getLength(); i++) {
+      final Constant c = cpool.getConstant(i);
+      if (c instanceof ConstantNameAndType && ((ConstantNameAndType) c).getName(cpool).startsWith("$SwitchMap")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Compute the total number of possible mutation points in the class.
    */
@@ -500,7 +520,14 @@ public class Mutater {
 
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
+
+    // check for synthetic class used by Enums
+    if (isSwitchClass(cl, cpool)) {
+      return 0;
+    }
+
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
+
     int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
