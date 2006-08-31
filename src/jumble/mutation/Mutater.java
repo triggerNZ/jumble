@@ -789,7 +789,7 @@ public class Mutater {
           final int[] matches = select.getMatchs();
           final InstructionHandle[] handles = select.getTargets();
           final InstructionHandle defHandle = select.getTarget();
-          mod += "switch case " + matches[-1 - count] + " -> " + ++matches[-1 - count];
+          mod += "switch case value " + matches[-1 - count] + " -> " + ++matches[-1 - count];
           if (select instanceof TABLESWITCH) {
             ihs[j].setInstruction(new TABLESWITCH(matches, handles, defHandle));
           } else {
