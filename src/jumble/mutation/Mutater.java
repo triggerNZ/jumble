@@ -765,8 +765,8 @@ public class Mutater {
       final Instruction i = ihs[j].getInstruction();
       // TODO needs modification to support SWITCH
       final int points = isMutatable(ihs, j, cp);
-      if (points != 0 && (count -= points) <= 0) {
-        // not count is < 0 only for a few instructions like TABLESWITCH
+      if (points != 0 && (count -= points) < 0) {
+        // not count is < -1 only for a few instructions like TABLESWITCH
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         String mod = className + ":" + lineNumber + ": ";
         if (i instanceof IfInstruction) {
