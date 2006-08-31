@@ -29,31 +29,29 @@ public class Jumble {
   /**
    * Main method.
    * 
-   * @param args
-   *          command line arguments. Use -h to see the expected arguments.
+   * @param args command line arguments. Use -h to see the expected arguments.
    */
   public static void main(String[] args) throws Exception {
-    // Process arguments
-    FastRunner jumble = new FastRunner();
-    CLIFlags flags = new CLIFlags("Jumble");
-    Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
-    Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
-    Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
-    Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
-    Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
-    Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
-    Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
-    Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
-    Flag firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt. Negative values are ignored.");
-    Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
-    Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
-    Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
-    Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
-    Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
-    Flag lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX",
-        "Maximum number of mutations to run in the external JVM");
-    Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
-    Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
+    final FastRunner jumble = new FastRunner();
+    final CLIFlags flags = new CLIFlags("Jumble");
+    final Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
+    final Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
+    final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
+    final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
+    final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
+    final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
+    final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
+    final Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
+    final Flag firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt. Negative values are ignored.");
+    final Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
+    final Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
+    final Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
+    final Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
+    final Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
+    final Flag lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX", "Maximum number of mutations to run in the external JVM");
+    final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
+    final Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
 
@@ -63,6 +61,7 @@ public class Jumble {
     jumble.setReturnVals(retFlag.isSet());
     jumble.setIncrements(incFlag.isSet());
     jumble.setCPool(cpoolFlag.isSet());
+    jumble.setSwitch(switchFlag.isSet());
     jumble.setOrdered(!orderFlag.isSet());
     jumble.setLoadCache(!loadFlag.isSet());
     jumble.setSaveCache(!saveFlag.isSet());
