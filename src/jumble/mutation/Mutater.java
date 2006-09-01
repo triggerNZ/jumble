@@ -786,14 +786,44 @@ public class Mutater {
           il.insert(ihs[j], mutateRETURN((ReturnInstruction) i, ifactory));
         } else if (i instanceof Select) {
           final Select select = (Select) i;
+          final int index = -1 - count;
+          // mutate by swapping target with default target, this is better than
+          // swapping the case value itself because sometimes multiple cases
+          // will branch to the same code
           final int[] matches = select.getMatchs();
           final InstructionHandle[] handles = select.getTargets();
-          final InstructionHandle defHandle = select.getTarget();
-          mod += "switch case value " + matches[-1 - count] + " -> " + ++matches[-1 - count];
-          if (select instanceof TABLESWITCH) {
-            ihs[j].setInstruction(new TABLESWITCH(matches, handles, defHandle));
+          final InstructionHandle newDefHandle = handles[index];
+          final InstructionHandle oldDefHandle = select.getTarget();
+          if (newDefHandle == oldDefHandle) {
+            // need to try harder to find a case we can swap with
+            for (int k = 0; k < matches.length; k++) {
+              if (k != index && newDefHandle != handles[k]) {
+                mod += "switched case " + matches[index] + " with case " + k;
+                handles[index] = handles[k];
+                handles[k] = newDefHandle;
+                if (select instanceof TABLESWITCH) {
+                  ihs[j].setInstruction(new TABLESWITCH(matches, handles, oldDefHandle));
+                } else {
+                  ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, oldDefHandle));
+                }
+                break;
+              }
+            }
+            // still didn't find an option, just mutate the case value itself
+            mod += "switched case " + matches[index] + " -> " + ++matches[index];
+            if (select instanceof TABLESWITCH) {
+              ihs[j].setInstruction(new TABLESWITCH(matches, handles, oldDefHandle));
+            } else {
+              ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, oldDefHandle));
+            }
           } else {
-            ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, defHandle));
+            handles[index] = oldDefHandle;
+            mod += "switched case " + matches[index] + " with default case";
+            if (select instanceof TABLESWITCH) {
+              ihs[j].setInstruction(new TABLESWITCH(matches, handles, newDefHandle));
+            } else {
+              ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, newDefHandle));
+            }
           }
         } else {
           final Instruction inew;
