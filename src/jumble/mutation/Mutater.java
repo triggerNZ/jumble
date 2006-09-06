@@ -768,21 +768,21 @@ public class Mutater {
       if (points != 0 && (count -= points) < 0) {
         // not count is < -1 only for a few instructions like TABLESWITCH
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
-        String mod = className + ":" + lineNumber + ": ";
+        StringBuffer mod = new StringBuffer(className).append(":").append(lineNumber).append(": ");
         if (i instanceof IfInstruction) {
-          mod += "negated conditional";
+          mod.append("negated conditional");
           ihs[j].setInstruction(((IfInstruction) i).negate());
         } else if (i instanceof INEG || i instanceof DNEG || i instanceof FNEG || i instanceof LNEG) {
           // Negation instruction
-          mod += "removed negation";
+          mod.append("removed negation");
           ihs[j].setInstruction(new NOP());
         } else if (i instanceof ArithmeticInstruction) {
           // binary operand integer instruction
           final Instruction inew = mutateIntegerArithmetic((ArithmeticInstruction) i, cp);
           ihs[j].setInstruction(inew);
-          mod += describe(i) + " -> " + describe(inew);
+          mod.append(describe(i) + " -> " + describe(inew));
         } else if (i instanceof ReturnInstruction) {
-          mod += describe(i);
+          mod.append(describe(i));
           il.insert(ihs[j], mutateRETURN((ReturnInstruction) i, ifactory));
         } else if (i instanceof Select) {
           final Select select = (Select) i;
@@ -798,7 +798,7 @@ public class Mutater {
             // need to try harder to find a case we can swap with
             for (int k = 0; k < matches.length; k++) {
               if (k != index && newDefHandle != handles[k]) {
-                mod += "switched case " + matches[index] + " with case " + k;
+                mod.append("switched case " + matches[index] + " with case " + k);
                 handles[index] = handles[k];
                 handles[k] = newDefHandle;
                 if (select instanceof TABLESWITCH) {
@@ -810,7 +810,7 @@ public class Mutater {
               }
             }
             // still didn't find an option, just mutate the case value itself
-            mod += "switched case " + matches[index] + " -> " + ++matches[index];
+            mod.append("switched case " + matches[index] + " -> " + ++matches[index]);
             if (select instanceof TABLESWITCH) {
               ihs[j].setInstruction(new TABLESWITCH(matches, handles, oldDefHandle));
             } else {
@@ -818,7 +818,7 @@ public class Mutater {
             }
           } else {
             handles[index] = oldDefHandle;
-            mod += "switched case " + matches[index] + " with default case";
+            mod.append("switched case " + matches[index] + " with default case");
             if (select instanceof TABLESWITCH) {
               ihs[j].setInstruction(new TABLESWITCH(matches, handles, newDefHandle));
             } else {
@@ -846,10 +846,10 @@ public class Mutater {
           }
           if (inew != null) {
             ihs[j].setInstruction(inew);
-            mod += describe(i) + " -> " + describe(inew);
+            mod.append(describe(i) + " -> " + describe(inew));
           }
         }
-        mModification = mod;
+        mModification = mod.toString();
         //System.err.println("Made modification: " + mModification);
         break;
       }
