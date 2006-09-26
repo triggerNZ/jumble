@@ -222,7 +222,7 @@ function doclassenqueue ()
 function dopackageenqueue ()
 {
     jumblepqueue=$checkerrootdir/$checker/jumblepqueue
-    packagenamestd=$(echo $packagepath | sed 's|/|.|g')
+    packagenamestd=$(echo $packagepath | sed -e 's|/$||g' -e 's|/|.|g')
 
     echo "<html>"
     echo "<head>"
@@ -236,7 +236,7 @@ function dopackageenqueue ()
         rm "${jumblepqueue}.cgiqueue$$"
         mv "${jumblepqueue}.new" "$jumblepqueue"
         chmod 666 "$jumblepqueue"
-        echo "<h2>Package $packagename has been enqueued</h2>"
+        echo "<h2>Package $packagenamestd has been enqueued</h2>"
     else
         echo "<h2>No jumble package queue file found $jumblepqueue</h2>"
     fi
