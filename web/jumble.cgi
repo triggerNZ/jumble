@@ -131,7 +131,7 @@ EOF
     else
         echo "<b>Module:</b> <a href=\"$checkerwebroot/$checker/\">$checker</a><br>"
         echo "<b>Package:</b> $(getpackage "$packagepath")"
-        echo "<a href=\"$jumblecgi&package=$packagepath&enqueue=2\">Enqueue all classes in this package</a><br>"
+        echo "<a href=\"$jumblecgi&package=$packagepath&enqueue=1\">(enqueue all classes in this package)</a><br>"
         echo "<b>Average jumble score:</b> $(insertscore $jumblesubdir/$packagepath)<br>"
         echo "<b>Last updated:</b> $(lastupdated)</p>"
 
@@ -268,11 +268,13 @@ jumblecgi="$jumblewebroot/jumble.cgi?checker=$checker"  # Prefix for this cgi-sc
 if [ "$classname" ]; then
     if [ "$enqueue" == 1 ]; then
         doclassenqueue
-    elif [ "$enqueue" == 2 ]; then
-        dopackageenqueue
     else
         doclassviewpage
     fi
 else
-    dosummarypage
+    if [ "$enqueue" == 1 ]; then
+        dopackageenqueue
+    else
+        dosummarypage
+    fi
 fi
