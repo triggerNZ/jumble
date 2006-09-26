@@ -130,7 +130,8 @@ EOF
         echo "<h2>No jumble summary for $checker</h2>"
     else
         echo "<b>Module:</b> <a href=\"$checkerwebroot/$checker/\">$checker</a><br>"
-        echo "<b>Package:</b> $(getpackage "$packagepath")<br>"
+        echo "<b>Package:</b> $(getpackage "$packagepath")"
+        echo "<a href=\"$jumblecgi&package=$packagepath&enqueue=2\">Enqueue all classes in this package</a><br>"
         echo "<b>Average jumble score:</b> $(insertscore $jumblesubdir/$packagepath)<br>"
         echo "<b>Last updated:</b> $(lastupdated)</p>"
 
@@ -218,6 +219,32 @@ function doclassenqueue ()
     echo "</html>"
 }
 
+function dopackageenqueue ()
+{
+    jumblepqueue=$checkerrootdir/$checker/jumblepqueue
+    packagenamestd=$(echo $packagepath | sed 's|/|.|g')
+
+    echo "<html>"
+    echo "<head>"
+    echo "<title>Jumble results for $checker $packagenamestd</title>"
+    echo "</head>"
+    echo "<body>"
+
+    if [ -f "$jumblepqueue" ]; then
+        echo "$packagenamestd" | tee "${jumblepqueue}.cgiqueue$$" >"${jumblepqueue}.new"
+        grep -vwf "${jumblepqueue}.cgiqueue$$" <"$jumblepqueue" >>"${jumblepqueue}.new"
+        rm "${jumblepqueue}.cgiqueue$$"
+        mv "${jumblepqueue}.new" "$jumblepqueue"
+        chmod 666 "$jumblepqueue"
+        echo "<h2>Package $packagename has been enqueued</h2>"
+    else
+        echo "<h2>No jumble package queue file found $jumblepqueue</h2>"
+    fi
+
+    echo "</body>"
+    echo "</html>"
+}
+
 # Get parameters we need
 checker=$(getparam checker)
 packagepath=$(getparam package)
@@ -241,6 +268,8 @@ jumblecgi="$jumblewebroot/jumble.cgi?checker=$checker"  # Prefix for this cgi-sc
 if [ "$classname" ]; then
     if [ "$enqueue" == 1 ]; then
         doclassenqueue
+    elif [ "$enqueue" == 2 ]; then
+        dopackageenqueue
     else
         doclassviewpage
     fi
