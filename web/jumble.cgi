@@ -181,6 +181,7 @@ EOF
         else
             echo "<hr>"
             echo "<pre>"
+            find $jumblefile -printf "Jumble run at %TY-%Tm-%Td %TH:%TM:%TS\n"
             cat $jumblefile
             echo "</pre>"
         fi
