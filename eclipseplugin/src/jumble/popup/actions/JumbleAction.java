@@ -1,14 +1,29 @@
 package jumble.popup.actions;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import jumble.JumblePlugin;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,6 +33,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class JumbleAction implements IObjectActionDelegate {
+  private static final String PATH_SEPARATOR = System.getProperty("path.separator");
+
   private ICompilationUnit mCompilationUnit;
 
   private static final String LAUNCH_NAME = "Run Jumble";
@@ -39,11 +56,14 @@ public class JumbleAction implements IObjectActionDelegate {
    * @see IActionDelegate#run(IAction)
    */
   public void run(IAction action) {
-    // Shell shell = new Shell();
-    // MessageDialog.openInformation(
-    // shell,
-    // "Jumble Plug-in",
-    // "Jumble Class was executed.");
+
+    String pluginLocation = null;
+
+    try {
+      pluginLocation = JumblePlugin.getDefault().getPluginFolder().getAbsolutePath();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     System.err.println("Selected class: " + mCompilationUnit);
     try {
       // Get launch manager
@@ -90,39 +110,44 @@ public class JumbleAction implements IObjectActionDelegate {
       }
       System.err.println("class: " + className);
 
+      // Set up class paths
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
+      List classpath = new ArrayList();
+      IPath jumbleJarPath = new Path(pluginLocation + "/jumble-runtime.jar");
+      IRuntimeClasspathEntry jumbleJarEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(jumbleJarPath);
+      classpath.add(jumbleJarEntry.getMemento());
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);
+
+      IJavaProject curProject = mCompilationUnit.getJavaProject();
+
+      IClasspathEntry[] entries = curProject.getResolvedClasspath(false);
+
+      StringBuffer cpBuffer = new StringBuffer();
+
+      IWorkspaceRoot root = curProject.getProject().getWorkspace().getRoot();
+      IPath outputLocation = root.findMember(curProject.getOutputLocation()).getLocation();
+      System.err.println(outputLocation);
+      for (int i = 0; i < entries.length; i++) {
+        IPath path = entries[i].getPath();
+        IResource res = root.findMember(path);
+
+        final String curPath = res == null ? path.toOSString() : outputLocation.toOSString();
+
+        if (cpBuffer.length() == 0) {
+          cpBuffer.append(curPath);
+        } else {
+          cpBuffer.append(PATH_SEPARATOR + curPath);
+        }
+      }
+
+      System.err.println("CLASSPATH: " + cpBuffer);
+
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "jumble.Jumble");
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i " + className);
-
-      // Set up class path
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, mCompilationUnit.getJavaProject().getElementName());
-
-//      List classpath = new ArrayList();
-//      IJavaProject curProject = mCompilationUnit.getJavaProject();
-//      IClasspathEntry[] entries = curProject.getResolvedClasspath(true);
-//
-//      System.err.println("Classpath: ");
-//      for (int i = 0; i < entries.length; i++) {
-//        System.err.println(entries[i]);
-//        IRuntimeClasspathEntry entry = JavaRuntime.newRuntimeClasspathEntry();
-//        classpath.add(entry.getMemento());
-//      }
-//      // Not sure that I am getting this path correctly
-//      String pluginPath = Platform.getBundle("jumble").getLocation();
-//
-//      if (pluginPath.indexOf("@") >= 0) {
-//        pluginPath = pluginPath.substring(pluginPath.indexOf("@") + 1);
-//      }
-//      System.err.println("Plugin path: " + pluginPath);
-//      IRuntimeClasspathEntry jumbleEntry = JavaRuntime.newVariableRuntimeClasspathEntry(new Path(new Path(pluginPath + "jumble-runtime.jar").toFile()
-//          .getAbsolutePath()));
-//      classpath.add(jumbleEntry.getMemento());
-//      System.err.println(classpath);
-//
-//      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);
-//      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i --classpath \"" + cpBuffer + "\" " + className);
 
       // Now run...
       ILaunchConfiguration configuration = workingCopy.doSave();
+      System.err.println("Launching...");
       DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
     } catch (Exception e) {
       e.printStackTrace();

@@ -1,7 +1,12 @@
 package jumble;
 
-import org.eclipse.ui.plugin.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,4 +56,14 @@ public class JumblePlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("jumble", path);
 	}
+  
+  /**
+   * Gets the installation location of the plugin.
+  * @return The File Location of this plugin
+  */
+  public File getPluginFolder() throws IOException {
+      URL url = getBundle().getEntry("/");
+      url = Platform.asLocalURL(url);
+      return new File(url.getPath());
+  }
 }
