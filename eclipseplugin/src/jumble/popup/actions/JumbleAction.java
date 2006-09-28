@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jumble.JumblePlugin;
+import jumble.preferences.PreferenceConstants;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -56,9 +57,7 @@ public class JumbleAction implements IObjectActionDelegate {
    * @see IActionDelegate#run(IAction)
    */
   public void run(IAction action) {
-
     String pluginLocation = null;
-
     try {
       pluginLocation = JumblePlugin.getDefault().getPluginFolder().getAbsolutePath();
     } catch (IOException e) {
@@ -86,6 +85,9 @@ public class JumbleAction implements IObjectActionDelegate {
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, JavaRuntime.getDefaultVMInstall().getName());
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, JavaRuntime.getDefaultVMInstall().getVMInstallType().getId());
 
+      //Use the specified JVM arguments
+      String jvmArgs = JumblePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_VM_ARGS);
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, jvmArgs);
       // Set up command line arguments
       IPackageDeclaration[] packages = mCompilationUnit.getPackageDeclarations();
       final String packageName;
@@ -117,7 +119,6 @@ public class JumbleAction implements IObjectActionDelegate {
       IRuntimeClasspathEntry jumbleJarEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(jumbleJarPath);
       classpath.add(jumbleJarEntry.getMemento());
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);
-
       IJavaProject curProject = mCompilationUnit.getJavaProject();
 
       IClasspathEntry[] entries = curProject.getResolvedClasspath(false);

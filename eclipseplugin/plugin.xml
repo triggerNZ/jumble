@@ -46,5 +46,16 @@
          </action>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="jumble.preferences.JumblePreferencePage"
+            id="jumble.preferences.JumblePreferencePage"
+            name="Jumble"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="jumble.preferences.PreferenceInitializer"/>
+   </extension>
 
 </plugin>
