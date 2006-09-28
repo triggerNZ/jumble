@@ -93,14 +93,6 @@ public class JavaRunnerTest extends TestCase {
     assertEquals("Assertions off", reader.readLine());
     reader.close();
   }
-
-  public void testSystemProperties() throws Exception {
-    System.setProperty("jumbleTestProperty", "true");
-    JavaRunner runner = new JavaRunner("jumble.util.PrintProperty");
-    mProcess = runner.start();
-    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
-    assertEquals("true", out.readLine());
-  }
   
   public static Test suite() {
     TestSuite suite = new TestSuite(JavaRunnerTest.class);
