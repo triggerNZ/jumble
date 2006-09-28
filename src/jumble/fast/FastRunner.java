@@ -74,7 +74,7 @@ public class FastRunner {
    */
   private int mFirstMutation = 0;
 
-  private Set mExcludeMethods = new HashSet();
+  private Set<String> mExcludeMethods = new HashSet<String>();
 
   // State during run
 
@@ -337,7 +337,7 @@ public class FastRunner {
    * 
    * @return the set of excluded method names
    */
-  public Set getExcludeMethods() {
+  public Set<String> getExcludeMethods() {
     return mExcludeMethods;
   }
 
@@ -404,7 +404,7 @@ public class FastRunner {
 
   /** Constructs arguments to the FastJumbler */
   private String[] createArgs(int currentMutation) {
-    ArrayList args = new ArrayList();
+    ArrayList<String> args = new ArrayList<String>();
     args.add("--" + FastJumbler.FLAG_CLASSPATH);
     args.add(mClassPath);
 
@@ -579,7 +579,7 @@ public class FastRunner {
    * Runs tests without mutating at all. If all OK, write out testsuitefile for
    * later use, otherwise return a JumbleResult
    */
-  private JumbleResult runInitialTests(List testClassNames) {
+  private JumbleResult runInitialTests(List<String> testClassNames) {
 
     assert Debug.println("Using classpath: " + mClassPath);
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
@@ -651,7 +651,7 @@ public class FastRunner {
    * @see JumbleResult
    * @see JumbleListener
    */
-  public void runJumble(final String className, final List testClassNames, JumbleListener listener) throws Exception {
+  public void runJumble(final String className, final List<String> testClassNames, JumbleListener listener) throws Exception {
     runJumbleProxy(className, testClassNames, listener);
   }
 
@@ -667,7 +667,7 @@ public class FastRunner {
    *          list of test class names.
    * @return
    */
-  private boolean checkClasses(JumbleListener out, String className, List testClassNames) {
+  private boolean checkClasses(JumbleListener out, String className, List<String> testClassNames) {
     boolean ok = true;
 
     try {
@@ -711,7 +711,7 @@ public class FastRunner {
    * @see JumbleResult
    * @see JumbleListener
    */
-  private JumbleResult runJumbleProxy(final String className, final List testClassNames, JumbleListener listener) throws Exception {
+  private JumbleResult runJumbleProxy(final String className, final List<String> testClassNames, JumbleListener listener) throws Exception {
     if (listener == null) {
       listener = new NullListener();
     }
@@ -732,18 +732,6 @@ public class FastRunner {
 
     JumbleResult initialResult = runInitialTests(testClassNames);
     if (initialResult != null) {
-      final int status;
-
-      if (initialResult.isInterface()) {
-        status = InitialTestStatus.INTERFACE;
-      } else if (initialResult.isMissingTestClass()) {
-        status = InitialTestStatus.NO_TEST;
-      } else if (!initialResult.initialTestsPassed()) {
-        status = InitialTestStatus.FAILED;
-      } else {
-        // should never happen
-        throw new RuntimeException();
-      }
       listener.performedInitialTest(initialResult, mMutationCount);
       // Jumbling will not happen here
       listener.jumbleRunEnded();
