@@ -50,7 +50,7 @@ public class JavaRunnerTest extends TestCase {
     assertEquals("three", out.readLine());
     assertEquals(null, out.readLine());
   }
-
+  
   public void testConstructor() {
     JavaRunner jr = new JavaRunner("jumble.util.DisplayEnvironment");
     String[] args = jr.getArguments();
@@ -94,6 +94,14 @@ public class JavaRunnerTest extends TestCase {
     reader.close();
   }
 
+  public void testSystemProperties() throws Exception {
+    System.setProperty("jumbleTestProperty", "true");
+    JavaRunner runner = new JavaRunner("jumble.util.PrintProperty");
+    mProcess = runner.start();
+    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
+    assertEquals("true", out.readLine());
+  }
+  
   public static Test suite() {
     TestSuite suite = new TestSuite(JavaRunnerTest.class);
     return suite;
