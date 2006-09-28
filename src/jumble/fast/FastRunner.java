@@ -75,6 +75,8 @@ public class FastRunner {
 
   private Set<String> mExcludeMethods = new HashSet<String>();
 
+  private Set<String> mSystemProperties = new HashSet<String>();
+
   // State during run
 
   /** The class being tested */
@@ -118,15 +120,15 @@ public class FastRunner {
   private JavaRunner getJavaRunner() {
     if (mRunner == null) {
       mRunner = new JavaRunner("jumble.fast.FastJumbler");
-      mRunner.setJvmArguments(new String[] {
+      String []args = new String[3 + mSystemProperties.size()];
           // This lets us run more mutation tests in each sub-JVM
           // without running out of space for classes.  Also consider
           // setting setMaxExternalMutations.
-          "-XX:PermSize=128m",
-
-          // Supply the classpath for the Sub-JVM to use.
-          "-cp", System.getProperty("java.class.path"),
-        });
+      args[0] = "-XX:PermSize=128m";
+      args[1] = "-cp";
+      args[2] = System.getProperty("java.class.path");
+      System.arraycopy(mSystemProperties.toArray(), 0, args, 3, mSystemProperties.size());
+      mRunner.setJvmArguments(args);
     }
     return mRunner;
   }
@@ -404,6 +406,18 @@ public class FastRunner {
 
   public void addExcludeMethod(String methodName) {
     mExcludeMethods.add(methodName);
+  }
+
+  public void addSystemProperty(String property) {
+    if (property == null) {
+      throw new NullPointerException();
+    }
+    int pos = property.indexOf('=');
+    if (pos == -1) {
+      throw new IllegalArgumentException("Malformed property definition, expected name=value");
+    }
+    System.setProperty(property.substring(0, pos), property.substring(pos + 1));
+    mSystemProperties.add("-D" + property);
   }
 
   /** Constructs arguments to the FastJumbler */
