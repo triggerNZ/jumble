@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import jumble.mutation.Mutater;
 import jumble.mutation.MutatingClassLoader;
-import jumble.ui.InitialTestStatus;
 import jumble.ui.JumbleListener;
 import jumble.ui.NullListener;
 import jumble.util.IOThread;
@@ -403,7 +402,7 @@ public class FastRunner {
   }
 
   /** Constructs arguments to the FastJumbler */
-  private String[] createArgs(int currentMutation) {
+  private String[] createArgs(int currentMutation, int max) {
     ArrayList<String> args = new ArrayList<String>();
     args.add("--" + FastJumbler.FLAG_CLASSPATH);
     args.add(mClassPath);
@@ -463,9 +462,9 @@ public class FastRunner {
       args.add("--" + FastJumbler.FLAG_VERBOSE);
     }
 
-    if (getMaxExternalMutations() >= 0) {
+    if (max >= 0) {
       args.add("--" + FastJumbler.FLAG_LENGTH);
-      args.add("" + getMaxExternalMutations());
+      args.add("" + max);
     }
     return (String[]) args.toArray(new String[args.size()]);
   }
@@ -555,14 +554,11 @@ public class FastRunner {
         } else if (out.startsWith(FastJumbler.INIT_PREFIX)) {
           modification = out.substring(FastJumbler.INIT_PREFIX.length());
         } else {
-          int status = -1;
           MutationResult m = null;
           if (out.startsWith(FastJumbler.PASS_PREFIX)) {
-            status = MutationResult.PASS;
-            m = new MutationResult(status, mClassName, currentMutation, modification, out.substring(FastJumbler.PASS_PREFIX.length()));
+            m = new MutationResult(MutationResult.PASS, mClassName, currentMutation, modification, out.substring(FastJumbler.PASS_PREFIX.length()));
           } else if (out.startsWith(FastJumbler.FAIL_PREFIX)) {
-            status = MutationResult.FAIL;
-            m = new MutationResult(status, mClassName, currentMutation, modification);
+            m = new MutationResult(MutationResult.FAIL, mClassName, currentMutation, modification);
           }
           if (m != null) {
             if (mUseCache) {
@@ -623,6 +619,28 @@ public class FastRunner {
       ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFile));
       oos.writeObject(order);
       oos.close();
+
+      // Now try the tests again in a separate JVM to detect if there
+      // are problems due to invocation within a separate JVM.
+      mChildProcess = null;
+      mIot = null;
+      mEot = null;
+      startChildProcess(createArgs(-1, 1));
+      MutationResult thisResult = readMutation(-1, computeTimeout(mTotalRuntime));
+      if (mChildProcess != null) {
+        mChildProcess = null;
+      }
+      if (thisResult == null) {
+        // This is a problem due to unknown reasons
+        System.err.println("WARNING: Child JVM requested restart before completing any mutations!!");
+      } else if (thisResult.getStatus() == MutationResult.PASS) {
+        // This is a problem, we expect a run without any mutations to look like a fail (i.e. all tests pass)
+        if (mVerbose) {
+          System.err.println("Problem jumbling: Tests failed when running unmutated in external JVM!");
+        }
+        return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
+      }
+      
 
     } catch (RuntimeException e) {
       throw e;
@@ -752,7 +770,7 @@ public class FastRunner {
     final int max = getMaxExternalMutations();
     for (int currentMutation = getFirstMutation(); currentMutation < mMutationCount; currentMutation++) {
       if (mChildProcess == null) {
-        startChildProcess(createArgs(currentMutation));
+        startChildProcess(createArgs(currentMutation, max));
         count = 0;
       }
       MutationResult thisResult = readMutation(currentMutation, timeout);
