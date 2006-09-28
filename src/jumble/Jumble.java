@@ -42,6 +42,8 @@ public class Jumble {
     final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
     final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
+    final Flag jvmpropFlag = flags.registerOptional('D', "define-property", String.class, "STRING", "Additional system property to define in JVM used to run unit tests.");
+    jvmpropFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
     final Flag firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt. Negative values are ignored.");
     final Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
@@ -77,13 +79,13 @@ public class Jumble {
     }
     if (firstFlag.isSet()) {
       int val = ((Integer) firstFlag.getValue()).intValue();
-      if (val >= 0) {
+      if (val >= -1) {
         jumble.setFirstMutation(val);
       }
     }
 
     String className;
-    List testList;
+    List<String> testList;
 
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
@@ -93,7 +95,13 @@ public class Jumble {
     }
 
     className = ((String) classFlag.getValue()).replace('/', '.');
-    testList = new ArrayList();
+    testList = new ArrayList<String>();
+
+    if (jvmpropFlag.isSet()) {
+      for (Object val : jvmpropFlag.getValues()) {
+        jumble.addSystemProperty((String)val);
+      }
+    }
 
     // We need at least one test
     if (testClassFlag.isSet()) {
