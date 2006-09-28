@@ -739,7 +739,7 @@ public class Mutater {
     } else if (c instanceof ConstantFloat) {
       final float current = ((ConstantFloat) c).getBytes();
       // can't just add 1 because of potential underflow
-      final double newValue = 2 * current + 1;
+      final float newValue = (float) (2 * current + 1);
       cp.setConstant(i, new ConstantFloat(newValue));
       mod = mod + current + " -> " + newValue;
     } else if (c instanceof ConstantDouble) {
