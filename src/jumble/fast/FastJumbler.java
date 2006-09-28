@@ -122,13 +122,16 @@ public class FastJumbler {
         System.out.println(SIGNAL_MAX_REACHED);
         break;
       }
+//       if (verboseFlag.isSet()) {
+//         System.err.println("Attempting mutation point: " + i);
+//       }
       mutater.setMutationPoint(i);
       jumbler = new MutatingClassLoader(className, mutater, classpath);
       jumbler.loadClass(className);
       String methodName = mutater.getMutatedMethodName(className);
       int mutPoint = mutater.getMethodRelativeMutationPoint(className);
       assert (mutPoint != -1) : "Couldn't get method relative mutation point";
-      String modification = mutater.getModification();
+      String modification = (i == -1) ? "No mutation made" : mutater.getModification();
 
       // Communicate to parent the current mutation being attempted
       System.out.println(INIT_PREFIX + modification); 
