@@ -1,8 +1,12 @@
 package jumble.util;
 
-import com.reeltwo.util.Debug;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+
+import com.reeltwo.util.Debug;
 
 /**
  * Class to run a java process with the same settings as this JRE.
@@ -46,15 +50,86 @@ public class JavaRunner {
     String ls = props.getProperty("file.separator");
     mJvmBin = props.getProperty("java.home") + ls + "bin" + ls + "java";
 
-    mJvmArgs = new String[JumbleUtils.isAssertionsEnabled() ? 3 : 2];
+    String[] systemProperties = getProps();
+    final int initialLength = (JumbleUtils.isAssertionsEnabled() ? 3 : 2);
+    
+    
+    mJvmArgs = new String[initialLength + systemProperties.length];
     mJvmArgs[0] = "-cp";
     mJvmArgs[1] = props.getProperty("java.class.path");
     if (JumbleUtils.isAssertionsEnabled()) {
       mJvmArgs[2] = "-ea";
-      
     }
+    System.arraycopy(systemProperties, 0, mJvmArgs, initialLength, systemProperties.length);
   }
 
+  private static String[] getProps() {
+    Map props = (Map) System.getProperties().clone();
+    cleanProps(props);
+    String[] ret = new String[props.size()];
+    Iterator it = props.entrySet().iterator();
+    
+    for (int i = 0; i < ret.length; i++) {
+      Map.Entry entry = (Map.Entry) it.next();
+      ret[i] = "-D" + entry.getKey() + "=\"" + entry.getValue() + "\"";
+    }
+    return ret;
+  }
+  
+  private static void cleanProps(Map props) {
+    props.remove("java.runtime.name");
+    props.remove("sun.boot.library.path");
+    props.remove("java.vendor");
+    props.remove("java.vendor.url.bug");
+    props.remove("java.vm.version");
+    props.remove("java.vendor.url");
+    props.remove("java.vm.vendor");
+    props.remove("path.separator");
+    props.remove("line.separator");
+    props.remove("file.separator");
+    props.remove("java.vm.name");
+    props.remove("java.home");
+    props.remove("sun.os.patch.level");
+    props.remove("java.vm.specification.name");
+    props.remove("java.vm.specification.version");   
+    props.remove("file.encoding.pkg");
+    props.remove("user.country");
+    props.remove("user.dir");
+    props.remove("java.runtime.version");
+    props.remove("java.awt.graphicsenv");
+    props.remove("java.endorsed.dirs");
+    props.remove("os.arch");
+    props.remove("java.io.tmpdir");
+    props.remove("java.vm.specification.vendor");
+    props.remove("user.variant");
+    props.remove("os.name");
+    props.remove("sun.jnu.encoding");
+    props.remove("java.library.path");
+    props.remove("java.class.path");
+    props.remove("java.specification.name");
+    props.remove("java.specification.vendor");
+    props.remove("java.specification.version");
+    props.remove("java.class.version");
+    props.remove("sun.management.compiler");
+    props.remove("os.version");
+    props.remove("user.home");
+    props.remove("user.name");
+    props.remove("user.timezone");
+    props.remove("java.awt.printerjob");
+    props.remove("file.encoding");
+    props.remove("sun.arch.data.model");
+    props.remove("user.language");
+    props.remove("awt.toolkit");
+    props.remove("java.vm.info");
+    props.remove("java.version");
+    props.remove("java.ext.dirs");
+    props.remove("sun.boot.class.path");
+    props.remove("sun.io.unicode.encoding");
+    props.remove("sun.cpu.endian");
+    props.remove("sun.desktop");
+    props.remove("sun.cpu.isalist");
+  }
+  
   /**
    * Gets the name of the class to run
    * 
