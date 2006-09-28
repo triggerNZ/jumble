@@ -84,7 +84,7 @@ public class FastRunner {
 
   private File mTestSuiteFile;
 
-  private JavaRunner mRunner;
+  private JavaRunner mRunner = null;
 
   private Process mChildProcess = null;
 
@@ -100,17 +100,6 @@ public class FastRunner {
   FailedTestMap mCache = null;
 
   public FastRunner() {
-    mRunner = new JavaRunner("jumble.fast.FastJumbler");
-    mRunner.setJvmArguments(new String[] {
-        // This lets us run more mutation tests in each sub-JVM
-        // without running out of space for classes.  Also consider
-        // setting setMaxExternalMutations.
-        "-XX:PermSize=128m",
-
-        // Supply the classpath for the Sub-JVM to use.
-        "-cp", System.getProperty("java.class.path"),
-      });
-
     // Add a shutdown hook so that if this JVM is interrupted, any
     // child process will be destroyed.
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -124,6 +113,22 @@ public class FastRunner {
           }
         }
       });
+  }
+
+  private JavaRunner getJavaRunner() {
+    if (mRunner == null) {
+      mRunner = new JavaRunner("jumble.fast.FastJumbler");
+      mRunner.setJvmArguments(new String[] {
+          // This lets us run more mutation tests in each sub-JVM
+          // without running out of space for classes.  Also consider
+          // setting setMaxExternalMutations.
+          "-XX:PermSize=128m",
+
+          // Supply the classpath for the Sub-JVM to use.
+          "-cp", System.getProperty("java.class.path"),
+        });
+    }
+    return mRunner;
   }
 
   /**
@@ -517,8 +522,9 @@ public class FastRunner {
   }
 
   private void startChildProcess(String[] args) throws IOException, InterruptedException {
-    mRunner.setArguments(args);
-    mChildProcess = mRunner.start();
+    JavaRunner runner = getJavaRunner();
+    runner.setArguments(args);
+    mChildProcess = runner.start();
     mIot = new IOThread(mChildProcess.getInputStream());
     mIot.setDaemon(true);
     mIot.start();
