@@ -740,14 +740,14 @@ public class Mutater {
       final float current = ((ConstantFloat) c).getBytes();
       // treatment of reals is complicated by potential underflow and the
       // special values like the infinities
-      final float newValue = (float) (Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + 1);
+      final float newValue = (float) (Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + (current >= 0 ? 1 : -1));
       cp.setConstant(i, new ConstantFloat(newValue));
       mod = mod + current + " -> " + newValue;
     } else if (c instanceof ConstantDouble) {
       // treatment of reals is complicated by potential underflow and the
       // special values like the infinities
       final double current = ((ConstantDouble) c).getBytes();
-      final double newValue = Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + 1;
+      final double newValue = Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + (current >= 0 ? 1 : -1);
       cp.setConstant(i, new ConstantDouble(newValue));
       mod = mod + current + " -> " + newValue;
     }
