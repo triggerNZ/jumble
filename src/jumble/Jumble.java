@@ -42,6 +42,8 @@ public class Jumble {
     final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
     final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
+    final Flag jvmargFlag = flags.registerOptional('J', "jvm-arg", String.class, "STRING", "Additional command-line argument passed to the JVM used to run unit tests.");
+    jvmargFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag jvmpropFlag = flags.registerOptional('D', "define-property", String.class, "STRING", "Additional system property to define in JVM used to run unit tests.");
     jvmpropFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
@@ -97,9 +99,15 @@ public class Jumble {
     className = ((String) classFlag.getValue()).replace('/', '.');
     testList = new ArrayList<String>();
 
+    if (jvmargFlag.isSet()) {
+      for (Object val : jvmargFlag.getValues()) {
+        jumble.addJvmArg((String) val);
+      }
+    }
+
     if (jvmpropFlag.isSet()) {
       for (Object val : jvmpropFlag.getValues()) {
-        jumble.addSystemProperty((String)val);
+        jumble.addSystemProperty((String) val);
       }
     }
 
