@@ -738,12 +738,16 @@ public class Mutater {
       mod = mod + current + " -> " + (current + 1);
     } else if (c instanceof ConstantFloat) {
       final float current = ((ConstantFloat) c).getBytes();
-      cp.setConstant(i, new ConstantFloat(current + 1));
-      mod = mod + current + " -> " + (current + 1);
+      // can't just add 1 because of potential underflow
+      final double newValue = 2 * current + 1;
+      cp.setConstant(i, new ConstantFloat(newValue));
+      mod = mod + current + " -> " + newValue;
     } else if (c instanceof ConstantDouble) {
       final double current = ((ConstantDouble) c).getBytes();
-      cp.setConstant(i, new ConstantDouble(current + 1));
-      mod = mod + current + " -> " + (current + 1);
+      // can't just add 1 because of potential underflow
+      final double newValue = 2 * current + 1;
+      cp.setConstant(i, new ConstantDouble(newValue));
+      mod = mod + current + " -> " + newValue;
     }
     mModification = mod;
   }
