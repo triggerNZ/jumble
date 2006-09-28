@@ -605,6 +605,7 @@ public class Mutater {
       il.append(new FNEG());
     } else if (ret instanceof DRETURN) {
       // +1.0, negate
+      // TODO this is broken for NaN
       il.append(new DCONST(1.0));
       il.append(new DADD());
       il.append(new DNEG());
@@ -709,6 +710,11 @@ public class Mutater {
     return mModification;
   }
 
+  private double mutateDouble(final double current) {
+    // treatment of reals is complicated by potential underflow and the
+    // special values like the infinities
+    return Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + (current >= 0 ? 1 : -1);
+  }
 
   /**
    * Handle mutations of the constant pool.
@@ -738,16 +744,12 @@ public class Mutater {
       mod = mod + current + " -> " + (current + 1);
     } else if (c instanceof ConstantFloat) {
       final float current = ((ConstantFloat) c).getBytes();
-      // treatment of reals is complicated by potential underflow and the
-      // special values like the infinities
-      final float newValue = (float) (Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + (current >= 0 ? 1 : -1));
+      final float newValue = (float) mutateDouble(current);
       cp.setConstant(i, new ConstantFloat(newValue));
       mod = mod + current + " -> " + newValue;
     } else if (c instanceof ConstantDouble) {
-      // treatment of reals is complicated by potential underflow and the
-      // special values like the infinities
       final double current = ((ConstantDouble) c).getBytes();
-      final double newValue = Double.isNaN(current) || Double.isInfinite(current) ? 0 : 2 * current + (current >= 0 ? 1 : -1);
+      final double newValue = mutateDouble(current);
       cp.setConstant(i, new ConstantDouble(newValue));
       mod = mod + current + " -> " + newValue;
     }
