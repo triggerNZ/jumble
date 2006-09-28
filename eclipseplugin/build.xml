@@ -1,15 +1,51 @@
 <!-- build script to create Jumble Plugin -->
 <project name="jumble" default="export" basedir=".">
 	<target name="init">
-		<tstamp/>
+		<tstamp />
 		<property name="destdir" value="../../plugin-export" />
-		<property name="plugin"  value="jumble" />
-		<property name="dest"  value="${destdir}/${plugin}" />
+		<property name="plugin" value="jumble" />
+		<property name="dest" value="${destdir}/${plugin}" />
+		<property name="bindir" value="bin" />
+		<property name="ECLIPSE_HOME" value="C:/eclipse" />
+		<path id="Plug-in Dependencies.libraryclasspath">
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.2.0.v3232o.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.win32.win32.x86_3.2.0.v3232m.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.2.0.I20060605-1400.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.2.0.I20060605-1400.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.2.0.v20060601.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/runtime_registry_compatibility.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.2.0.v20060601.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.2.0.v20060601.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.core_3.2.0.v_671.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.debug.core_3.2.0.v20060605.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.2.0.v20060603.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.launching_3.2.0.v20060605.jar" />
+			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.debug.ui_3.2.0.v20060605.jar" />
+		</path>
+		<path id="eclipseplugin.classpath">
+			<pathelement location="bin" />
+			<path refid="Plug-in Dependencies.libraryclasspath" />
+		</path>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bindir}" />
 	</target>
 
 	<target name="build" depends="init">
-    	<javac srcdir="src" destdir="bin"/>
-		<jar destfile="jumble.jar" basedir="bin"/>
+		<mkdir dir="${bindir}" />
+		<javac srcdir="src" destdir="${bindir}">
+			<classpath refid="eclipseplugin.classpath" />
+		</javac>
+
+
+		<jar destfile="jumble.jar" basedir="${bindir}" />
 	</target>
 
 	<target name="export" depends="build">
@@ -17,8 +53,8 @@
 		<delete dir="${dest}" />
 		<mkdir dir="${dest}" />
 
-		<copy file="jumble.jar" todir="${dest}"/>
-		<copy file="plugin.xml" todir="${dest}"/>
-		<copy file="jumble-runtime.jar" todir="${dest}"/>
+		<copy file="jumble.jar" todir="${dest}" />
+		<copy file="plugin.xml" todir="${dest}" />
+		<copy file="jumble-runtime.jar" todir="${dest}" />
 	</target>
 </project>
