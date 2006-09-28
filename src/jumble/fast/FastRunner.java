@@ -406,6 +406,13 @@ public class FastRunner {
     mExcludeMethods.add(methodName);
   }
 
+  public void addJvmArg(String arg) {
+    if (arg == null) {
+      throw new NullPointerException();
+    }
+    mJvmArgs.add(arg);
+  }
+
   public void addSystemProperty(String property) {
     if (property == null) {
       throw new NullPointerException();
