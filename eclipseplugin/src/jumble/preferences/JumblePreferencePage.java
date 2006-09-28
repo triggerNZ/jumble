@@ -31,7 +31,7 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
    */
   public void createFieldEditors() {
     addField(new BooleanFieldEditor(PreferenceConstants.P_VERBOSE, "&Verbose", getFieldEditorParent()));
-    addField(new StringFieldEditor(PreferenceConstants.P_VM_ARGS, "&Java Virtual Machine Arguments", getFieldEditorParent()));
+    addField(new StringFieldEditor(PreferenceConstants.P_ARGS, "Jumble &Arguments", getFieldEditorParent()));
   }
 
   /*

@@ -17,7 +17,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
    */
   public void initializeDefaultPreferences() {
     IPreferenceStore store = JumblePlugin.getDefault().getPreferenceStore();
-    store.setDefault(PreferenceConstants.P_VM_ARGS, "");
+    store.setDefault(PreferenceConstants.P_ARGS, "");
   }
 
 }

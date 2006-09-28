@@ -84,8 +84,8 @@ public class JumbleAction implements IObjectActionDelegate {
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, JavaRuntime.getDefaultVMInstall().getVMInstallType().getId());
 
       // Use the specified JVM arguments
-      String jvmArgs = JumblePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_VM_ARGS);
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, jvmArgs);
+      String extraArgs = JumblePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_ARGS);
+
       // Set up command line arguments
       IPackageDeclaration[] packages = mCompilationUnit.getPackageDeclarations();
       final String packageName;
@@ -155,7 +155,7 @@ public class JumbleAction implements IObjectActionDelegate {
       boolean verbose = JumblePlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_VERBOSE);
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "jumble.Jumble");
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i " + (verbose ? "-v " : "") + "--classpath \""
-          + cpBuffer + "\" " + className);
+          + cpBuffer + "\" " + " " + extraArgs + " " + className);
 
       // Now run...
       ILaunchConfiguration configuration = workingCopy.doSave();
