@@ -83,7 +83,7 @@ public class JumbleAction implements IObjectActionDelegate {
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, JavaRuntime.getDefaultVMInstall().getName());
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, JavaRuntime.getDefaultVMInstall().getVMInstallType().getId());
 
-      //Use the specified JVM arguments
+      // Use the specified JVM arguments
       String jvmArgs = JumblePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_VM_ARGS);
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, jvmArgs);
       // Set up command line arguments
@@ -119,7 +119,7 @@ public class JumbleAction implements IObjectActionDelegate {
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);
       IJavaProject curProject = mCompilationUnit.getJavaProject();
 
-      IClasspathEntry[] entries = curProject.getResolvedClasspath(false);
+      IClasspathEntry[] entries = curProject.getResolvedClasspath(true);
 
       StringBuffer cpBuffer = new StringBuffer();
 
@@ -128,9 +128,20 @@ public class JumbleAction implements IObjectActionDelegate {
       System.err.println(outputLocation);
       for (int i = 0; i < entries.length; i++) {
         IPath path = entries[i].getPath();
+
         IResource res = root.findMember(path);
 
-        final String curPath = res == null ? path.toOSString() : outputLocation.toOSString();
+        final String curPath;
+
+        if (res == null) {
+          curPath = path.toOSString();
+        } else {
+          if (entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+            curPath = outputLocation.toOSString();
+          } else {
+            curPath = res.getLocation().toOSString();
+          }
+        }
 
         if (cpBuffer.length() == 0) {
           cpBuffer.append(curPath);
@@ -141,8 +152,10 @@ public class JumbleAction implements IObjectActionDelegate {
 
       System.err.println("CLASSPATH: " + cpBuffer);
 
+      boolean verbose = JumblePlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_VERBOSE);
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "jumble.Jumble");
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i --classpath \"" + cpBuffer + "\" " + className);
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i " + (verbose ? "-v " : "") + "--classpath \""
+          + cpBuffer + "\" " + className);
 
       // Now run...
       ILaunchConfiguration configuration = workingCopy.doSave();
