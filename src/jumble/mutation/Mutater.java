@@ -93,6 +93,11 @@ import org.apache.bcel.classfile.ConstantNameAndType;
 import org.apache.bcel.generic.LOOKUPSWITCH;
 import org.apache.bcel.generic.TABLESWITCH;
 import org.apache.bcel.generic.Select;
+import org.apache.bcel.generic.POP2;
+import org.apache.bcel.generic.DCMPG;
+import org.apache.bcel.generic.DUP2;
+import org.apache.bcel.generic.FCMPG;
+import org.apache.bcel.generic.POP;
 
 /**
  * Given a class file can either count the number of possible
@@ -599,14 +604,33 @@ public class Mutater {
       il.append(new LCONST(1));
       il.append(new LADD());
     } else if (ret instanceof FRETURN) {
-      // +1.0, negate
-      il.append(new FCONST(1.0F));
+      // The following is complicated by the problem of NaNs.  By default
+      // the new value is -(x + 1), but this doesn't work for NaNs.  But
+      // for a NaN x != x is true, and we use this to detect them.
+      il.append(new DUP());
+      il.append(new DUP());
+      il.append(new FCMPG());
+      final IFEQ ifeq = new IFEQ(null);
+      il.append(ifeq);
+      il.append(new POP());
+      il.append(new FCONST(0));
+      il.append(new FCONST(1));
+      ifeq.setTarget(il.getEnd());
       il.append(new FADD());
       il.append(new FNEG());
     } else if (ret instanceof DRETURN) {
-      // +1.0, negate
-      // TODO this is broken for NaN
-      il.append(new DCONST(1.0));
+      // The following is complicated by the problem of NaNs.  By default
+      // the new value is -(x + 1), but this doesn't work for NaNs.  But
+      // for a NaN x != x is true, and we use this to detect them.
+      il.append(new DUP2());
+      il.append(new DUP2());
+      il.append(new DCMPG());
+      final IFEQ ifeq = new IFEQ(null);
+      il.append(ifeq);
+      il.append(new POP2());
+      il.append(new DCONST(0));
+      il.append(new DCONST(1));
+      ifeq.setTarget(il.getEnd());
       il.append(new DADD());
       il.append(new DNEG());
     } else if (ret instanceof ARETURN) {
