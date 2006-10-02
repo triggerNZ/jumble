@@ -82,8 +82,8 @@ public class JumbleAction implements IObjectActionDelegate {
       ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, LAUNCH_NAME);
 
       // Use the default JRE
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, JavaRuntime.getDefaultVMInstall().getName());
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, JavaRuntime.getDefaultVMInstall().getVMInstallType().getId());
+      //System.err.println(JavaRuntime.getDefaultVMInstall().getInstallLocation().toString());
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, JavaRuntime.getDefaultVMInstall().getInstallLocation().toString());
 
       // Use the specified JVM arguments
       String extraArgs = prefs.getString(PreferenceConstants.P_ARGS);
