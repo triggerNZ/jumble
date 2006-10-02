@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -63,7 +63,7 @@ public class JumblePlugin extends AbstractUIPlugin {
   */
   public File getPluginFolder() throws IOException {
       URL url = getBundle().getEntry("/");
-      url = Platform.asLocalURL(url);
+      url = FileLocator.toFileURL(url);
       return new File(url.getPath());
   }
 }
