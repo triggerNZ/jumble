@@ -30,7 +30,14 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
    * knows how to save and restore itself.
    */
   public void createFieldEditors() {
-    addField(new BooleanFieldEditor(PreferenceConstants.P_VERBOSE, "&Verbose", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS, "Mutate Constant &Pool Constants", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_INLINE_CONSTANTS, "Mutate Inline &Constants", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_INCREMENTS, "Mutate &Increment Instructions", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_RETURNS, "Mutate &Return Values", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_SWITCH, "Mutate &Switch Statements", getFieldEditorParent()));
+    
+    addField(new BooleanFieldEditor(PreferenceConstants.P_VERBOSE, "&Verbose Mode", getFieldEditorParent()));
+    
     addField(new StringFieldEditor(PreferenceConstants.P_ARGS, "Jumble &Arguments", getFieldEditorParent()));
   }
 

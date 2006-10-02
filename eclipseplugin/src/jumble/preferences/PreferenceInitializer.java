@@ -18,6 +18,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
   public void initializeDefaultPreferences() {
     IPreferenceStore store = JumblePlugin.getDefault().getPreferenceStore();
     store.setDefault(PreferenceConstants.P_ARGS, "");
+    store.setDefault(PreferenceConstants.P_VERBOSE , false);
+    store.setDefault(PreferenceConstants.P_RETURNS, true);
+    store.setDefault(PreferenceConstants.P_INCREMENTS, true);
+    store.setDefault(PreferenceConstants.P_INLINE_CONSTANTS, true);
+    store.setDefault(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS, true);
+    store.setDefault(PreferenceConstants.P_SWITCH, true);
   }
 
 }

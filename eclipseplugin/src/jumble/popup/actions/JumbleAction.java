@@ -25,6 +25,7 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
@@ -55,6 +56,7 @@ public class JumbleAction implements IObjectActionDelegate {
    * @see IActionDelegate#run(IAction)
    */
   public void run(IAction action) {
+    final IPreferenceStore prefs = JumblePlugin.getDefault().getPreferenceStore();
     String pluginLocation = null;
     try {
       pluginLocation = JumblePlugin.getDefault().getPluginFolder().getAbsolutePath();
@@ -84,7 +86,7 @@ public class JumbleAction implements IObjectActionDelegate {
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, JavaRuntime.getDefaultVMInstall().getVMInstallType().getId());
 
       // Use the specified JVM arguments
-      String extraArgs = JumblePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_ARGS);
+      String extraArgs = prefs.getString(PreferenceConstants.P_ARGS);
 
       // Set up command line arguments
       IPackageDeclaration[] packages = mCompilationUnit.getPackageDeclarations();
@@ -152,10 +154,16 @@ public class JumbleAction implements IObjectActionDelegate {
 
       System.err.println("CLASSPATH: " + cpBuffer);
 
-      boolean verbose = JumblePlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_VERBOSE);
+      boolean verbose = prefs.getBoolean(PreferenceConstants.P_VERBOSE);
+      boolean returnVals = prefs.getBoolean(PreferenceConstants.P_RETURNS);
+      boolean increments = prefs.getBoolean(PreferenceConstants.P_INCREMENTS);
+      boolean inlineConstants = prefs.getBoolean(PreferenceConstants.P_INLINE_CONSTANTS);
+      boolean constantPoolConstants = prefs.getBoolean(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS);
+      boolean switchStatements = prefs.getBoolean(PreferenceConstants.P_SWITCH);
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "jumble.Jumble");
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-r -k -i " + (verbose ? "-v " : "") + "--classpath \""
-          + cpBuffer + "\" " + " " + extraArgs + " " + className);
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, (returnVals ? "-r " : "") + (inlineConstants ? "-k " : "")
+          + (increments ? "-i " : "") + (verbose ? "-v " : "") + (constantPoolConstants ? "-w " : "") + (switchStatements ? "-j " : "")
+          + "--classpath \"" + cpBuffer + "\" " + " " + extraArgs + " " + className);
 
       // Now run...
       ILaunchConfiguration configuration = workingCopy.doSave();

@@ -17,7 +17,7 @@ public class JumblePlugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static JumblePlugin plugin;
 	
-	/**
+	/**a
 	 * The constructor.
 	 */
 	public JumblePlugin() {
