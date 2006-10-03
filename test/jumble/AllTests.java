@@ -20,6 +20,7 @@ public class AllTests extends TestSuite {
     suite.addTest(jumble.mutation.AllTests.suite());
     suite.addTest(jumble.dependency.AllTests.suite());
     suite.addTest(jumble.fast.AllTests.suite());
+    suite.addTest(jumble.ui.AllTests.suite());
     return suite;
   }
   
