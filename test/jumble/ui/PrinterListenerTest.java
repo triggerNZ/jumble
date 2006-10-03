@@ -8,6 +8,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+/**
+ * Tests the corresponding class.
+ * 
+ * @author Tin Pavlinic
+ * @version $Revision 1.0 $
+ */
 public class PrinterListenerTest extends TestCase {
   public void testLineWrapping() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
