@@ -16,6 +16,8 @@ import jumble.fast.MutationResult;
  * @version $Revision$
  */
 public class PrinterListener implements JumbleListener {
+  private static final int DOTS_PER_LINE = 50;
+  
   private PrintStream mStream;
 
   private int mCovered = 0;
@@ -27,6 +29,8 @@ public class PrinterListener implements JumbleListener {
   private List mTestNames;
 
   private boolean mInitialTestsPassed;
+  
+  private int mDotCount = 0;
 
   public PrinterListener() {
     this(System.out);
@@ -53,14 +57,25 @@ public class PrinterListener implements JumbleListener {
     if (res.isPassed()) {
       mStream.print(".");
       mCovered++;
+      newDot();
     } else if (res.isTimedOut()) {
       mStream.print("T");
       mCovered++;
+      newDot();
     } else {
       mStream.println("M FAIL: " + res.getDescription());
+      mDotCount = 0;
     }
   }
 
+  private void newDot() {
+    mDotCount++;
+    if (mDotCount == DOTS_PER_LINE) {
+      mDotCount = 0;
+      mStream.println();
+    }
+  }
+  
   public void jumbleRunStarted(String className, List testClasses) {
     assert Debug.println("class: " + className + " tests: " + testClasses);
     mClassName = className;
