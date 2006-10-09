@@ -21,6 +21,7 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
    </requires>
 
    <extension
@@ -61,6 +62,20 @@
                label="Jumble Class"
                menubarPath="jumble.menu2/group2"/>
       </objectContribution>
+      <viewerContribution
+            id="jumble.contribution3"
+            targetID="#CompilationUnitEditorContext">
+         <menu
+               id="jumble.menu3"
+               label="Jumble">
+            <separator name="group3"/>
+         </menu>
+         <action
+               class="jumble.popup.actions.JumbleAction"
+               id="jumble.editorAction"
+               label="Jumble Class"
+               menubarPath="jumble.menu3/group3"/>
+      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

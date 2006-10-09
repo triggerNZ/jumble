@@ -32,15 +32,20 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-public class JumbleAction implements IObjectActionDelegate {
+public class JumbleAction implements IObjectActionDelegate, IEditorActionDelegate {
   private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   private ICompilationUnit mCompilationUnit;
 
   private IFile mFile;
+
+  private IEditorPart mTargetEditor;
 
   private static final String LAUNCH_NAME = "Run Jumble";
 
@@ -51,6 +56,12 @@ public class JumbleAction implements IObjectActionDelegate {
     super();
   }
 
+  public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+    mTargetEditor = targetEditor;
+    mFile = null;
+    mCompilationUnit = null;
+  }
+
   /**
    * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
    */
@@ -58,6 +69,8 @@ public class JumbleAction implements IObjectActionDelegate {
   }
 
   /**
+   * Does the actual jumbling part.
+   * 
    * @see IActionDelegate#run(IAction)
    */
   public void run(IAction action) {
@@ -178,12 +191,8 @@ public class JumbleAction implements IObjectActionDelegate {
   }
 
   private String getClassName() throws JavaModelException {
-    ICompilationUnit cu = mCompilationUnit;
-    
-    if (cu == null) {
-      cu = JavaCore.createCompilationUnitFrom(mFile);
-    }
-    
+    ICompilationUnit cu = getCompilationUnit();
+
     IPackageDeclaration[] packages = cu.getPackageDeclarations();
     final String packageName;
     final String className;
@@ -209,12 +218,21 @@ public class JumbleAction implements IObjectActionDelegate {
   }
 
   private IJavaProject getJavaProject() {
-    ICompilationUnit cu = mCompilationUnit;
-    
-    if (cu == null) {
-      cu = JavaCore.createCompilationUnitFrom(mFile);
+    return getCompilationUnit().getJavaProject();
+  }
+
+  private ICompilationUnit getCompilationUnit() {
+    if (mTargetEditor == null) {
+      ICompilationUnit cu = mCompilationUnit;
+
+      if (cu == null) {
+        cu = JavaCore.createCompilationUnitFrom(mFile);
+      }
+      return cu;
+    } else {
+      IFileEditorInput f = (IFileEditorInput) mTargetEditor.getEditorInput();
+      System.err.println(f.getFile());
+      return JavaCore.createCompilationUnitFrom(f.getFile());
     }
-    
-    return cu.getJavaProject();
   }
 }
