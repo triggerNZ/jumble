@@ -7,6 +7,7 @@ import java.util.List;
 import jumble.JumblePlugin;
 import jumble.preferences.PreferenceConstants;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IPath;
@@ -21,6 +22,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageDeclaration;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -36,6 +39,8 @@ public class JumbleAction implements IObjectActionDelegate {
   private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   private ICompilationUnit mCompilationUnit;
+
+  private IFile mFile;
 
   private static final String LAUNCH_NAME = "Run Jumble";
 
@@ -63,7 +68,7 @@ public class JumbleAction implements IObjectActionDelegate {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    System.err.println("Selected class: " + mCompilationUnit);
+
     try {
       // Get launch manager
       ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
@@ -82,34 +87,15 @@ public class JumbleAction implements IObjectActionDelegate {
       ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, LAUNCH_NAME);
 
       // Use the default JRE
-      //System.err.println(JavaRuntime.getDefaultVMInstall().getInstallLocation().toString());
-      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, JavaRuntime.getDefaultVMInstall().getInstallLocation().toString());
+      // System.err.println(JavaRuntime.getDefaultVMInstall().getInstallLocation().toString());
+      workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, JavaRuntime.getDefaultVMInstall().getInstallLocation()
+          .toString());
 
       // Use the specified JVM arguments
       String extraArgs = prefs.getString(PreferenceConstants.P_ARGS);
 
       // Set up command line arguments
-      IPackageDeclaration[] packages = mCompilationUnit.getPackageDeclarations();
-      final String packageName;
-      final String className;
-
-      if (packages == null || packages.length == 0) {
-        packageName = null;
-      } else if (packages.length == 1) {
-        packageName = packages[0].getElementName();
-      } else {
-        packageName = packages[0].getElementName();
-        System.err.println("Error: too many packages: ");
-        for (int i = 0; i < packages.length; i++) {
-          System.err.println(packages[i].getElementName());
-        }
-      }
-      final String rawClassName = mCompilationUnit.getElementName().substring(0, mCompilationUnit.getElementName().lastIndexOf('.'));
-      if (packageName == null) {
-        className = rawClassName;
-      } else {
-        className = packageName + "." + rawClassName;
-      }
+      String className = getClassName();
       System.err.println("class: " + className);
 
       // Set up class paths
@@ -119,7 +105,7 @@ public class JumbleAction implements IObjectActionDelegate {
       IRuntimeClasspathEntry jumbleJarEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(jumbleJarPath);
       classpath.add(jumbleJarEntry.getMemento());
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);
-      IJavaProject curProject = mCompilationUnit.getJavaProject();
+      IJavaProject curProject = getJavaProject();
 
       IClasspathEntry[] entries = curProject.getResolvedClasspath(true);
 
@@ -179,8 +165,56 @@ public class JumbleAction implements IObjectActionDelegate {
    */
   public void selectionChanged(IAction action, ISelection selection) {
     if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-      mCompilationUnit = (ICompilationUnit) ((IStructuredSelection) selection).getFirstElement();
+      Object selectedItem = ((IStructuredSelection) selection).getFirstElement();
+
+      if (selectedItem instanceof ICompilationUnit) {
+        mCompilationUnit = (ICompilationUnit) selectedItem;
+        mFile = null;
+      } else if (selectedItem instanceof IFile) {
+        mFile = (IFile) selectedItem;
+        mCompilationUnit = null;
+      }
     }
   }
 
+  private String getClassName() throws JavaModelException {
+    ICompilationUnit cu = mCompilationUnit;
+    
+    if (cu == null) {
+      cu = JavaCore.createCompilationUnitFrom(mFile);
+    }
+    
+    IPackageDeclaration[] packages = cu.getPackageDeclarations();
+    final String packageName;
+    final String className;
+
+    if (packages == null || packages.length == 0) {
+      packageName = null;
+    } else if (packages.length == 1) {
+      packageName = packages[0].getElementName();
+    } else {
+      packageName = packages[0].getElementName();
+      System.err.println("Error: too many packages: ");
+      for (int i = 0; i < packages.length; i++) {
+        System.err.println(packages[i].getElementName());
+      }
+    }
+    final String rawClassName = cu.getElementName().substring(0, cu.getElementName().lastIndexOf('.'));
+    if (packageName == null) {
+      className = rawClassName;
+    } else {
+      className = packageName + "." + rawClassName;
+    }
+    return className;
+  }
+
+  private IJavaProject getJavaProject() {
+    ICompilationUnit cu = mCompilationUnit;
+    
+    if (cu == null) {
+      cu = JavaCore.createCompilationUnitFrom(mFile);
+    }
+    
+    return cu.getJavaProject();
+  }
 }

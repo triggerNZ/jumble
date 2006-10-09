@@ -45,6 +45,22 @@
                id="jumble.newAction">
          </action>
       </objectContribution>
+      <objectContribution
+            id="jumble.contribution2"
+            nameFilter="*.java"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="jumble.menu2"
+               label="Jumble">
+            <separator name="group2"/>
+         </menu>
+         <action
+               class="jumble.popup.actions.JumbleAction"
+               enablesFor="1"
+               id="jumble.fileAction"
+               label="Jumble Class"
+               menubarPath="jumble.menu2/group2"/>
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
