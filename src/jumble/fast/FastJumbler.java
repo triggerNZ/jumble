@@ -89,6 +89,7 @@ public class FastJumbler {
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
     final int length = lengthFlag.isSet() ? ((Integer) lengthFlag.getValue()).intValue() : -1;
     final String classpath = (String) classpathFlag.getValue();
+    System.setProperty("java.class.path", classpath);  // Make classpath available to code doing classpath scanning.
     final Mutater mutater = new Mutater(-1);
     mutater.setIgnoredMethods(ignore);
     mutater.setMutateIncrements(incFlag.isSet());

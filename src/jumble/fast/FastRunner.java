@@ -147,6 +147,7 @@ public class FastRunner {
    */
   public void setClassPath(String classpath) {
     mClassPath = classpath;
+    System.setProperty("java.class.path", mClassPath);  // Make classpath available to code doing classpath scanning.
   }
 
   /**
