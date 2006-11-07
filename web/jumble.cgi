@@ -195,6 +195,7 @@ EOF
                 cat $jumblefile | sed 's/FAIL: \([^:]\+\):\([0-9]\+\):/FAIL: <a href="#\2">\1:\2:<\/a>/g'
                 echo "</pre>"
                 echo "<hr>"
+                echo "<pre>"
                 cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<a name=\""NR"\">"NR"</a> "$0}'
             else
                 cat $jumblefile
