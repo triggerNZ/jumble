@@ -179,11 +179,28 @@ EOF
         if [ ! -f "$jumblefile" ]; then
             echo "<h2>No jumble output file found $jumblefile</h2>"
         else
+            # See if the src file is visible to us
+            local srcfile
+            if [ -f "$srcmap" ]; then
+                local outerclass="$(echo "$classnamestd" | sed "s/$.*//g")"
+                srcfile="$(grep "$outerclass" $srcmap | head -1 | gawk '{print $2}')"
+                if [ ! -f "$srcfile" ]; then
+                    srcfile=
+                fi
+            fi
             echo "<hr>"
             echo "<pre>"
             find $jumblefile -printf "Jumble run at %TY-%Tm-%Td %TH:%TM:%TS\n"
-            cat $jumblefile
+            if [ "$srcfile" ]; then
+                cat $jumblefile | sed 's/FAIL: \([^:]\+\):\([0-9]\+\):/FAIL: <a href="#\2">\1:\2:<\/a>/g'
+                echo "</pre>"
+                echo "<hr>"
+                cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<a name=\""NR"\">"NR"</a> "$0}'
+            else
+                cat $jumblefile
+            fi
             echo "</pre>"
+            echo "<hr>"
         fi
     fi
 
@@ -264,6 +281,7 @@ fi
 jumblesubdir=jumble                                     # Name of subdir containing raw output files for each class
 jumbledir=$checkerrootdir/$checker/$jumblesubdir        # Fully qualified directory
 rawfile=$checkerrootdir/$checker/jumblesummary          # File containing jumble summarized output
+srcmap=$checkerrootdir/$checker/jumblesrcmap            # File mapping class to source file
 jumblecgi="$jumblewebroot/jumble.cgi?checker=$checker"  # Prefix for this cgi-script
 
 if [ "$classname" ]; then
