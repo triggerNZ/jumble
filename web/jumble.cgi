@@ -195,7 +195,7 @@ EOF
                 cat $jumblefile | sed 's/FAIL: \([^:]\+\):\([0-9]\+\):/FAIL: <a href="#\2">\1:\2:<\/a>/g'
                 echo "</pre>"
                 echo "<hr>"
-                failedlines=$(cat $jumblefile | grep "FAIL: " | sed 's/.*FAIL: \([^:]\+\):\([0-9]\+\):.*/ #f\2/g' | sort | uniq | tr -d '\n')
+                failedlines=$(cat $jumblefile | grep "FAIL: " | sed 's/.*FAIL: \([^:]\+\):\([0-9]\+\):.*/\,#f\2/g' | sort | uniq | tr -d '\n' | sed "s/^,//g")
                 if [ "$failedlines" ]; then
                     cat <<EOF
 <STYLE type="text/css">
