@@ -72,14 +72,14 @@ public class MutaterTest extends TestCase {
     assertEquals(3, m.countMutationPoints("DebugNone"));
   }
   
-  private void testDescriptions(int x, String s) throws ClassNotFoundException {
-    Mutater m = new Mutater(x);
-    assertEquals(null, m.getModification());
-    m.setMutateInlineConstants(true);
-    m.setMutateReturnValues(true);
-    m.jumbler("jumble.X2");
-    assertEquals(m.getModification(), s, m.getModification());
-  }
+//  private void testDescriptions(int x, String s) throws ClassNotFoundException {
+//    Mutater m = new Mutater(x);
+//    assertEquals(null, m.getModification());
+//    m.setMutateInlineConstants(true);
+//    m.setMutateReturnValues(true);
+//    m.jumbler("jumble.X2");
+//    assertEquals(m.getModification(), s, m.getModification());
+//  }
 
   private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws ClassNotFoundException {
 

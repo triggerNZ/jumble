@@ -46,8 +46,6 @@ public class FastJumblerTest extends TestCase {
     Process p = runner.start();
 
     BufferedReader outReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    BufferedReader errReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
 
     String line = outReader.readLine();
     assertEquals("START", line);
