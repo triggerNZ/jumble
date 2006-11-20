@@ -49,6 +49,19 @@ public class FlatTestSuiteTest extends TestCase {
   }
 
   public static void main(String[] args) {
-    junit.textui.TestRunner.run(suite());
+    if (args.length == 0) {
+      junit.textui.TestRunner.run(suite());
+    } else {
+      String testName = args[0];
+      FlatTestSuite suite = new jumble.fast.FlatTestSuite();
+      suite.addTest(suite());
+
+      for (int i = 0; i < suite.testCount(); i++) {
+        TestCase curTest = (TestCase) suite.testAt(i);
+        if (curTest.getName().equals(testName)) {
+          junit.textui.TestRunner.run(curTest);
+        }
+      }
+    }
   }
 }
