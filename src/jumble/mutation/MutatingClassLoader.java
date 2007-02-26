@@ -31,14 +31,14 @@ public class MutatingClassLoader extends ClassLoader {
   private final String[] mIgnoredPackages = new String[] {
     "java.",
     //"javax.",
-    "sun.",
+    "sun.reflect",
     "junit.",
     //"org.apache", 
     //"org.xml", 
     //"org.w3c"
   };
 
-  private final Hashtable mClasses = new Hashtable();
+  private final Hashtable<String, Class> mClasses = new Hashtable<String, Class>();
   private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
   private final Repository mRepository;
 
@@ -89,6 +89,7 @@ public class MutatingClassLoader extends ClassLoader {
       // Classes we're forcing to be loaded by mDeferTo
       for (int i = 0; i < mIgnoredPackages.length; i++) {
         if (className.startsWith(mIgnoredPackages[i])) {
+          assert Debug.println("Parent forced loading of class: " + className);
           cl = mDeferTo.loadClass(className);
           break;
         }
@@ -112,7 +113,7 @@ public class MutatingClassLoader extends ClassLoader {
           cl = defineClass(className, bytes, 0, bytes.length);
         } else {
           //cl = Class.forName(className);
-          assert Debug.println("Deferring loading of class: " + className);
+          assert Debug.println("Parent loading of class: " + className);
           cl = mDeferTo.loadClass(className);
         }
       }
@@ -151,9 +152,9 @@ public class MutatingClassLoader extends ClassLoader {
     URL resource = mClassPath.getResource(name);
     if (resource == null) {
       resource = mDeferTo.getResource(name);
-      assert Debug.println("Getting resource from parent: " + name + " " + resource);
+      assert Debug.println("Parent getting resource: " + name + " " + resource);
     } else {
-      assert Debug.println("Getting resource: " + name + " " + resource);
+      assert Debug.println("MCL getting resource: " + name + " " + resource);
     }
     return resource;
   }
@@ -162,9 +163,9 @@ public class MutatingClassLoader extends ClassLoader {
     InputStream resource = mClassPath.getResourceAsStream(name);
     if (resource == null) {
       resource = mDeferTo.getResourceAsStream(name);
-      assert Debug.println("Getting resource as stream from parent: " + name + " " + resource);
+      assert Debug.println("Parent getting resource as stream: " + name + " " + resource);
     } else {
-      assert Debug.println("Getting resource as stream: " + name + " " + resource);
+      assert Debug.println("MCL getting resource as stream: " + name + " " + resource);
     }
     return resource;
   }
