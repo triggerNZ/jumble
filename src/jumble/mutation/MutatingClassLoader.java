@@ -3,8 +3,10 @@ package jumble.mutation;
 
 //import org.apache.bcel.util.ClassPath;
 import com.reeltwo.util.Debug;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.ClassPath;
@@ -146,6 +148,18 @@ public class MutatingClassLoader extends ClassLoader {
       }
     }
     return clazz;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Enumeration<URL> getResources(String name) throws IOException {
+    Enumeration<URL> resources = mClassPath.getResources(name);
+    if (!resources.hasMoreElements()) {
+      resources = mDeferTo.getResources(name);
+      assert Debug.println("Parent getting resources: " + name + " " + resources);
+    } else {
+      assert Debug.println("MCL getting resources: " + name + " " + resources);
+    }
+    return resources;
   }
 
   public URL getResource(String name) {
