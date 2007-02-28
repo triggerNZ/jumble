@@ -183,7 +183,7 @@ EOF
             local srcfile
             if [ -f "$srcmap" ]; then
                 local outerclass="$(echo "$classnamestd" | sed "s/$.*//g")"
-                srcfile="$(grep "$outerclass" $srcmap | head -1 | gawk '{print $2}')"
+                srcfile="$(grep -w "$outerclass" $srcmap | head -1 | gawk '{print $2}')"
                 if [ ! -f "$srcfile" ]; then
                     srcfile=
                 fi
