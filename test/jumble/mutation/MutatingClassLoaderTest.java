@@ -39,9 +39,7 @@ public class MutatingClassLoaderTest extends TestCase {
   static final String CLASSPATH = System.getProperty("java.class.path");
 
   public void testNoMutation() throws Exception {
-    JavaClass original = new ClassParser(getClass().getClassLoader()
-        .getResourceAsStream("experiments/JumblerExperiment.class"),
-        "JumblerExperiment.class").parse();
+    JavaClass original = new ClassParser(getClass().getClassLoader().getResourceAsStream("experiments/JumblerExperiment.class"), "JumblerExperiment.class").parse();
 
     MutatingClassLoader j = new MutatingClassLoader("experiments.JumblerExperiment", new Mutater(-1), CLASSPATH);
     JavaClass a = j.modifyClass(original);
@@ -67,7 +65,8 @@ public class MutatingClassLoaderTest extends TestCase {
     assertNotNull(clazz);
     clazz = j.loadClass("java.util.ArrayList");
     assertNotNull(clazz);
-    // Jumble classes are also available, because we always load them from the parent classloader
+    // Jumble classes are also available, because we always load them from the
+    // parent classloader
     clazz = j.loadClass("jumble.fast.TimingTestSuite");
     assertNotNull(clazz);
 
@@ -75,12 +74,12 @@ public class MutatingClassLoaderTest extends TestCase {
     // classpath. Perhaps copy a class file to a temporary directory
     // and use that dir as the classpath.
 
-//     try {
-//       clazz = j.loadClass("jumble.fast.TimingTestSuite");
-//       fail("Expected ClassNotFoundException");
-//     } catch (ClassNotFoundException e) {
-//       ; // Expected
-//     }
+    // try {
+    // clazz = j.loadClass("jumble.fast.TimingTestSuite");
+    // fail("Expected ClassNotFoundException");
+    // } catch (ClassNotFoundException e) {
+    // ; // Expected
+    // }
   }
 
   public void testListAllModifications() throws ClassNotFoundException {
@@ -89,7 +88,7 @@ public class MutatingClassLoaderTest extends TestCase {
     mutater.setMutateIncrements(true);
     mutater.setMutateInlineConstants(true);
     mutater.setMutateReturnValues(true);
-    //System.err.println(CLASSPATH);
+    // System.err.println(CLASSPATH);
 
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, CLASSPATH);
     final int mutationCount = jumbler.countMutationPoints(className);
@@ -104,8 +103,8 @@ public class MutatingClassLoaderTest extends TestCase {
       assertTrue(mutPoint != -1);
       String modification = mutater.getModification();
       assertNull(modification);
-      //System.err.println(methodName + "##" + mutPoint + "##" + modification);
-    }    
+      // System.err.println(methodName + "##" + mutPoint + "##" + modification);
+    }
 
     // Now list when performing modifications
     for (int i = 0; i < mutationCount; i++) {
@@ -118,10 +117,16 @@ public class MutatingClassLoaderTest extends TestCase {
       assertTrue(mutPoint != -1);
       String modification = mutater.getModification();
       assertNotNull(modification);
-      //System.err.println(methodName + "##" + mutPoint + "##" + modification);
-    }    
+      // System.err.println(methodName + "##" + mutPoint + "##" + modification);
+    }
   }
 
+  public void testLVTTError() throws Exception {
+    Mutater m = new Mutater();
+    m.setMutationPoint(5);
+    MutatingClassLoader cl = new MutatingClassLoader("experiments.LVTT", m, System.getProperty("java.class.path"));
+    cl.loadClass("experiments.LVTT");
+  }
 
   public final void testJumbler() throws Exception {
     JavaClass original = Repository.lookupClass("jumble.X2");
@@ -129,9 +134,9 @@ public class MutatingClassLoaderTest extends TestCase {
     MutatingClassLoader fj = new MutatingClassLoader("jumble.X2", new Mutater(0), CLASSPATH);
 
     JavaClass c1 = fj.modifyClass(original);
-//     printClass(original);
-//     System.out.println("-------------------");
-//     printClass(c1);
+    // printClass(original);
+    // System.out.println("-------------------");
+    // printClass(c1);
     compareModification(original, c1, 3, new IDIV());
 
     fj = new MutatingClassLoader("jumble.X2", new Mutater(1), CLASSPATH);
@@ -171,8 +176,7 @@ public class MutatingClassLoaderTest extends TestCase {
     compareModification(original, c1, 25, null);
   }
 
-  private void compareModification(JavaClass orig, JavaClass mod,
-                                   int mutationPoint, Instruction expected) throws Exception {
+  private void compareModification(JavaClass orig, JavaClass mod, int mutationPoint, Instruction expected) throws Exception {
     int point = 0;
 
     InstructionComparator comp = Instruction.getComparator();
@@ -195,7 +199,6 @@ public class MutatingClassLoaderTest extends TestCase {
       }
     }
   }
-
 
   /**
    * Asserts that the classes a and b are equal
@@ -258,8 +261,7 @@ public class MutatingClassLoaderTest extends TestCase {
    * @param a2
    *          second array.
    */
-  private void compareClassArrays(JavaClass[] a1, JavaClass[] a2)
-      throws Exception {
+  private void compareClassArrays(JavaClass[] a1, JavaClass[] a2) throws Exception {
     assertEquals(a1.length, a2.length);
     for (int i = 0; i < a1.length; i++) {
       compareJavaClasses(a1[i], a2[i]);
@@ -388,17 +390,14 @@ public class MutatingClassLoaderTest extends TestCase {
    * @param a2
    *          second array.
    */
-  private void compareMethodArrays(Method[] a1, Method[] a2, JavaClass classA,
-      JavaClass classB) throws Exception {
+  private void compareMethodArrays(Method[] a1, Method[] a2, JavaClass classA, JavaClass classB) throws Exception {
     assertEquals(a1.length, a2.length);
     for (int i = 0; i < a1.length; i++) {
-      compareMethods(a1[i], a2[i], classA.getClassName(), new ConstantPoolGen(
-          classA.getConstantPool()));
+      compareMethods(a1[i], a2[i], classA.getClassName(), new ConstantPoolGen(classA.getConstantPool()));
     }
   }
 
-  private void compareMethods(Method a, Method b, String className,
-      ConstantPoolGen cp) throws Exception {
+  private void compareMethods(Method a, Method b, String className, ConstantPoolGen cp) throws Exception {
     compareTypeArrays(a.getArgumentTypes(), b.getArgumentTypes());
     assertEquals(a.getName(), b.getName());
     assertEquals(a.getSignature(), b.getSignature());
@@ -411,16 +410,13 @@ public class MutatingClassLoaderTest extends TestCase {
     if (a.getLineNumberTable() == null) {
       assertEquals(null, b.getLineNumberTable());
     } else {
-      compareLineNumberArray(a.getLineNumberTable().getLineNumberTable(), b
-          .getLineNumberTable().getLineNumberTable());
+      compareLineNumberArray(a.getLineNumberTable().getLineNumberTable(), b.getLineNumberTable().getLineNumberTable());
     }
 
     if (a.getLocalVariableTable() == null) {
       assertEquals(null, b.getLocalVariableTable());
     } else {
-      compareLocalVariableArray(a.getLocalVariableTable()
-          .getLocalVariableTable(), b.getLocalVariableTable()
-          .getLocalVariableTable());
+      compareLocalVariableArray(a.getLocalVariableTable().getLocalVariableTable(), b.getLocalVariableTable().getLocalVariableTable());
     }
     compareTypes(a.getReturnType(), b.getReturnType());
   }

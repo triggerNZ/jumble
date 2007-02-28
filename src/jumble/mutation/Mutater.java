@@ -1,19 +1,32 @@
 package jumble.mutation;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.bcel.Constants;
+import org.apache.bcel.classfile.Attribute;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantDouble;
+import org.apache.bcel.classfile.ConstantFloat;
+import org.apache.bcel.classfile.ConstantInteger;
+import org.apache.bcel.classfile.ConstantLong;
+import org.apache.bcel.classfile.ConstantNameAndType;
 import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.ConstantString;
+import org.apache.bcel.classfile.ConstantUtf8;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
+import org.apache.bcel.classfile.Unknown;
 import org.apache.bcel.generic.ACONST_NULL;
 import org.apache.bcel.generic.ARETURN;
 import org.apache.bcel.generic.ATHROW;
 import org.apache.bcel.generic.ArithmeticInstruction;
 import org.apache.bcel.generic.BIPUSH;
+import org.apache.bcel.generic.CPInstruction;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DADD;
+import org.apache.bcel.generic.DCMPG;
 import org.apache.bcel.generic.DCONST;
 import org.apache.bcel.generic.DDIV;
 import org.apache.bcel.generic.DMUL;
@@ -22,7 +35,9 @@ import org.apache.bcel.generic.DREM;
 import org.apache.bcel.generic.DRETURN;
 import org.apache.bcel.generic.DSUB;
 import org.apache.bcel.generic.DUP;
+import org.apache.bcel.generic.DUP2;
 import org.apache.bcel.generic.FADD;
+import org.apache.bcel.generic.FCMPG;
 import org.apache.bcel.generic.FCONST;
 import org.apache.bcel.generic.FDIV;
 import org.apache.bcel.generic.FMUL;
@@ -41,6 +56,7 @@ import org.apache.bcel.generic.IFNONNULL;
 import org.apache.bcel.generic.IINC;
 import org.apache.bcel.generic.IMUL;
 import org.apache.bcel.generic.INEG;
+import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.IOR;
@@ -63,6 +79,7 @@ import org.apache.bcel.generic.LDC;
 import org.apache.bcel.generic.LDIV;
 import org.apache.bcel.generic.LMUL;
 import org.apache.bcel.generic.LNEG;
+import org.apache.bcel.generic.LOOKUPSWITCH;
 import org.apache.bcel.generic.LOR;
 import org.apache.bcel.generic.LREM;
 import org.apache.bcel.generic.LRETURN;
@@ -73,31 +90,16 @@ import org.apache.bcel.generic.LUSHR;
 import org.apache.bcel.generic.LXOR;
 import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.NOP;
+import org.apache.bcel.generic.POP;
+import org.apache.bcel.generic.POP2;
 import org.apache.bcel.generic.ReturnInstruction;
 import org.apache.bcel.generic.SIPUSH;
+import org.apache.bcel.generic.Select;
+import org.apache.bcel.generic.TABLESWITCH;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantString;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantLong;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantUtf8;
-import java.util.Arrays;
-import org.apache.bcel.generic.CPInstruction;
-import org.apache.bcel.generic.INVOKESPECIAL;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.generic.LOOKUPSWITCH;
-import org.apache.bcel.generic.TABLESWITCH;
-import org.apache.bcel.generic.Select;
-import org.apache.bcel.generic.POP2;
-import org.apache.bcel.generic.DCMPG;
-import org.apache.bcel.generic.DUP2;
-import org.apache.bcel.generic.FCMPG;
-import org.apache.bcel.generic.POP;
 
 /**
  * Given a class file can either count the number of possible
@@ -886,7 +888,14 @@ public class Mutater {
         break;
       }
     }
-
+    //Remove LVTT attribute to fix LVTT class loading error.
+    Attribute[] attribs = mg.getCodeAttributes();
+    for (Attribute a : attribs) {
+      if (a instanceof Unknown && ((Unknown)a).getName().equals("LocalVariableTypeTable")) {
+        mg.removeCodeAttribute(a);
+      }
+    }
+    
     mg.setMaxStack(); // this is needed for the return mods
     methods[methodidx] = mg.getMethod();
     il.dispose();
