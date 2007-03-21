@@ -491,7 +491,7 @@ public class FastRunner {
       args.add("--" + FastJumbler.FLAG_LENGTH);
       args.add("" + max);
     }
-    return (String[]) args.toArray(new String[args.size()]);
+    return args.toArray(new String[args.size()]);
   }
 
   private Mutater createMutater(int mutationpoint) {
@@ -615,7 +615,7 @@ public class FastRunner {
       }
       TimingTestSuite suite = null;
       try {
-        suite = new TimingTestSuite(jumbler, (String[]) testClassNames.toArray(new String[testClassNames.size()]));
+        suite = new TimingTestSuite(jumbler, testClassNames.toArray(new String[testClassNames.size()]));
       } catch (ClassNotFoundException e) {
         // test class did not exist
         return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
@@ -719,7 +719,7 @@ public class FastRunner {
       Class clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {
-          String testName = (String) testClassNames.get(i);
+          String testName = testClassNames.get(i);
           Class test = null;
           try {
             test = jumbler.loadClass(testName);
