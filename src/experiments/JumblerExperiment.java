@@ -1,7 +1,7 @@
 package experiments;
 
 /**
- * A class used for the testing of jumble. Includes an incorrect addition
+ * A class used for the testing of com.reeltwo.jumble. Includes an incorrect addition
  * function (for coverage) and a multiply function (for timeouts)
  * 
  * @author Tin Pavlinic

@@ -1,6 +1,8 @@
+package com.reeltwo.jumble.mutation;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
  * Runs all com.reeltwo.jumble tests.
@@ -9,17 +11,16 @@ import junit.framework.TestSuite;
  * @version $Revision$
  */
 public class AllTests extends TestSuite {
-
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    suite.addTest(com.reeltwo.jumble.AllTests.suite());
+    suite.addTest(MutaterTest.suite());
+    suite.addTest(MutatingClassLoaderTest.suite());
 
     return suite;
   }
-
-
+  
   public static void main(String[] args) {
-    junit.textui.TestRunner.run(suite());
+    TestRunner.run(suite());
   }
 }
