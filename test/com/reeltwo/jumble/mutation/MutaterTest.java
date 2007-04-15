@@ -150,7 +150,7 @@ public class MutaterTest extends TestCase {
     try {
       assertNotNull(m.jumbler("jumble.X3"));
     } catch (ClassNotFoundException e) {
-      fail ("IO problem");
+      fail("IO problem");
     }
   }
 

@@ -111,10 +111,8 @@ public class DependencyExtractorTest extends TestCase {
     
     Process p = runner.start();
     
-    BufferedReader in = new BufferedReader
-      (new InputStreamReader(p.getInputStream()));
-    BufferedReader err = new BufferedReader
-      (new InputStreamReader(p.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    BufferedReader err = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
     assertEquals("Dependencies for com.reeltwo.jumble.dependency.DT2", in.readLine().trim());
     assertEquals("", in.readLine().trim());
@@ -133,10 +131,8 @@ public class DependencyExtractorTest extends TestCase {
     
     Process p = runner.start();
 
-    BufferedReader in = new BufferedReader
-      (new InputStreamReader(p.getInputStream()));
-    BufferedReader err = new BufferedReader
-      (new InputStreamReader(p.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    BufferedReader err = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
     assertEquals("Dependencies for experiments.JumblerExperimentTest", in.readLine().trim());
     assertEquals("", in.readLine().trim());
@@ -156,7 +152,6 @@ public class DependencyExtractorTest extends TestCase {
   
   public void testIsPrimitive() {
     assertTrue(DependencyExtractor.isPrimitiveArray("[[C"));
-    assertFalse(DependencyExtractor.isPrimitiveArray
-        ("[java.util.LinkedList"));
+    assertFalse(DependencyExtractor.isPrimitiveArray("[java.util.LinkedList"));
   }
 }
