@@ -894,7 +894,7 @@ public class Mutater {
     //Remove LVTT attribute to fix LVTT class loading error.
     Attribute[] attribs = mg.getCodeAttributes();
     for (Attribute a : attribs) {
-      if (a instanceof Unknown && ((Unknown)a).getName().equals("LocalVariableTypeTable")) {
+      if (a instanceof Unknown && ((Unknown) a).getName().equals("LocalVariableTypeTable")) {
         mg.removeCodeAttribute(a);
       }
     }
