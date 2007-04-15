@@ -35,7 +35,7 @@
       <zipfileset src="${lib.dir}/junit.jar" />
       <zipfileset src="${lib.dir}/reeltwo.jar" />
       <manifest>
-	<attribute name="Main-Class" value="jumble.Jumble" />
+	<attribute name="Main-Class" value="com.reeltwo.jumble.Jumble" />
       </manifest>
     </jar>
   </target>
