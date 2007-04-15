@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.reeltwo.jumble.util.JavaRunner;
 
 /**
  * Class for testing assertions.

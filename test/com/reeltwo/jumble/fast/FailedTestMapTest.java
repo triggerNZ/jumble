@@ -4,7 +4,6 @@ package com.reeltwo.jumble.fast;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import com.reeltwo.jumble.fast.FailedTestMap;
 import com.reeltwo.jumble.mutation.Mutater;
 import com.reeltwo.jumble.mutation.MutatingClassLoader;
 

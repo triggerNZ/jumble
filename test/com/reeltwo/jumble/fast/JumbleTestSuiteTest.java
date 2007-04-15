@@ -3,10 +3,6 @@ package com.reeltwo.jumble.fast;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import com.reeltwo.jumble.fast.FailedTestMap;
-import com.reeltwo.jumble.fast.JumbleTestSuite;
-import com.reeltwo.jumble.fast.TestOrder;
-import com.reeltwo.jumble.fast.TimingTestSuite;
 import com.reeltwo.jumble.mutation.Mutater;
 
 import junit.framework.Test;

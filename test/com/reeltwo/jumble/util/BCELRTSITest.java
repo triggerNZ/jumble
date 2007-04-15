@@ -9,7 +9,6 @@ import junit.framework.TestSuite;
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
 
-import com.reeltwo.jumble.util.BCELRTSI;
 
 /**
  * Tests the corresponding class.

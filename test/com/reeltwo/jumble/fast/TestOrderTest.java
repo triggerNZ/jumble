@@ -12,7 +12,6 @@ import junit.framework.TestSuite;
 
 import org.apache.bcel.util.ClassLoader;
 
-import com.reeltwo.jumble.fast.TestOrder;
 
 import experiments.JumblerExperimentSecondTest;
 import experiments.JumblerExperimentTest;

@@ -1,6 +1,5 @@
 package com.reeltwo.jumble.fast;
 
-import com.reeltwo.jumble.fast.FastRunner;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

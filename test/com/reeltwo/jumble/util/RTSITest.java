@@ -2,7 +2,6 @@ package com.reeltwo.jumble.util;
 
 import java.util.Collection;
 
-import com.reeltwo.jumble.util.RTSI;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

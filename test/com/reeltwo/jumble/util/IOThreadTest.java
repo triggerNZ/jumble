@@ -1,7 +1,5 @@
 package com.reeltwo.jumble.util;
 
-import com.reeltwo.jumble.util.IOThread;
-import com.reeltwo.jumble.util.JavaRunner;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

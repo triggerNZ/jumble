@@ -10,10 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import com.reeltwo.jumble.fast.FailedTestMap;
-import com.reeltwo.jumble.fast.FastJumbler;
-import com.reeltwo.jumble.fast.FastRunner;
-import com.reeltwo.jumble.fast.TimingTestSuite;
 import com.reeltwo.jumble.util.JavaRunner;
 
 import junit.framework.Test;

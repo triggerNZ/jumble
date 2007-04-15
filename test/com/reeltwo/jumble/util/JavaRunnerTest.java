@@ -10,8 +10,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import com.reeltwo.jumble.util.JavaRunner;
-import com.reeltwo.jumble.util.JumbleUtils;
 
 /**
  * Tests the corresponding class

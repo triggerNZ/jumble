@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import com.reeltwo.jumble.fast.MutationResult;
-import com.reeltwo.jumble.ui.PrinterListener;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Collection;
 
-import com.reeltwo.jumble.dependency.DependencyExtractor;
 import com.reeltwo.jumble.util.JavaRunner;
 
 import junit.framework.Test;

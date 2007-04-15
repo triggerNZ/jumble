@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.bcel.classfile.JavaClass;
 
-import com.reeltwo.jumble.mutation.Mutater;
 
 import java.util.Random;
 

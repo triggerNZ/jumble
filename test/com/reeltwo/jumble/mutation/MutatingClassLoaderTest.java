@@ -28,8 +28,6 @@ import org.apache.bcel.generic.InstructionComparator;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 
-import com.reeltwo.jumble.mutation.Mutater;
-import com.reeltwo.jumble.mutation.MutatingClassLoader;
 
 /**
  * Tests the corresponding class.
