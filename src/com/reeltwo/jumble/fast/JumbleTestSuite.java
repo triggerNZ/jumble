@@ -166,13 +166,13 @@ public class JumbleTestSuite extends FlatTestSuite {
       frontTestNames = mCache.getFailedTests(mClass, mMethod);
     }
 
-    List front = new ArrayList();
-    List back = new ArrayList();
+    List<TestCase> front = new ArrayList<TestCase>();
+    List<TestCase> back = new ArrayList<TestCase>();
 
     for (int i = 0; i < testCount(); i++) {
       int indx = mOrder.getTestIndex(i);
       TestCase curTest = (TestCase) testAt(indx);
-      if (first != null && curTest.getName().equals(firstTestName)) {
+      if (first == null && curTest.getName().equals(firstTestName)) {
         first = curTest;
       } else if (frontTestNames.contains(curTest.getName())) {
         front.add(curTest);
