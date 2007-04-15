@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Class for testing LVTT bug.
+ * 
+ * @author Tin Pavlinic
+ * @version $Revision 1.0 $
+ */
 public class LVTT {
   public int countEntries() {
     final Map<Character, String> map = new HashMap<Character, String>();
