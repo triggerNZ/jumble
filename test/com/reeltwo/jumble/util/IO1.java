@@ -2,12 +2,15 @@ package com.reeltwo.jumble.util;
 
 
 /**
- * TODO
+ * Class used for IO thread testing purposes.
  *
  * @author Tin
  * @version $Revision$
  */
 public class IO1 {
+
+  // Private c'tor
+  private IO1() { }
 
   public static void main(String[] args) {
     System.out.println("test");

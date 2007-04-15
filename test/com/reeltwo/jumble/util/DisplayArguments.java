@@ -8,6 +8,9 @@ package com.reeltwo.jumble.util;
  */
 public class DisplayArguments {
 
+  // Private c'tor
+  private DisplayArguments() { }
+
   public static void main(String[] args) {
     for (int i = 0; i < args.length; i++) {
       System.out.println(args[i]);

@@ -5,6 +5,9 @@ package com.reeltwo.jumble.util;
  * @version $Revision$
  */
 public class CheckAssertions2 {
+  // Private c'tor
+  private CheckAssertions2() { }
+
   public static void main(String[] args) {
     assert print("Assertions on");
   }

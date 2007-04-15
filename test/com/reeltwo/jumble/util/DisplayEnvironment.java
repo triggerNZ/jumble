@@ -3,12 +3,15 @@ package com.reeltwo.jumble.util;
 import java.util.Properties;
 
 /**
- * TODO
+ * Class used for testing purposes
  *
  * @author Tin
  * @version $Revision$
  */
 public class DisplayEnvironment {
+
+  // Private c'tor
+  private DisplayEnvironment() { }
 
   public static void main(String[] args) {
     Properties props = System.getProperties();

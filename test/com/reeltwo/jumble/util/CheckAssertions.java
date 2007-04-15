@@ -12,6 +12,10 @@ import java.io.InputStreamReader;
  * @version $Revision$
  */
 public class CheckAssertions {
+
+  // Private c'tor
+  private CheckAssertions() { }
+  
   public static void main(String[] args) throws IOException {
     JavaRunner runner = new JavaRunner("com.reeltwo.jumble.util.CheckAssertions2");
     Process p = runner.start();
