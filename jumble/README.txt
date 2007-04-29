@@ -29,9 +29,11 @@ checks out project code every fifteen minutes and runs an incremental
 set of unit tests and mutation tests for modified classes.
 
 
-How to Install Jumble
+How to Compile Jumble
 =====================
 <Coming soon>
+
+This will produce the jumble.jar file, which you can use to run Jumble.
 
 
 How to Use Jumble
@@ -49,7 +51,25 @@ Jumble will start by running the unit tests (in FooTest.class) on the
 unmodified Foo class to check that they all pass, and to measure the
 time taken by each test.  Then it will mutate Foo and run the tests
 again to see if they detect the mutation.  It continues this process
-until all mutations of Foo have been tried.
+until all mutations of Foo have been tried.  The output might look like
+this:
+
+  Mutating Foo
+  Tests: FooTest
+  Mutation points = 12, unit test time limit 2.02s
+  ..M FAIL: Foo:31: negated conditional
+  M FAIL: Foo:33: negated conditional
+  M FAIL: Foo:34: - -> +
+  M FAIL: Foo:35: negated conditional
+  ......
+  Score: 67
+
+This says that Jumble has tried 12 different mutants of Foo and the
+unit tests (in FooTest) correctly detected the changed behaviour in
+8/12 cases (indicated by a '.'), but failed to detect the change in
+the other 4/12 cases.  Overall, 67% of the mutations were detected by
+the unit tests, which means that they probably need to be improved.
+
 
 The next example shows a more complex usage of Jumble to test a class
 called Bar, which has two sets of JUnit tests, called BarTest1 and
