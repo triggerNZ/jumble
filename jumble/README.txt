@@ -31,7 +31,12 @@ set of unit tests and mutation tests for modified classes.
 
 How to Compile Jumble
 =====================
-<Coming soon>
+
+There is an ant (http://ant.apache.org/) build script provided in the
+directory containing this README.  Assuming you have ant installed,
+run:
+
+  ant jar
 
 This will produce the jumble.jar file, which you can use to run Jumble.
 
