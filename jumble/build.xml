@@ -1,70 +1,78 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="jumble" basedir="." default="jar">
 
-  <property name="src.dir" value="src" />
-  <property name="test.dir" value="test" />
-  <property name="lib.dir" value="lib" />
-  <property name="build.dir" value="build" />
+	<property name="src.dir" value="src" />
+	<property name="test.dir" value="test" />
+	<property name="lib.dir" value="lib" />
+	<property name="build.dir" value="build" />
+	
+	<property name="jumble.version" value="1.0" />
 
-  <property name="ext.lib.dir" value="${user.home}/java/jar" />
-  <property name="ext.src.dir" value="${user.home}/java/src" />
+	<property name="ext.lib.dir" value="${user.home}/java/jar" />
+	<property name="ext.src.dir" value="${user.home}/java/src" />
 
-  <target name="init">
-    <mkdir dir="${build.dir}" />
-  </target>
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+	</target>
 
-  <target name="clean">
-    <delete dir="${build.dir}"/>
-  </target>
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
 
 
-  <target name="compile" depends="init">
-    <javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/*.java" source="1.5" debug="on">
-      <classpath>
-        <pathelement location="${lib.dir}/bcel.jar"/>
-        <pathelement location="${lib.dir}/junit.jar"/>
-        <pathelement location="${lib.dir}/reeltwo.jar"/>
-      </classpath>
-    </javac>
-  </target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/*.java" source="1.5" debug="on">
+			<classpath>
+				<pathelement location="${lib.dir}/bcel.jar" />
+				<pathelement location="${lib.dir}/junit.jar" />
+				<pathelement location="${lib.dir}/reeltwo.jar" />
+			</classpath>
+		</javac>
+	</target>
 
-  <target name="jar" depends="compile" description="Generates a JAR file containing jumble and its dependencies">
-    <jar destfile="jumble.jar">
-      <fileset dir="${build.dir}" includes="**/*.class" />
-      <zipfileset src="${lib.dir}/bcel.jar" />
-      <zipfileset src="${lib.dir}/junit.jar" />
-      <zipfileset src="${lib.dir}/reeltwo.jar" />
-      <manifest>
-	<attribute name="Main-Class" value="com.reeltwo.jumble.Jumble" />
-      </manifest>
-    </jar>
-  </target>
+	<target name="jar" depends="compile" description="Generates a JAR file containing jumble and its dependencies">
+		<jar destfile="jumble.jar">
+			<fileset dir="${build.dir}" includes="**/*.class" />
+			<zipfileset src="${lib.dir}/bcel.jar" />
+			<zipfileset src="${lib.dir}/junit.jar" />
+			<zipfileset src="${lib.dir}/reeltwo.jar" />
+			<manifest>
+				<attribute name="Main-Class" value="com.reeltwo.jumble.Jumble" />
+			</manifest>
+		</jar>
+	</target>
 
-  <target name="webdist" description="Creates a ZIP file containing the code needed for the jumble web interface.">
-    <zip destfile="jumbleweb.zip">
-      <zipfileset dir="web" prefix="jumble" excludes="CVS" />
-    </zip>
-  </target>
+	<target name="webdist" description="Creates a ZIP file containing the code needed for the jumble web interface.">
+		<zip destfile="jumbleweb.zip">
+			<zipfileset dir="web" prefix="jumble" excludes="CVS" />
+		</zip>
+	</target>
 
-  <!-- classpath containing all the jar files in the BASE source tree for reeltwo -->
-  <target name="makeExtLibJar" depends="clean,init" description="Generates a JAR file of the reeltwo dependencies used by jumble">
-    <!--
+	<!-- classpath containing all the jar files in the BASE source tree for reeltwo -->
+	<target name="makeExtLibJar" depends="clean,init" description="Generates a JAR file of the reeltwo dependencies used by jumble">
+		<!--
     <copy todir="${build.dir}" includeEmptyDirs="no">
       <fileset dir="${ext.src.dir}" includes="com/reeltwo/config/*"/>
     </copy>
     -->
-    <javac srcdir="${ext.src.dir}" destdir="${build.dir}" source="1.5" target="1.5" depend="true" debug="true">
-      <classpath>
-        <fileset dir="${ext.lib.dir}" includes="**/*.jar" />
-      </classpath>
-      <include name="com/reeltwo/util/CLIFlags.java"/>
-      <include name="com/reeltwo/util/Debug.java"/>
-    </javac>
-    <jar destfile="${lib.dir}/reeltwo.jar" 
-         index="true">
-      <!-- <zipfileset src="${ext.lib.dir}/example.jar" /> -->
-      <fileset dir="${build.dir}" />
-    </jar>
-  </target>
+		<javac srcdir="${ext.src.dir}" destdir="${build.dir}" source="1.5" target="1.5" depend="true" debug="true">
+			<classpath>
+				<fileset dir="${ext.lib.dir}" includes="**/*.jar" />
+			</classpath>
+			<include name="com/reeltwo/util/CLIFlags.java" />
+			<include name="com/reeltwo/util/Debug.java" />
+		</javac>
+		<jar destfile="${lib.dir}/reeltwo.jar" index="true">
+			<!-- <zipfileset src="${ext.lib.dir}/example.jar" /> -->
+			<fileset dir="${build.dir}" />
+		</jar>
+	</target>
 
+	<target name="sourceforge-dist" depends="jar">
+		<zip destfile="jumble-${jumble.version}.zip" basedir=".">
+			<include name="jumble.jar"/>
+			<include name="COPYING.txt"/>
+			<include name="README.txt"/>
+		</zip>
+	</target>
 </project>
