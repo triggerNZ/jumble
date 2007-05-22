@@ -8,8 +8,6 @@
 	
 	<property name="jumble.version" value="1.0" />
 
-	<property name="ext.lib.dir" value="${user.home}/java/jar" />
-	<property name="ext.src.dir" value="${user.home}/java/src" />
 
 	<target name="init">
 		<mkdir dir="${build.dir}" />
@@ -48,7 +46,12 @@
 		</zip>
 	</target>
 
-	<!-- classpath containing all the jar files in the BASE source tree for reeltwo -->
+
+	<!-- Build jar file containing utility code from the Reel Two
+	     internal source tree. Can only be run by someone at Reel
+	     Two.
+	  -->
+	<property name="ext.src.dir" value="${user.home}/java/src" />
 	<target name="makeExtLibJar" depends="clean,init" description="Generates a JAR file of the reeltwo dependencies used by jumble">
           <copy todir="${build.dir}" includeEmptyDirs="no">
 	    <fileset dir="${ext.src.dir}">
@@ -59,6 +62,7 @@
 	  <javac srcdir="${build.dir}" destdir="${build.dir}" source="1.5" target="1.5" depend="true" debug="true" />
 	  <jar destfile="${lib.dir}/reeltwo.jar" index="true">
 	    <fileset dir="${build.dir}" />
+	    <fileset dir="." includes="COPYING.txt"/> <!-- Use GPL for the utility code -->
 	  </jar>
 	</target>
 
