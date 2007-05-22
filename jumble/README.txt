@@ -40,6 +40,12 @@ run:
 
 This will produce the jumble.jar file, which you can use to run Jumble.
 
+NOTE: the lib/bcel.jar library used by Jumble is actually a patched version
+of BCEL release 5.2, which adds some extra functions to their ClassPath
+object.  These patches were accepted by the BCEL project and have been
+committed to their repository, but as yet there is no release that includes
+them.
+
 
 How to Use Jumble
 =================
