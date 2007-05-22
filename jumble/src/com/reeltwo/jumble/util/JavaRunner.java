@@ -3,8 +3,6 @@ package com.reeltwo.jumble.util;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.reeltwo.util.Debug;
-
 /**
  * Class to run a java process with the same settings as this JRE.
  * 
@@ -124,7 +122,7 @@ public class JavaRunner {
    */
   public Process start() throws IOException {
     String[] command = getExecArgs();
-    assert Debug.println(toString(command));
+    //System.err.println(toString(command));
     return Runtime.getRuntime().exec(command);
   }
 

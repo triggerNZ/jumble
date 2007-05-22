@@ -9,7 +9,6 @@ import com.reeltwo.jumble.ui.NullListener;
 import com.reeltwo.jumble.util.IOThread;
 import com.reeltwo.jumble.util.JavaRunner;
 import com.reeltwo.jumble.util.JumbleUtils;
-import com.reeltwo.util.Debug;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -603,7 +602,7 @@ public class FastRunner {
    */
   private JumbleResult runInitialTests(List<String> testClassNames) {
 
-    assert Debug.println("Using classpath: " + mClassPath);
+    //System.err.println("Using classpath: " + mClassPath);
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
@@ -620,12 +619,12 @@ public class FastRunner {
         // test class did not exist
         return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
-      assert Debug.println("Parent. Starting initial run without mutating");
+      //System.err.println("Parent. Starting initial run without mutating");
 
       JUnitTestResult result = new JUnitTestResult();
       suite.run(result);
       boolean successful = result.wasSuccessful();
-      assert Debug.println("Parent. Finished");
+      //System.err.println("Parent. Finished");
 
       // Now, if the tests failed, can return straight away
       if (!successful) {

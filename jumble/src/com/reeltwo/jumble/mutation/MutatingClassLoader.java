@@ -2,7 +2,6 @@ package com.reeltwo.jumble.mutation;
 
 
 //import org.apache.bcel.util.ClassPath;
-import com.reeltwo.util.Debug;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -91,7 +90,7 @@ public class MutatingClassLoader extends ClassLoader {
       // Classes we're forcing to be loaded by mDeferTo
       for (int i = 0; i < mIgnoredPackages.length; i++) {
         if (className.startsWith(mIgnoredPackages[i])) {
-          assert Debug.println("Parent forced loading of class: " + className);
+          //System.err.println("Parent forced loading of class: " + className);
           cl = mDeferTo.loadClass(className);
           break;
         }
@@ -110,12 +109,12 @@ public class MutatingClassLoader extends ClassLoader {
         }
 
         if (clazz != null) {
-          assert Debug.println("MCL loading class: " + className);
+          //System.err.println("MCL loading class: " + className);
           byte[] bytes  = clazz.getBytes();
           cl = defineClass(className, bytes, 0, bytes.length);
         } else {
           //cl = Class.forName(className);
-          assert Debug.println("Parent loading of class: " + className);
+          //System.err.println("Parent loading of class: " + className);
           cl = mDeferTo.loadClass(className);
         }
       }
@@ -155,9 +154,9 @@ public class MutatingClassLoader extends ClassLoader {
     Enumeration<URL> resources = mClassPath.getResources(name);
     if (!resources.hasMoreElements()) {
       resources = mDeferTo.getResources(name);
-      assert Debug.println("Parent getting resources: " + name + " " + resources);
-    } else {
-      assert Debug.println("MCL getting resources: " + name + " " + resources);
+      //System.err.println("Parent getting resources: " + name + " " + resources);
+      //} else {
+      //System.err.println("MCL getting resources: " + name + " " + resources);
     }
     return resources;
   }
@@ -166,9 +165,9 @@ public class MutatingClassLoader extends ClassLoader {
     URL resource = mClassPath.getResource(name);
     if (resource == null) {
       resource = mDeferTo.getResource(name);
-      assert Debug.println("Parent getting resource: " + name + " " + resource);
-    } else {
-      assert Debug.println("MCL getting resource: " + name + " " + resource);
+      //System.err.println("Parent getting resource: " + name + " " + resource);
+      //} else {
+      //System.err.println("MCL getting resource: " + name + " " + resource);
     }
     return resource;
   }
@@ -177,9 +176,9 @@ public class MutatingClassLoader extends ClassLoader {
     InputStream resource = mClassPath.getResourceAsStream(name);
     if (resource == null) {
       resource = mDeferTo.getResourceAsStream(name);
-      assert Debug.println("Parent getting resource as stream: " + name + " " + resource);
-    } else {
-      assert Debug.println("MCL getting resource as stream: " + name + " " + resource);
+      //System.err.println("Parent getting resource as stream: " + name + " " + resource);
+      //} else {
+      //System.err.println("MCL getting resource as stream: " + name + " " + resource);
     }
     return resource;
   }

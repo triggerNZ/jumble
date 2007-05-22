@@ -4,7 +4,6 @@ package com.reeltwo.jumble.ui;
 
 import com.reeltwo.jumble.fast.JumbleResult;
 import com.reeltwo.jumble.fast.MutationResult;
-import com.reeltwo.util.Debug;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -77,7 +76,7 @@ public class PrinterListener implements JumbleListener {
   }
   
   public void jumbleRunStarted(String className, List testClasses) {
-    assert Debug.println("class: " + className + " tests: " + testClasses);
+    //System.err.println("class: " + className + " tests: " + testClasses);
     mClassName = className;
     mTestNames = testClasses;
   }
