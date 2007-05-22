@@ -50,22 +50,16 @@
 
 	<!-- classpath containing all the jar files in the BASE source tree for reeltwo -->
 	<target name="makeExtLibJar" depends="clean,init" description="Generates a JAR file of the reeltwo dependencies used by jumble">
-		<!--
-    <copy todir="${build.dir}" includeEmptyDirs="no">
-      <fileset dir="${ext.src.dir}" includes="com/reeltwo/config/*"/>
-    </copy>
-    -->
-		<javac srcdir="${ext.src.dir}" destdir="${build.dir}" source="1.5" target="1.5" depend="true" debug="true">
-			<classpath>
-				<fileset dir="${ext.lib.dir}" includes="**/*.jar" />
-			</classpath>
-			<include name="com/reeltwo/util/CLIFlags.java" />
-			<include name="com/reeltwo/util/Debug.java" />
-		</javac>
-		<jar destfile="${lib.dir}/reeltwo.jar" index="true">
-			<!-- <zipfileset src="${ext.lib.dir}/example.jar" /> -->
-			<fileset dir="${build.dir}" />
-		</jar>
+          <copy todir="${build.dir}" includeEmptyDirs="no">
+	    <fileset dir="${ext.src.dir}">
+	      <include name="com/reeltwo/util/CLIFlags.java" />
+	      <include name="com/reeltwo/util/WrappingStringBuffer.java" />
+	    </fileset>
+	  </copy>
+	  <javac srcdir="${build.dir}" destdir="${build.dir}" source="1.5" target="1.5" depend="true" debug="true" />
+	  <jar destfile="${lib.dir}/reeltwo.jar" index="true">
+	    <fileset dir="${build.dir}" />
+	  </jar>
 	</target>
 
 	<target name="sourceforge-dist" depends="jar">
