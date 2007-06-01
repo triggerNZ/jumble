@@ -119,6 +119,21 @@ mutating the condition <tt>x &lt; 10</tt> would not change the correctness of th
 code only the speed.  Unless there is a very sensitive speed test this
 modification is likely to pass unit tests.<p>
 
+A similar situation arises in certain probabilistic algorithms.  The following code
+executes the internal block half the time, but negating the condition does not
+change the semantics:<p>
+
+<pre>
+void foo() {
+  if (new Random().nextBoolean()) {
+    // do something ...
+  }
+}
+</pre><p>
+
+Note, however, the selection of a specific seed for the random number generator
+would render this code testable.<p>
+
 <b>Is any code exempt from mutation?</b><p>
 
 Jumble tries not to make mutations within assertions. Specific methods can also be excluded from testing, by default <tt>main</tt> and <tt>integrity</tt> are excluded.<p>
