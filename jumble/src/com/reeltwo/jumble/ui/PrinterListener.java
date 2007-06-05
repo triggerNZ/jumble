@@ -44,9 +44,9 @@ public class PrinterListener implements JumbleListener {
       mStream.println();
 
       if (mMutationCount == 0) {
-        mStream.println("Score: 100 (NO MUTATIONS POSSIBLE)");
+        mStream.println("Score: 100% (NO MUTATIONS POSSIBLE)");
       } else {
-        mStream.println("Score: " + (mCovered) * 100 / mMutationCount);
+        mStream.println("Score: " + (mCovered) * 100 / mMutationCount + "%");
       }
     }
     mStream.close();
@@ -87,7 +87,7 @@ public class PrinterListener implements JumbleListener {
     mStream.println("Mutating " + mClassName);
 
     if (result.isInterface()) {
-      mStream.println("Score: 100 (INTERFACE)");
+      mStream.println("Score: 100% (INTERFACE)");
       return;
     }
 
@@ -98,13 +98,13 @@ public class PrinterListener implements JumbleListener {
     mStream.println();
 
     if (result.isMissingTestClass()) {
-      mStream.println("Score: 0 (NO TEST CLASS)");
+      mStream.println("Score: 0% (NO TEST CLASS)");
       mStream.println("Mutation points = " + mMutationCount);
       return;
     }
 
     if (!mInitialTestsPassed) {
-      mStream.println("Score: 0 (TEST CLASS IS BROKEN)");
+      mStream.println("Score: 0% (TEST CLASS IS BROKEN)");
       mStream.println("Mutation points = " + mMutationCount);
       return;
     }

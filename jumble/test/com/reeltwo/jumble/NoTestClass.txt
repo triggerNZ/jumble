@@ -1,4 +1,4 @@
 Mutating experiments.NoTestClass
 Tests: experiments.NoTestClassTest
-Score: 0 (NO TEST CLASS)
+Score: 0% (NO TEST CLASS)
 Mutation points = 0

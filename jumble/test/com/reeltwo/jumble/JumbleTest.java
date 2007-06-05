@@ -108,7 +108,7 @@ public class JumbleTest extends TestCase {
     assertEquals("Tests: experiments.FloatReturnTest", tokens.nextToken().trim());
     assertNotNull(tokens.nextToken()); // skip timing
     assertEquals("..", tokens.nextToken().trim());
-    assertEquals("Score: 100", tokens.nextToken().trim());
+    assertEquals("Score: 100%", tokens.nextToken().trim());
   }
 
   public void testLength1() throws Exception {

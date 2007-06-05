@@ -5,30 +5,42 @@
 	<property name="test.dir" value="test" />
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
+	<property name="test.build.dir" value="build_test" />
 	
 	<property name="jumble.version" value="1.0" />
 
+	<path id="classpath">
+	  <pathelement location="${lib.dir}/bcel.jar" />
+	  <pathelement location="${lib.dir}/junit.jar" />
+	  <pathelement location="${lib.dir}/reeltwo.jar" />
+	  <pathelement location="${lib.dir}/testclasses.jar" />
+	  <pathelement location="${build.dir}"/>
+	  <pathelement location="${test.build.dir}"/>
+	</path>
 
 	<target name="init">
 		<mkdir dir="${build.dir}" />
+		<mkdir dir="${test.build.dir}"/>
 	</target>
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
+		<delete dir="${test.build.dir}"/>
 	</target>
 
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/*.java" source="1.5" debug="on">
-			<classpath>
-				<pathelement location="${lib.dir}/bcel.jar" />
-				<pathelement location="${lib.dir}/junit.jar" />
-				<pathelement location="${lib.dir}/reeltwo.jar" />
-			</classpath>
-		</javac>
+	  <javac srcdir="${src.dir}" destdir="${build.dir}"
+		 includes="**/*.java" source="1.5" debug="on">
+	    <classpath>
+	      <path refid="classpath"/>
+	    </classpath>
+	  </javac>
 	</target>
 
-	<target name="jar" depends="compile" description="Generates a JAR file containing jumble and its dependencies">
+	<target name="jar" 
+          depends="compile"
+          description="Generates a JAR file containing Jumble and its dependencies">
 		<jar destfile="jumble.jar">
 			<fileset dir="${build.dir}" includes="**/*.class" />
 			<zipfileset src="${lib.dir}/bcel.jar" />
@@ -38,6 +50,32 @@
 				<attribute name="Main-Class" value="com.reeltwo.jumble.Jumble" />
 			</manifest>
 		</jar>
+	</target>
+
+	<target name="compile-tests" depends="compile">
+	  <javac 
+	    srcdir="${test.dir}"
+	    destdir="${test.build.dir}">
+	    <classpath>
+	      <path refid="classpath"/>
+	    </classpath>
+	  </javac>
+	  <!-- now copy sample output files into test.build.dir -->
+	  <copy todir="${test.build.dir}">
+		<fileset dir="${test.dir}">
+		  <include name="**/*.txt"/>
+		</fileset>
+	  </copy>
+	</target>
+
+	<target name="test" description="Run tests" depends="compile-tests">
+	  <junit fork="yes" printsummary="yes">
+	    <formatter type="plain"/>
+	    <test name="AllTests"/>
+	    <classpath>
+	      <path refid="classpath"/>
+	    </classpath>
+	  </junit>
 	</target>
 
 	<target name="webdist" description="Creates a ZIP file containing the code needed for the jumble web interface.">
