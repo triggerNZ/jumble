@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Jumble</title>
+<link type="text/css" rel="stylesheet" href="web.css">
+</head>
+<body>
+<table width="100%" cellspacing="0" cellpadding="10">
+  <tr>
+    <th>
+    </th>
+    <th align="left" bgcolor="white">
+      <img align="left" src="jumble_icon.png" alt="Jumble">
+    </th>
+  </tr>
+  <tr valign="top">
+    <td>
+	<p>
+	<a href="index.html">Home</a>
+	</p>
+
+	<p>
+	<a
+	href="http://sourceforge.net/project/showfiles.php?group_id=193434">Downloads</a>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net/projects/jumble">Development</a>
+	</p>
+
+	<p>
+	<a href="mutations.html">Mutations</a>
+	</p>
+
+	<p>
+	<a href="FAQ.html">FAQ</a>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net"><img
+	src="http://sflogo.sourceforge.net/sflogo.php?group_id=193434&amp;type=3" width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+	</p>
+    </td>
+    <td bgcolor="white">
+
+<p>
+Do you want to know how good your JUnit tests are?
+
+<p>
+Jumble will tell you: from 0% (worthless) to 100% (angelic!).
+
+<p>
+Jumble is a class level mutation testing tool that works in conjunction with
+JUnit.  The purpose of mutation testing is to provide a measure of
+the effectiveness of test cases.  A single mutation
+is performed on the code to be tested, the corresponding test cases
+are then executed.  If the modified code fails the tests, then this
+increases confidence in the tests.  Conversely, if the modified
+code passes the tests this indicates a testing deficiency.
+
+<p>
+
+
+<h2>Example</h2>
+
+<p>
+Here is some example Jumble output for a Java class
+called "Foo", which has some JUnit tests in a class called "FooTest".
+
+<p>
+Jumble starts by running the unit tests (in FooTest.class) on the
+unmodified Foo class to check that they all pass, and to measure the
+time taken by each test.  Then it will mutate Foo in various ways and run
+the tests again to see if they detect the mutation.  It continues this
+process until all mutations of Foo have been tried.  The output might look
+like this:
+<p>
+<pre>
+  Mutating Foo
+  Tests: FooTest
+  Mutation points = 12, unit test time limit 2.02s
+  ..
+  M FAIL: Foo:31: negated conditional
+  M FAIL: Foo:33: negated conditional
+  M FAIL: Foo:34: - -> +
+  M FAIL: Foo:35: negated conditional
+  ......
+  Score: 67%
+</pre>
+<p>
+This says that Jumble has tried 12 different mutants of Foo and the
+unit tests (in FooTest) correctly detected the changed behaviour in
+8/12 cases (indicated by a '.'), but failed to detect the change in
+the other 4/12 cases.  For example, when an
+<code>if (C)</code> decision on line 31 was mutated to
+<code>if (!C)</code>, the unit tests still passed, so they
+are probably not testing that <code>if</code> statement thoroughly enough.
+
+<p>
+Overall, 67% of the mutations were detected by
+the unit tests, which means that they probably need to be improved.
+<p>
+
+
+<h2>Key to Symbols</h2>
+
+<p>
+The web interface to Jumble displays the following symbols
+as visual feedback of how thoroughly each class is tested.
+</p>
+
+<table>
+<tr><td><img src="bad.gif" alt="[bad]"></td><td>X, no corresponding test class was found.</td></tr>
+<tr><td><img src="pointer.gif" alt="[pointer]"></td><td>No corresponding test class was found, but class possibly contains SWING/AWT code which is hard to JUnit test.</td></tr>
+<tr><td><img src="0.gif" alt="[0]"></td><td>F, very lazy programmer, JUnit code is worthless.</td></tr>
+<tr><td><img src="1.gif" alt="[0]"></td><td>E</td></tr>
+<tr><td><img src="2.gif" alt="[0]"></td><td>D-</td></tr>
+<tr><td><img src="3.gif" alt="[0]"></td><td>D</td></tr>
+<tr><td><img src="4.gif" alt="[0]"></td><td>C-</td></tr>
+<tr><td><img src="5.gif" alt="[0]"></td><td>C</td></tr>
+<tr><td><img src="6.gif" alt="[0]"></td><td>B</td></tr>
+<tr><td><img src="7.gif" alt="[0]"></td><td>A-</td></tr>
+<tr><td><img src="8.gif" alt="[0]"></td><td>A, aim for this as a minimum in production code.</td></tr>
+<tr><td><img src="9.gif" alt="[0]"></td><td>A+</td></tr>
+<tr><td><img src="10.gif" alt="[0]"></td><td>A++, all mutations were detected.</td></tr>
+
+<tr><td><img src="free.gif" alt="[0]"></td><td>Class was abstract or class did not contain any possible mutation points.</td></tr>
+</table>
+
+
+<h2>Jumble History</h2>
+
+Jumble was developed in 2003-2006 by a commercial company in New
+Zealand, ReelTwo (www.reeltwo.com), and is now available as open
+source under the GPL licence.
+
+<p> JUnit [1] has become the <i>de facto</i> unit testing framework for the
+Java language.  A class and its corresponding JUnit test is a sensible
+granularity at which to apply mutation testing.  With Java it is feasible
+to perform mutations at either the source code or byte-code level.  Jester
+[2] is a mutation tester operating at the source code level.  While Jester
+proves useful, it is hampered by the costly cycle of modifying the source,
+compiling the source, and running the tests.
+
+<p> Jumble is a new mutation tester operating directly on class files.  It
+uses the byte-code engineering library (BCEL) [3] to directly modify class
+files thereby drastically cutting the time taken for each mutation test
+cycle.  
+
+<p> Jumble has been designed to operate in an industrial setting with large
+projects.  Heuristics have been included to speed the checking of
+mutations, for example, noting which test fails for each mutation and
+running this first in subsequent mutation checks.  Significant effort has
+been put into ensuring that it can test code which runs in environments
+such as the Apache webserver.  This requires careful attention to class
+path handling and co-existence with foreign class-loaders.
+
+<p>
+At ReelTwo, Jumble is used
+on a continuous basis within an agile programming environment with
+approximately 400,000 lines of Java code under source control.  This
+checks out project code every fifteen minutes and runs an incremental
+set of unit tests and mutation tests for modified classes.
+<p>
+
+
+<h2>References</h2>
+
+[1] Erich Gamma and Kent Beck, "Test Infected: Programmers Love Writing Tests", <i>The Java Report</i>, <b>3</b>, 7, 37-50, 1998.<p>
+
+[2] Ivan Moore, "Jester: A JUnit Test Tester", <i>XP2001</i>, 2001.<p>
+
+[3] Markus Dahm, "Byte Code Engineering with the BCEL API", <i>Freie Universit&auml;t Berlin, Institut f&uuml;r Informatik</i>, B-17-98, 2001.<p>
+
+    </td>
+  </tr>
+</table>
+
+<hr>
+<!-- hhmts start -->
+Last modified: Wed Jun  6 17:43:12 NZST 2007
+<!-- hhmts end -->
+</body>
+</html>

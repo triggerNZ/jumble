@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Jumble</title>
+<link type="text/css" rel="stylesheet" href="web.css">
+</head>
+<body>
+<table width="100%" cellspacing="0" cellpadding="10">
+  <tr>
+    <th>
+    </th>
+    <th align="left" bgcolor="white">
+      <img align="left" src="jumble_icon.png" alt="Jumble">
+    </th>
+  </tr>
+  <tr valign="top">
+    <td>
+	<p>
+	<a href="index.html">Home</a>
+	</p>
+
+	<p>
+	<a
+	href="http://sourceforge.net/project/showfiles.php?group_id=193434">Downloads</a>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net/projects/jumble">Development</a>
+	</p>
+
+	<p>
+	<a href="mutations.html">Mutations</a>
+	</p>
+
+	<p>
+	<b>FAQ</b>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net"><img
+	src="http://sflogo.sourceforge.net/sflogo.php?group_id=193434&amp;type=3" width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+	</p>
+    </td>
+    <td bgcolor="white">
+
+<p>
+
+<h3>Jumble did not find my test class. What's going on?</h3>
+
+<p>
+Jumble assumes the test class has the same name as the class to be tested
+with the word <tt>Test</tt> appended to the name. If the test class
+is newly written it might be missing from the file
+<tt>~/.jumbledb</tt> used by Jumble to speed its operation.  This
+file can be rebuilt by giving <tt>jumble.sh</tt> the
+<tt>-clean</tt> option (alternatively, you can simply delete the
+file and Jumble will rebuild it when it is next invoked).<p> 
+
+
+<h3>Why does Jumble only make one mutation at a time?</h3><p>
+
+A single mutation is generally harder for a test class to detect than
+multiple simultaneous mutations.  Also, if multiple mutations were
+made there is a slight chance they would cancel each other out.<p> 
+
+
+<h3>What does a <tt>.</tt> output mean?</h3><p>
+
+The test cases detected the mutation.<p>
+
+
+<h3>What does a <tt>M</tt> output mean?</h3><p>
+
+The mutation (which follows the <tt>M</tt>) was not detected by the test
+cases.  This generally indicates the tests are in some way deficient.<p>
+
+
+<h3>What does a <tt>T</tt> output mean?</h3><p>
+
+The mutation caused the unit tests to take longer than expected
+(possibly having put the code into an infinite loop).  Jumble gives
+the coder the benefit of the doubt in such situations.<p>
+
+
+<h3>Can Jumble ever incorrectly report an arithmetic problem?</h3><p>
+
+Yes.  Certain combinations of operations and constants give the same
+result for different examples.  For example,<p>
+
+<pre>
+y = x * sign;
+y = x / sign;
+</pre><p>
+
+give the same result for <tt>sign = 1</tt> or <tt>sign = -1</tt>.<p>
+
+
+<h3>Can Jumble ever incorrectly report a conditional problem?</h3><p>
+
+Yes.  Certain pieces of code can be modified without invalidating the
+code.  One example of this is where a condition is used to select
+different code for performance reasons rather than correctness.
+Suppose <tt>f1(x)</tt> and <tt>f2(x)</tt> compute the same function but
+exhibit different performance depending on x.  Valid code might then be:<p>
+
+<pre>
+int foo(int x) {
+    return x &lt; 10 ? f1(x) : f2(x);
+}
+</pre><p>
+
+mutating the condition <tt>x &lt; 10</tt> would not change the correctness
+of the code only the speed.  Unless there is a very sensitive speed test
+this modification is likely to pass unit tests.<p> 
+
+A similar situation arises in certain probabilistic algorithms.  The
+following code executes the internal block half the time, but negating the
+condition does not change the semantics:<p>
+
+<pre>
+void foo() {
+  if (new Random().nextBoolean()) {
+    // do something ...
+  }
+}
+</pre><p>
+
+Note, however, the selection of a specific seed for the random number
+generator would render this code testable.<p>
+
+
+<h3>Is any code exempt from mutation?</h3><p>
+
+Jumble tries not to make mutations within assertions. Specific methods can
+also be excluded from testing, by default <tt>main</tt> and
+<tt>integrity</tt> are excluded.<p>
+
+
+<h3>Can I Jumble an interface?</h3><p>
+
+Not really since an interface contains no code to mutate.  Jumble will
+report a score of 100% for interfaces.<p>
+
+
+<h3>What's the situation with abstract classes?</h3><p>
+
+For the class <tt>AbstractFoo</tt>, Jumble will look for a test named
+<tt>DummyFooTest</tt>.  This is done because there could be an actual
+abstract test class named <tt>AbstractFooTest</tt>.<p>
+
+
+<h3>I cannot test something Jumble complains about?</h3><p>
+
+Just because something is difficult to test does not mean it is impossible
+to test.  Testing is generally a finite resource so it is appropriate to
+concentrate testing where it is most important.  At best Jumble is just
+another indicator of where potential weaknesses in the testing regime
+exist.  Difficulty in writing tests can be genuine, due to laziness
+(e.g. not wanting to parse standard output), or symptomatic of a poor
+design.<p>
+
+There are a few situations where the limitations of Java and/or JUnit make
+testing hard.  These include testing GUI code, audio code, indeed any code
+where the JVM leaves uninterruptible threads hanging around, code which is
+conditional on operating system and/or native code, and out of memory
+conditions.  Testing algorithmic complexity can also be difficult in a
+reasonable time; for example, making sure your algorithm really is
+quadratic rather than cubic.<p>
+
+Remember the purpose of Jumble is to identify potential problems, if after
+examining a failure you convince yourself there is never going to be a
+problem (e.g. because you have a formal proof) then the failure could be
+ignored.<p>
+
+    </td>
+  </tr>
+</table>
+
+</body>

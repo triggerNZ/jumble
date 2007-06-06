@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Jumble</title>
+<link type="text/css" rel="stylesheet" href="web.css">
+</head>
+<body>
+<table width="100%" cellspacing="0" cellpadding="10">
+  <tr>
+    <th>
+    </th>
+    <th align="left" bgcolor="white">
+      <img align="left" src="jumble_icon.png" alt="Jumble">
+    </th>
+  </tr>
+  <tr valign="top">
+    <td>
+	<p>
+	<a href="index.html">Home</a>
+	</p>
+
+	<p>
+	<a
+	href="http://sourceforge.net/project/showfiles.php?group_id=193434">Downloads</a>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net/projects/jumble">Development</a>
+	</p>
+
+	<p>
+	<b>Mutations</b>
+	</p>
+
+	<p>
+	<a href="FAQ.html">FAQ</a>
+	</p>
+
+	<p>
+	<a href="http://sourceforge.net"><img
+	src="http://sflogo.sourceforge.net/sflogo.php?group_id=193434&amp;type=3" width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+	</p>
+    </td>
+    <td bgcolor="white">
+
+<p>
+Jumble is capable of making a number of different of mutations:
+</p>
+
+<ul>
+<li><b>Conditionals</b>: Jumble replaces each condition with its negation.
+    Thus, for example, the condition <tt>x &gt; y</tt> would mutate to
+    become <tt>!(x > y)</tt>. Such mutations are not limited to simple
+    conditionals as in <tt>if</tt> statements. They also can occur in loop
+    conditions of <tt>while</tt>, <tt>for</tt>, and <tt>do</tt> loops and
+    in <tt>?:</tt> ternary operations. Conditionals include arithmetic
+    comparisons, reference comparisons, and tests for null and
+    not-null. The mutation is effected by means of the <tt>negate()</tt>
+    method of <b>IfInstruction</b> class of BCEL.  Note that in a complex
+    decision that contains several conditions, each condition will be
+    mutated separately.<p>
+
+    The modification of a conditional can cause infinite looping. Jumble
+    detects this situation by first timing the test on the unmodified code,
+    then if the mutated code takes more than a certain multiple of this
+    time the test is assumed to have caused infinite looping and the result
+    is deemed to be a pass. Such results are indicated by a <tt>T</tt> in
+    the test output.<p>
+
+    Jumble always mutates conditionals.<p>
+</li>
+
+<li><b>Binary Arithmetic Operations</b>: Jumble can replace binary
+    arithmetic operations for either integer or floating-point arithmetic
+    with another operation. The replacement operation is selected according
+    to the table below. Fixed replacements rather than random replacements
+    are used because sometimes different operations will (correctly)
+    produce the same result. Even when using the fixed replacements of the
+    table such a situation can occasionally arise.<p> 
+
+<table>
+<tr><th>Current</th><th>Mutation</th></tr>
+<tr><td align="center"><tt>+</tt></td><td align="center"><tt>-</td></tr>
+<tr><td align="center"><tt>-</tt></td><td align="center"><tt>+</td></tr>
+<tr><td align="center"><tt>*</tt></td><td align="center"><tt>/</td></tr>
+<tr><td align="center"><tt>/</tt></td><td align="center"><tt>*</td></tr>
+<tr><td align="center"><tt>%</tt></td><td align="center"><tt>*</td></tr>
+<tr><td align="center"><tt>&amp;</tt></td><td align="center"><tt>|</td></tr>
+<tr><td align="center"><tt>|</tt></td><td align="center"><tt>&amp;</tt></td></tr>
+<tr><td align="center"><tt>^</tt></td><td align="center"><tt>&amp;</tt></td></tr>
+<tr><td align="center"><tt>&lt;&lt;</tt></td><td align="center"><tt>&gt;&gt;</td></tr>
+<tr><td align="center"><tt>&gt;&gt;</tt></td><td align="center"><tt>&lt;&lt;</td></tr>
+<tr><td align="center"><tt>&gt;&gt;&gt;</tt></td><td align="center"><tt>&lt;&lt;</td></tr>
+</table>
+
+    <p>
+    Jumble always mutates binary arithmetic operations.<p>
+</li>
+
+<li><b>Increments</b>: Increments, decrements, and the assignment
+    increments and decrements are mutated to their opposite sign.  For
+    example, <tt>i++</tt> becomes <tt>i--</tt>.<p>
+
+    This mutation is off by default, but can be turned on using
+    the "-i" or "--increments" command-line flags.<p>
+</li>
+
+<li><b>Inline Constants</b>: Jumble can change the value of literal constants
+    used in <b>const</b> instructions and various <b>push</b>
+    instructions. Because Jumble cannot tell from the class file whether
+    such constants are ints, shorts, characters, bytes, or booleans, some
+    confusion can occur when interpreting the output of these mutations. If
+    the mutated value happens to corresponding to a printable ASCII
+    character then this value appears in parenthesis after the numerical
+    value. A value of 0 might also be a boolean false and a value of 1 a
+    boolean true.<p>
+
+    The mutation of inline constants is off by default, but can be turned
+    on using the "-k" or "--inline-consts" command-line flags.<p>
+</li>
+
+
+<li><b>Class Pool Constants</b>: Jumble can change the value of
+    literal constants and strings that appear in the "class pool"
+    of a class.  Primitive literals (ints, doubles etc.) are mutated
+    in a similar way to inline constants, and string literals are replaced
+    by the string "__jumble__" or "___jumble___".<p>
+
+    The mutation of constant pool entries is off by default, but can be
+    turned on using the "-w" or "--cpool" command-line flags.<p>
+</li>
+
+<li><b>Return Values</b>: Jumble can change return values. For primitive
+    booleans, shorts, characters, integers, floats, and doubles non-zero
+    returns can be changed to 0 and 0 returns are changed to 1. For objects
+    non-null returns can be changed to null; for null returns a
+    RuntimeException is invoked (this is because Jumble cannot reliably
+    instantiate a valid object or arbitrary type).<p>
+
+    This mutation is off by default, but can be turned on using
+    the "-r" or "--return-vals" command-line flags.<p>
+</li>
+
+<li><b>Switch Statements</b>: Jumble can mutate each case of a
+    switch statement by swapping it with the default case or another
+    case, or by changing the case value.<p>
+    
+    This mutation is off by default, but can be turned on using
+    the "-j" or "--switch" command-line flags.<p>
+</li>
+</ul>
+
+    </td>
+  </tr>
+</table>
+
+</body>

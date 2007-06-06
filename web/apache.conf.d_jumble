@@ -7,6 +7,6 @@
 <Directory "/srv/www/htdocs/jumble">
   AddHandler cgi-script .cgi
   Options +ExecCGI
-  DirectoryIndex key.html
+  DirectoryIndex index.html
   AllowOverride Limit
 </Directory>
