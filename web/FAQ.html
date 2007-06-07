@@ -47,41 +47,24 @@
 
 <p>
 
-<h3>Jumble did not find my test class. What's going on?</h3>
-
-<p>
-Jumble assumes the test class has the same name as the class to be tested
-with the word <tt>Test</tt> appended to the name. If the test class
-is newly written it might be missing from the file
-<tt>~/.jumbledb</tt> used by Jumble to speed its operation.  This
-file can be rebuilt by giving <tt>jumble.sh</tt> the
-<tt>-clean</tt> option (alternatively, you can simply delete the
-file and Jumble will rebuild it when it is next invoked).<p> 
-
-
-<h3>Why does Jumble only make one mutation at a time?</h3><p>
-
-A single mutation is generally harder for a test class to detect than
-multiple simultaneous mutations.  Also, if multiple mutations were
-made there is a slight chance they would cancel each other out.<p> 
-
-
 <h3>What does a <tt>.</tt> output mean?</h3><p>
 
-The test cases detected the mutation.<p>
+It means that the test cases detected the mutation.  This is good.<p>
 
 
 <h3>What does a <tt>M</tt> output mean?</h3><p>
 
-The mutation (which follows the <tt>M</tt>) was not detected by the test
-cases.  This generally indicates the tests are in some way deficient.<p>
+It means that the mutation (which follows the <tt>M</tt>) was not
+detected by the test cases.  This generally indicates the tests are in
+some way deficient.<p>
 
 
 <h3>What does a <tt>T</tt> output mean?</h3><p>
 
-The mutation caused the unit tests to take longer than expected
+The mutation caused the unit tests to take much longer than expected
 (possibly having put the code into an infinite loop).  Jumble gives
-the coder the benefit of the doubt in such situations.<p>
+the tester the benefit of the doubt in such situations, and counts
+this mutation as having been detected.<p>
 
 
 <h3>Can Jumble ever incorrectly report an arithmetic problem?</h3><p>
@@ -131,6 +114,13 @@ Note, however, the selection of a specific seed for the random number
 generator would render this code testable.<p>
 
 
+<h3>Why does Jumble only make one mutation at a time?</h3><p>
+
+A single mutation is generally harder for a test class to detect than
+multiple simultaneous mutations.  Also, if multiple mutations were
+made there is a slight chance they would cancel each other out.<p> 
+
+
 <h3>Is any code exempt from mutation?</h3><p>
 
 Jumble tries not to make mutations within assertions. Specific methods can
@@ -140,7 +130,7 @@ also be excluded from testing, by default <tt>main</tt> and
 
 <h3>Can I Jumble an interface?</h3><p>
 
-Not really since an interface contains no code to mutate.  Jumble will
+Not really, since an interface contains no code to mutate.  Jumble will
 report a score of 100% for interfaces.<p>
 
 
@@ -150,6 +140,28 @@ For the class <tt>AbstractFoo</tt>, Jumble will look for a test named
 <tt>DummyFooTest</tt>.  This is done because there could be an actual
 abstract test class named <tt>AbstractFooTest</tt>.<p>
 
+The recommended Jumble conventions are to put some unit tests for the
+<tt>AbstractFoo</tt> methods into the abstract
+<tt>AbstractFooTest</tt> class, then inherit that class into the unit
+tests for each subclass of <tt>AbstractFoo</tt> (say <tt>FooA</tt> and
+<tt>FooB</tt>).  This means that JUnit will test the
+<tt>AbstractFoo</tt> methods for each subclass of
+<tt>AbstractFoo</tt>.  However, the methods in <tt>AbstractFoo</tt>
+will not be mutated when Jumble analyses the subclasses of
+<tt>AbstractFoo</tt>, because it is a design principle of Jumble to
+analyse each class just once.  So we create a <tt>DummyFooTest</tt>
+class that inherits <tt>AbstractFooTest</tt>, provides a "dummy"
+implementation of any missing methods, and concentrates on testing the
+methods of <tt>AbstractFoo</tt>.<p>
+
+Of course, you can override these default Jumble naming conventions by
+explicitly specifying your test classes on the command line, like this:
+<pre>
+    java -jar jumble.jar AbstractFoo FooTest1 FooTest2
+</pre>
+<p>
+
+
 
 <h3>I cannot test something Jumble complains about?</h3><p>
 
@@ -157,13 +169,13 @@ Just because something is difficult to test does not mean it is impossible
 to test.  Testing is generally a finite resource so it is appropriate to
 concentrate testing where it is most important.  At best Jumble is just
 another indicator of where potential weaknesses in the testing regime
-exist.  Difficulty in writing tests can be genuine, due to laziness
+exist.  Difficulty in writing tests can be genuine, or due to laziness
 (e.g. not wanting to parse standard output), or symptomatic of a poor
 design.<p>
 
 There are a few situations where the limitations of Java and/or JUnit make
-testing hard.  These include testing GUI code, audio code, indeed any code
-where the JVM leaves uninterruptible threads hanging around, code which is
+testing hard.  These include testing GUI code, audio code (indeed any code
+where the JVM leaves uninterruptible threads hanging around), code which is
 conditional on operating system and/or native code, and out of memory
 conditions.  Testing algorithmic complexity can also be difficult in a
 reasonable time; for example, making sure your algorithm really is
