@@ -35,8 +35,9 @@
 		</path>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="init">
 		<delete dir="${bindir}" />
+		<delete file="jumble.jar"/>
 	</target>
 
 	<target name="build" depends="init">
@@ -44,8 +45,6 @@
 		<javac srcdir="src" destdir="${bindir}">
 			<classpath refid="eclipseplugin.classpath" />
 		</javac>
-
-
 		<jar destfile="jumble.jar" basedir="${bindir}" />
 	</target>
 
@@ -56,6 +55,6 @@
 
 		<copy file="jumble.jar" todir="${dest}" />
 		<copy file="plugin.xml" todir="${dest}" />
-		<copy file="jumble-runtime.jar" todir="${dest}" />
+		<copy file="../jumble/jumble.jar" tofile="${dest}/jumble-runtime.jar" />
 	</target>
 </project>
