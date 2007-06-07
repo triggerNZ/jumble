@@ -11,4 +11,5 @@ Usage:  UpdateWeb.sh sourceforge_username
 
 This directory also contains scripts for running Jumble within
 the Apache web server.  Not well-documented yet...
-See jumble.cgi (especially the "Editable variables" section).
+See jumble.cgi (especially the "Editable variables" section)
+and apache.conf.d_jumble.
