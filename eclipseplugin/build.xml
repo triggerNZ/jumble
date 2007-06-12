@@ -5,7 +5,7 @@
 		<property name="destdir" value="plugin-export" />
 		<property name="plugin" value="jumble" />
 		<property name="dest" value="${destdir}/${plugin}" />
-		<property name="bindir" value="bin" />
+		<property name="bindir" value="build" />
 		<property name="ECLIPSE_HOME" value="C:/eclipse" />
 		<path id="Plug-in Dependencies.libraryclasspath">
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
