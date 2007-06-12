@@ -1,7 +1,7 @@
 Summary
 =======
 Jumble is a Java mutation tool for measuring the effectiveness and
-coverage of JUnit test suites.
+coverage of JUnit test suites.  Jumble requires at least Java 1.5.
 
 
 Details
@@ -31,10 +31,16 @@ set of unit tests and mutation tests for modified classes.
 
 How to Compile Jumble
 =====================
+If there is a file, jumble.jar, in the same directory as this README
+file, then Jumble is already compiled and you can start using it.
+Otherwise, you should first build jumble.jar as follows.
 
-There is an ant (http://ant.apache.org) build script provided in the
-directory containing this README.  Assuming you have ant installed,
-run:
+There is an ant (http://ant.apache.org) build script, called build.xml,
+provided in the directory containing this README.  The Jumble sources
+are in the 'src' subdirectory, the self-tests are in the 'test' subdirectory
+and the 'lib' subdirectory contains several .jar files used by Jumble.
+
+Assuming you have ant installed, run:
 
   ant jar
 
