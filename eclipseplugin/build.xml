@@ -2,7 +2,7 @@
 <project name="jumble" default="export" basedir=".">
 	<target name="init">
 		<tstamp />
-		<property name="destdir" value="../../plugin-export" />
+		<property name="destdir" value="plugin-export" />
 		<property name="plugin" value="jumble" />
 		<property name="dest" value="${destdir}/${plugin}" />
 		<property name="bindir" value="bin" />
