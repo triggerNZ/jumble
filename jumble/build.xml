@@ -7,8 +7,6 @@
 	<property name="build.dir" value="build" />
 	<property name="test.build.dir" value="build_test" />
 
-	<property name="jumble.version" value="1.0" />
-
 	<path id="classpath">
 		<pathelement location="${lib.dir}/bcel.jar" />
 		<pathelement location="${lib.dir}/junit.jar" />
@@ -26,6 +24,7 @@
 	<target name="clean">
 		<delete dir="${build.dir}" />
 		<delete dir="${test.build.dir}" />
+		<delete file="TEST-AllTests.txt" />
 	</target>
 
 
@@ -98,24 +97,5 @@
 			<fileset dir="." includes="COPYING.txt" />
 			<!-- Use GPL for the utility code -->
 		</jar>
-	</target>
-
-	<target name="package-source">
-		<zip destfile="jumble-${jumble.version}-src.zip" basedir=".">
-			<include name="${src.dir}/**/*"/>
-			<include name="${test.dir}/**/*"/>
-			<include name="${lib.dir}/**/*"/>
-			<include name="build.xml"/>
-			<include name="COPYING.txt"/>
-			<include name="README.txt"/>
-		</zip>
-	</target>
-
-	<target name="sourceforge-dist" depends="jar">
-		<zip destfile="jumble-${jumble.version}.zip" basedir=".">
-			<include name="jumble.jar" />
-			<include name="COPYING.txt" />
-			<include name="README.txt" />
-		</zip>
 	</target>
 </project>

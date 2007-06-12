@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="admin" basedir="." default="all">
+
+  <property name="version" value="jumble_1_0_0" />
+  <property name="src.zip" value="${version}_src.zip"/>
+  <property name="src.tgz" value="${version}_src.tgz"/>
+
+  <target name="clean">
+    <delete dir="${version}" />
+    <delete file="${src.zip}" />
+    <delete file="${src.tgz}" />
+  </target>
+
+  <target name="copy">
+    <delete dir="${version}" />
+    <mkdir dir="${version}" />
+    <copy todir="${version}">
+      <fileset dir="..">
+        <include name="jumble/**/*" />
+        <include name="eclipseplugin/**/*" />
+        <include name="web/**/*" />
+        <include name="README.txt" />
+        <exclude name="**/*.class, **/build, **/build_test" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="zip" depends="copy"
+          description="Source distribution in .zip format">
+    <zip destfile="${src.zip}" basedir="."
+         includes="${version}/**/*" />
+  </target>
+
+  <target name="tgz" depends="copy"
+          description="Source distribution in .tgz format">
+    <tar destfile="${src.tgz}" compression="gzip" basedir="."
+         includes="${version}/**/*" />
+  </target>
+
+  <target name="all" description="All distributions" 
+          depends="zip,tgz" />
+</project>
