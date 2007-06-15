@@ -37,7 +37,7 @@ Source Code
 If this distribution does not contain the Java source code,
 you can obtain it from the Sourceforge SVN repository like this:
 
-  svn co https://jumble.svn.sourceforge.net/svnroot/jumble/tags/release_1_0_0 rel100
+  svn co https://jumble.svn.sourceforge.net/svnroot/jumble/tags/release_1_0_0 jumble1.0.0
 
 Or for the latest development version of Jumble, like this:
   svn co https://jumble.svn.sourceforge.net/svnroot/jumble/trunk trunk
