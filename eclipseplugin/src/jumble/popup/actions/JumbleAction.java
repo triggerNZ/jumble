@@ -114,7 +114,7 @@ public class JumbleAction implements IObjectActionDelegate, IEditorActionDelegat
       // Set up class paths
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
       List classpath = new ArrayList();
-      IPath jumbleJarPath = new Path(pluginLocation + "/jumble-runtime.jar");
+      IPath jumbleJarPath = new Path(pluginLocation + "/jumble.jar");
       IRuntimeClasspathEntry jumbleJarEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(jumbleJarPath);
       classpath.add(jumbleJarEntry.getMemento());
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, classpath);

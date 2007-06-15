@@ -8,7 +8,7 @@
    class="jumble.JumblePlugin">
 
    <runtime>
-      <library name="jumble.jar">
+      <library name="jumble-eclipse.jar">
          <export name="*"/>
       </library>
    </runtime>

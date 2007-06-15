@@ -4,9 +4,10 @@
 		<tstamp />
 		<property name="destdir" value="plugin-export" />
 		<property name="plugin" value="jumble" />
+		<property name="jarfile" value="jumble-eclipse.jar" />
 		<property name="dest" value="${destdir}/${plugin}" />
 		<property name="bindir" value="build" />
-		<property name="ECLIPSE_HOME" value="C:/eclipse" />
+		<property name="ECLIPSE_HOME" value="/research/tools/eclipse" />
 		<path id="Plug-in Dependencies.libraryclasspath">
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar" />
@@ -36,26 +37,29 @@
 		</path>
 	</target>
 
-	<target name="clean" depends="init">
+	<target name="clean" depends="init"
+                description="Clean up temporary files">
 		<delete dir="${bindir}" />
-		<delete file="jumble.jar"/>
+		<delete file="${jarfile}"/>
 	</target>
 
-	<target name="build" depends="init">
+	<target name="build" depends="init"
+                description="Build the Eclipse plugin jar file">
 		<mkdir dir="${bindir}" />
 		<javac srcdir="src" destdir="${bindir}">
 			<classpath refid="eclipseplugin.classpath" />
 		</javac>
-		<jar destfile="jumble.jar" basedir="${bindir}" />
+		<jar destfile="${jarfile}" basedir="${bindir}" />
 	</target>
 
-	<target name="export" depends="build">
+	<target name="export" depends="build"
+                description="Export everything into plugin-export">
 		<mkdir dir="${destdir}" />
 		<delete dir="${dest}" />
 		<mkdir dir="${dest}" />
 
-		<copy file="jumble.jar" todir="${dest}" />
+		<copy file="${jarfile}" todir="${dest}" />
 		<copy file="plugin.xml" todir="${dest}" />
-		<copy file="../jumble/jumble.jar" tofile="${dest}/jumble-runtime.jar" />
+		<copy file="../jumble/jumble.jar" tofile="${dest}/jumble.jar" />
 	</target>
 </project>

@@ -3,12 +3,12 @@
 
   <property name="version" value="jumble_1_0_0" />
   <property name="src.zip" value="${version}_src.zip"/>
-  <property name="src.tgz" value="${version}_src.tgz"/>
+  <property name="bin.zip" value="${version}_binary.zip"/>
 
   <target name="clean">
     <delete dir="${version}" />
     <delete file="${src.zip}" />
-    <delete file="${src.tgz}" />
+    <delete file="${bin.zip}" />
   </target>
 
   <target name="copy">
@@ -16,27 +16,54 @@
     <mkdir dir="${version}" />
     <copy todir="${version}">
       <fileset dir="..">
-        <include name="jumble/**/*" />
-        <include name="eclipseplugin/**/*" />
-        <include name="web/**/*" />
         <include name="README.txt" />
-        <exclude name="**/*.class, **/build, **/build_test" />
+        <include name="jumble/**" />
+        <include name="eclipseplugin/**" />
+        <include name="web/**" />
+	<exclude name="**/*.class" />
+	<!-- it already excludes the .svn directories -->
       </fileset>
     </copy>
   </target>
 
-  <target name="zip" depends="copy"
+  <target name="src" depends="copy"
           description="Source distribution in .zip format">
-    <zip destfile="${src.zip}" basedir="."
-         includes="${version}/**/*" />
+    <zip destfile="${src.zip}" basedir=".">
+      <include name="${version}/README.txt" />
+      <include name="${version}/jumble/README.txt" />
+      <include name="${version}/jumble/COPYING.txt" />
+      <include name="${version}/jumble/build.xml" />
+      <include name="${version}/jumble/src/**" />
+      <include name="${version}/jumble/lib/**" />
+      <include name="${version}/jumble/test/**" />
+      <include name="${version}/jumble/example/**" />
+      <include name="${version}/eclipseplugin/README.txt" />
+      <include name="${version}/eclipseplugin/COPYING.txt" />
+      <include name="${version}/eclipseplugin/build.properties" />
+      <include name="${version}/eclipseplugin/build.xml" />
+      <include name="${version}/eclipseplugin/plugin.xml" />
+      <include name="${version}/eclipseplugin/src/**" />
+      <include name="${version}/web/**" />
+    </zip>
   </target>
 
-  <target name="tgz" depends="copy"
-          description="Source distribution in .tgz format">
-    <tar destfile="${src.tgz}" compression="gzip" basedir="."
-         includes="${version}/**/*" />
+  <target name="bin" depends="copy"
+          description="Binary distribution in .zip format">
+    <zip destfile="${bin.zip}" basedir=".">
+      <include name="${version}/README.txt" />
+      <include name="${version}/jumble/README.txt" />
+      <include name="${version}/jumble/COPYING.txt" />
+      <include name="${version}/jumble/jumble.jar" />
+      <include name="${version}/jumble/example/**" />
+      <include name="${version}/eclipseplugin/README.txt" />
+      <include name="${version}/eclipseplugin/COPYING.txt" />
+      <!-- NOTE: to save space we don't include another copy of jumble.jar -->
+      <include name="${version}/eclipseplugin/plugin-export/jumble/jumble-eclipse.jar" />
+      <include name="${version}/eclipseplugin/plugin-export/jumble/plugin.xml" />
+      <include name="${version}/web/**" />
+    </zip>
   </target>
 
   <target name="all" description="All distributions" 
-          depends="zip,tgz" />
+          depends="src,bin" />
 </project>
