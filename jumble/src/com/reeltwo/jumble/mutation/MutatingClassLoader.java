@@ -86,7 +86,7 @@ public class MutatingClassLoader extends ClassLoader {
   protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
     Class cl = null;
 
-    if ((cl = (Class) mClasses.get(className)) == null) {
+    if ((cl = mClasses.get(className)) == null) {
       // Classes we're forcing to be loaded by mDeferTo
       for (int i = 0; i < mIgnoredPackages.length; i++) {
         if (className.startsWith(mIgnoredPackages[i])) {
