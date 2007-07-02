@@ -193,11 +193,11 @@ public class JumbleTestSuite extends FlatTestSuite {
     }
 
     for (int j = 0; j < front.size(); j++) {
-      ret[i] = (Test) front.get(j);
+      ret[i] = front.get(j);
       i++;
     }
     for (int j = 0; j < back.size(); j++) {
-      ret[i] = (Test) back.get(j);
+      ret[i] = back.get(j);
       i++;
     }
     return ret;
