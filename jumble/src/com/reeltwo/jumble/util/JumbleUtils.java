@@ -55,4 +55,26 @@ public class JumbleUtils {
     assert assertionsEnabled = true;
     return assertionsEnabled;
   }
+  
+  private static final boolean JUNIT_4_AVAILABLE;
+  private static final String JUNIT_4_CLASS = "org.junit.Test";
+  
+  static {
+    boolean junit4;
+    try {
+      Class.forName(JUNIT_4_CLASS);
+      junit4 = true;
+    } catch (ClassNotFoundException e) {
+      junit4 = false;
+    }
+    JUNIT_4_AVAILABLE = junit4;
+  }
+  
+  public static boolean isJUnit4Available () {
+    return JUNIT_4_AVAILABLE;
+  }
+  
+  public static void main(String[] args) {
+    System.out.println(JumbleUtils.isJUnit4Available());
+  }
 }
