@@ -27,8 +27,7 @@ public class JumbleTest extends TestCase {
   }
 
   public void testNonTestTestClass() throws Exception {
-    assertEquals("ERROR: experiments.JumblerExperiment is not a test class.", runCommandLineJumble("experiments.JumblerExperiment",
-        "experiments.JumblerExperiment", false).trim());
+    assertEquals("ERROR: experiments.JumblerExperiment is not a test class.", runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperiment", false).trim());
   }
 
   public void testNonExistentClass() throws Exception {
@@ -99,7 +98,7 @@ public class JumbleTest extends TestCase {
     assertEquals(getExpectedOutput("experiments.NoTestClass"), runCommandLineJumble("experiments.NoTestClass", -1));
   }
 
-  //Test for floating point return value bug
+  // Test for floating point return value bug
   public void testFloatReturn() throws Exception {
     String out = runCommandLineJumble("experiments.FloatReturn", "experiments.FloatReturnTest", true);
     StringTokenizer tokens = new StringTokenizer(out, "\n");
@@ -151,7 +150,26 @@ public class JumbleTest extends TestCase {
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+  }
 
+  public void testJUnit4() throws Exception {
+    // Have to allow a some room for the unit test time limit to vary
+    String expected = readAll(getClass().getClassLoader().getResourceAsStream("com/reeltwo/jumble/JumblerExperiment.txt")).replaceAll("experiments.JumblerExperimentTest", "experiments.JumblerExperimentJUnit4Test");
+    String got = runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperimentJUnit4Test", false);
+    StringTokenizer tokens1 = new StringTokenizer(expected, "\n");
+    StringTokenizer tokens2 = new StringTokenizer(got, "\n");
+
+    assertEquals("failed with string: " + got, tokens1.countTokens(), tokens2.countTokens());
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
+
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
   public static Test suite() {

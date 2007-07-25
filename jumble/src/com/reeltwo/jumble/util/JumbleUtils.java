@@ -3,7 +3,10 @@ package com.reeltwo.jumble.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.JUnit4TestCaseFacade;
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 /**
  * Class containing several utility methods useful to Jumble.
@@ -23,6 +26,19 @@ public class JumbleUtils {
    * @return true if the class is a test class, false otherwise.
    */
   public static boolean isTestClass(Class clazz) {
+    final boolean junit3 = isJUnit3TestClass(clazz);
+    final boolean junit4 = isJUnit4TestClass(clazz);
+    return junit3 || junit4;
+  }
+
+  /**
+   * Checks if the given class is a JUnit 3 test class.
+   * 
+   * @param clazz
+   *          the class to check.
+   * @return if clazz is a test class, false otherwise.
+   */
+  public static boolean isJUnit3TestClass(Class clazz) {
     Set interfaceSet = new HashSet();
     Class tmp = clazz;
 
@@ -44,6 +60,19 @@ public class JumbleUtils {
     return false;
   }
 
+  // private static final String TEST_ANNOTATION_CLASS = "org.junit.Test";
+
+  /**
+   * Determines if <code>clazz</code> is a JUnit 4 test class.
+   * 
+   * @param clazz
+   *          the class to check.
+   * @return true if the given class contains JUnit 4 test cases.
+   */
+  public static boolean isJUnit4TestClass(Class clazz) {
+    return new org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
+  }
+
   /**
    * Gets whether assertions are currently enabled.
    * 
@@ -55,26 +84,24 @@ public class JumbleUtils {
     assert assertionsEnabled = true;
     return assertionsEnabled;
   }
-  
-  private static final boolean JUNIT_4_AVAILABLE;
-  private static final String JUNIT_4_CLASS = "org.junit.Test";
-  
-  static {
-    boolean junit4;
-    try {
-      Class.forName(JUNIT_4_CLASS);
-      junit4 = true;
-    } catch (ClassNotFoundException e) {
-      junit4 = false;
+
+  /**
+   * Gets the name of a test, (different method depending on underlying type).
+   * 
+   * @param t
+   * @return
+   */
+  public static String getTestName(Test t) {
+    if (t instanceof TestCase) {
+      return ((TestCase) t).getName();
     }
-    JUNIT_4_AVAILABLE = junit4;
-  }
-  
-  public static boolean isJUnit4Available () {
-    return JUNIT_4_AVAILABLE;
-  }
-  
-  public static void main(String[] args) {
-    System.out.println(JumbleUtils.isJUnit4Available());
+    if (t instanceof JUnit4TestCaseFacade) {
+      return ((JUnit4TestCaseFacade) t).getDescription().getDisplayName();
+    }
+    if (t instanceof JUnit4TestAdapter) {
+      return ((JUnit4TestAdapter) t).getDescription().getDisplayName();
+    }
+    
+    throw new ClassCastException(t.getClass().toString());
   }
 }

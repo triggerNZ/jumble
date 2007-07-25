@@ -45,8 +45,10 @@ public class FlatTestSuite extends TestSuite {
     }
 
     if (suiteMethod == null) {
+      //No suite method, so we need to construct either a JUnit 3 or JUnit 4 test case.
       addTest(new TestSuite(theClass));
     } else {
+      //We have a suite method which will construct the test case.
       try {
         Test suite = (Test) suiteMethod.invoke(null, new Object[] {});
         addTest(suite);

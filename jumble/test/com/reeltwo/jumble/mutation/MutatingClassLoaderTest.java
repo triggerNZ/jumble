@@ -28,7 +28,6 @@ import org.apache.bcel.generic.InstructionComparator;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 
-
 /**
  * Tests the corresponding class.
  * 
@@ -543,7 +542,7 @@ public class MutatingClassLoaderTest extends TestCase {
       assertTrue("ia=" + ia + " ib=" + ib, comp.equals(ia, ib));
     }
   }
-
+  
   public static Test suite() {
     TestSuite suite = new TestSuite(MutatingClassLoaderTest.class);
     return suite;
@@ -551,6 +550,7 @@ public class MutatingClassLoaderTest extends TestCase {
 
   public static void main(String[] args) {
     junit.textui.TestRunner.run(suite());
+
   }
 
   /**
@@ -575,4 +575,5 @@ public class MutatingClassLoaderTest extends TestCase {
       }
     }
   }
+
 }

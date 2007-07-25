@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
+
+import com.reeltwo.jumble.util.JumbleUtils;
 
 /**
  * A test suite which runs tests in order and inverts the result. Remembers the
@@ -82,7 +84,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     PrintStream oldOut = System.out;
 
     for (int i = 0; i < testCount(); i++) {
-      TestCase t = (TestCase) tests[i];
+      Test t = tests[i];
 
       System.setOut(newOut);
       try {
@@ -108,7 +110,7 @@ public class JumbleTestSuite extends FlatTestSuite {
         }
       }
       if (result.errorCount() > 0 || result.failureCount() > 0) {
-        return "PASS: " + t.getName();
+        return "PASS: " + JumbleUtils.getTestName(t);
       }
       if (result.shouldStop()) {
         break;
@@ -166,15 +168,15 @@ public class JumbleTestSuite extends FlatTestSuite {
       frontTestNames = mCache.getFailedTests(mClass, mMethod);
     }
 
-    List<TestCase> front = new ArrayList<TestCase>();
-    List<TestCase> back = new ArrayList<TestCase>();
+    List<Test> front = new ArrayList<Test>();
+    List<Test> back = new ArrayList<Test>();
 
     for (int i = 0; i < testCount(); i++) {
       int indx = mOrder.getTestIndex(i);
-      TestCase curTest = (TestCase) testAt(indx);
-      if (first == null && curTest.getName().equals(firstTestName)) {
+      Test curTest = testAt(indx);
+      if (first == null && JumbleUtils.getTestName(curTest).equals(firstTestName)) {
         first = curTest;
-      } else if (frontTestNames.contains(curTest.getName())) {
+      } else if (frontTestNames.contains(JumbleUtils.getTestName(curTest))) {
         front.add(curTest);
       } else {
         back.add(curTest);

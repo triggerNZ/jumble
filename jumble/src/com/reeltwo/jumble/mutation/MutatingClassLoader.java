@@ -37,6 +37,7 @@ public class MutatingClassLoader extends ClassLoader {
     //"org.apache", 
     //"org.xml", 
     //"org.w3c"
+    "org.junit"
   };
 
   private final Hashtable<String, Class> mClasses = new Hashtable<String, Class>();

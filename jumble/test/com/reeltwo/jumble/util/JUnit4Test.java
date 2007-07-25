@@ -1,11 +1,11 @@
 package com.reeltwo.jumble.util;
 
-import com.reeltwo.jumble.fast.JUnitTestResult;
-
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import com.reeltwo.jumble.fast.JUnitTestResult;
 
 /**
  * Tests assumptions about JUnit 4 behaviour.
@@ -44,11 +44,17 @@ public class JUnit4Test extends TestCase {
     }
   }
   
+  public static class NotATest {
+  }
+  
   //Junit 4 tests are not allowed in Junit 3 test suites
   public void testJunit4TestInJunit3TestSuite() {
-    JUnitTestResult tr = new JUnitTestResult();
-    new TestSuite(Dummy4Test.class).run(tr);
-    assertEquals(1, tr.failureCount());
+    try {
+      new TestSuite(Dummy4Test.class);
+      fail();
+    } catch (ClassCastException e) {
+      //ok
+    }
   }
   
   //JUnit 3 tests are allowed in JUnit 4 test adapters
