@@ -25,11 +25,13 @@ function getpackage ()
 
 function get_microavg ()
 {
-    grep $1'[/\t ]' $rawfile | gawk '{n+=$2; x+=$1*$2} END {if (n==0) {print "-1"} else {print int(x/n)}}'
+    loc=$1
+    grep ${loc%/}'[/\t]' $rawfile | gawk '{n+=$2; x+=$1*$2} END {if (n==0) {print "-1"} else {print int(x/n)}}'
 }
 function get_macroavg ()
 {
-    grep $1'[/\t ]' $rawfile | gawk '{n++; x+=$1} END {print int(x/n)}'
+    loc=$1
+    grep ${loc%/}'[/\t ]' $rawfile | gawk '{n++; x+=$1} END {print int(x/n)}'
 }
 # Outputs a wee snippet of html showing the microaverage score, and icon
 function insertscore ()
