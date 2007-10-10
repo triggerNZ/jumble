@@ -31,7 +31,7 @@ function get_microavg ()
 function get_macroavg ()
 {
     loc=$1
-    grep ${loc%/}'[/\t ]' $rawfile | gawk '{n++; x+=$1} END {print int(x/n)}'
+    grep ${loc%/}'[/\t]' $rawfile | gawk '{n++; x+=$1} END {print int(x/n)}'
 }
 # Outputs a wee snippet of html showing the microaverage score, and icon
 function insertscore ()
