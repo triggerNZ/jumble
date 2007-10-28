@@ -197,9 +197,7 @@ EOF
                 cat $jumblefile | sed 's/FAIL: \([^:]\+\):\([0-9]\+\):/FAIL: <a href="#\2">\1:\2:<\/a>/g'
                 echo "</pre>"
                 echo "<hr>"
-                failedlines=$(cat $jumblefile | grep "FAIL: " | sed 's/.*FAIL: \([^:]\+\):\([0-9]\+\):.*/\,#f\2/g' | sort | uniq | tr -d '\n' | sed "s/^,//g")
-                if [ "$failedlines" ]; then
-                    cat <<EOF
+                cat <<EOF
 <STYLE type="text/css">
 TABLE,TD,TH {border-style:solid; border-color:black;} 
 TD,TH {background:white;margin:0;line-height:100%;padding-left:0.5em;padding-right:0.5em;} 
@@ -210,10 +208,16 @@ TABLE.s {border-width:1px 0 1px 1px;}
 TABLE.s TD {font-family:courier,monospace;font-size:10pt;} 
 TABLE.s TD {padding-left:0.25em;padding-right:0.25em;} 
 TABLE.s TD.l {padding-left:0.25em;padding-right:0.25em;text-align:right;background:#F0F0F0;}
+EOF
+                failedlines=$(cat $jumblefile | grep "FAIL: " | sed 's/.*FAIL: \([^:]\+\):\([0-9]\+\):.*/\,#f\2/g' | sort | uniq | tr -d '\n' | sed "s/^,//g")
+                if [ "$failedlines" ]; then
+                    cat <<EOF
 $failedlines {background: #FF9999}
-</STYLE>
 EOF
                 fi
+                cat <<EOF
+</STYLE>
+EOF
                 #echo "<pre>"
                 echo "<table class=\"s\">"
                 #cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<a name=\""NR"\" id=\"f"NR"\">"NR" "$0"</a>"}'
