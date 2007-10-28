@@ -201,16 +201,29 @@ EOF
                 if [ "$failedlines" ]; then
                     cat <<EOF
 <STYLE type="text/css">
-$failedlines {background-color: pink}
+TABLE,TD,TH {border-style:solid; border-color:black;} 
+TD,TH {background:white;margin:0;line-height:100%;padding-left:0.5em;padding-right:0.5em;} 
+TD {border-width:0 1px 0 0;} 
+TH {border-width:1px 1px 1px 0;} 
+TABLE.s {border-spacing:0; border-collapse:collapse;border-width:0 0 1px 1px; white-space:pre} 
+TABLE.s {border-width:1px 0 1px 1px;} 
+TABLE.s TD {font-family:courier,monospace;font-size:10pt;} 
+TABLE.s TD {padding-left:0.25em;padding-right:0.25em;} 
+TABLE.s TD.l {padding-left:0.25em;padding-right:0.25em;text-align:right;background:#F0F0F0;}
+$failedlines {background: #FF9999}
 </STYLE>
 EOF
                 fi
-                echo "<pre>"
-                cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<a name=\""NR"\" id=\"f"NR"\">"NR" "$0"</a>"}'
+                #echo "<pre>"
+                echo "<table class=\"s\">"
+                #cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<a name=\""NR"\" id=\"f"NR"\">"NR" "$0"</a>"}'
+                cat "$srcfile" | sed -e "s/&/&amp;/g" -e "s/</\&lt;/g" -e "s/>/\&gt;/g" | gawk '{ print "<tr><td class=\"l\" id=\"f"NR"\"><a name=\""NR"\">"NR"</a></td><td id=\"f"NR"\">"$0"</td></tr>"}'
+                echo "</table>"
+                #echo "</pre>"
             else
                 cat $jumblefile
+                echo "</pre>"
             fi
-            echo "</pre>"
             echo "<hr>"
         fi
     fi
