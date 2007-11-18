@@ -41,6 +41,7 @@ public class Jumble {
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
     final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
+    final Flag storesFlag = flags.registerOptional('X', "stores", "Mutate assignments.");
     final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output (shortcut for --printer=" + EmacsFormatListener.class.getName() + ").");
     final Flag jvmargFlag = flags.registerOptional('J', "jvm-arg", String.class, "STRING", "Additional command-line argument passed to the JVM used to run unit tests.");
     jvmargFlag.setMaxCount(Integer.MAX_VALUE);
@@ -66,6 +67,7 @@ public class Jumble {
     jumble.setIncrements(incFlag.isSet());
     jumble.setCPool(cpoolFlag.isSet());
     jumble.setSwitch(switchFlag.isSet());
+    jumble.setStores(storesFlag.isSet());
     jumble.setOrdered(!orderFlag.isSet());
     jumble.setLoadCache(!loadFlag.isSet());
     jumble.setSaveCache(!saveFlag.isSet());

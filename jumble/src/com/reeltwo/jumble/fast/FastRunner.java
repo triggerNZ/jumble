@@ -1,7 +1,5 @@
 package com.reeltwo.jumble.fast;
 
-
-
 import com.reeltwo.jumble.mutation.Mutater;
 import com.reeltwo.jumble.mutation.MutatingClassLoader;
 import com.reeltwo.jumble.ui.JumbleListener;
@@ -41,6 +39,9 @@ public class FastRunner {
 
   /** Whether to mutate return values */
   private boolean mReturnVals = true;
+
+  /** Whether to mutate stores */
+  private boolean mStores = false;
 
   /** Whether to mutate increments */
   private boolean mIncrements = true;
@@ -197,6 +198,15 @@ public class FastRunner {
   }
 
   /**
+   * Gets whether stores will be mutated.
+   * 
+   * @return true if stores will be mutated.
+   */
+  public boolean isStores() {
+    return mStores;
+  }
+
+  /**
    * Sets whether return values will be mutated.
    * 
    * @param argReturnVals
@@ -204,6 +214,15 @@ public class FastRunner {
    */
   public void setReturnVals(final boolean argReturnVals) {
     mReturnVals = argReturnVals;
+  }
+
+  /**
+   * Sets whether stores will be mutated.
+   * 
+   * @param argStores true if stores should be mutated.
+   */
+  public void setStores(final boolean argStores) {
+    mStores = argStores;
   }
 
   /**
@@ -469,6 +488,10 @@ public class FastRunner {
     if (mReturnVals) {
       args.add("--" + FastJumbler.FLAG_RETURN_VALS);
     }
+    // return values
+    if (mStores) {
+      args.add("--" + FastJumbler.FLAG_STORES);
+    }
     // increments
     if (mIncrements) {
       args.add("--" + FastJumbler.FLAG_INCREMENTS);
@@ -502,6 +525,7 @@ public class FastRunner {
     m.setMutateSwitch(mSwitches);
     m.setMutateInlineConstants(mInlineConstants);
     m.setMutateReturnValues(mReturnVals);
+    m.setMutateStores(mStores);
     return m;
   }
 

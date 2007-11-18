@@ -100,6 +100,18 @@ import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
+import org.apache.bcel.generic.PUTFIELD;
+import org.apache.bcel.generic.PUTSTATIC;
+import org.apache.bcel.generic.StoreInstruction;
+import org.apache.bcel.generic.TargetLostException;
+import org.apache.bcel.generic.FieldInstruction;
+import org.apache.bcel.generic.DSTORE;
+import org.apache.bcel.generic.AASTORE;
+import org.apache.bcel.generic.LSTORE;
+import org.apache.bcel.generic.StackConsumer;
+import org.apache.bcel.generic.DASTORE;
+import org.apache.bcel.generic.LASTORE;
+import org.apache.bcel.generic.ArrayInstruction;
 
 /**
  * Given a class file can either count the number of possible
@@ -184,6 +196,9 @@ public class Mutater {
 
   /** Should IINC instructions be changed. */
   private boolean mMutateIncrements = false;
+
+  /** Should store instructions be changed. */
+  private boolean mMutateStores = false;
 
   /** Should NEG instructions be changed */
   private boolean mMutateNegs = false;
@@ -289,6 +304,51 @@ public class Mutater {
     mMutatable[Constants.LCONST_1] = nop;
     mMutatable[Constants.BIPUSH] = nop;
     mMutatable[Constants.SIPUSH] = nop;
+  }
+
+  /**
+   * Set whether or not inline constants should be mutated.
+   * 
+   * @param v true for mutation of inline constants
+   */
+  public void setMutateStores(final boolean v) {
+    mMutateStores = v;
+    final NOP nop = mMutateStores ? new NOP() : null;
+    mMutatable[Constants.PUTFIELD] = nop;
+    mMutatable[Constants.PUTSTATIC] = nop;
+    mMutatable[Constants.ASTORE] = nop;
+    mMutatable[Constants.ASTORE_0] = nop;
+    mMutatable[Constants.ASTORE_1] = nop;
+    mMutatable[Constants.ASTORE_2] = nop;
+    mMutatable[Constants.ASTORE_3] = nop;
+    mMutatable[Constants.DSTORE] = nop;
+    mMutatable[Constants.DSTORE_0] = nop;
+    mMutatable[Constants.DSTORE_1] = nop;
+    mMutatable[Constants.DSTORE_2] = nop;
+    mMutatable[Constants.DSTORE_3] = nop;
+    mMutatable[Constants.FSTORE] = nop;
+    mMutatable[Constants.FSTORE_0] = nop;
+    mMutatable[Constants.FSTORE_1] = nop;
+    mMutatable[Constants.FSTORE_2] = nop;
+    mMutatable[Constants.FSTORE_3] = nop;
+    mMutatable[Constants.ISTORE] = nop;
+    mMutatable[Constants.ISTORE_0] = nop;
+    mMutatable[Constants.ISTORE_1] = nop;
+    mMutatable[Constants.ISTORE_2] = nop;
+    mMutatable[Constants.ISTORE_3] = nop;
+    mMutatable[Constants.LSTORE] = nop;
+    mMutatable[Constants.LSTORE_0] = nop;
+    mMutatable[Constants.LSTORE_1] = nop;
+    mMutatable[Constants.LSTORE_2] = nop;
+    mMutatable[Constants.LSTORE_3] = nop;
+    mMutatable[Constants.AASTORE] = nop;
+    mMutatable[Constants.BASTORE] = nop;
+    mMutatable[Constants.CASTORE] = nop;
+    mMutatable[Constants.DASTORE] = nop;
+    mMutatable[Constants.FASTORE] = nop;
+    mMutatable[Constants.IASTORE] = nop;
+    mMutatable[Constants.LASTORE] = nop;
+    mMutatable[Constants.SASTORE] = nop;
   }
 
   /**
@@ -807,20 +867,50 @@ public class Mutater {
         int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         StringBuffer mod = new StringBuffer(className).append(":").append(lineNumber).append(": ");
         if (i instanceof IfInstruction) {
-          mod.append("negated conditional");
           ihs[j].setInstruction(((IfInstruction) i).negate());
+          mod.append("negated conditional");
         } else if (i instanceof INEG || i instanceof DNEG || i instanceof FNEG || i instanceof LNEG) {
-          // Negation instruction
-          mod.append("removed negation");
           ihs[j].setInstruction(new NOP());
+          mod.append("removed negation");
         } else if (i instanceof ArithmeticInstruction) {
           // binary operand integer instruction
           final Instruction inew = mutateIntegerArithmetic((ArithmeticInstruction) i, cp);
           ihs[j].setInstruction(inew);
           mod.append(describe(i) + " -> " + describe(inew));
         } else if (i instanceof ReturnInstruction) {
-          mod.append(describe(i));
           il.insert(ihs[j], mutateRETURN((ReturnInstruction) i, ifactory));
+          mod.append(describe(i));
+        } else if (i instanceof StoreInstruction) {
+          ihs[j].setInstruction(i instanceof DSTORE || i instanceof LSTORE ? new POP2() : new POP());
+          mod.append("removed local assignment");
+        } else if (i instanceof PUTFIELD || i instanceof PUTSTATIC) {
+          final FieldInstruction fi = (FieldInstruction) i;
+          final int size = fi.getFieldType(cp).getSize();
+          final InstructionList lil = new InstructionList();
+          lil.append(size > 1 ? new POP2() : new POP()); // pop the value
+          lil.append(new POP()); // pop the object reference
+          final InstructionHandle ins = ihs[j];
+          il.insert(ins, lil);
+          try {
+            il.delete(ins);
+          } catch (TargetLostException e) {
+            ; // too bad
+          }
+          mod.append("removed assignment to " + fi.getFieldName(cp));
+        } else if (i instanceof ArrayInstruction && i instanceof StackConsumer) {
+          // i.e. an array store
+          final boolean big = i instanceof DASTORE || i instanceof LASTORE;
+          final InstructionList lil = new InstructionList();
+          lil.append(big ? new POP2() : new POP()); // pop value
+          lil.append(new POP2()); // pop index and array reference
+          final InstructionHandle ins = ihs[j];
+          il.insert(ins, lil);
+          try {
+            il.delete(ins);
+          } catch (TargetLostException e) {
+            ; // too bad
+          }
+          mod.append("removed array assignment");
         } else if (i instanceof Select) {
           final Select select = (Select) i;
           final int index = -1 - count;
