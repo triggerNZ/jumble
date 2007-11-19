@@ -112,6 +112,7 @@ import org.apache.bcel.generic.StackConsumer;
 import org.apache.bcel.generic.DASTORE;
 import org.apache.bcel.generic.LASTORE;
 import org.apache.bcel.generic.ArrayInstruction;
+import org.apache.bcel.generic.InvokeInstruction;
 
 /**
  * Given a class file can either count the number of possible
@@ -349,6 +350,10 @@ public class Mutater {
     mMutatable[Constants.IASTORE] = nop;
     mMutatable[Constants.LASTORE] = nop;
     mMutatable[Constants.SASTORE] = nop;
+    mMutatable[Constants.INVOKEINTERFACE] = nop;
+    mMutatable[Constants.INVOKESPECIAL] = nop;
+    mMutatable[Constants.INVOKESTATIC] = nop;
+    mMutatable[Constants.INVOKEVIRTUAL] = nop;
   }
 
   /**
@@ -408,6 +413,11 @@ public class Mutater {
       }
     }
     if (i instanceof IFNE && offset >= 1 && checkAssertInstruction(cpg, ihs[offset - 1].getInstruction())) {
+      return 0;
+    }
+
+    // we can only mutate invokes that return void
+    if (i instanceof InvokeInstruction && ((InvokeInstruction) i).getReturnType(cpg) != Type.VOID) {
       return 0;
     }
 
@@ -716,8 +726,7 @@ public class Mutater {
   /**
    * Produce a human description of an instruction.
    * 
-   * @param i
-   *          the instruction
+   * @param i the instruction
    * @return description
    */
   private String describe(final Instruction i) {
@@ -883,6 +892,21 @@ public class Mutater {
         } else if (i instanceof StoreInstruction) {
           ihs[j].setInstruction(i instanceof DSTORE || i instanceof LSTORE ? new POP2() : new POP());
           mod.append("removed local assignment");
+        } else if (i instanceof InvokeInstruction) {
+          final Type[] argTypes = ((InvokeInstruction) i).getArgumentTypes(cp);
+          final InstructionList lil = new InstructionList();
+          // Pop all the arguments (I'm assuming they are in reverse order
+          for (int k = argTypes.length - 1; k >= 0; k--) {
+            lil.append(argTypes[k].getSize() > 1 ? new POP2() : new POP());
+          }
+          final InstructionHandle ins = ihs[j];
+          il.insert(ins, lil);
+          try {
+            il.delete(ins);
+          } catch (TargetLostException e) {
+            ; // too bad
+          }
+          mod.append("removed method call to " + ((InvokeInstruction) i).getMethodName(cp));
         } else if (i instanceof PUTFIELD || i instanceof PUTSTATIC) {
           final FieldInstruction fi = (FieldInstruction) i;
           final int size = fi.getFieldType(cp).getSize();
