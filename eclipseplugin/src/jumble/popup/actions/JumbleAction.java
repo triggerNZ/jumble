@@ -113,7 +113,7 @@ public class JumbleAction implements IObjectActionDelegate, IEditorActionDelegat
 
       // Set up class paths
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
-      List classpath = new ArrayList();
+      List<String> classpath = new ArrayList<String>();
       IPath jumbleJarPath = new Path(pluginLocation + "/jumble.jar");
       IRuntimeClasspathEntry jumbleJarEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(jumbleJarPath);
       classpath.add(jumbleJarEntry.getMemento());
@@ -229,10 +229,10 @@ public class JumbleAction implements IObjectActionDelegate, IEditorActionDelegat
         cu = JavaCore.createCompilationUnitFrom(mFile);
       }
       return cu;
-    } else {
-      IFileEditorInput f = (IFileEditorInput) mTargetEditor.getEditorInput();
-      System.err.println(f.getFile());
-      return JavaCore.createCompilationUnitFrom(f.getFile());
     }
+
+    IFileEditorInput f = (IFileEditorInput) mTargetEditor.getEditorInput();
+    System.err.println(f.getFile());
+    return JavaCore.createCompilationUnitFrom(f.getFile());
   }
 }
