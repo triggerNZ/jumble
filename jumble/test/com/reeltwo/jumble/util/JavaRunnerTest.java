@@ -1,26 +1,26 @@
 package com.reeltwo.jumble.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-
 
 /**
  * Tests the corresponding class
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class JavaRunnerTest extends TestCase {
   Process mProcess = null;
 
-  public void tearDown() {
+  @Override
+public void tearDown() {
     if (mProcess != null) {
       mProcess.destroy();
       mProcess = null;
@@ -51,7 +51,7 @@ public class JavaRunnerTest extends TestCase {
     assertEquals("three", out.readLine());
     assertEquals(null, out.readLine());
   }
-  
+
   public void testConstructor() {
     JavaRunner jr = new JavaRunner("com.reeltwo.jumble.util.DisplayEnvironment");
     String[] args = jr.getArguments();
@@ -94,7 +94,7 @@ public class JavaRunnerTest extends TestCase {
     assertEquals("Assertions off", reader.readLine());
     reader.close();
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite(JavaRunnerTest.class);
     return suite;

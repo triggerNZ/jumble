@@ -9,18 +9,20 @@ import experiments.JumblerExperimentTest;
 
 /**
  * Tests the corresponding class
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class FlatTestSuiteTest extends TestCase {
   private FlatTestSuite mTest;
 
-  public final void setUp() {
+  @Override
+public final void setUp() {
     mTest = new FlatTestSuite();
   }
 
-  public void tearDown() {
+  @Override
+public void tearDown() {
     mTest = null;
   }
 

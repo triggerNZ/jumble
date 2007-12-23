@@ -3,7 +3,7 @@ package com.reeltwo.jumble.fast;
 
 /**
  * A class representing an interface result.
- * 
+ *
  * @author Sean A. Irvine
  * @version $Revision$
  */
@@ -20,12 +20,14 @@ public class InterfaceResult extends AbstractJumbleResult {
 
 
   /** {@inheritDoc} */
-  public boolean isInterface() {
+  @Override
+public boolean isInterface() {
     return true;
   }
 
   /** {@inheritDoc} */
-  public boolean initialTestsPassed() {
+  @Override
+public boolean initialTestsPassed() {
     return false;
   }
 

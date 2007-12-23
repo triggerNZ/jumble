@@ -4,23 +4,24 @@ package com.reeltwo.jumble.fast;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import com.reeltwo.jumble.mutation.Mutater;
-import com.reeltwo.jumble.mutation.MutatingClassLoader;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import com.reeltwo.jumble.mutation.Mutater;
+import com.reeltwo.jumble.mutation.MutatingClassLoader;
+
 /**
  * Tests the corresponding class.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class FailedTestMapTest extends TestCase {
   private FailedTestMap mMap;
 
-  public void setUp() throws Exception {
+  @Override
+public void setUp() throws Exception {
     mMap = new FailedTestMap();
 
     mMap.addFailure("DummyClass", "dummyMethod", 0, "dummyTest1");
@@ -34,15 +35,16 @@ public class FailedTestMapTest extends TestCase {
     mMap.addFailure("DummyClass2", "dummyMethod", 0, "dummyTest1");
   }
 
-  public void tearDown() {
+  @Override
+public void tearDown() {
     mMap = null;
   }
 
   public void testChangeClassLoader() throws Exception {
     ClassLoader cl = new MutatingClassLoader("DummyClass", new Mutater(0), System.getProperty("java.class.path"));
-    
+
     Object other = mMap.clone(cl);
-    
+
     assertEquals(other.getClass().getName(), mMap.getClass().getName());
     assertNotSame(other.getClass(), mMap.getClass());
     Method m = other.getClass().getMethod("getLastFailure", new Class[] {String.class, String.class, int.class});
@@ -71,17 +73,17 @@ public class FailedTestMapTest extends TestCase {
   public void testGetLastFailure() {
     assertEquals("dummyTest1", mMap.getLastFailure("DummyClass", "dummyMethod",
         0));
-    
+
     assertEquals("dummyTest2", mMap.getLastFailure("DummyClass", "dummyMethod",
         2));
-    
+
     assertEquals(null, mMap.getLastFailure("DummyClass", "dummyMethod",
         3));
-    
+
     assertEquals(null, mMap.getLastFailure("DummyClass", "fakeMethod",
         0));
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite(FailedTestMapTest.class);
     return suite;

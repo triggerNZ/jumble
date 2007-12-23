@@ -26,37 +26,44 @@ public class NormalJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getAllMutations() {
+  @Override
+public MutationResult[] getAllMutations() {
     return mAllMutations;
   }
 
   /** {@inheritDoc} */
-  public int getNumberOfMutations() {
+  @Override
+public int getNumberOfMutations() {
     return mAllMutations.length;
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getCovered() {
+  @Override
+public MutationResult[] getCovered() {
     return filter(MutationResult.PASS);
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getTimeouts() {
+  @Override
+public MutationResult[] getTimeouts() {
     return filter(MutationResult.TIMEOUT);
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getMissed() {
+  @Override
+public MutationResult[] getMissed() {
     return filter(MutationResult.FAIL);
   }
 
   /** {@inheritDoc} */
-  public long getTimeoutLength() {
+  @Override
+public long getTimeoutLength() {
     return mTimeoutLength;
   }
 
   /** {@inheritDoc} */
-  public String[] getTestClasses() {
+  @Override
+public String[] getTestClasses() {
     return (String[]) mTestClassNames
         .toArray(new String[mTestClassNames.size()]);
   }

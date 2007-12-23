@@ -22,17 +22,20 @@ public class BrokenTestsTestResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public String[] getTestClasses() {
+  @Override
+public String[] getTestClasses() {
     return (String[]) mTestClassNames.toArray(new String[mTestClassNames.size()]);
   }
 
   /** {@inheritDoc} */
-  public int getNumberOfMutations() {
+  @Override
+public int getNumberOfMutations() {
     return mMutationCount;
   }
 
   /** {@inheritDoc} */
-  public boolean initialTestsPassed() {
+  @Override
+public boolean initialTestsPassed() {
     return false;
   }
 

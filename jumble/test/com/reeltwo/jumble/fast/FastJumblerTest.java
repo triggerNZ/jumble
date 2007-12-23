@@ -1,6 +1,5 @@
 package com.reeltwo.jumble.fast;
 
-import experiments.JumblerExperimentTest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,23 +9,26 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import com.reeltwo.jumble.util.JavaRunner;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
+import com.reeltwo.jumble.util.JavaRunner;
+
+import experiments.JumblerExperimentTest;
+
 /**
  * Tests the corresponding class.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class FastJumblerTest extends TestCase {
   private String mFileName;
 
-  public final void setUp() throws Exception {
+  @Override
+public final void setUp() throws Exception {
     // Unique filename
     mFileName = "tmpTest" + System.currentTimeMillis() + ".dat";
 
@@ -37,7 +39,8 @@ public class FastJumblerTest extends TestCase {
     out.close();
   }
 
-  public final void tearDown() {
+  @Override
+public final void tearDown() {
     // System.err.println(mFileName);
     assertTrue(new File(mFileName).delete());
   }

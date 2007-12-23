@@ -1,6 +1,7 @@
 package com.reeltwo.jumble.fast;
 
 import java.util.Enumeration;
+
 import junit.framework.TestFailure;
 import junit.framework.TestResult;
 
@@ -16,7 +17,8 @@ import junit.framework.TestResult;
 public class JUnitTestResult extends TestResult {
   private static final String LS = System.getProperty("line.separator");
 
-  public String toString() {
+  @Override
+public String toString() {
     StringBuffer sb = new StringBuffer();
     for (Enumeration e = errors(); e.hasMoreElements(); ) {
       TestFailure f = (TestFailure) e.nextElement();

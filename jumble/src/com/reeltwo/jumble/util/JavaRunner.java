@@ -5,7 +5,7 @@ import java.util.Properties;
 
 /**
  * Class to run a java process with the same settings as this JRE.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -21,7 +21,7 @@ public class JavaRunner {
 
   /**
    * Constructor.
-   * 
+   *
    * @param className
    *          The name of the class to run
    */
@@ -31,7 +31,7 @@ public class JavaRunner {
 
   /**
    * Constructor
-   * 
+   *
    * @param className
    *          of the class to run
    * @param arguments
@@ -56,7 +56,7 @@ public class JavaRunner {
 
   /**
    * Gets the name of the class to run
-   * 
+   *
    * @return the class name
    */
   public String getClassName() {
@@ -65,7 +65,7 @@ public class JavaRunner {
 
   /**
    * Sets the class to run
-   * 
+   *
    * @param newName
    *          name of the new class to run. Must contain a main method.
    */
@@ -75,7 +75,7 @@ public class JavaRunner {
 
   /**
    * Gets the arguments to pass to the JVM.
-   * 
+   *
    * @return the arguments
    */
   public String[] getJvmArguments() {
@@ -86,7 +86,7 @@ public class JavaRunner {
    * Sets the arguments to pass to the JVM. The default JVM arguments includes
    * the classpath for the JVM to use, so if you supply new JVM arguments, you
    * should probably include classpath settings.
-   * 
+   *
    * @param args
    *          the new arguments.
    */
@@ -96,7 +96,7 @@ public class JavaRunner {
 
   /**
    * Gets the arguments to pass to the main method
-   * 
+   *
    * @return the arguments
    */
   public String[] getArguments() {
@@ -105,7 +105,7 @@ public class JavaRunner {
 
   /**
    * Sets the arguments to pass to the main method
-   * 
+   *
    * @param args
    *          the new arguments.
    */
@@ -115,7 +115,7 @@ public class JavaRunner {
 
   /**
    * Starts the java process.
-   * 
+   *
    * @return the running java process
    * @throws IOException
    *           if something goes wrong.
@@ -130,7 +130,7 @@ public class JavaRunner {
    * Creates the actual arguments used to start the process. This incorporates
    * the user-supplied arguments plus the explicit location of the JVM, and the
    * classpath to supply.
-   * 
+   *
    * @return a <code>String[]</code> value
    */
   private String[] getExecArgs() {
@@ -163,7 +163,8 @@ public class JavaRunner {
     return sb.toString();
   }
 
-  public String toString() {
+  @Override
+public String toString() {
     return toString(getExecArgs());
   }
 }

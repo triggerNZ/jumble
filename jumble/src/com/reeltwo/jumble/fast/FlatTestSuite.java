@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 /**
  * A test suite containing other tests, not test suites. If test suites are
  * added, they are flattened. This is useful for ordering tests in Jumble.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -25,7 +25,7 @@ public class FlatTestSuite extends TestSuite {
   /**
    * Constructs a new FlatTestSuite. Checks for a <code>suite()</code> method.
    * If it exists, it uses that, otherwise uses JUnit's reflection method.
-   * 
+   *
    * @param theClass
    *          the class to construct the test suite from.
    */
@@ -64,7 +64,7 @@ public class FlatTestSuite extends TestSuite {
 
   /**
    * Constructs a new FlatTestSuite. Just calls the parent constructor.
-   * 
+   *
    * @param theClass
    *          the class to construct the test suite from.
    * @param name
@@ -76,7 +76,7 @@ public class FlatTestSuite extends TestSuite {
 
   /**
    * Constructs a new FlatTestSuite. Just calls the parent constructor.
-   * 
+   *
    * @param name
    *          the neame of the test suite
    */
@@ -89,7 +89,8 @@ public class FlatTestSuite extends TestSuite {
    * becomes meaningless, so we want to break up the hierarchy and only get the
    * leaf tests.
    */
-  public void addTest(final Test t) {
+  @Override
+public void addTest(final Test t) {
     if (t instanceof TestSuite) {
       TestSuite suite = (TestSuite) t;
 
@@ -105,7 +106,8 @@ public class FlatTestSuite extends TestSuite {
    * Adds the test suite specified by a class using the <code>suite()</code>
    * method first.
    */
-  public void addTestSuite(Class testClass) {
+  @Override
+public void addTestSuite(Class testClass) {
     addTest(new FlatTestSuite(testClass));
   }
 }

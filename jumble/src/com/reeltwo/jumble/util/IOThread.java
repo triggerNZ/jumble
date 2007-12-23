@@ -1,10 +1,10 @@
 package com.reeltwo.jumble.util;
 
-import java.util.LinkedList;
-import java.io.InputStream;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 
 /**
  * Class which constantly polls an InputStream and allows the user
@@ -32,10 +32,11 @@ public class IOThread extends Thread {
   }
 
   /** Loops while the stream exists.*/
-  public void run() {
+  @Override
+public void run() {
     String curLine;
     try {
-      while ((curLine = mOut.readLine()) != null) {  
+      while ((curLine = mOut.readLine()) != null) {
         synchronized (this) {
           mBuffer.addLast(curLine);
         }
@@ -80,6 +81,6 @@ public class IOThread extends Thread {
       }
       return sb.toString();
     }
-    
+
   }
 }

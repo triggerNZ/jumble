@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.ClassPath;
 import org.apache.bcel.util.Repository;
@@ -17,7 +18,7 @@ import org.apache.bcel.util.SyntheticRepository;
  * A <code>ClassLoader</code> which embeds a <code>Mutater</code> so
  * that applications can be run with a single class undergoing
  * mutation.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -34,8 +35,8 @@ public class MutatingClassLoader extends ClassLoader {
     //"javax.",
     "sun.reflect",
     "junit.",
-    //"org.apache", 
-    //"org.xml", 
+    //"org.apache",
+    //"org.xml",
     //"org.w3c"
     "org.junit"
   };
@@ -72,7 +73,7 @@ public class MutatingClassLoader extends ClassLoader {
 
   /**
    * Gets a string description of the modification produced.
-   * 
+   *
    * @return the modification
    */
   public String getModification() {
@@ -84,7 +85,8 @@ public class MutatingClassLoader extends ClassLoader {
     return mMutater.countMutationPoints(className);
   }
 
-  protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
+  @Override
+protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
     Class cl = null;
 
     if ((cl = mClasses.get(className)) == null) {
@@ -119,7 +121,7 @@ public class MutatingClassLoader extends ClassLoader {
           cl = mDeferTo.loadClass(className);
         }
       }
-      
+
       if (resolve) {
         resolveClass(cl);
       }
@@ -134,9 +136,9 @@ public class MutatingClassLoader extends ClassLoader {
    * If the class matches the target then it is mutated, otherwise the class if
    * returned unmodified. Overrides the corresponding method in the superclass.
    * Classes are cached so that we always load a fresh version.
-   * 
+   *
    * This method is public so we can test it
-   * 
+   *
    * @param clazz modification target
    * @return possibly modified class
    */
@@ -150,7 +152,8 @@ public class MutatingClassLoader extends ClassLoader {
     return clazz;
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
+@SuppressWarnings("unchecked")
   public Enumeration<URL> getResources(String name) throws IOException {
     Enumeration<URL> resources = mClassPath.getResources(name);
     if (!resources.hasMoreElements()) {
@@ -162,7 +165,8 @@ public class MutatingClassLoader extends ClassLoader {
     return resources;
   }
 
-  public URL getResource(String name) {
+  @Override
+public URL getResource(String name) {
     URL resource = mClassPath.getResource(name);
     if (resource == null) {
       resource = mDeferTo.getResource(name);
@@ -173,7 +177,8 @@ public class MutatingClassLoader extends ClassLoader {
     return resource;
   }
 
-  public InputStream getResourceAsStream(String name) {
+  @Override
+public InputStream getResourceAsStream(String name) {
     InputStream resource = mClassPath.getResourceAsStream(name);
     if (resource == null) {
       resource = mDeferTo.getResourceAsStream(name);

@@ -1,12 +1,5 @@
 package com.reeltwo.jumble.fast;
 
-import com.reeltwo.jumble.mutation.Mutater;
-import com.reeltwo.jumble.mutation.MutatingClassLoader;
-import com.reeltwo.jumble.ui.JumbleListener;
-import com.reeltwo.jumble.ui.NullListener;
-import com.reeltwo.jumble.util.IOThread;
-import com.reeltwo.jumble.util.JavaRunner;
-import com.reeltwo.jumble.util.JumbleUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,10 +13,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.reeltwo.jumble.mutation.Mutater;
+import com.reeltwo.jumble.mutation.MutatingClassLoader;
+import com.reeltwo.jumble.ui.JumbleListener;
+import com.reeltwo.jumble.ui.NullListener;
+import com.reeltwo.jumble.util.IOThread;
+import com.reeltwo.jumble.util.JavaRunner;
+import com.reeltwo.jumble.util.JumbleUtils;
+
 /**
  * A runner for the <CODE>FastJumbler</CODE>. Runs the FastJumbler in a new
  * JVM and detects timeouts.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -67,9 +68,9 @@ public class FastRunner {
   /** Maximum number of mutations per JVM */
   private int mMaxExternalMutations = -1;
 
-  /** 
+  /**
    * Index of the first mutation to attempt. Mainly useful for
-   * testing when there is a problematic mutation. 
+   * testing when there is a problematic mutation.
    */
   private int mFirstMutation = 0;
 
@@ -105,6 +106,7 @@ public class FastRunner {
     // Add a shutdown hook so that if this JVM is interrupted, any
     // child process will be destroyed.
     Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
         public void run() {
           Process childProcess = mChildProcess;
           if (childProcess != null) {
@@ -152,7 +154,7 @@ public class FastRunner {
 
   /**
    * Gets whether verbose mode is set.
-   * 
+   *
    * @return true if verbose mode is enabled.
    */
   public boolean isVerbose() {
@@ -161,7 +163,7 @@ public class FastRunner {
 
   /**
    * Sets whether verbose mode is enabled.
-   * 
+   *
    * @param newVerbose
    *          true if verbose mode should be enabled.
    */
@@ -171,7 +173,7 @@ public class FastRunner {
 
   /**
    * Gets whether inline constants will be mutated.
-   * 
+   *
    * @return true if inline constants will be mutated.
    */
   public boolean isInlineConstants() {
@@ -180,7 +182,7 @@ public class FastRunner {
 
   /**
    * Sets whether inline constants will be mutated.
-   * 
+   *
    * @param argInlineConstants
    *          true if inline constants should be mutated.
    */
@@ -190,7 +192,7 @@ public class FastRunner {
 
   /**
    * Gets whether return values will be mutated.
-   * 
+   *
    * @return true if return values will be mutated.
    */
   public boolean isReturnVals() {
@@ -199,7 +201,7 @@ public class FastRunner {
 
   /**
    * Gets whether stores will be mutated.
-   * 
+   *
    * @return true if stores will be mutated.
    */
   public boolean isStores() {
@@ -208,7 +210,7 @@ public class FastRunner {
 
   /**
    * Sets whether return values will be mutated.
-   * 
+   *
    * @param argReturnVals
    *          true return values should be mutated.
    */
@@ -218,7 +220,7 @@ public class FastRunner {
 
   /**
    * Sets whether stores will be mutated.
-   * 
+   *
    * @param argStores true if stores should be mutated.
    */
   public void setStores(final boolean argStores) {
@@ -227,7 +229,7 @@ public class FastRunner {
 
   /**
    * Gets whether increments will be mutated.
-   * 
+   *
    * @return true if increments will be mutated.
    */
   public boolean isIncrements() {
@@ -236,7 +238,7 @@ public class FastRunner {
 
   /**
    * Sets whether increments will be mutated.
-   * 
+   *
    * @param argIncrements
    *          true if increments will be mutated.
    */
@@ -246,7 +248,7 @@ public class FastRunner {
 
   /**
    * Gets whether constant pool will be mutated.
-   * 
+   *
    * @return true if constant pool will be mutated.
    */
   public boolean isCPool() {
@@ -255,7 +257,7 @@ public class FastRunner {
 
   /**
    * Sets whether constant pool will be mutated.
-   * 
+   *
    * @param cpool true if constants will be mutated.
    */
   public void setCPool(final boolean cpool) {
@@ -264,7 +266,7 @@ public class FastRunner {
 
   /**
    * Sets whether switches will be mutated.
-   * 
+   *
    * @param switches true if switches will be mutated.
    */
   public void setSwitch(final boolean switches) {
@@ -273,7 +275,7 @@ public class FastRunner {
 
   /**
    * Gets whether switches will be mutated.
-   * 
+   *
    * @return true if switches will be mutated.
    */
   public boolean isSwitch() {
@@ -282,7 +284,7 @@ public class FastRunner {
 
   /**
    * Gets whether tests are ordered by their run time.
-   * 
+   *
    * @return true if tests are ordered by their run time.
    */
   public boolean isOrdered() {
@@ -291,7 +293,7 @@ public class FastRunner {
 
   /**
    * Sets whether tests are ordered by their run time.
-   * 
+   *
    * @param argOrdered true if tests should be ordered by their run time.
    */
   public void setOrdered(final boolean argOrdered) {
@@ -300,7 +302,7 @@ public class FastRunner {
 
   /**
    * Gets the value of loadCache
-   * 
+   *
    * @return the value of loadCache
    */
   public boolean isLoadCache() {
@@ -309,7 +311,7 @@ public class FastRunner {
 
   /**
    * Sets the value of loadCache
-   * 
+   *
    * @param argLoadCache
    *          Value to assign to loadCache
    */
@@ -319,7 +321,7 @@ public class FastRunner {
 
   /**
    * Gets the value of saveCache
-   * 
+   *
    * @return the value of saveCache
    */
   public boolean isSaveCache() {
@@ -328,7 +330,7 @@ public class FastRunner {
 
   /**
    * Sets the value of saveCache
-   * 
+   *
    * @param argSaveCache
    *          Value to assign to saveCache
    */
@@ -338,7 +340,7 @@ public class FastRunner {
 
   /**
    * Gets the value of useCache
-   * 
+   *
    * @return the value of useCache
    */
   public boolean isUseCache() {
@@ -347,7 +349,7 @@ public class FastRunner {
 
   /**
    * Sets the value of useCache
-   * 
+   *
    * @param argUseCache
    *          Value to assign to useCache
    */
@@ -357,7 +359,7 @@ public class FastRunner {
 
   /**
    * Gets the set of excluded method names
-   * 
+   *
    * @return the set of excluded method names
    */
   public Set<String> getExcludeMethods() {
@@ -367,7 +369,7 @@ public class FastRunner {
   /**
    * A function which computes the timeout for given that the original test took
    * <CODE>runtime</CODE>
-   * 
+   *
    * @param runtime
    *          the original runtime
    * @return the computed timeout
@@ -631,7 +633,7 @@ public class FastRunner {
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
     try {
-      
+
       mMutationCount = countMutationPoints(jumbler, mClassName);
       if (mMutationCount == -1) {
         return new InterfaceResult(mClassName);
@@ -689,7 +691,7 @@ public class FastRunner {
         }
         return new BrokenTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
-      
+
 
     } catch (RuntimeException e) {
       throw e;
@@ -706,7 +708,7 @@ public class FastRunner {
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
-   * 
+   *
    * @param className
    *          the name of the class to Jumble
    * @param testClassNames
@@ -725,7 +727,7 @@ public class FastRunner {
   /**
    * Goes through class names to find out if they can be resolved. Also checks
    * that all declared test classes are actually test cases.
-   * 
+   *
    * @param out
    *          listener where the error is reported.
    * @param className
@@ -765,7 +767,7 @@ public class FastRunner {
 
   /**
    * Performs a Jumble run on the specified class with the specified tests.
-   * 
+   *
    * @param className
    *          the name of the class to Jumble
    * @param testClassNames
@@ -866,7 +868,7 @@ public class FastRunner {
 
   /**
    * Gets the maximum number of mutations performed by the external JVM.
-   * 
+   *
    * @return the maximum number of external mutations. A negative value implies
    *         no maximum.
    */
@@ -876,7 +878,7 @@ public class FastRunner {
 
   /**
    * Sets the maximum number of mutations performed by the external JVM.
-   * 
+   *
    * @param maxExternalMutations
    *          the maximum number of external mutations. A negative value implies
    *          no maximum.

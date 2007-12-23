@@ -12,20 +12,20 @@ import junit.framework.TestSuite;
 
 import org.apache.bcel.util.ClassLoader;
 
-
 import experiments.JumblerExperimentSecondTest;
 import experiments.JumblerExperimentTest;
 
 /**
  * Tests the corresponding class.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class TestOrderTest extends TestCase {
   private TestOrder mOrder;
 
-  public void setUp() {
+  @Override
+public void setUp() {
     Class[] classes = new Class[] {JumblerExperimentTest.class,
         JumblerExperimentSecondTest.class };
 
@@ -34,7 +34,8 @@ public class TestOrderTest extends TestCase {
 
   }
 
-  public void tearDown() {
+  @Override
+public void tearDown() {
     mOrder = null;
   }
 

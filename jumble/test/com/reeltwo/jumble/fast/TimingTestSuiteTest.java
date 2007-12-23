@@ -3,7 +3,6 @@ package com.reeltwo.jumble.fast;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -11,7 +10,7 @@ import junit.framework.TestSuite;
 
 /**
  * Tests the corresponding class
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -30,12 +29,12 @@ public class TimingTestSuiteTest extends TestCase {
       System.out.println("Medium");
       Thread.sleep(MED_DELAY);
     }
-    
+
     public final void testLong() throws Exception {
       System.out.println("Long");
       Thread.sleep(LONG_DELAY);
     }
-    
+
     public final void testShort() {
       System.out.println("Short");
     }
@@ -45,7 +44,8 @@ public class TimingTestSuiteTest extends TestCase {
 
   private TestResult mResult;
 
-  protected void setUp() throws Exception {
+  @Override
+protected void setUp() throws Exception {
     mSuite = new TimingTestSuite(getClass().getClassLoader(), new String[] {TimedTests.class.getName()});
     mResult = new TestResult();
     PrintStream oldOut = System.out;
@@ -57,7 +57,8 @@ public class TimingTestSuiteTest extends TestCase {
     }
   }
 
-  protected void tearDown() {
+  @Override
+protected void tearDown() {
     mSuite = null;
     mResult = null;
   }

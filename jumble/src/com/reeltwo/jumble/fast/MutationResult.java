@@ -3,7 +3,7 @@ package com.reeltwo.jumble.fast;
 /**
  * Class representing the result of a single mutation test. Possibly should be
  * moved to package com.reeltwo.jumble.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
  */
@@ -75,7 +75,8 @@ public class MutationResult {
     return mStatus;
   }
 
-  public String toString() {
+  @Override
+public String toString() {
     return getDescription();
   }
 

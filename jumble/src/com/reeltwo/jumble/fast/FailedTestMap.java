@@ -2,6 +2,7 @@ package com.reeltwo.jumble.fast;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,17 +10,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.reeltwo.jumble.util.ClassLoaderCloneable;
 
 /**
  * A map from mutation points to failed tests. Used to cache previous test
  * failures for Jumble.
- * 
+ *
  * @author Tin Pavlinic
  * @version $Revision$
- * 
+ *
  */
 public class FailedTestMap implements Serializable, ClassLoaderCloneable {
   /**
@@ -37,7 +36,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
 
   /**
    * Adds a test name to the cache.
-   * 
+   *
    * @param mutatedClass
    *          the name of the mutated class.
    * @param mutatedMethod
@@ -48,7 +47,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
   public void addFailure(String mutatedClass, String mutatedMethod,
       int methodRelativeMutationPoint, String testName) {
     Map mutationToTest;
-    
+
     //System.out.println(mutatedMethod);
 
     if (mCache.containsKey(mutatedClass + "." + mutatedMethod)) {
@@ -104,7 +103,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
 
   /**
    * Returns the name of the test associated with the last failure.
-   * 
+   *
    * @param className
    *          mutated class name.
    * @param methodName
@@ -128,7 +127,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
   /**
    * Gets a set of all the tests associated with failing on mutating the
    * specified method.
-   * 
+   *
    * @param className
    *          mutated class name.
    * @param methodName
@@ -146,7 +145,8 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
     }
   }
 
-  public String toString() {
+  @Override
+public String toString() {
     return mCache.toString();
   }
 }

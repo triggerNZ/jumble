@@ -22,12 +22,14 @@ public class InitialOKJumbleResult extends AbstractJumbleResult {
   }
 
   /** {@inheritDoc} */
-  public long getTimeoutLength() {
+  @Override
+public long getTimeoutLength() {
     return mTimeoutLength;
   }
 
   /** {@inheritDoc} */
-  public String[] getTestClasses() {
+  @Override
+public String[] getTestClasses() {
     return (String[]) mTestClassNames
         .toArray(new String[mTestClassNames.size()]);
   }
