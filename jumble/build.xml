@@ -83,7 +83,7 @@
 	     internal source tree. Can only be run by someone at Reel
 	     Two.
 	  -->
-	<property name="ext.src.dir" value="${user.home}/java/src" />
+	<property name="ext.src.dir" value="${user.home}/java/main/src" />
 	<target name="makeExtLibJar" depends="clean,init" description="Generates a JAR file of the reeltwo dependencies used by jumble">
 		<copy todir="${build.dir}" includeEmptyDirs="no">
 			<fileset dir="${ext.src.dir}">
