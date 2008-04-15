@@ -35,6 +35,7 @@ public class MutatingClassLoader extends ClassLoader {
     //"javax.",
     "sun.reflect",
     "junit.",
+    "com.sun",
     //"org.apache",
     //"org.xml",
     //"org.w3c"
