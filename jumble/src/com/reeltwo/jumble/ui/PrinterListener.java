@@ -87,6 +87,7 @@ public class PrinterListener implements JumbleListener {
 
     if (result.isInterface()) {
       mStream.println("Score: 100% (INTERFACE)");
+      mStream.println("Mutation points = 0");
       return;
     }
 

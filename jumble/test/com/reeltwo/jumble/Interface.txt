@@ -1,2 +1,3 @@
 Mutating experiments.Interface
 Score: 100% (INTERFACE)
+Mutation points = 0
