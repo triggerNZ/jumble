@@ -80,7 +80,7 @@ public class EmacsFormatListener implements JumbleListener {
     }
   }
 
-  public void jumbleRunStarted(String className, List testClasses) {
+  public void jumbleRunStarted(String className, List<String> testClasses) {
     mClassName = className;
   }
 
@@ -96,29 +96,12 @@ public class EmacsFormatListener implements JumbleListener {
     } else {
       mStream.println(" (" + mMutationCount + " mutation points)");
       if (result.isMissingTestClass()) {
-        mStream.println(sourceName + ":0: No test class" + toString(result.getTestClasses()));
+        mStream.println(sourceName + ":0: No test class" + result.getTestClasses());
         mStream.println("Score: 0");
       } else if (!mInitialTestsPassed) {
-        mStream.println(sourceName + ":0: Test class is broken" + toString(result.getTestClasses()));
+        mStream.println(sourceName + ":0: Test class is broken" + result.getTestClasses());
         mStream.println("Score: 0");
       }
-    }
-  }
-  
-  private String toString(String[] names) {
-    if (names == null || names.length == 0) {
-      return "";
-    }
-    if (names.length == 1) {
-      return " " + names[0];
-    } else {
-      StringBuffer sb = new StringBuffer(" ");
-      sb.append('[');
-      for (String name : names) {
-        sb.append(name).append(' ');
-      }
-      sb.append(']');
-      return sb.toString();
     }
   }
 

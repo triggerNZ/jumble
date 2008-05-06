@@ -15,11 +15,6 @@ import java.util.Random;
  * @version $Revision$
  */
 public class MutaterTest extends TestCase {
-
-  public MutaterTest(String name) {
-    super(name);
-  }
-
   public static Test suite() {
     TestSuite suite = new TestSuite(MutaterTest.class);
     return suite;
@@ -29,62 +24,53 @@ public class MutaterTest extends TestCase {
     junit.textui.TestRunner.run(suite());
   }
 
-  public void testCountMutationPointsX0() throws ClassNotFoundException {
+  public void testCountMutationPointsX0() {
     assertEquals(0, new Mutater().countMutationPoints("jumble.X0"));
   }
 
-  public void testCountMutationPointsX0I() throws ClassNotFoundException {
+  public void testCountMutationPointsX0I() {
     assertEquals(-1, new Mutater().countMutationPoints("jumble.X0I"));
   }
 
-  public void testCountMutationPointsX1() throws ClassNotFoundException {
+  public void testCountMutationPointsX1(){
     assertEquals(1, new Mutater().countMutationPoints("jumble.X1"));
   }
 
-  public void testCountMutationPointsX2() throws ClassNotFoundException {
+  public void testCountMutationPointsX2() {
     assertEquals(9, new Mutater().countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2r() throws ClassNotFoundException {
+  public void testCountMutationPointsX2r() {
     Mutater m = new Mutater();
     m.setMutateReturnValues(true);
     assertEquals(10, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2i() throws ClassNotFoundException {
+  public void testCountMutationPointsX2i() {
     Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     assertEquals(11, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsX2ir() throws ClassNotFoundException {
+  public void testCountMutationPointsX2ir() {
     Mutater m = new Mutater();
     m.setMutateInlineConstants(true);
     m.setMutateReturnValues(true);
     assertEquals(12, m.countMutationPoints("jumble.X2"));
   }
 
-  public void testCountMutationPointsLines() throws ClassNotFoundException {
+  public void testCountMutationPointsLines() {
     Mutater m = new Mutater();
     assertEquals(3, m.countMutationPoints("DebugLines"));
   }
   
-  public void testCountMutationPointsNone() throws ClassNotFoundException {
+  public void testCountMutationPointsNone() {
     Mutater m = new Mutater();
     assertEquals(3, m.countMutationPoints("DebugNone"));
   }
   
-//  private void testDescriptions(int x, String s) throws ClassNotFoundException {
-//    Mutater m = new Mutater(x);
-//    assertEquals(null, m.getModification());
-//    m.setMutateInlineConstants(true);
-//    m.setMutateReturnValues(true);
-//    m.jumbler("com.reeltwo.jumble.X2");
-//    assertEquals(m.getModification(), s, m.getModification());
-//  }
 
   private void testDescriptions(int x, String s, String className, boolean constants, boolean returns, boolean negs) throws ClassNotFoundException {
-
     Mutater m = new Mutater(x);
     assertEquals(null, m.getModification());
     m.setMutateInlineConstants(constants);
@@ -99,7 +85,7 @@ public class MutaterTest extends TestCase {
     testDescriptions(x, s, className, true, true, false);
   }
 
-  public void testCountNegs() throws ClassNotFoundException {
+  public void testCountNegs() {
     Mutater m = new Mutater();
     m.setMutateNegs(true);
     assertEquals(1, m.countMutationPoints("experiments.instruction.INeg"));
@@ -219,7 +205,7 @@ public class MutaterTest extends TestCase {
     }
   }
   
-  public void testGetMethodRelativeMutationPoint() throws ClassNotFoundException {
+  public void testGetMethodRelativeMutationPoint() {
     Mutater m = new Mutater();
     assertEquals(0, m.getMethodRelativeMutationPoint("experiments.JumblerExperiment"));
 
@@ -237,7 +223,7 @@ public class MutaterTest extends TestCase {
       ; // ok
     }
   }
-
+  
   /** Randomly generated arrays used to compute irvineHash codes */
   private static final long[] HASH_BLOCKS;
   static {
@@ -272,4 +258,5 @@ public class MutaterTest extends TestCase {
     return r;
   }
 
+  
 }

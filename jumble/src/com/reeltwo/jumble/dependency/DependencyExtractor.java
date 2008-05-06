@@ -46,10 +46,10 @@ public class DependencyExtractor {
   private String mClassName;
 
   /** Set of packages to ignore. (Subpackages are ignored automatically) */
-  private Set mIgnoredPackages;
+  private Set<String> mIgnoredPackages;
 
   /** A cache for the classes which have already been analyzed */
-  private HashMap mCache;
+  private HashMap<String, Collection<String>> mCache;
   
   /**
    * Main method. Displays the dependencies for the class given as a
@@ -66,9 +66,9 @@ public class DependencyExtractor {
     Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to analyse.");
     flags.setFlags(args);
 
-    Set ignore = null;
+    Set<String> ignore = null;
     if (ignoreFlag.isSet()) {
-      ignore = new HashSet();
+      ignore = new HashSet<String>();
       String[] tokens = ((String) ignoreFlag.getValue()).split(",");
       for (int i = 0; i < tokens.length; i++) {
         ignore.add(tokens[i]);
@@ -85,10 +85,8 @@ public class DependencyExtractor {
       extractor.setIgnoredPackages(ignore);
     }
     
-    Collection dependencies = extractor.getAllDependencies(className, true);
-    Iterator it = dependencies.iterator();
-    while (it.hasNext()) {
-      System.out.println(it.next());
+    for (String dependency : extractor.getAllDependencies(className, true)) {
+      System.out.println(dependency);
     }
   }
 
@@ -96,8 +94,8 @@ public class DependencyExtractor {
    * Constructor
    */
   public DependencyExtractor(String classPath) {
-    mCache = new HashMap();
-    mIgnoredPackages = new HashSet();
+    mCache = new HashMap<String, Collection<String>>();
+    mIgnoredPackages = new HashSet<String>();
     mClassPath = new ClassPath(classPath);
     mRepository = SyntheticRepository.getInstance(mClassPath);
     
@@ -109,7 +107,6 @@ public class DependencyExtractor {
     mIgnoredPackages.add("org.xml");
     mIgnoredPackages.add("org.omg");
     mIgnoredPackages.add("org.ietf");
-    //integrity();
   }
 
   /**
@@ -139,15 +136,14 @@ public class DependencyExtractor {
    *          the name of the class to check
    * @return the names of the dependency classes in a Collection
    */
-  private Collection getDependencies(String className, boolean ignore) {
+private Collection<String> getDependencies(String className, boolean ignore) {
     //First look in the cache
     if (mCache.containsKey(className)) {
-      return (Collection) mCache.get(className);
+      return mCache.get(className);
     }
     
-    ArrayList ret = new ArrayList();
+    ArrayList<String> ret = new ArrayList<String>();
     if (isPrimitiveArray(className)) {
-      // System.out.println(className + " primitive array");
       return ret;
     }
     className = cleanClassName(className);
@@ -173,7 +169,7 @@ public class DependencyExtractor {
       }
     }
 
-    Set methodTypes = new HashSet();
+    Set<Type> methodTypes = new HashSet<Type>();
     Method[] methods = clazz.getMethods();
     for (int i = 0; i < methods.length; i++) {
       methodTypes.add(methods[i].getReturnType());
@@ -182,10 +178,10 @@ public class DependencyExtractor {
       }
     }
 
-    Set stringTypes = getStringTypes(methodTypes);
+    Set<String> stringTypes = getStringTypes(methodTypes);
     ret.addAll(stringTypes);
 
-    Set fieldTypes = new HashSet();
+    Set<Type> fieldTypes = new HashSet<Type>();
     Field[] fields = clazz.getFields();
 
     for (int i = 0; i < fields.length; i++) {
@@ -194,7 +190,7 @@ public class DependencyExtractor {
     ret.addAll(getStringTypes(fieldTypes));
 
     if (ignore) {
-      ret = new ArrayList(filterSystemClasses(ret));
+      ret = new ArrayList<String>(filterSystemClasses(ret));
     }
     mCache.put(className, ret);
     return ret;
@@ -217,24 +213,22 @@ public class DependencyExtractor {
   /**
    * Gets the immediate dependencies of the class
    * 
-   * @param ignore
+   * @param ignoreSystemClasses
    *          a flag indicating whether to ignore system classes
    * @return a Collection of class names of the dependencies.
    */
-  public Collection getImmediateDependencies(boolean ignore) {
-    Collection ret;
+  public Collection<String> getImmediateDependencies(boolean ignoreSystemClasses) {
+    Collection<String> ret;
     if (!isPrimitiveArray(getClassName())) {
-      if (ignore) {
+      if (ignoreSystemClasses) {
         ret = filterSystemClasses(getDependencies(
             cleanClassName(getClassName()), true));
       } else {
         ret = getDependencies(cleanClassName(getClassName()), false);
       }
     } else {
-      // System.out.println("gid - " + getClassName() + " is primitive");
-      ret = new HashSet();
+      ret = new HashSet<String>();
     }
-    //integrity();
     return ret;
   }
 
@@ -245,10 +239,10 @@ public class DependencyExtractor {
    *          a flag indicating whether to ignore system classes
    * @return a Collection of class names of the dependencies.
    */
-  public Collection getAllDependencies(String rootClass, boolean ignore) {
+  public Collection<String> getAllDependencies(String rootClass, boolean ignore) {
     setClassName(rootClass);
-    Stack fringe = new Stack();
-    HashSet ret = new HashSet();
+    Stack<String> fringe = new Stack<String>();
+    HashSet<String> ret = new HashSet<String>();
 
     if (isPrimitiveArray(getClassName())) {
       // System.out.println(getClassName() + " primitive array");
@@ -258,7 +252,7 @@ public class DependencyExtractor {
     fringe.addAll(getImmediateDependencies(ignore));
 
     while (!fringe.isEmpty()) {
-      String cur = (String) fringe.pop();
+      String cur = fringe.pop();
       // System.out.println(cur);
       if (!isPrimitiveArray(cur)) {
         cur = cleanClassName(cur);
@@ -274,11 +268,8 @@ public class DependencyExtractor {
       ret.remove(getClassName());
     }
     if (ignore) {
-      ret = new HashSet(filterSystemClasses(ret));
+      ret = new HashSet<String>(filterSystemClasses(ret));
     }
-
-    //integrity();
-
     return ret;
   }
 
@@ -288,16 +279,16 @@ public class DependencyExtractor {
    * @param c the collection to filter
    * @return the filtered collection
    */
-  private Collection filterSystemClasses(Collection c) {
-    ArrayList ret = new ArrayList();
-    Iterator it = c.iterator();
+  private Collection<String> filterSystemClasses(Collection<String> c) {
+    ArrayList<String> ret = new ArrayList<String>();
+    Iterator<String> it = c.iterator();
 
     while (it.hasNext()) {
-      String cur = (String) it.next();
-      Iterator packages = getIgnoredPackages().iterator();
+      String cur = it.next();
+      Iterator<String> packages = getIgnoredPackages().iterator();
       boolean allowed = true;
       while (packages.hasNext()) {
-        String pack = (String) packages.next();
+        String pack = packages.next();
         if (cur.startsWith(pack + ".")) {
           allowed = false;
         }
@@ -315,18 +306,18 @@ public class DependencyExtractor {
    * 
    * @return the ignored packages.
    */
-  public Set getIgnoredPackages() {
+  public Set<String> getIgnoredPackages() {
     return mIgnoredPackages;
   }
 
   /**
    * Sets the set of packages to ignore. All subpackages are ignored alse
    * 
-   * @param newIgnore
+   * @param ignoredPackages
    *          mew ignore set.
    */
-  public void setIgnoredPackages(Set newIgnore) {
-    mIgnoredPackages = newIgnore;
+  public void setIgnoredPackages(Set<String> ignoredPackages) {
+    mIgnoredPackages = ignoredPackages;
   }
 
   public static String cleanClassName(String className) {
@@ -360,22 +351,13 @@ public class DependencyExtractor {
     return false;
   }
 
-//  public void integrity() {
-//    // Class must exist
-//    try {
-//      Class.forName(mClassName);
-//    } catch (ClassNotFoundException e) {
-//      assert false;
-//    }
-//  }
+  public Set<String> getStringTypes(Collection<Type> c) {
+    Set<String> s = new HashSet<String>();
 
-  public Set getStringTypes(Collection c) {
-    Set s = new HashSet();
-
-    Iterator it = c.iterator();
+    Iterator<Type> it = c.iterator();
 
     while (it.hasNext()) {
-      Type t = (Type) it.next();
+      Type t = it.next();
 
       while (t instanceof ArrayType) {
         t = ((ArrayType) t).getBasicType();

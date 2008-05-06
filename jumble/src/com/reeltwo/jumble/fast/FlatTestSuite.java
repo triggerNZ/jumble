@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
@@ -70,7 +71,7 @@ public class FlatTestSuite extends TestSuite {
    * @param name
    *          the name of the test suite
    */
-  public FlatTestSuite(final Class theClass, final String name) {
+  public FlatTestSuite(final Class<? extends TestCase> theClass, final String name) {
     super(theClass, name);
   }
 

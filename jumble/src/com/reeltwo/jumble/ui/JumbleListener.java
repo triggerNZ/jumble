@@ -14,7 +14,7 @@ import com.reeltwo.jumble.fast.MutationResult;
  * @version $Revision$
  */
 public interface JumbleListener {
-  void jumbleRunStarted(String className, List testNames);
+  void jumbleRunStarted(String className, List<String> testNames);
   void performedInitialTest(JumbleResult result, int mutationCount);
   void jumbleRunEnded();
   void finishedMutation(MutationResult res);

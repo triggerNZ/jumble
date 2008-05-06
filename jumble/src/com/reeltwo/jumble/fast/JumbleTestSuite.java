@@ -63,11 +63,6 @@ public class JumbleTestSuite extends FlatTestSuite {
     for (int i = 0; i < classNames.length; i++) {
       addTestSuite(loader.loadClass(classNames[i]));
     }
-    
-//     for (int i = 0; i < testCount(); i++) {
-//       System.err.println("Test " + i + " is " + ((TestCase)testAt(i)).getName());
-//     }
-//     System.err.println("Total tests: " + testCount());
   }
 
   /**
@@ -161,7 +156,7 @@ public class JumbleTestSuite extends FlatTestSuite {
   private Test[] getOrder() {
     Test first = null;
     String firstTestName = null;
-    Set frontTestNames = new HashSet();
+    Set<String> frontTestNames = new HashSet<String>();
 
     if (mCache != null) {
       firstTestName = mCache.getLastFailure(mClass, mMethod, mMethodRelativeMutationPoint);

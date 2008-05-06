@@ -85,7 +85,7 @@ public final void tearDown() {
     File f = new File(System.getProperty("user.home"), ".com.reeltwo.jumble-cache.dat");
     assertTrue(!f.exists() || f.delete());
 
-    ArrayList tests = new ArrayList();
+    ArrayList<String> tests = new ArrayList<String>();
     tests.add("experiments.JumblerExperimentTest");
     FastRunner runner = new FastRunner();
     runner.runJumble("experiments.JumblerExperiment", tests, null);

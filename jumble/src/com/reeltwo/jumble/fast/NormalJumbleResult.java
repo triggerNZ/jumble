@@ -12,13 +12,13 @@ import java.util.List;
  */
 public class NormalJumbleResult extends AbstractJumbleResult {
 
-  private List mTestClassNames;
+  private List<String> mTestClassNames;
 
-  private MutationResult[] mAllMutations;
+  private List<MutationResult> mAllMutations;
 
   private long mTimeoutLength;
 
-  public NormalJumbleResult(String className, List testClassNames, MutationResult[] allMutations, long timeout) {
+  public NormalJumbleResult(String className, List<String> testClassNames, List<MutationResult> allMutations, long timeout) {
     super(className);
     mTestClassNames = testClassNames;
     mAllMutations = allMutations;
@@ -27,31 +27,31 @@ public class NormalJumbleResult extends AbstractJumbleResult {
 
   /** {@inheritDoc} */
   @Override
-public MutationResult[] getAllMutations() {
+public List<MutationResult> getAllMutations() {
     return mAllMutations;
   }
 
   /** {@inheritDoc} */
   @Override
 public int getNumberOfMutations() {
-    return mAllMutations.length;
+    return mAllMutations.size();
   }
 
   /** {@inheritDoc} */
   @Override
-public MutationResult[] getCovered() {
+public List<MutationResult> getCovered() {
     return filter(MutationResult.PASS);
   }
 
   /** {@inheritDoc} */
   @Override
-public MutationResult[] getTimeouts() {
+public List<MutationResult> getTimeouts() {
     return filter(MutationResult.TIMEOUT);
   }
 
   /** {@inheritDoc} */
   @Override
-public MutationResult[] getMissed() {
+public List<MutationResult> getMissed() {
     return filter(MutationResult.FAIL);
   }
 
@@ -63,23 +63,22 @@ public long getTimeoutLength() {
 
   /** {@inheritDoc} */
   @Override
-public String[] getTestClasses() {
-    return (String[]) mTestClassNames
-        .toArray(new String[mTestClassNames.size()]);
+public List<String> getTestClasses() {
+    return mTestClassNames;
   }
 
   /** {@inheritDoc} */
-  private MutationResult[] filter(int mutationType) {
-    MutationResult[] all = getAllMutations();
-    ArrayList ret = new ArrayList();
+  private List<MutationResult> filter(int mutationType) {
+    List<MutationResult> all = getAllMutations();
+    ArrayList<MutationResult> ret = new ArrayList<MutationResult>();
 
-    for (int i = 0; i < all.length; i++) {
-      if (all[i].getStatus() == mutationType) {
-        ret.add(all[i]);
+    for (MutationResult mutationResult : all) {
+      if (mutationResult.getStatus() == mutationType) {
+        ret.add(mutationResult);
       }
     }
 
-    return (MutationResult[]) ret.toArray(new MutationResult[ret.size()]);
+    return ret;
   }
 
 }

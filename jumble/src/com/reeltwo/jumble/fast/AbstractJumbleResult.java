@@ -1,5 +1,7 @@
 package com.reeltwo.jumble.fast;
 
+import java.util.List;
+
 
 /**
  * An abstract JumbleResult that defaults most methods.
@@ -26,7 +28,7 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public String[] getTestClasses() {
+  public List<String> getTestClasses() {
     return null;
   }
 
@@ -36,17 +38,17 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getCovered() {
+  public List<MutationResult> getCovered() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getMissed() {
+  public List<MutationResult> getMissed() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getTimeouts() {
+  public List<MutationResult> getTimeouts() {
     return null;
   }
 
@@ -56,7 +58,7 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public MutationResult[] getAllMutations() {
+  public List<MutationResult> getAllMutations() {
     return null;
   }
 

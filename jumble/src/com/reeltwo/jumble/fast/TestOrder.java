@@ -96,11 +96,8 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
       sortPairs[i] = new SortPair(i, runtimes[i]);
     }
 
-    java.util.Arrays.sort(sortPairs, new Comparator() {
-        public int compare(Object o1, Object o2) {
-          SortPair p1 = (SortPair) o1;
-          SortPair p2 = (SortPair) o2;
-
+    java.util.Arrays.sort(sortPairs, new Comparator<SortPair>() {
+        public int compare(SortPair p1, SortPair p2) {
           if (p1.getTime() < p2.getTime()) {
             return -1;
           } else if (p1.getTime() == p2.getTime()) {
@@ -112,7 +109,6 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
       });
     for (int i = 0; i < order.length; i++) {
       order[i] = sortPairs[i].getPos();
-      //System.err.println("order[" + i + "]=" + order[i]);
     }
     return order;
   }
@@ -128,10 +124,10 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
   public Object clone(ClassLoader loader)
       throws ClassNotFoundException {
 
-    Class clazz = loader.loadClass(getClass().getName());
+    Class<?> clazz = loader.loadClass(getClass().getName());
 
     try {
-      Constructor c = clazz.getConstructor(new Class[] {String[].class, int[].class});
+      Constructor<?> c = clazz.getConstructor(new Class[] {String[].class, int[].class});
       return c.newInstance(new Object[] {mTestClasses, mOrder});
     } catch (InstantiationException e) {
       e.printStackTrace();

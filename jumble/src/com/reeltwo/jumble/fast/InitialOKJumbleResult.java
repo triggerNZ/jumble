@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class InitialOKJumbleResult extends AbstractJumbleResult {
 
-  private List mTestClassNames;
+  private List<String> mTestClassNames;
 
   private long mTimeoutLength;
 
-  public InitialOKJumbleResult(String className, List testClassNames, long timeout) {
+  public InitialOKJumbleResult(String className, List<String> testClassNames, long timeout) {
     super(className);
     mTestClassNames = testClassNames;
     mTimeoutLength = timeout;
@@ -29,9 +29,8 @@ public long getTimeoutLength() {
 
   /** {@inheritDoc} */
   @Override
-public String[] getTestClasses() {
-    return (String[]) mTestClassNames
-        .toArray(new String[mTestClassNames.size()]);
+public List<String> getTestClasses() {
+    return mTestClassNames;
   }
 
 }

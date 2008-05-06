@@ -25,7 +25,7 @@ public class PrinterListener implements JumbleListener {
 
   private String mClassName;
 
-  private List mTestNames;
+  private List<String> mTestNames;
 
   private boolean mInitialTestsPassed;
   
@@ -75,10 +75,9 @@ public class PrinterListener implements JumbleListener {
     }
   }
   
-  public void jumbleRunStarted(String className, List testClasses) {
-    //System.err.println("class: " + className + " tests: " + testClasses);
+  public void jumbleRunStarted(String className, List<String> testClassNames) {
     mClassName = className;
-    mTestNames = testClasses;
+    mTestNames = testClassNames;
   }
 
   public void performedInitialTest(JumbleResult result, int mutationCount) {

@@ -30,14 +30,14 @@ public void tearDown() {
   }
 
   public void testDT1() {
-    Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT1", true);
+    Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT1", true);
     assertEquals("experiments.JumblerExperiment", classes.iterator().next());
     assertEquals(1, classes.size());
   }
 
   public void testDT2() {
     mExtractor.setClassName("com.reeltwo.jumble.dependency.DT2");
-    Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT2", true);
+    Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT2", true);
     //System.out.println(classes);
     assertEquals(3, classes.size());
 
@@ -47,7 +47,7 @@ public void tearDown() {
   }
 
    public void testDT3() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT3", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT3", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -55,7 +55,7 @@ public void tearDown() {
    }
 
    public void testDT4() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT4", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT4", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -63,7 +63,7 @@ public void tearDown() {
    }
 
    public void testDT5() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT5", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT5", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -71,7 +71,7 @@ public void tearDown() {
    }
 
    public void testDT6() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT6", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT6", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -79,7 +79,7 @@ public void tearDown() {
    }
 
    public void testDT7() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT7", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT7", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -87,7 +87,7 @@ public void tearDown() {
    }
 
    public void testDT8() {
-     Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT8", true);
+     Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT8", true);
      assertEquals(2, classes.size());
 
      assertTrue(classes.contains("experiments.JumblerExperiment"));
@@ -97,13 +97,13 @@ public void tearDown() {
     // huge amount of dependencies - this is more of a regression thing
     // than an actual test - I have no idea what the value should be
     // may vary with different JRE's (although hasn't done so far)
-    Collection classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT1", false);
+    Collection<String> classes = mExtractor.getAllDependencies("com.reeltwo.jumble.dependency.DT1", false);
     assertTrue(1000 < classes.size());
   }
 
   public void testSilly() {
     mExtractor.setClassName("[[C");
-    Collection classes = mExtractor.getAllDependencies("[[C", true);
+    Collection<String> classes = mExtractor.getAllDependencies("[[C", true);
     assertEquals(0, classes.size());
   }
 

@@ -22,10 +22,12 @@ import org.apache.bcel.generic.ACONST_NULL;
 import org.apache.bcel.generic.ARETURN;
 import org.apache.bcel.generic.ATHROW;
 import org.apache.bcel.generic.ArithmeticInstruction;
+import org.apache.bcel.generic.ArrayInstruction;
 import org.apache.bcel.generic.BIPUSH;
 import org.apache.bcel.generic.CPInstruction;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DADD;
+import org.apache.bcel.generic.DASTORE;
 import org.apache.bcel.generic.DCMPG;
 import org.apache.bcel.generic.DCONST;
 import org.apache.bcel.generic.DDIV;
@@ -33,6 +35,7 @@ import org.apache.bcel.generic.DMUL;
 import org.apache.bcel.generic.DNEG;
 import org.apache.bcel.generic.DREM;
 import org.apache.bcel.generic.DRETURN;
+import org.apache.bcel.generic.DSTORE;
 import org.apache.bcel.generic.DSUB;
 import org.apache.bcel.generic.DUP;
 import org.apache.bcel.generic.DUP2;
@@ -45,6 +48,7 @@ import org.apache.bcel.generic.FNEG;
 import org.apache.bcel.generic.FREM;
 import org.apache.bcel.generic.FRETURN;
 import org.apache.bcel.generic.FSUB;
+import org.apache.bcel.generic.FieldInstruction;
 import org.apache.bcel.generic.GETSTATIC;
 import org.apache.bcel.generic.IADD;
 import org.apache.bcel.generic.IAND;
@@ -72,8 +76,10 @@ import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.LADD;
 import org.apache.bcel.generic.LAND;
+import org.apache.bcel.generic.LASTORE;
 import org.apache.bcel.generic.LCONST;
 import org.apache.bcel.generic.LDC;
 import org.apache.bcel.generic.LDIV;
@@ -85,6 +91,7 @@ import org.apache.bcel.generic.LREM;
 import org.apache.bcel.generic.LRETURN;
 import org.apache.bcel.generic.LSHL;
 import org.apache.bcel.generic.LSHR;
+import org.apache.bcel.generic.LSTORE;
 import org.apache.bcel.generic.LSUB;
 import org.apache.bcel.generic.LUSHR;
 import org.apache.bcel.generic.LXOR;
@@ -92,27 +99,19 @@ import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.POP;
 import org.apache.bcel.generic.POP2;
+import org.apache.bcel.generic.PUTFIELD;
+import org.apache.bcel.generic.PUTSTATIC;
 import org.apache.bcel.generic.ReturnInstruction;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.generic.Select;
+import org.apache.bcel.generic.StackConsumer;
+import org.apache.bcel.generic.StoreInstruction;
 import org.apache.bcel.generic.TABLESWITCH;
+import org.apache.bcel.generic.TargetLostException;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
-import org.apache.bcel.generic.StoreInstruction;
-import org.apache.bcel.generic.TargetLostException;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.DSTORE;
-import org.apache.bcel.generic.AASTORE;
-import org.apache.bcel.generic.LSTORE;
-import org.apache.bcel.generic.StackConsumer;
-import org.apache.bcel.generic.DASTORE;
-import org.apache.bcel.generic.LASTORE;
-import org.apache.bcel.generic.ArrayInstruction;
-import org.apache.bcel.generic.InvokeInstruction;
 
 /**
  * Given a class file can either count the number of possible
@@ -187,7 +186,7 @@ public class Mutater {
   }
 
   /** Set of methods to be ignored (i.e. never mutated). */
-  private Set mIgnored;
+  private Set<String> mIgnored;
 
   /** Should ICONST instructions be changed. */
   private boolean mMutateInlineConstants = false;
@@ -465,8 +464,8 @@ public class Mutater {
    * @param ignore
    *          Set of ignored methods
    */
-  public void setIgnoredMethods(final Set ignore) {
-    mIgnored = ignore == null ? new HashSet() : ignore;
+  public void setIgnoredMethods(final Set<String> ignore) {
+    mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
   private boolean checkNormalMethod(final Method m) {
@@ -576,7 +575,7 @@ public class Mutater {
   /**
    * Compute the total number of possible mutation points in the class.
    */
-  public int countMutationPoints(final String cl) throws ClassNotFoundException {
+  public int countMutationPoints(final String cl) {
     final String className = fixName(cl);
     final JavaClass clazz = lookupClass(className);
 
@@ -1081,7 +1080,7 @@ public class Mutater {
    *          the name of the class to mutate
    * @return mutated method name
    */
-  public String getMutatedMethodName(String cl) throws ClassNotFoundException {
+  public String getMutatedMethodName(String cl) {
     final String className = fixName(cl);
     final JavaClass clazz = lookupClass(className);
 
@@ -1130,7 +1129,7 @@ public class Mutater {
    *          the class to to mutate.
    * @return the mutation point, relative to the mutated method.
    */
-  public int getMethodRelativeMutationPoint(String cl) throws ClassNotFoundException {
+  public int getMethodRelativeMutationPoint(String cl) {
     final String className = fixName(cl);
     final JavaClass clazz = lookupClass(className);
 

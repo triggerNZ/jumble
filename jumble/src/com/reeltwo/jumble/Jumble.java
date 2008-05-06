@@ -116,7 +116,7 @@ public class Jumble {
     // We need at least one test
     if (testClassFlag.isSet()) {
       for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext();) {
-        testList.add(((String) it.next()).replace('/', '.'));
+    	  testList.add(((String) it.next()).replace('/', '.'));
       }
     } else {
       // no test class given, guess its name
@@ -174,9 +174,9 @@ public class Jumble {
    */
   private static JumbleListener getListener(String className) {
     try {
-      final Class clazz = Class.forName(className); // Class to be found in com.reeltwo.jumble.jar
+      final Class<?> clazz = Class.forName(className); // Class to be found in com.reeltwo.jumble.jar
       try {
-        final Constructor c = clazz.getConstructor(new Class[0]);
+        final Constructor<?> c = clazz.getConstructor(new Class[0]);
         return (JumbleListener) c.newInstance(new Object[0]);
       } catch (IllegalAccessException e) {
         System.err.println("Invalid output class. Exception: ");

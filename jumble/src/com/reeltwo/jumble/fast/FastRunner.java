@@ -471,7 +471,7 @@ public class FastRunner {
     // exclude methods
     if (!mExcludeMethods.isEmpty()) {
       StringBuffer ex = new StringBuffer();
-      Iterator it = mExcludeMethods.iterator();
+      Iterator<String> it = mExcludeMethods.iterator();
       for (int i = 0; i < mExcludeMethods.size(); i++) {
         if (i == 0) {
           ex.append(it.next());
@@ -741,11 +741,11 @@ public class FastRunner {
 
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
-      Class clazz = jumbler.loadClass(className);
+      Class<?> clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {
           String testName = testClassNames.get(i);
-          Class test = null;
+          Class<?> test = null;
           try {
             test = jumbler.loadClass(testName);
           } catch (ClassNotFoundException e) {
@@ -816,7 +816,7 @@ public class FastRunner {
     mIot = null;
     mEot = null;
 
-    final MutationResult[] allMutations = new MutationResult[mMutationCount];
+    final List<MutationResult> allMutations = new ArrayList<MutationResult>();
     int count = 0;
     final int max = getMaxExternalMutations();
     for (int currentMutation = getFirstMutation(); currentMutation < mMutationCount; currentMutation++) {
@@ -834,7 +834,7 @@ public class FastRunner {
           currentMutation--;
         }
       } else {
-        allMutations[currentMutation] = thisResult;
+        allMutations.add(thisResult);
         count++;
         if (max >= 0 && count >= max) {
           mChildProcess = null;

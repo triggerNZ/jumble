@@ -25,13 +25,13 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    * The map itself: ClassName.MethodName(String) -> (mutationPoint(Integer) ->
    * testName(String))(Map)
    */
-  private Map mCache;
+  private Map<String, Map<Integer, String>> mCache;
 
   /**
    * Constructor. Creates a blank map.
    */
   public FailedTestMap() {
-    mCache = new HashMap();
+    mCache = new HashMap<String, Map<Integer, String>>();
   }
 
   /**
@@ -46,14 +46,14 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    */
   public void addFailure(String mutatedClass, String mutatedMethod,
       int methodRelativeMutationPoint, String testName) {
-    Map mutationToTest;
+    Map<Integer, String> mutationToTest;
 
     //System.out.println(mutatedMethod);
 
     if (mCache.containsKey(mutatedClass + "." + mutatedMethod)) {
-      mutationToTest = (Map) mCache.get(mutatedClass + "." + mutatedMethod);
+      mutationToTest = mCache.get(mutatedClass + "." + mutatedMethod);
     } else {
-      mutationToTest = new HashMap();
+      mutationToTest = new HashMap<Integer, String>();
       mCache.put(mutatedClass + "." + mutatedMethod, mutationToTest);
     }
 
@@ -64,24 +64,24 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    * Gives us the same object loaded in a new class loader.
    */
   public Object clone(ClassLoader cl) throws ClassNotFoundException {
-    Class clazz = cl.loadClass("com.reeltwo.jumble.fast.FailedTestMap");
+    Class<?> clazz = cl.loadClass("com.reeltwo.jumble.fast.FailedTestMap");
 
     try {
-      Constructor constructor = clazz.getConstructor(new Class[0]);
+      Constructor<?> constructor = clazz.getConstructor(new Class[0]);
       Object o = constructor.newInstance(new Object[0]);
       Method m = clazz.getMethod("addFailure", new Class[] {String.class, String.class, int.class, String.class});
 
-      Set keys = mCache.keySet();
-      for (Iterator it = keys.iterator(); it.hasNext();) {
-        String curKey = (String) it.next();
+      Set<String> keys = mCache.keySet();
+      for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+        String curKey = it.next();
         String className = curKey.substring(0, curKey.indexOf("."));
         String methodName = curKey.substring(curKey.indexOf(".") + 1);
-        Map map = (Map) mCache.get(curKey);
+        Map<Integer, String> map = mCache.get(curKey);
 
         int points = map.size();
 
         for (int i = 0; i < points; i++) {
-          String testName = (String) map.get(new Integer(i));
+          String testName = map.get(new Integer(i));
           m.invoke(o, new Object[] {className, methodName, new Integer(i), testName});
         }
       }
@@ -114,14 +114,12 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    */
   public String getLastFailure(String className, String methodName,
       int mutationPoint) {
-    Map map = (Map) mCache.get(className + "." + methodName);
+    Map<Integer, String> map = mCache.get(className + "." + methodName);
 
     if (map == null) {
       return null;
-    } else {
-      String testName = (String) map.get(new Integer(mutationPoint));
-      return testName;
-    }
+    } 
+    return map.get(new Integer(mutationPoint));
   }
 
   /**
@@ -135,14 +133,12 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    * @return set containing the names of the tests which fail on the given
    *         method.
    */
-  public Set getFailedTests(String className, String methodName) {
-    // System.out.println(mCache);
-    Map map = (Map) mCache.get(className + "." + methodName);
+  public Set<String> getFailedTests(String className, String methodName) {
+    Map<Integer, String> map = mCache.get(className + "." + methodName);
     if (map != null) {
-      return new HashSet(map.values());
-    } else {
-      return new HashSet();
-    }
+      return new HashSet<String>(map.values());
+    } 
+    return new HashSet<String>();
   }
 
   @Override

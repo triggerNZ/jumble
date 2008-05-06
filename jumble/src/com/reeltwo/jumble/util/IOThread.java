@@ -19,7 +19,7 @@ public class IOThread extends Thread {
 
   public static final boolean DEBUG = false;
   private BufferedReader mOut;
-  private LinkedList mBuffer;
+  private LinkedList<String> mBuffer;
 
   /**
    * A new thread.
@@ -28,7 +28,7 @@ public class IOThread extends Thread {
    */
   public IOThread(InputStream out) {
     mOut = new BufferedReader(new InputStreamReader(out));
-    mBuffer = new LinkedList();
+    mBuffer = new LinkedList<String>();
   }
 
   /** Loops while the stream exists.*/
@@ -45,7 +45,6 @@ public void run() {
         System.out.println("F");
       }
     } catch (IOException e) {
-      //e.printStackTrace();
       return;
     }
   }
@@ -60,7 +59,7 @@ public void run() {
       if (mBuffer.size() == 0) {
         return null;
       }
-      return (String) mBuffer.removeFirst();
+      return mBuffer.removeFirst();
     }
   }
 
