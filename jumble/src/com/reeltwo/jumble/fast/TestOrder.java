@@ -124,10 +124,10 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
   public Object clone(ClassLoader loader)
       throws ClassNotFoundException {
 
-    Class<?> clazz = loader.loadClass(getClass().getName());
+    Class < ? > clazz = loader.loadClass(getClass().getName());
 
     try {
-      Constructor<?> c = clazz.getConstructor(new Class[] {String[].class, int[].class});
+      Constructor < ? > c = clazz.getConstructor(new Class[] {String[].class, int[].class});
       return c.newInstance(new Object[] {mTestClasses, mOrder});
     } catch (InstantiationException e) {
       e.printStackTrace();

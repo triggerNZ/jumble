@@ -14,7 +14,11 @@ import com.reeltwo.jumble.fast.JUnitTestResult;
  * @version $Revision 1.0 $
  */
 public class JUnit4Test extends TestCase {
-  
+  /**
+   * Dummy class for testing
+   * @author Tin
+   *
+   */
   public static class Dummy4Test {
     public Dummy4Test() {
     }
@@ -28,6 +32,11 @@ public class JUnit4Test extends TestCase {
     }
   }
   
+  /**
+   * Dummy class for testing
+   * @author Tin
+   *
+   */
   public static class Dummy3Test extends TestCase {
     public Dummy3Test() {
       super();
@@ -44,6 +53,11 @@ public class JUnit4Test extends TestCase {
     }
   }
   
+  /**
+   * Dummy class for testing
+   * @author Tin
+   *
+   */
   public static class NotATest {
   }
   

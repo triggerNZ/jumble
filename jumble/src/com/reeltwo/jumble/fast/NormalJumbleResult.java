@@ -12,13 +12,13 @@ import java.util.List;
  */
 public class NormalJumbleResult extends AbstractJumbleResult {
 
-  private List<String> mTestClassNames;
+  private List < String > mTestClassNames;
 
-  private List<MutationResult> mAllMutations;
+  private List < MutationResult > mAllMutations;
 
   private long mTimeoutLength;
 
-  public NormalJumbleResult(String className, List<String> testClassNames, List<MutationResult> allMutations, long timeout) {
+  public NormalJumbleResult(String className, List < String > testClassNames, List < MutationResult > allMutations, long timeout) {
     super(className);
     mTestClassNames = testClassNames;
     mAllMutations = allMutations;
@@ -27,7 +27,7 @@ public class NormalJumbleResult extends AbstractJumbleResult {
 
   /** {@inheritDoc} */
   @Override
-public List<MutationResult> getAllMutations() {
+public List < MutationResult > getAllMutations() {
     return mAllMutations;
   }
 
@@ -39,13 +39,13 @@ public int getNumberOfMutations() {
 
   /** {@inheritDoc} */
   @Override
-public List<MutationResult> getCovered() {
+public List < MutationResult > getCovered() {
     return filter(MutationResult.PASS);
   }
 
   /** {@inheritDoc} */
   @Override
-public List<MutationResult> getTimeouts() {
+public List < MutationResult > getTimeouts() {
     return filter(MutationResult.TIMEOUT);
   }
 

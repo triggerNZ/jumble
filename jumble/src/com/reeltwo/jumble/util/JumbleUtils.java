@@ -38,20 +38,20 @@ public class JumbleUtils {
    *          the class to check.
    * @return if clazz is a test class, false otherwise.
    */
-  public static boolean isJUnit3TestClass(Class<?> clazz) {
-    Set<Class<?>> interfaceSet = new HashSet<Class<?>>();
-    Class<?> tmp = clazz;
+  public static boolean isJUnit3TestClass(Class < ? > clazz) {
+    Set < Class < ? > > interfaceSet = new HashSet < Class < ? > > ();
+    Class < ? > tmp = clazz;
 
     while (tmp != Object.class) {
-      Class<?>[] intfc = tmp.getInterfaces();
+      Class < ? > [] intfc = tmp.getInterfaces();
       for (int i = 0; i < intfc.length; i++) {
         interfaceSet.add(intfc[i]);
       }
       tmp = tmp.getSuperclass();
     }
 
-    for (Class<?> cl : interfaceSet) {
-    	if (cl == Test.class) {
+    for (Class < ? > cl : interfaceSet) {
+      if (cl == Test.class) {
         return true;
       }
     }
@@ -65,7 +65,7 @@ public class JumbleUtils {
    *          the class to check.
    * @return true if the given class contains JUnit 4 test cases.
    */
-  public static boolean isJUnit4TestClass(Class<?> clazz) {
+  public static boolean isJUnit4TestClass(Class < ? > clazz) {
     return new org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
   }
 
@@ -75,7 +75,7 @@ public class JumbleUtils {
    * @return whether assertions are currently enabled
    * 
    */
-  @SuppressWarnings(value="all")
+  @SuppressWarnings(value = "all")
   public static boolean isAssertionsEnabled() {
     boolean assertionsEnabled = false;
     assert assertionsEnabled = true;

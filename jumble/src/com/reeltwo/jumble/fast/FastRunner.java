@@ -736,16 +736,16 @@ public class FastRunner {
    *          list of test class names.
    * @return
    */
-  private boolean checkClasses(JumbleListener out, String className, List<String> testClassNames) {
+  private boolean checkClasses(JumbleListener out, String className, List < String > testClassNames) {
     boolean ok = true;
 
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
-      Class<?> clazz = jumbler.loadClass(className);
+      Class < ? > clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {
           String testName = testClassNames.get(i);
-          Class<?> test = null;
+          Class < ? > test = null;
           try {
             test = jumbler.loadClass(testName);
           } catch (ClassNotFoundException e) {

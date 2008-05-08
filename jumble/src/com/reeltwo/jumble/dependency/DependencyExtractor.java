@@ -46,10 +46,10 @@ public class DependencyExtractor {
   private String mClassName;
 
   /** Set of packages to ignore. (Subpackages are ignored automatically) */
-  private Set<String> mIgnoredPackages;
+  private Set < String > mIgnoredPackages;
 
   /** A cache for the classes which have already been analyzed */
-  private HashMap<String, Collection<String>> mCache;
+  private HashMap < String, Collection < String > > mCache;
   
   /**
    * Main method. Displays the dependencies for the class given as a
@@ -351,10 +351,10 @@ private Collection<String> getDependencies(String className, boolean ignore) {
     return false;
   }
 
-  public Set<String> getStringTypes(Collection<Type> c) {
-    Set<String> s = new HashSet<String>();
+  public Set < String > getStringTypes(Collection < Type > c) {
+    Set < String > s = new HashSet < String > ();
 
-    Iterator<Type> it = c.iterator();
+    Iterator < Type > it = c.iterator();
 
     while (it.hasNext()) {
       Type t = it.next();

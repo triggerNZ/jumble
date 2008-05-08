@@ -20,6 +20,10 @@ public class JumbleUtilsTest extends TestCase {
     assertTrue(JumbleUtils.isTestClass(JumblerExperimentJUnit4Test.class));
   }
   
+  /**
+   * Dummy class for testing
+   * @author Tin
+   */
   public static class DummyTest {
     @org.junit.Test public void doTest() {
     }

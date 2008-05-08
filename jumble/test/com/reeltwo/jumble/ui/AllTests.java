@@ -13,8 +13,8 @@ public class AllTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    suite.addTest(PrinterListenerTest.suite());
-
+    suite.addTest(JumbleScorePrinterListenerTest.suite());
+    
     return suite;
   }
 

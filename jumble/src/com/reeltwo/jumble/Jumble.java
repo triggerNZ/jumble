@@ -10,7 +10,7 @@ import java.util.List;
 import com.reeltwo.jumble.fast.FastRunner;
 import com.reeltwo.jumble.ui.EmacsFormatListener;
 import com.reeltwo.jumble.ui.JumbleListener;
-import com.reeltwo.jumble.ui.PrinterListener;
+import com.reeltwo.jumble.ui.JumbleScorePrinterListener;
 import com.reeltwo.util.CLIFlags;
 import com.reeltwo.util.CLIFlags.Flag;
 
@@ -89,7 +89,7 @@ public class Jumble {
     }
 
     String className;
-    List<String> testList;
+    List < String > testList;
 
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
@@ -99,7 +99,7 @@ public class Jumble {
     }
 
     className = ((String) classFlag.getValue()).replace('/', '.');
-    testList = new ArrayList<String>();
+    testList = new ArrayList < String > ();
 
     if (jvmargFlag.isSet()) {
       for (Object val : jvmargFlag.getValues()) {
@@ -116,7 +116,7 @@ public class Jumble {
     // We need at least one test
     if (testClassFlag.isSet()) {
       for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext();) {
-    	  testList.add(((String) it.next()).replace('/', '.'));
+        testList.add(((String) it.next()).replace('/', '.'));
       }
     } else {
       // no test class given, guess its name
@@ -124,7 +124,7 @@ public class Jumble {
     }
 
 
-    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new PrinterListener()
+    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
         : getListener((String) printFlag.getValue());
     jumble.runJumble(className, testList, listener);
   }
@@ -174,9 +174,9 @@ public class Jumble {
    */
   private static JumbleListener getListener(String className) {
     try {
-      final Class<?> clazz = Class.forName(className); // Class to be found in com.reeltwo.jumble.jar
+      final Class < ? > clazz = Class.forName(className); // Class to be found in com.reeltwo.jumble.jar
       try {
-        final Constructor<?> c = clazz.getConstructor(new Class[0]);
+        final Constructor < ? > c = clazz.getConstructor(new Class[0]);
         return (JumbleListener) c.newInstance(new Object[0]);
       } catch (IllegalAccessException e) {
         System.err.println("Invalid output class. Exception: ");

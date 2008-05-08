@@ -71,7 +71,7 @@ public class FlatTestSuite extends TestSuite {
    * @param name
    *          the name of the test suite
    */
-  public FlatTestSuite(final Class<? extends TestCase> theClass, final String name) {
+  public FlatTestSuite(final Class < ? extends TestCase > theClass, final String name) {
     super(theClass, name);
   }
 

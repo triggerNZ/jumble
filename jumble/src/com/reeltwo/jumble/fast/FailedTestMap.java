@@ -64,19 +64,19 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    * Gives us the same object loaded in a new class loader.
    */
   public Object clone(ClassLoader cl) throws ClassNotFoundException {
-    Class<?> clazz = cl.loadClass("com.reeltwo.jumble.fast.FailedTestMap");
+    Class < ? > clazz = cl.loadClass("com.reeltwo.jumble.fast.FailedTestMap");
 
     try {
-      Constructor<?> constructor = clazz.getConstructor(new Class[0]);
+      Constructor < ? > constructor = clazz.getConstructor(new Class[0]);
       Object o = constructor.newInstance(new Object[0]);
       Method m = clazz.getMethod("addFailure", new Class[] {String.class, String.class, int.class, String.class});
 
-      Set<String> keys = mCache.keySet();
-      for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+      Set < String > keys = mCache.keySet();
+      for (Iterator < String > it = keys.iterator(); it.hasNext();) {
         String curKey = it.next();
         String className = curKey.substring(0, curKey.indexOf("."));
         String methodName = curKey.substring(curKey.indexOf(".") + 1);
-        Map<Integer, String> map = mCache.get(curKey);
+        Map < Integer, String > map = mCache.get(curKey);
 
         int points = map.size();
 
