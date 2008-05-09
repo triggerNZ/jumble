@@ -186,7 +186,7 @@ public class Mutater {
   }
 
   /** Set of methods to be ignored (i.e. never mutated). */
-  private Set<String> mIgnored;
+  private Set < String > mIgnored;
 
   /** Should ICONST instructions be changed. */
   private boolean mMutateInlineConstants = false;
@@ -464,8 +464,8 @@ public class Mutater {
    * @param ignore
    *          Set of ignored methods
    */
-  public void setIgnoredMethods(final Set<String> ignore) {
-    mIgnored = ignore == null ? new HashSet<String>() : ignore;
+  public void setIgnoredMethods(final Set < String > ignore) {
+    mIgnored = ignore == null ? new HashSet < String > () : ignore;
   }
 
   private boolean checkNormalMethod(final Method m, String className) {
@@ -911,20 +911,7 @@ public class Mutater {
           ihs[j].setInstruction(i instanceof DSTORE || i instanceof LSTORE ? new POP2() : new POP());
           mod.append("removed local assignment");
         } else if (i instanceof InvokeInstruction) {
-          final Type[] argTypes = ((InvokeInstruction) i).getArgumentTypes(cp);
-          final InstructionList lil = new InstructionList();
-          // Pop all the arguments (I'm assuming they are in reverse order
-          for (int k = argTypes.length - 1; k >= 0; k--) {
-            lil.append(argTypes[k].getSize() > 1 ? new POP2() : new POP());
-          }
-          final InstructionHandle ins = ihs[j];
-          il.insert(ins, lil);
-          try {
-            il.delete(ins);
-          } catch (TargetLostException e) {
-            ; // too bad
-          }
-          mod.append("removed method call to " + ((InvokeInstruction) i).getMethodName(cp));
+          mutateInvokeInstruction(cp, il, ihs, j, i, mod);
         } else if (i instanceof PUTFIELD || i instanceof PUTSTATIC) {
           final FieldInstruction fi = (FieldInstruction) i;
           final int size = fi.getFieldType(cp).getSize();
@@ -1019,22 +1006,44 @@ public class Mutater {
           }
         }
         mModification = mod.toString();
-        //System.err.println("Made modification: " + mModification);
         break;
       }
     }
-    //Remove LVTT attribute to fix LVTT class loading error.
+    
+    removeLVTTAttributeToFixLVTTClassLoadingError(mg);
+    
+    mg.setMaxStack(); // this is needed for the return mods
+    methods[methodidx] = mg.getMethod();
+    il.dispose();
+    return count;
+  }
+
+  private void mutateInvokeInstruction(final ConstantPoolGen cp,
+      final InstructionList il, final InstructionHandle[] ihs, int j,
+      final Instruction i, StringBuffer mod) {
+    final Type[] argTypes = ((InvokeInstruction) i).getArgumentTypes(cp);
+    final InstructionList lil = new InstructionList();
+    // Pop all the arguments (I'm assuming they are in reverse order
+    for (int k = argTypes.length - 1; k >= 0; k--) {
+      lil.append(argTypes[k].getSize() > 1 ? new POP2() : new POP());
+    }
+    final InstructionHandle ins = ihs[j];
+    il.insert(ins, lil);
+    try {
+      il.delete(ins);
+    } catch (TargetLostException e) {
+      ; // too bad
+    }
+    mod.append("removed method call to " + ((InvokeInstruction) i).getMethodName(cp));
+  }
+
+  private void removeLVTTAttributeToFixLVTTClassLoadingError(final MethodGen mg) {
     Attribute[] attribs = mg.getCodeAttributes();
     for (Attribute a : attribs) {
       if (a instanceof Unknown && ((Unknown) a).getName().equals("LocalVariableTypeTable")) {
         mg.removeCodeAttribute(a);
       }
     }
-    
-    mg.setMaxStack(); // this is needed for the return mods
-    methods[methodidx] = mg.getMethod();
-    il.dispose();
-    return count;
   }
 
   public JavaClass jumbler(String cn) throws ClassNotFoundException {

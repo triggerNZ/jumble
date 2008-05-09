@@ -40,7 +40,7 @@ public class SwingListener implements JumbleListener {
 
   private int mCurrentScore = 0;
 
-  public void jumbleRunStarted(String className, List<String> testNames) {
+  public void jumbleRunStarted(String className, List < String > testNames) {
     JFrame frame = new JFrame("Jumble");
     frame.setSize(300, 100);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,7 +116,7 @@ public class SwingListener implements JumbleListener {
     jumble.setVerbose(verboseFlag.isSet());
 
     String className;
-    List<String> testList;
+    List < String > testList;
 
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
@@ -126,7 +126,7 @@ public class SwingListener implements JumbleListener {
     }
 
     className = ((String) classFlag.getValue()).replace('/', '.');
-    testList = new ArrayList<String>();
+    testList = new ArrayList < String > ();
 
     // We need at least one test
     if (testClassFlag.isSet()) {

@@ -53,20 +53,20 @@ public void tearDown() {
   }
 
   public void testGetFailedTests() {
-    Set<String> fail1 = mMap.getFailedTests("DummyClass", "dummyMethod");
+    Set < String > fail1 = mMap.getFailedTests("DummyClass", "dummyMethod");
     assertEquals(2, fail1.size());
     assertTrue(fail1.contains("dummyTest1"));
     assertTrue(fail1.contains("dummyTest2"));
 
-    Set<String> fail2 = mMap.getFailedTests("DummyClass", "dummyMethod2");
+    Set < String > fail2 = mMap.getFailedTests("DummyClass", "dummyMethod2");
     assertEquals(1, fail2.size());
     assertTrue(fail2.contains("dummyMethod2Test"));
 
-    Set<String> fail3 = mMap.getFailedTests("DummyClass2", "dummyMethod");
+    Set < String > fail3 = mMap.getFailedTests("DummyClass2", "dummyMethod");
     assertEquals(1, fail3.size());
     assertTrue(fail3.contains("dummyTest1"));
 
-    Set<String> empty = mMap.getFailedTests("DummyClass", "fakeMethod");
+    Set < String > empty = mMap.getFailedTests("DummyClass", "fakeMethod");
     assertTrue(empty.isEmpty());
   }
 

@@ -156,15 +156,15 @@ public class JumbleTestSuite extends FlatTestSuite {
   private Test[] getOrder() {
     Test first = null;
     String firstTestName = null;
-    Set<String> frontTestNames = new HashSet<String>();
+    Set < String > frontTestNames = new HashSet < String > ();
 
     if (mCache != null) {
       firstTestName = mCache.getLastFailure(mClass, mMethod, mMethodRelativeMutationPoint);
       frontTestNames = mCache.getFailedTests(mClass, mMethod);
     }
 
-    List<Test> front = new ArrayList<Test>();
-    List<Test> back = new ArrayList<Test>();
+    List < Test > front = new ArrayList < Test > ();
+    List < Test > back = new ArrayList < Test > ();
 
     for (int i = 0; i < testCount(); i++) {
       int indx = mOrder.getTestIndex(i);

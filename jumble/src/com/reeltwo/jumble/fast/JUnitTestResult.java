@@ -20,12 +20,12 @@ public class JUnitTestResult extends TestResult {
   @Override
 public String toString() {
     StringBuffer sb = new StringBuffer();
-    for (Enumeration<TestFailure> e = errors(); e.hasMoreElements(); ) {
+    for (Enumeration < TestFailure > e = errors(); e.hasMoreElements(); ) {
       TestFailure f = e.nextElement();
       sb.append("TEST FINISHED WITH ERROR: ").append(f.toString()).append(LS);
       sb.append(f.trace());
     }
-    for (Enumeration<TestFailure> e = failures(); e.hasMoreElements(); ) {
+    for (Enumeration < TestFailure > e = failures(); e.hasMoreElements(); ) {
       TestFailure f = e.nextElement();
       sb.append("TEST FINISHED WITH FAILURE: ").append(f.toString()).append(LS);
       sb.append(f.trace());

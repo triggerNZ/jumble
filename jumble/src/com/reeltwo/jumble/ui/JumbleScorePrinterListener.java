@@ -25,7 +25,7 @@ public class JumbleScorePrinterListener implements JumbleListener {
 
   private String mClassName;
 
-  private List<String> mTestNames;
+  private List < String > mTestNames;
 
   private boolean mInitialTestsPassed;
 

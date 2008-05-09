@@ -14,7 +14,7 @@ import com.reeltwo.jumble.fast.MutationResult;
  * @version $Revision$
  */
 public class NullListener implements JumbleListener {
-  public void jumbleRunStarted(String testName, List<String> testClasses) {
+  public void jumbleRunStarted(String testName, List < String > testClasses) {
   }
   public void jumbleRunEnded() {
   }

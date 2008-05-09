@@ -80,7 +80,7 @@ public class FastJumbler {
     // First, process all the command line options
     final String className = ((String) classFlag.getValue()).replace('/', '.');
     // Process excludes
-    Set<String> ignore = new HashSet<String>();
+    Set < String > ignore = new HashSet < String > ();
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
       for (int i = 0; i < tokens.length; i++) {

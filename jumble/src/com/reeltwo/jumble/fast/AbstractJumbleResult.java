@@ -28,7 +28,7 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public List<String> getTestClasses() {
+  public List < String > getTestClasses() {
     return null;
   }
 
@@ -38,17 +38,17 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public List<MutationResult> getCovered() {
+  public List < MutationResult > getCovered() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public List<MutationResult> getMissed() {
+  public List < MutationResult > getMissed() {
     return null;
   }
 
   /** {@inheritDoc} */
-  public List<MutationResult> getTimeouts() {
+  public List < MutationResult > getTimeouts() {
     return null;
   }
 
@@ -58,7 +58,7 @@ public class AbstractJumbleResult implements JumbleResult {
   }
 
   /** {@inheritDoc} */
-  public List<MutationResult> getAllMutations() {
+  public List < MutationResult > getAllMutations() {
     return null;
   }
 

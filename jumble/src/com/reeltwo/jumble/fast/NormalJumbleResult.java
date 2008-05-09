@@ -51,7 +51,7 @@ public List < MutationResult > getTimeouts() {
 
   /** {@inheritDoc} */
   @Override
-public List<MutationResult> getMissed() {
+public List < MutationResult > getMissed() {
     return filter(MutationResult.FAIL);
   }
 
@@ -63,14 +63,14 @@ public long getTimeoutLength() {
 
   /** {@inheritDoc} */
   @Override
-public List<String> getTestClasses() {
+public List < String > getTestClasses() {
     return mTestClassNames;
   }
 
   /** {@inheritDoc} */
-  private List<MutationResult> filter(int mutationType) {
-    List<MutationResult> all = getAllMutations();
-    ArrayList<MutationResult> ret = new ArrayList<MutationResult>();
+  private List < MutationResult > filter(int mutationType) {
+    List < MutationResult > all = getAllMutations();
+    ArrayList < MutationResult > ret = new ArrayList < MutationResult > ();
 
     for (MutationResult mutationResult : all) {
       if (mutationResult.getStatus() == mutationType) {

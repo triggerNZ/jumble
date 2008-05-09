@@ -42,7 +42,7 @@ public class MutatingClassLoader extends ClassLoader {
     "org.junit"
   };
 
-  private final Hashtable<String, Class> mClasses = new Hashtable<String, Class>();
+  private final Hashtable < String, Class < ? > > mClasses = new Hashtable < String, Class < ? > > ();
   private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
   private final Repository mRepository;
 
@@ -155,13 +155,10 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
 
   @Override
 @SuppressWarnings("unchecked")
-  public Enumeration<URL> getResources(String name) throws IOException {
-    Enumeration<URL> resources = mClassPath.getResources(name);
+  public Enumeration < URL > getResources(String name) throws IOException {
+    Enumeration < URL > resources = mClassPath.getResources(name);
     if (!resources.hasMoreElements()) {
       resources = mDeferTo.getResources(name);
-      //System.err.println("Parent getting resources: " + name + " " + resources);
-      //} else {
-      //System.err.println("MCL getting resources: " + name + " " + resources);
     }
     return resources;
   }
@@ -171,9 +168,6 @@ public URL getResource(String name) {
     URL resource = mClassPath.getResource(name);
     if (resource == null) {
       resource = mDeferTo.getResource(name);
-      //System.err.println("Parent getting resource: " + name + " " + resource);
-      //} else {
-      //System.err.println("MCL getting resource: " + name + " " + resource);
     }
     return resource;
   }
@@ -183,9 +177,6 @@ public InputStream getResourceAsStream(String name) {
     InputStream resource = mClassPath.getResourceAsStream(name);
     if (resource == null) {
       resource = mDeferTo.getResourceAsStream(name);
-      //System.err.println("Parent getting resource as stream: " + name + " " + resource);
-      //} else {
-      //System.err.println("MCL getting resource as stream: " + name + " " + resource);
     }
     return resource;
   }

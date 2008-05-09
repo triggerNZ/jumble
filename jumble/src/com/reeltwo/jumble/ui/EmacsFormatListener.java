@@ -80,7 +80,7 @@ public class EmacsFormatListener implements JumbleListener {
     }
   }
 
-  public void jumbleRunStarted(String className, List<String> testClasses) {
+  public void jumbleRunStarted(String className, List < String > testClasses) {
     mClassName = className;
   }
 

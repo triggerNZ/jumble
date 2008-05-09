@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class BrokenTestsTestResult extends AbstractJumbleResult {
 
-  private final List<String> mTestClassNames;
+  private final List < String > mTestClassNames;
 
   private int mMutationCount;
 
-  public BrokenTestsTestResult(String className, List<String> testClassNames, int mcount) {
+  public BrokenTestsTestResult(String className, List < String > testClassNames, int mcount) {
     super(className);
     mTestClassNames = testClassNames;
     mMutationCount = mcount;
@@ -23,7 +23,7 @@ public class BrokenTestsTestResult extends AbstractJumbleResult {
 
   /** {@inheritDoc} */
   @Override
-public List<String> getTestClasses() {
+public List < String > getTestClasses() {
     return mTestClassNames;
   }
 

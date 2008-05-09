@@ -19,7 +19,7 @@ public class IOThread extends Thread {
 
   public static final boolean DEBUG = false;
   private BufferedReader mOut;
-  private LinkedList<String> mBuffer;
+  private LinkedList < String > mBuffer;
 
   /**
    * A new thread.
@@ -28,7 +28,7 @@ public class IOThread extends Thread {
    */
   public IOThread(InputStream out) {
     mOut = new BufferedReader(new InputStreamReader(out));
-    mBuffer = new LinkedList<String>();
+    mBuffer = new LinkedList < String > ();
   }
 
   /** Loops while the stream exists.*/

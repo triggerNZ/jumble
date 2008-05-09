@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class MissingTestsTestResult extends AbstractJumbleResult {
 
-  private final List<String> mTestClassNames;
+  private final List < String > mTestClassNames;
 
   private int mMutationCount;
 
-  public MissingTestsTestResult(String className, List<String> testClassNames, int mcount) {
+  public MissingTestsTestResult(String className, List < String > testClassNames, int mcount) {
     super(className);
     mTestClassNames = testClassNames;
     mMutationCount = mcount;
@@ -23,25 +23,25 @@ public class MissingTestsTestResult extends AbstractJumbleResult {
 
   /** {@inheritDoc} */
   @Override
-public List<String> getTestClasses() {
+  public List < String > getTestClasses() {
     return mTestClassNames;
   }
 
   /** {@inheritDoc} */
   @Override
-public int getNumberOfMutations() {
+  public int getNumberOfMutations() {
     return mMutationCount;
   }
 
   /** {@inheritDoc} */
   @Override
-public boolean isMissingTestClass() {
+  public boolean isMissingTestClass() {
     return true;
   }
 
   /** {@inheritDoc} */
   @Override
-public boolean initialTestsPassed() {
+  public boolean initialTestsPassed() {
     return false;
   }
 
