@@ -30,18 +30,6 @@ public class MutatingClassLoader extends ClassLoader {
   /** The name of the class being mutated */
   private final String mTarget;
 
-  private final String[] mIgnoredPackages = new String[] {
-    "java.",
-    //"javax.",
-    "sun.reflect",
-    "junit.",
-    "com.sun",
-    //"org.apache",
-    //"org.xml",
-    //"org.w3c"
-    "org.junit"
-  };
-
   private final Hashtable < String, Class < ? > > mClasses = new Hashtable < String, Class < ? > > ();
   private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
   private final Repository mRepository;
@@ -89,17 +77,12 @@ public class MutatingClassLoader extends ClassLoader {
   @Override
 protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
     Class cl = null;
-
     if ((cl = mClasses.get(className)) == null) {
       // Classes we're forcing to be loaded by mDeferTo
-      for (int i = 0; i < mIgnoredPackages.length; i++) {
-        if (className.startsWith(mIgnoredPackages[i])) {
-          //System.err.println("Parent forced loading of class: " + className);
-          cl = mDeferTo.loadClass(className);
-          break;
-        }
+      if (isLoadedByDeferredClassLoader(className)) {
+        cl = mDeferTo.loadClass(className);
       }
-
+      
       if (cl == null) {
         JavaClass clazz = null;
 
@@ -131,6 +114,32 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
     mClasses.put(className, cl);
 
     return cl;
+  }
+
+  private static final String[] IGNORED_PACKAGES = new String[] {
+      "java.",
+      "sun.reflect",
+      "junit.",
+      "com.sun",
+      "org.junit"
+    };
+    
+    private static final String[] ACCEPTED_PACKAGES = new String[] {
+        "com.sun.facelets"
+    };
+  
+  boolean isLoadedByDeferredClassLoader(String className) {
+    for (int i = 0; i < ACCEPTED_PACKAGES.length; i++) {
+      if (className.startsWith(ACCEPTED_PACKAGES[i])) {
+        return false;
+      }
+    }    
+    for (int i = 0; i < IGNORED_PACKAGES.length; i++) {
+      if (className.startsWith(IGNORED_PACKAGES[i])) {
+        return true;
+      }
+    }    
+    return false;
   }
 
   /**

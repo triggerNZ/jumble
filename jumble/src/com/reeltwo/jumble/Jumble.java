@@ -21,18 +21,22 @@ import com.reeltwo.util.CLIFlags.Flag;
  * @version $Revision$
  */
 public class Jumble {
-
-  /** Prevent instantiation */
-  private Jumble() {
+  private FastRunner mFastRunner;
+  
+  public Jumble() {
+    mFastRunner = new FastRunner();
   }
-
+  
   /**
    * Main method.
    * 
    * @param args command line arguments. Use -h to see the expected arguments.
    */
   public static void main(String[] args) throws Exception {
-    final FastRunner jumble = new FastRunner();
+    new Jumble().runMain(args);
+  }
+
+  public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("Jumble");
     final Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
     final Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
@@ -62,29 +66,29 @@ public class Jumble {
 
     flags.setFlags(args);
 
-    jumble.setInlineConstants(inlFlag.isSet());
-    jumble.setReturnVals(retFlag.isSet());
-    jumble.setIncrements(incFlag.isSet());
-    jumble.setCPool(cpoolFlag.isSet());
-    jumble.setSwitch(switchFlag.isSet());
-    jumble.setStores(storesFlag.isSet());
-    jumble.setOrdered(!orderFlag.isSet());
-    jumble.setLoadCache(!loadFlag.isSet());
-    jumble.setSaveCache(!saveFlag.isSet());
-    jumble.setUseCache(!useFlag.isSet());
-    jumble.setVerbose(verboseFlag.isSet());
-    jumble.setClassPath((String) classpathFlag.getValue());
+    mFastRunner.setInlineConstants(inlFlag.isSet());
+    mFastRunner.setReturnVals(retFlag.isSet());
+    mFastRunner.setIncrements(incFlag.isSet());
+    mFastRunner.setCPool(cpoolFlag.isSet());
+    mFastRunner.setSwitch(switchFlag.isSet());
+    mFastRunner.setStores(storesFlag.isSet());
+    mFastRunner.setOrdered(!orderFlag.isSet());
+    mFastRunner.setLoadCache(!loadFlag.isSet());
+    mFastRunner.setSaveCache(!saveFlag.isSet());
+    mFastRunner.setUseCache(!useFlag.isSet());
+    mFastRunner.setVerbose(verboseFlag.isSet());
+    mFastRunner.setClassPath((String) classpathFlag.getValue());
 
     if (lengthFlag.isSet()) {
       int val = ((Integer) lengthFlag.getValue()).intValue();
       if (val >= 0) {
-        jumble.setMaxExternalMutations(val);
+        mFastRunner.setMaxExternalMutations(val);
       }
     }
     if (firstFlag.isSet()) {
       int val = ((Integer) firstFlag.getValue()).intValue();
       if (val >= -1) {
-        jumble.setFirstMutation(val);
+        mFastRunner.setFirstMutation(val);
       }
     }
 
@@ -94,7 +98,7 @@ public class Jumble {
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
       for (int i = 0; i < tokens.length; i++) {
-        jumble.addExcludeMethod(tokens[i]);
+        mFastRunner.addExcludeMethod(tokens[i]);
       }
     }
 
@@ -103,19 +107,19 @@ public class Jumble {
 
     if (jvmargFlag.isSet()) {
       for (Object val : jvmargFlag.getValues()) {
-        jumble.addJvmArg((String) val);
+        mFastRunner.addJvmArg((String) val);
       }
     }
 
     if (jvmpropFlag.isSet()) {
       for (Object val : jvmpropFlag.getValues()) {
-        jumble.addSystemProperty((String) val);
+        mFastRunner.addSystemProperty((String) val);
       }
     }
 
     // We need at least one test
     if (testClassFlag.isSet()) {
-      for (Iterator it = testClassFlag.getValues().iterator(); it.hasNext();) {
+      for (Iterator < ? > it = testClassFlag.getValues().iterator(); it.hasNext();) {
         testList.add(((String) it.next()).replace('/', '.'));
       }
     } else {
@@ -123,12 +127,11 @@ public class Jumble {
       testList.add(guessTestClassName(className));
     }
 
-
     JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
         : getListener((String) printFlag.getValue());
-    jumble.runJumble(className, testList, listener);
+    mFastRunner.runJumble(className, testList, listener);
   }
-
+  
   /**
    * Guesses the name of a test class used for testing a particular class. It
    * assumes the following conventions:
@@ -174,7 +177,7 @@ public class Jumble {
    */
   private static JumbleListener getListener(String className) {
     try {
-      final Class < ? > clazz = Class.forName(className); // Class to be found in com.reeltwo.jumble.jar
+      final Class < ? > clazz = Class.forName(className); // Class to be found in jumble.jar
       try {
         final Constructor < ? > c = clazz.getConstructor(new Class[0]);
         return (JumbleListener) c.newInstance(new Object[0]);
@@ -207,6 +210,10 @@ public class Jumble {
    */
   public static long computeTimeout(long runtime) {
     return runtime * 10 + 2000;
+  }
+
+  public FastRunner getFastRunner() {
+    return mFastRunner;
   }
 
 }

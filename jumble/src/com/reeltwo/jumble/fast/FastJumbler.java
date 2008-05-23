@@ -34,9 +34,7 @@ public class FastJumbler {
 
   public static final String SIGNAL_MAX_REACHED = "MAX_REACHED";
 
-
-  // Private c'tor
-  private FastJumbler() {
+  public FastJumbler() {
   }
 
   static final String FLAG_EXCLUDE = "exclude";
@@ -51,13 +49,7 @@ public class FastJumbler {
   static final String FLAG_LENGTH = "length";
   static final String FLAG_CLASSPATH = "classpath";
 
-  /**
-   * Main method. Supply --help to get help on the expected arguments.
-   * 
-   * @param args
-   *          command line arguments.
-   */
-  public static void main(String[] args) throws Exception {
+  public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("FastJumbler");
 
     final Flag exFlag = flags.registerOptional('x', FLAG_EXCLUDE, String.class, "METHOD", "Comma-separated list of methods to exclude.");
@@ -181,6 +173,16 @@ public class FastJumbler {
       }
 
     }
+  }
+  
+  /**
+   * Main method. Supply --help to get help on the expected arguments.
+   * 
+   * @param args
+   *          command line arguments.
+   */
+  public static void main(String[] args) throws Exception {
+    new FastJumbler().runMain(args);
   }
 
 }

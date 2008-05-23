@@ -103,9 +103,6 @@
     <!-- don't allow empty blocks (in particular catch blocks) -->
 <!--    <module name="EmptyBlock"/>     There are a bunch of these in the tests -->
 
-    <!-- avoid inner assignments -->
-    <module name="InnerAssignment"/>
-
     <!-- don't allow imports from the sun.* package hierarchy -->
     <module name="IllegalImport"/>
 

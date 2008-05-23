@@ -576,4 +576,13 @@ public class MutatingClassLoaderTest extends TestCase {
     }
   }
 
+  public void testIsLoadedByDeferredClassLoader() {
+    MutatingClassLoader mutatingClassLoader = new MutatingClassLoader(null, new Mutater(), "");
+    assertTrue(mutatingClassLoader.isLoadedByDeferredClassLoader("com.sun.RandomClass"));
+  }
+  
+  public void testThatComSunFaceletPackageIsNotDeferred() {
+    MutatingClassLoader mutatingClassLoader = new MutatingClassLoader(null, new Mutater(), "");
+    assertFalse(mutatingClassLoader.isLoadedByDeferredClassLoader("com.sun.facelets.RandomClass"));
+  }
 }
