@@ -7,8 +7,12 @@
 		<property name="jarfile" value="jumble-eclipse.jar" />
 		<property name="dest" value="${destdir}/${plugin}" />
 		<property name="bindir" value="build" />
-		<property name="ECLIPSE_HOME" value="/research/tools/eclipse" />
+		<property name="ECLIPSE_HOME" value="/opt/development/eclipse" />
 		<path id="Plug-in Dependencies.libraryclasspath">
+			<fileset dir="${ECLIPSE_HOME}/plugins/">
+				 <include name="*.jar"/>
+		    </fileset>	
+			<!--
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar" />
@@ -30,6 +34,7 @@
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.2.0.I20060605-1400.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.2.0.I20060605-1400.jar" />
+			-->
 		</path>
 		<path id="eclipseplugin.classpath">
 			<pathelement location="bin" />
