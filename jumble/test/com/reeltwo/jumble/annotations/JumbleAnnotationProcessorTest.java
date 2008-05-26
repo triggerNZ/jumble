@@ -1,7 +1,6 @@
 package com.reeltwo.jumble.annotations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -15,7 +14,7 @@ import junit.framework.TestSuite;
  */
 public class JumbleAnnotationProcessorTest extends TestCase {
   public void testGetTestClassName() throws ClassNotFoundException {
-    assertEquals(new ArrayList < String > () {{ add("DummyClassTest");}}, new JumbleAnnotationProcessor().getTestClassNames(DummyClass.class.getName()));
+    assertEquals(new ArrayList < String > () { { add("DummyClassTest"); } }, new JumbleAnnotationProcessor().getTestClassNames(DummyClass.class.getName()));
   }
   
   public void testGetTestClassNameWithNoAnnotationReturnsEmptyList() throws ClassNotFoundException {

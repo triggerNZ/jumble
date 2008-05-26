@@ -133,9 +133,9 @@ public class Jumble {
     mFastRunner.runJumble(className, testList, listener);
   }
 
-  private List <String> getTestClassNames(final String className) {
+  private List < String > getTestClassNames(final String className) {
     JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
-    List <String> testNamesFromAnnotation = null;
+    List < String > testNamesFromAnnotation = null;
       try {
         testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className);
       } catch (ClassNotFoundException e) {
@@ -143,7 +143,7 @@ public class Jumble {
       }
     
     if (testNamesFromAnnotation.isEmpty()) {
-      return new ArrayList < String > () {{add(guessTestClassName(className));}};
+      return new ArrayList < String > () { { add(guessTestClassName(className)); } };
     } else {
       return testNamesFromAnnotation;
     }

@@ -1,7 +1,6 @@
 package com.reeltwo.jumble.mutation;
 
 
-//import org.apache.bcel.util.ClassPath;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -123,7 +122,8 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
     };
     
     private static final String[] ACCEPTED_PACKAGES = new String[] {
-        "com.sun.facelets"
+        "com.sun.facelets",
+        "com.sun.org.apache.xerces"
     };
   
   boolean isLoadedByDeferredClassLoader(String className) {

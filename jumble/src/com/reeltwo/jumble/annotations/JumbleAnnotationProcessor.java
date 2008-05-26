@@ -18,7 +18,7 @@ public class JumbleAnnotationProcessor {
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(className, new Mutater(-1), System.getProperty("java.class.path"));
       Thread.currentThread().setContextClassLoader(jumbler);
-      Class <?> clazz = Class.forName(className);
+      Class < ? > clazz = Class.forName(className);
       TestClass testClass = clazz.getAnnotation(TestClass.class);
       List < String > testClassNames = new ArrayList < String > ();
       if (testClass != null) {
