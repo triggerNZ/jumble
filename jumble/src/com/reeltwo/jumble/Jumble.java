@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
+import com.reeltwo.jumble.annotations.JumbleAnnotationProcessor;
 import com.reeltwo.jumble.fast.FastRunner;
 import com.reeltwo.jumble.ui.EmacsFormatListener;
 import com.reeltwo.jumble.ui.JumbleListener;
@@ -124,12 +125,28 @@ public class Jumble {
       }
     } else {
       // no test class given, guess its name
-      testList.add(guessTestClassName(className));
+      testList.addAll(getTestClassNames(className));
     }
 
     JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
         : getListener((String) printFlag.getValue());
     mFastRunner.runJumble(className, testList, listener);
+  }
+
+  private List <String> getTestClassNames(final String className) {
+    JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
+    List <String> testNamesFromAnnotation = null;
+      try {
+        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className);
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    
+    if (testNamesFromAnnotation.isEmpty()) {
+      return new ArrayList < String > () {{add(guessTestClassName(className));}};
+    } else {
+      return testNamesFromAnnotation;
+    }
   }
   
   /**

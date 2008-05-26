@@ -1,0 +1,6 @@
+Mutating experiments.AnnotatedClass
+Tests: experiments.JumblerExperimentTest
+Mutation points = 1, unit test time limit 2.0s
+M FAIL: experiments.AnnotatedClass:8: + -> -
+
+Score: 0%

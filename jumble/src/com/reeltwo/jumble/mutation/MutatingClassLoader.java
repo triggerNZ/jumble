@@ -51,11 +51,9 @@ public class MutatingClassLoader extends ClassLoader {
    * classes visible to the classloader.
    */
   public MutatingClassLoader(final String target, final Mutater mutater, final String classpath) {
-    // Add these ignored classes to work around jakarta commons logging stupidity with class loaders.
     mTarget = target;
     mMutater = mutater;
     mClassPath = new ClassPath(classpath);
-    //mRepository = SyntheticRepository.getInstance();
     mRepository = SyntheticRepository.getInstance(mClassPath);
     mMutater.setRepository(mRepository);
   }

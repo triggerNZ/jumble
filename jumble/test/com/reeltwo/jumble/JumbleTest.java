@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Tests the corresonding class.
+ * Tests the corresponding class.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
@@ -24,6 +24,10 @@ public class JumbleTest extends TestCase {
 
   public void testInterface() throws Exception {
     assertEquals(getExpectedOutput("experiments.Interface"), runCommandLineJumble("experiments.Interface", -1));
+  }
+
+  public void testAnnotation() throws Exception {
+    assertEquals(getExpectedOutput("experiments.AnnotatedClass"), runCommandLineJumble("experiments.AnnotatedClass", -1));
   }
 
   public void testNonTestTestClass() throws Exception {
@@ -182,7 +186,6 @@ public class JumbleTest extends TestCase {
 
   private String getExpectedOutput(String className) throws Exception {
     String location = "com/reeltwo/jumble/" + className.substring(className.lastIndexOf('.') + 1) + ".txt";
-    // System.err.println(location);
     return readAll(getClass().getClassLoader().getResourceAsStream(location));
   }
 

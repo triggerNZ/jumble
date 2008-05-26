@@ -20,6 +20,7 @@ public class AllTests extends TestSuite {
     suite.addTest(com.reeltwo.jumble.mutation.AllTests.suite());
     suite.addTest(com.reeltwo.jumble.fast.AllTests.suite());
     suite.addTest(com.reeltwo.jumble.ui.AllTests.suite());
+    suite.addTest(com.reeltwo.jumble.annotations.AllTests.suite());
     return suite;
   }
   

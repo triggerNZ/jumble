@@ -643,12 +643,10 @@ public class FastRunner {
         // test class did not exist
         return new MissingTestsTestResult(mClassName, testClassNames, mMutationCount);
       }
-      //System.err.println("Parent. Starting initial run without mutating");
 
       JUnitTestResult result = new JUnitTestResult();
       suite.run(result);
       boolean successful = result.wasSuccessful();
-      //System.err.println("Parent. Finished");
 
       // Now, if the tests failed, can return straight away
       if (!successful) {
