@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jumble-annotations" default="jar">
+	<property name="src.dir" value="src"/>
+	<property name="classes.dir" value="classes"/>
+	
+    <target name="jar" depends="compile">
+    	<jar basedir="${classes.dir}" destfile="${ant.project.name}.jar"></jar>
+    </target>
+
+    <target name="compile" depends="init">
+    	<javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+	
+    <target name="clean">
+    	<delete dir="${classes.dir}"/>
+    </target>
+</project>
