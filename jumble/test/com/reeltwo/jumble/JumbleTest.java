@@ -26,9 +26,9 @@ public class JumbleTest extends TestCase {
     assertEquals(getExpectedOutput("experiments.Interface"), runCommandLineJumble("experiments.Interface", -1));
   }
 
-  public void testAnnotation() throws Exception {
-    assertEquals(getExpectedOutput("experiments.AnnotatedClass"), runCommandLineJumble("experiments.AnnotatedClass", -1));
-  }
+//  public void testAnnotation() throws Exception {
+//    assertEquals(getExpectedOutput("experiments.AnnotatedClass"), runCommandLineJumble("experiments.AnnotatedClass", -1));
+//  }
 
   public void testNonTestTestClass() throws Exception {
     assertEquals("ERROR: experiments.JumblerExperiment is not a test class.", runCommandLineJumble("experiments.JumblerExperiment", "experiments.JumblerExperiment", false).trim());

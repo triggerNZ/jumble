@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
-import com.reeltwo.jumble.annotations.JumbleAnnotationProcessor;
 import com.reeltwo.jumble.fast.FastRunner;
 import com.reeltwo.jumble.ui.EmacsFormatListener;
 import com.reeltwo.jumble.ui.JumbleListener;
@@ -125,7 +123,8 @@ public class Jumble {
       }
     } else {
       // no test class given, guess its name
-      testList.addAll(getTestClassNames(className));
+//      testList.addAll(getTestClassNames(className));
+      testList.add(guessTestClassName(className));
     }
 
     JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
@@ -133,21 +132,21 @@ public class Jumble {
     mFastRunner.runJumble(className, testList, listener);
   }
 
-  private List < String > getTestClassNames(final String className) {
-    JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
-    List < String > testNamesFromAnnotation = null;
-      try {
-        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
-    
-    if (testNamesFromAnnotation.isEmpty()) {
-      return new ArrayList < String > () { { add(guessTestClassName(className)); } };
-    } else {
-      return testNamesFromAnnotation;
-    }
-  }
+//  private List < String > getTestClassNames(final String className) {
+//    JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
+//    List < String > testNamesFromAnnotation = null;
+//      try {
+//        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className);
+//      } catch (ClassNotFoundException e) {
+//        throw new RuntimeException(e);
+//      }
+//    
+//    if (testNamesFromAnnotation.isEmpty()) {
+//      return new ArrayList < String > () { { add(guessTestClassName(className)); } };
+//    } else {
+//      return testNamesFromAnnotation;
+//    }
+//  }
   
   /**
    * Guesses the name of a test class used for testing a particular class. It
