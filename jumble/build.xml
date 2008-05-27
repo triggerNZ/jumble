@@ -12,6 +12,7 @@
 		<pathelement location="${lib.dir}/junit-4.3.1.jar" />
 		<pathelement location="${lib.dir}/reeltwo.jar" />
 		<pathelement location="${lib.dir}/testclasses.jar" />
+		<pathelement location="${lib.dir}/jumble-annotations.jar" />
 		<pathelement location="${build.dir}" />
 		<pathelement location="${test.build.dir}" />
 	</path>
