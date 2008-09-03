@@ -9,7 +9,7 @@ import com.reeltwo.jumble.mutation.MutatingClassLoader;
 /**
  * Class for processing Jumble annotations.
  * @author Tin Pavlinic
- * @version $Revision $
+ * @version $Revision: $
  */
 public class JumbleAnnotationProcessor {
   public List < String > getTestClassNames(String className) throws ClassNotFoundException {
