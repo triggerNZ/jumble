@@ -86,7 +86,7 @@ public class JumbleUtils {
    * Gets the name of a test, (different method depending on underlying type).
    * 
    * @param t
-   * @return
+   * @return test name
    */
   public static String getTestName(Test t) {
     if (t instanceof TestCase) {
