@@ -1,10 +1,11 @@
 package experiments;
 
 import com.reeltwo.jumble.annotations.TestClass;
+
 /**
- * Class used for testing
+ * Class used for testing.
  * @author Tin Pavlinic
- * @version $Revision $
+ * @version $Revision: $
  */
 @TestClass({"experiments.JumblerExperimentTest" })
 public class AnnotatedClass {
