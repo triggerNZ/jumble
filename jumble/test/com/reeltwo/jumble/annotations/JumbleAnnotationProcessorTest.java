@@ -9,8 +9,7 @@ import junit.framework.TestSuite;
 /**
  * Tests the corresponding class.
  * @author Tin Pavlinic
- * @version $Revision $
- *
+ * @version $Revision: $
  */
 public class JumbleAnnotationProcessorTest extends TestCase {
   public void testGetTestClassName() throws ClassNotFoundException {
