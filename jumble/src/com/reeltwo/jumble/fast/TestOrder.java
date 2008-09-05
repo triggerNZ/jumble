@@ -96,7 +96,7 @@ public class TestOrder implements Serializable, ClassLoaderCloneable {
       sortPairs[i] = new SortPair(i, runtimes[i]);
     }
 
-    java.util.Arrays.sort(sortPairs, new Comparator < SortPair > () {
+    java.util.Arrays.sort(sortPairs, new Comparator<SortPair> () {
         public int compare(SortPair p1, SortPair p2) {
           if (p1.getTime() < p2.getTime()) {
             return -1;
