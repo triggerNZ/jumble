@@ -74,9 +74,9 @@ public class FastRunner {
    */
   private int mFirstMutation = 0;
 
-  private Set < String > mExcludeMethods = new HashSet < String > ();
+  private Set<String> mExcludeMethods = new HashSet<String> ();
 
-  private List < String > mJvmArgs = new ArrayList < String > ();
+  private List<String> mJvmArgs = new ArrayList<String> ();
 
   // State during run
 
@@ -362,7 +362,7 @@ public class FastRunner {
    *
    * @return the set of excluded method names
    */
-  public Set < String > getExcludeMethods() {
+  public Set<String> getExcludeMethods() {
     return mExcludeMethods;
   }
 
@@ -448,7 +448,7 @@ public class FastRunner {
 
   /** Constructs arguments to the FastJumbler */
   private String[] createArgs(int currentMutation, int max) {
-    ArrayList < String > args = new ArrayList < String > ();
+    ArrayList<String> args = new ArrayList<String> ();
     args.add("--" + FastJumbler.FLAG_CLASSPATH);
     args.add(mClassPath);
 
@@ -471,7 +471,7 @@ public class FastRunner {
     // exclude methods
     if (!mExcludeMethods.isEmpty()) {
       StringBuffer ex = new StringBuffer();
-      Iterator < String > it = mExcludeMethods.iterator();
+      Iterator<String> it = mExcludeMethods.iterator();
       for (int i = 0; i < mExcludeMethods.size(); i++) {
         if (i == 0) {
           ex.append(it.next());
@@ -626,7 +626,7 @@ public class FastRunner {
    * Runs tests without mutating at all. If all OK, write out testsuitefile for
    * later use, otherwise return a JumbleResult
    */
-  private JumbleResult runInitialTests(List < String > testClassNames) {
+  private JumbleResult runInitialTests(List<String> testClassNames) {
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
@@ -716,7 +716,7 @@ public class FastRunner {
    * @see JumbleResult
    * @see JumbleListener
    */
-  public void runJumble(final String className, final List < String > testClassNames, JumbleListener listener) throws Exception {
+  public void runJumble(final String className, final List<String> testClassNames, JumbleListener listener) throws Exception {
     runJumbleProxy(className, testClassNames, listener);
   }
 
@@ -732,16 +732,16 @@ public class FastRunner {
    *          list of test class names.
    * @return
    */
-  private boolean checkClasses(JumbleListener out, String className, List < String > testClassNames) {
+  private boolean checkClasses(JumbleListener out, String className, List<String> testClassNames) {
     boolean ok = true;
 
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
-      Class < ? > clazz = jumbler.loadClass(className);
+      Class<?> clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {
           String testName = testClassNames.get(i);
-          Class < ? > test = null;
+          Class<?> test = null;
           try {
             test = jumbler.loadClass(testName);
           } catch (ClassNotFoundException e) {
@@ -776,7 +776,7 @@ public class FastRunner {
    * @see JumbleResult
    * @see JumbleListener
    */
-  private JumbleResult runJumbleProxy(final String className, final List < String > testClassNames, JumbleListener listener) throws Exception {
+  private JumbleResult runJumbleProxy(final String className, final List<String> testClassNames, JumbleListener listener) throws Exception {
     if (listener == null) {
       listener = new NullListener();
     }
@@ -812,7 +812,7 @@ public class FastRunner {
     mIot = null;
     mEot = null;
 
-    final List < MutationResult > allMutations = new ArrayList < MutationResult > ();
+    final List<MutationResult> allMutations = new ArrayList<MutationResult>();
     int count = 0;
     final int max = getMaxExternalMutations();
     for (int currentMutation = getFirstMutation(); currentMutation < mMutationCount; currentMutation++) {
