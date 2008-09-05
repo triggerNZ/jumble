@@ -70,7 +70,7 @@ public List<String> getTestClasses() {
   /** {@inheritDoc} */
   private List<MutationResult> filter(int mutationType) {
     List<MutationResult> all = getAllMutations();
-    ArrayList<MutationResult> ret = new ArrayList<MutationResult> ();
+    ArrayList<MutationResult> ret = new ArrayList<MutationResult>();
 
     for (MutationResult mutationResult : all) {
       if (mutationResult.getStatus() == mutationType) {
