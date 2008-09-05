@@ -29,7 +29,7 @@ public class MutatingClassLoader extends ClassLoader {
   /** The name of the class being mutated */
   private final String mTarget;
 
-  private final Hashtable < String, Class < ? > > mClasses = new Hashtable < String, Class < ? > > ();
+  private final Hashtable<String, Class<?>> mClasses = new Hashtable<String, Class<?>>();
   private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
   private final Repository mRepository;
 
@@ -115,6 +115,7 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
 
   private static final String[] IGNORED_PACKAGES = new String[] {
       "java.",
+      "javax.",
       "sun.reflect",
       "junit.",
       "com.sun",
