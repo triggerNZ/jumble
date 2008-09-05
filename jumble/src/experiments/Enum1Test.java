@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 /**
  * Enum test used for testing.
+ *
  * @author Tin Pavlinic
  * @version $Revision: $
  */
