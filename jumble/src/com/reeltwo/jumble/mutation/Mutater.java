@@ -186,7 +186,7 @@ public class Mutater {
   }
 
   /** Set of methods to be ignored (i.e. never mutated). */
-  private Set < String > mIgnored;
+  private Set<String> mIgnored;
 
   /** Should ICONST instructions be changed. */
   private boolean mMutateInlineConstants = false;
@@ -463,8 +463,8 @@ public class Mutater {
    * 
    * @param ignore Set of ignored methods
    */
-  public void setIgnoredMethods(final Set < String > ignore) {
-    mIgnored = ignore == null ? new HashSet < String > () : ignore;
+  public void setIgnoredMethods(final Set<String> ignore) {
+    mIgnored = ignore == null ? new HashSet<String> () : ignore;
   }
 
   private boolean checkNormalMethod(final Method m, String className) {
