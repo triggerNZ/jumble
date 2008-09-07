@@ -31,7 +31,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
    * Constructor. Creates a blank map.
    */
   public FailedTestMap() {
-    mCache = new HashMap<String, Map <Integer, String>> ();
+    mCache = new HashMap<String, Map <Integer, String>>();
   }
 
   /**
