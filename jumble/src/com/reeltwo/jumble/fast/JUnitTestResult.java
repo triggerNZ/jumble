@@ -18,15 +18,15 @@ public class JUnitTestResult extends TestResult {
   private static final String LS = System.getProperty("line.separator");
 
   @Override
-public String toString() {
-    StringBuffer sb = new StringBuffer();
-    for (Enumeration < TestFailure > e = errors(); e.hasMoreElements(); ) {
-      TestFailure f = e.nextElement();
+  public String toString() {
+    final StringBuffer sb = new StringBuffer();
+    for (final Enumeration<TestFailure> e = errors(); e.hasMoreElements(); ) {
+      final TestFailure f = e.nextElement();
       sb.append("TEST FINISHED WITH ERROR: ").append(f.toString()).append(LS);
       sb.append(f.trace());
     }
-    for (Enumeration < TestFailure > e = failures(); e.hasMoreElements(); ) {
-      TestFailure f = e.nextElement();
+    for (final Enumeration<TestFailure> e = failures(); e.hasMoreElements(); ) {
+      final TestFailure f = e.nextElement();
       sb.append("TEST FINISHED WITH FAILURE: ").append(f.toString()).append(LS);
       sb.append(f.trace());
     }
