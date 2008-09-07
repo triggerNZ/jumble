@@ -38,7 +38,7 @@ public class JumbleUtils {
    * @return if clazz is a test class, false otherwise.
    */
   public static boolean isJUnit3TestClass(Class<?> clazz) {
-    Set<Class<?>> interfaceSet = new HashSet<Class<?>> ();
+    Set<Class<?>> interfaceSet = new HashSet<Class<?>>();
     Class<?> tmp = clazz;
 
     while (tmp != Object.class) {
