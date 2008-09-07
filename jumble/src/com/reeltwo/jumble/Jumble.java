@@ -102,7 +102,7 @@ public class Jumble {
     }
 
     className = ((String) classFlag.getValue()).replace('/', '.');
-    testList = new ArrayList<String> ();
+    testList = new ArrayList<String>();
 
     if (jvmargFlag.isSet()) {
       for (Object val : jvmargFlag.getValues()) {
