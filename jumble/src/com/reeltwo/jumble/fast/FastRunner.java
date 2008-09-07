@@ -74,9 +74,9 @@ public class FastRunner {
    */
   private int mFirstMutation = 0;
 
-  private Set<String> mExcludeMethods = new HashSet<String> ();
+  private Set<String> mExcludeMethods = new HashSet<String>();
 
-  private List<String> mJvmArgs = new ArrayList<String> ();
+  private List<String> mJvmArgs = new ArrayList<String>();
 
   // State during run
 
@@ -448,7 +448,7 @@ public class FastRunner {
 
   /** Constructs arguments to the FastJumbler */
   private String[] createArgs(int currentMutation, int max) {
-    ArrayList<String> args = new ArrayList<String> ();
+    ArrayList<String> args = new ArrayList<String>();
     args.add("--" + FastJumbler.FLAG_CLASSPATH);
     args.add(mClassPath);
 
