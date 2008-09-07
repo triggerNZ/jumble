@@ -464,7 +464,7 @@ public class Mutater {
    * @param ignore Set of ignored methods
    */
   public void setIgnoredMethods(final Set<String> ignore) {
-    mIgnored = ignore == null ? new HashSet<String> () : ignore;
+    mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
   private boolean checkNormalMethod(final Method m, String className) {
