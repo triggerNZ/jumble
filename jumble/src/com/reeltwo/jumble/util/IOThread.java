@@ -28,7 +28,7 @@ public class IOThread extends Thread {
    */
   public IOThread(InputStream out) {
     mOut = new BufferedReader(new InputStreamReader(out));
-    mBuffer = new LinkedList < String > ();
+    mBuffer = new LinkedList<String>();
   }
 
   /** Loops while the stream exists.*/
