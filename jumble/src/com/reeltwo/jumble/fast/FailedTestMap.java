@@ -117,7 +117,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
     if (map == null) {
       return null;
     } 
-    return map.get(new Integer(mutationPoint));
+    return map.get(Integer.valueOf(mutationPoint));
   }
 
   /**
