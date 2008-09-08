@@ -22,7 +22,7 @@ import experiments.JumblerExperimentTest;
  * @version $Revision$
  */
 public class TestOrderTest extends TestCase {
-  private TestOrder mOrder;
+  private TestOrder mOrder = null;
 
   @Override
 public void setUp() {
