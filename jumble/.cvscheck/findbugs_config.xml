@@ -8,7 +8,7 @@
      <!-- SnVI not needed because we do not use serialization for persistence -->
      <!-- PZLA is a stupid test about returning null arrays -->
      <Match classregex=".*">
-        <BugCode name="SnVI,PZLA,BC"/>
+        <BugCode name="SnVI,PZLA,BC,EI,EI2"/>
      </Match>
 
      <!-- Skip unreferenced field in anonymous classes -->
