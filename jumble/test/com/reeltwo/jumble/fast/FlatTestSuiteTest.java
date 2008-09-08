@@ -14,7 +14,7 @@ import experiments.JumblerExperimentTest;
  * @version $Revision$
  */
 public class FlatTestSuiteTest extends TestCase {
-  private FlatTestSuite mTest;
+  private FlatTestSuite mTest = null;
 
   @Override
 public final void setUp() {
