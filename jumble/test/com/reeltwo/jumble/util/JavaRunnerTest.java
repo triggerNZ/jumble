@@ -28,16 +28,20 @@ public void tearDown() {
   }
 
   public void testStart() throws IOException {
-    Properties props = System.getProperties();
+    final Properties props = System.getProperties();
     mProcess = new JavaRunner("com.reeltwo.jumble.util.DisplayEnvironment").start();
-    BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
-    BufferedReader err = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
-
-    assertEquals("java.home " + props.getProperty("java.home"), out.readLine());
-    assertEquals("java.class.path " + props.getProperty("java.class.path"), out.readLine());
-
-    if (err.readLine() != null) {
-      fail();
+    final BufferedReader out = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
+    try {
+      final BufferedReader err = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
+      try {
+        assertEquals("java.home " + props.getProperty("java.home"), out.readLine());
+        assertEquals("java.class.path " + props.getProperty("java.class.path"), out.readLine());
+        assertNotNull(err.readLine());
+      } finally {
+        err.close();
+      }
+    } finally {
+      out.close();
     }
   }
 
@@ -86,13 +90,19 @@ public void tearDown() {
 
     Process p = r.exec(new String[] {java, "-ea", "-cp", System.getProperty("java.class.path"), "com.reeltwo.jumble.util.CheckAssertions" });
     reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    assertEquals("Assertions on", reader.readLine());
-    reader.close();
+    try {
+      assertEquals("Assertions on", reader.readLine());
+    } finally {
+      reader.close();
+    }
 
     p = r.exec(new String[] {java, "-cp", System.getProperty("java.class.path"), "com.reeltwo.jumble.util.CheckAssertions" });
     reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    assertEquals("Assertions off", reader.readLine());
-    reader.close();
+    try {
+      assertEquals("Assertions off", reader.readLine());
+    } finally {
+      reader.close();
+    }
   }
 
   public static Test suite() {
