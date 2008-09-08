@@ -202,7 +202,7 @@ public class MutaterTest extends TestCase {
       m = new Mutater(500);
       m.getMutatedMethodName("experiments.JumblerExperiment");
       fail();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       ; // ok
     }
   }
@@ -243,7 +243,7 @@ public class MutaterTest extends TestCase {
       m = new Mutater(500);
       m.getMethodRelativeMutationPoint("experiments.JumblerExperiment");
       fail();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       ; // ok
     }
   }
