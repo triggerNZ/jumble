@@ -18,7 +18,7 @@
 
      <!-- Calls to finalizers are acceptable in test code -->
      <Match classregex=".*Test">
-       <BugCode name="FI"/>
+       <BugCode name="FI,OS"/>
      </Match>
 
      <!-- Inner classes are acceptable in test code -->
@@ -32,6 +32,14 @@
      </Match>
      <Match classregex="com.reeltwo.jumble.annotations.JumbleAnnotationProcessor">
        <BugCode name="DP"/>
+     </Match>
+
+     <Match classregex="experiments.BrokenTest">
+       <BugCode name="IJU"/>
+     </Match>
+
+     <Match classregex="experiments.Enum1Test">
+       <BugCode name="DLS"/>
      </Match>
 
 </FindBugsFilter>
