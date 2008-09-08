@@ -50,16 +50,21 @@ public final void tearDown() {
         System.getProperty("java.class.path"), "-s", "0", "-r", "-k", "-i", mFileName, });
     Process p = runner.start();
 
-    BufferedReader outReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-    String line = outReader.readLine();
-    assertEquals("START", line);
-    line = outReader.readLine();
-    assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.INIT_PREFIX));
-    line = outReader.readLine();
-    assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.PASS_PREFIX));
-    outReader.close();
-    p.destroy();
+    final BufferedReader outReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    try {
+      String line = outReader.readLine();
+      assertNotNull(line);
+      assertEquals("START", line);
+      line = outReader.readLine();
+      assertNotNull(line);
+      assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.INIT_PREFIX));
+      line = outReader.readLine();
+      assertNotNull(line);
+      assertTrue("Unexpected output: " + line, line.startsWith(FastJumbler.PASS_PREFIX));
+      p.destroy();
+    } finally {
+      outReader.close();
+    }
   }
 
   public void testMain2() throws Exception {
@@ -67,18 +72,21 @@ public final void tearDown() {
         System.getProperty("java.class.path"), "-s", "0", "-l", "1", "-r", "-k", "-i", mFileName, });
     Process p = runner.start();
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    try {
+      String line;
 
-    String line;
-
-    line = reader.readLine();
-    assertEquals("START", line);
-    line = reader.readLine();
-    assertEquals("INIT: experiments.JumblerExperiment:21: negated conditional", line);
-    line = reader.readLine();
-    assertEquals("PASS: experiments.JumblerExperiment:add(II)I:0:testAdd", line);
-    line = reader.readLine();
-    assertEquals(FastJumbler.SIGNAL_MAX_REACHED, line);
+      line = reader.readLine();
+      assertEquals("START", line);
+      line = reader.readLine();
+      assertEquals("INIT: experiments.JumblerExperiment:21: negated conditional", line);
+      line = reader.readLine();
+      assertEquals("PASS: experiments.JumblerExperiment:add(II)I:0:testAdd", line);
+      line = reader.readLine();
+      assertEquals(FastJumbler.SIGNAL_MAX_REACHED, line);
+    } finally {
+      reader.close();
+    }
   }
 
   public final void testSaveCache() throws Exception {
