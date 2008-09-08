@@ -55,7 +55,7 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
       mCache.put(mutatedClass + "." + mutatedMethod, mutationToTest);
     }
 
-    mutationToTest.put(new Integer(methodRelativeMutationPoint), testName);
+    mutationToTest.put(Integer.valueOf(methodRelativeMutationPoint), testName);
   }
 
   /**
@@ -79,8 +79,8 @@ public class FailedTestMap implements Serializable, ClassLoaderCloneable {
         int points = map.size();
 
         for (int i = 0; i < points; i++) {
-          String testName = map.get(new Integer(i));
-          m.invoke(o, new Object[] {className, methodName, new Integer(i), testName});
+          String testName = map.get(Integer.valueOf(i));
+          m.invoke(o, new Object[] {className, methodName, Integer.valueOf(i), testName});
         }
       }
       return o;
