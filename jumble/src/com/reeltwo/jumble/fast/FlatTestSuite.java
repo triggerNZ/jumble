@@ -30,7 +30,7 @@ public class FlatTestSuite extends TestSuite {
    * @param theClass
    *          the class to construct the test suite from.
    */
-  public FlatTestSuite(final Class theClass) {
+  public FlatTestSuite(final Class<?> theClass) {
     Method suiteMethod;
     try {
       suiteMethod = theClass.getMethod("suite", new Class[] {});
