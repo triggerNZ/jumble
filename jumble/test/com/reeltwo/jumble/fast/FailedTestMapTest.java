@@ -18,7 +18,7 @@ import com.reeltwo.jumble.mutation.MutatingClassLoader;
  * @version $Revision$
  */
 public class FailedTestMapTest extends TestCase {
-  private FailedTestMap mMap;
+  private FailedTestMap mMap = null;
 
   @Override
 public void setUp() throws Exception {
