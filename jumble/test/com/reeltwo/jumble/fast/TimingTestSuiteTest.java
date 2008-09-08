@@ -40,9 +40,9 @@ public class TimingTestSuiteTest extends TestCase {
     }
   }
 
-  private TimingTestSuite mSuite;
+  private TimingTestSuite mSuite = null;
 
-  private TestResult mResult;
+  private TestResult mResult = null;
 
   @Override
 protected void setUp() throws Exception {
