@@ -1,0 +1,37 @@
+<!-- Filter for excluding warnings we are not interested in -->
+<FindBugsFilter>
+
+     <!-- Exclude all classes in java namespace -->
+     <Match classregex="java.*"/>
+
+     <!-- Some tests we will skip for all classes -->
+     <!-- SnVI not needed because we do not use serialization for persistence -->
+     <!-- PZLA is a stupid test about returning null arrays -->
+     <Match classregex=".*">
+        <BugCode name="SnVI,PZLA,BC"/>
+     </Match>
+
+     <!-- Skip unreferenced field in anonymous classes -->
+     <Match classregex=".*\$[0-9]+">
+       <BugCode name="UrF"/>
+     </Match>
+
+     <!-- Calls to finalizers are acceptable in test code -->
+     <Match classregex=".*Test">
+       <BugCode name="FI"/>
+     </Match>
+
+     <!-- Inner classes are acceptable in test code -->
+     <Match classregex=".*Test.*">
+       <BugCode name="SIC"/>
+     </Match>
+
+     <!-- We assume sufficient privileges for class loaders. -->
+     <Match classregex="com.reeltwo.jumble.fast.FastJumbler">
+       <BugCode name="DP"/>
+     </Match>
+     <Match classregex="com.reeltwo.jumble.annotations.JumbleAnnotationProcessor">
+       <BugCode name="DP"/>
+     </Match>
+
+</FindBugsFilter>
