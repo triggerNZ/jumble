@@ -217,15 +217,13 @@ public class MutaterTest extends TestCase {
   }
 
   private Set<String> getAllMutatedMethods(Mutater m, String className) {
-    Set<String> allMutatedMethods = new HashSet<String>();
 
-    int mutationPointCount = m.countMutationPoints(className);
-
+    final Set<String> allMutatedMethods = new HashSet<String>();
+    final int mutationPointCount = m.countMutationPoints(className);
     for (int i = 0; i < mutationPointCount; i++) {
       m.setMutationPoint(i);
       allMutatedMethods.add(m.getMutatedMethodName(className));
     }
-
     return allMutatedMethods;
   }
 
