@@ -36,7 +36,7 @@ public void tearDown() {
       try {
         assertEquals("java.home " + props.getProperty("java.home"), out.readLine());
         assertEquals("java.class.path " + props.getProperty("java.class.path"), out.readLine());
-        assertNotNull(err.readLine());
+        assertNull(err.readLine());
       } finally {
         err.close();
       }
