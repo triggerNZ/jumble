@@ -42,4 +42,9 @@
        <BugCode name="DLS"/>
      </Match>
 
+     <!-- We know what we're doing in this case -->
+     <Match classregex="com.reeltwo.jumble.fast.FailedTestMap">
+       <BugPattern name="SE_BAD_FIELD" />
+     </Match>
+
 </FindBugsFilter>
