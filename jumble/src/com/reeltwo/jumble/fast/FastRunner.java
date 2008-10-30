@@ -410,8 +410,8 @@ public class FastRunner {
 
   private boolean writeCache(File f) {
     try {
-      if (f.exists()) {
-        f.delete();
+      if (f.exists() && !f.delete()) {
+        throw new IOException("Could not delete existing cache " + f);
       }
       ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(f));
       o.writeObject(mCache);
