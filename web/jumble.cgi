@@ -86,7 +86,7 @@ function insertclasstable ()
     echo "<table>"
     grep $jumbledir/$packagepath $rawfile | \
         gawk '{print $1" "$2" "$3" "$3" "$4}' | \
-        sed -e "s|$jumbledir/$packagepath||" -e "s|$jumbledir/||" | \
+        sed -e "s|$jumbledir/$packagepath||" -e "s|$jumbledir/||" -e "s|%%|%|" | \
         gawk '{if (index($3,"/") == 0) print $0}' | \
         gawk '{image=int($1/10); if ($2=="0") { if ($1=="0%") { if (index($4,"gui") != 0) image="pointer"; else image="bad"; } else if ($1=="100%") image="free";}; print "<tr><td align=right>"$1" <img src=\"'"$jumblewebroot/"'"image".gif\"></td><td align=right>["$2"]</td><td><a href=\"'"$jumblecgi&class="'"$4"\">"$3"</a> "$5"</td></tr>"}'
     echo "</table>"
