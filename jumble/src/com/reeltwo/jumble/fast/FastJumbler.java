@@ -79,7 +79,7 @@ public class FastJumbler {
     final String classpath = (String) classpathFlag.getValue();
     System.setProperty("java.class.path", classpath);  // Make classpath available to code doing classpath scanning.
     final Mutater mutater = new Mutater(-1);
-    mutater.setIgnoredMethods(new HashSet<String>(Arrays.asList(exFlag.getValues().toArray(new String[0]))));
+    mutater.setIgnoredMethods(new HashSet<String>(Arrays.asList(exFlag.getValues().toArray(new String[exFlag.getValues().size()])))); // Wish there were a nice way to get exFlag.Values() as Strings directly
     mutater.setMutateIncrements(incFlag.isSet());
     mutater.setMutateCPool(cpoolFlag.isSet());
     mutater.setMutateSwitch(switchFlag.isSet());
