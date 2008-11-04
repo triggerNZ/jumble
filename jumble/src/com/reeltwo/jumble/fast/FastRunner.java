@@ -76,6 +76,8 @@ public class FastRunner {
 
   private Set<String> mExcludeMethods = new HashSet<String>();
 
+  private Set<String> mDeferredClasses = new HashSet<String>();
+
   private List<String> mJvmArgs = new ArrayList<String>();
 
   // State during run
@@ -424,7 +426,17 @@ public class FastRunner {
   }
 
   public void addExcludeMethod(String methodName) {
+    if (methodName == null) {
+      throw new NullPointerException();
+    }
     mExcludeMethods.add(methodName);
+  }
+
+  public void addDeferredClass(String className) {
+    if (className == null) {
+      throw new NullPointerException();
+    }
+    mDeferredClasses.add(className);
   }
 
   public void addJvmArg(String arg) {
@@ -482,6 +494,15 @@ public class FastRunner {
       args.add("--" + FastJumbler.FLAG_EXCLUDE);
       args.add(ex.toString());
     }
+
+    // Deferred classes
+    if (!mDeferredClasses.isEmpty()) {
+      for (String classname : mDeferredClasses) {
+        args.add("--" + FastJumbler.FLAG_DEFER);
+        args.add(classname);
+      }
+    }
+
     // inline constants
     if (mInlineConstants) {
       args.add("--" + FastJumbler.FLAG_INLINE_CONSTS);
@@ -628,6 +649,9 @@ public class FastRunner {
    */
   private JumbleResult runInitialTests(List<String> testClassNames) {
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
+    if (!mDeferredClasses.isEmpty()) {
+      jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[0]));
+    }
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
     try {
@@ -737,6 +761,9 @@ public class FastRunner {
 
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
+      if (!mDeferredClasses.isEmpty()) {
+        jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[0]));
+      }
       Class<?> clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
         for (int i = 0; i < testClassNames.size(); i++) {

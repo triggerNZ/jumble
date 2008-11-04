@@ -578,7 +578,10 @@ public class MutatingClassLoaderTest extends TestCase {
 
   public void testIsLoadedByDeferredClassLoader() {
     MutatingClassLoader mutatingClassLoader = new MutatingClassLoader(null, new Mutater(), "");
-    assertTrue(mutatingClassLoader.isLoadedByDeferredClassLoader("com.sun.RandomClass"));
+    assertTrue(mutatingClassLoader.isLoadedByDeferredClassLoader("java.lang.String"));
+    assertFalse(mutatingClassLoader.isLoadedByDeferredClassLoader("javax.blah"));
+    mutatingClassLoader.addDeferredPrefixes(new String[] {"javax."});
+    assertTrue(mutatingClassLoader.isLoadedByDeferredClassLoader("javax.blah"));
   }
   
   public void testThatComSunFaceletPackageIsNotDeferred() {

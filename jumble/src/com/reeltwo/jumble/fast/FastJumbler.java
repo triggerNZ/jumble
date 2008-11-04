@@ -9,8 +9,8 @@ import java.io.ObjectInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A class that gives process separation when running unit tests. A parent
@@ -37,6 +37,7 @@ public class FastJumbler {
   public FastJumbler() {
   }
 
+  static final String FLAG_DEFER = "defer-class";
   static final String FLAG_EXCLUDE = "exclude";
   static final String FLAG_VERBOSE = "verbose";
   static final String FLAG_RETURN_VALS = "return-vals";
@@ -52,6 +53,8 @@ public class FastJumbler {
   public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("FastJumbler");
 
+    final Flag deferFlag = flags.registerOptional('d', FLAG_DEFER, String.class, "NAMES", "Name of class/package to defer to the parent classloader.");
+    deferFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag exFlag = flags.registerOptional('x', FLAG_EXCLUDE, String.class, "METHOD", "Comma-separated list of methods to exclude.");
     final Flag verboseFlag = flags.registerOptional('v', FLAG_VERBOSE, "Provide extra output during run.");
     final Flag retFlag = flags.registerOptional('r', FLAG_RETURN_VALS, "Mutate return values.");
@@ -71,21 +74,12 @@ public class FastJumbler {
 
     // First, process all the command line options
     final String className = ((String) classFlag.getValue()).replace('/', '.');
-    // Process excludes
-    Set<String> ignore = new HashSet<String>();
-    if (exFlag.isSet()) {
-      String[] tokens = ((String) exFlag.getValue()).split(",");
-      for (int i = 0; i < tokens.length; i++) {
-        ignore.add(tokens[i]);
-      }
-    }
-
     final int startPoint = ((Integer) startFlag.getValue()).intValue();
     final int length = lengthFlag.isSet() ? ((Integer) lengthFlag.getValue()).intValue() : -1;
     final String classpath = (String) classpathFlag.getValue();
     System.setProperty("java.class.path", classpath);  // Make classpath available to code doing classpath scanning.
     final Mutater mutater = new Mutater(-1);
-    mutater.setIgnoredMethods(ignore);
+    mutater.setIgnoredMethods(new HashSet<String>(Arrays.asList(exFlag.getValues().toArray(new String[0]))));
     mutater.setMutateIncrements(incFlag.isSet());
     mutater.setMutateCPool(cpoolFlag.isSet());
     mutater.setMutateSwitch(switchFlag.isSet());
@@ -93,6 +87,11 @@ public class FastJumbler {
     mutater.setMutateInlineConstants(inlFlag.isSet());
     mutater.setMutateReturnValues(retFlag.isSet());
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, classpath);
+    if (deferFlag.isSet()) {
+      jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[0]));
+    }
+    
+
     final int mutationCount = jumbler.countMutationPoints(className);
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream((String) testSuiteFlag.getValue()));
     final TestOrder order = (TestOrder) ois.readObject();
@@ -123,6 +122,9 @@ public class FastJumbler {
 //       }
       mutater.setMutationPoint(i);
       jumbler = new MutatingClassLoader(className, mutater, classpath);
+      if (deferFlag.isSet()) {
+        jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[0]));
+      }
       jumbler.loadClass(className);
       String methodName = mutater.getMutatedMethodName(className);
       int mutPoint = mutater.getMethodRelativeMutationPoint(className);

@@ -1,12 +1,13 @@
 package com.reeltwo.jumble.mutation;
 
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.ClassPath;
 import org.apache.bcel.util.Repository;
@@ -23,6 +24,28 @@ import org.apache.bcel.util.SyntheticRepository;
  */
 public class MutatingClassLoader extends ClassLoader {
 
+  private static final String[] DEFERRED_PREFIXES = new String[] {
+    "java.",
+    "junit.",
+    "org.junit.",
+    "sun.reflect.",
+    /*
+      "com.sun.management.OperatingSystemMXBean"
+      "javax.",  // Too general to have deferred
+      "com.sun", // Too general to have deferred
+    */
+  };
+    
+  private static final String[] LOADED_PREFIXES = new String[] {
+    /*
+      "javax.transaction.",        
+      "javax.persistence.",
+      "com.sun.xml.messaging.",
+      "com.sun.facelets",
+      "com.sun.org.apache.xerces",
+     */
+  };
+
   /** Used to perform the actual mutation */
   private final Mutater mMutater;
 
@@ -34,6 +57,12 @@ public class MutatingClassLoader extends ClassLoader {
   private final Repository mRepository;
 
   private final ClassPath mClassPath;
+
+  /** List of prefixes of classes to defer to parent classloader. */
+  private String[] mDeferPrefixes = DEFERRED_PREFIXES;
+
+  /** Exceptions to the above list. */
+  private String[] mDontDeferPrefixes = LOADED_PREFIXES;
 
   /** Textual description of the modification made. */
   private String mModification;
@@ -53,8 +82,15 @@ public class MutatingClassLoader extends ClassLoader {
     mTarget = target;
     mMutater = mutater;
     mClassPath = new ClassPath(classpath);
+    //System.err.println("Using classpath" + mClassPath);
     mRepository = SyntheticRepository.getInstance(mClassPath);
     mMutater.setRepository(mRepository);
+  }
+
+  public void addDeferredPrefixes(String[] prefixes) {
+    mDeferPrefixes = new String[DEFERRED_PREFIXES.length + prefixes.length];
+    System.arraycopy(DEFERRED_PREFIXES, 0, mDeferPrefixes, 0, DEFERRED_PREFIXES.length);
+    System.arraycopy(prefixes, 0, mDeferPrefixes, DEFERRED_PREFIXES.length, prefixes.length);
   }
 
   /**
@@ -72,11 +108,12 @@ public class MutatingClassLoader extends ClassLoader {
   }
 
   @Override
-protected Class loadClass(String className, boolean resolve) throws ClassNotFoundException {
+  protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
     Class cl = null;
     if ((cl = mClasses.get(className)) == null) {
       // Classes we're forcing to be loaded by mDeferTo
       if (isLoadedByDeferredClassLoader(className)) {
+        //System.err.println("Parent loading of class: " + className);
         cl = mDeferTo.loadClass(className);
       }
       
@@ -97,8 +134,8 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
           byte[] bytes  = clazz.getBytes();
           cl = defineClass(className, bytes, 0, bytes.length);
         } else {
-          //cl = Class.forName(className);
           //System.err.println("Parent loading of class: " + className);
+          //cl = Class.forName(className);
           cl = mDeferTo.loadClass(className);
         }
       }
@@ -113,28 +150,14 @@ protected Class loadClass(String className, boolean resolve) throws ClassNotFoun
     return cl;
   }
 
-  private static final String[] IGNORED_PACKAGES = new String[] {
-      "java.",
-      "javax.",
-      "sun.reflect",
-      "junit.",
-      "com.sun",
-      "org.junit"
-    };
-    
-    private static final String[] ACCEPTED_PACKAGES = new String[] {
-        "com.sun.facelets",
-        "com.sun.org.apache.xerces"
-    };
-  
   boolean isLoadedByDeferredClassLoader(String className) {
-    for (int i = 0; i < ACCEPTED_PACKAGES.length; i++) {
-      if (className.startsWith(ACCEPTED_PACKAGES[i])) {
+    for (int i = 0; i < mDontDeferPrefixes.length; i++) {
+      if (className.startsWith(mDontDeferPrefixes[i])) {
         return false;
       }
     }    
-    for (int i = 0; i < IGNORED_PACKAGES.length; i++) {
-      if (className.startsWith(IGNORED_PACKAGES[i])) {
+    for (int i = 0; i < mDeferPrefixes.length; i++) {
+      if (className.startsWith(mDeferPrefixes[i])) {
         return true;
       }
     }    

@@ -57,6 +57,8 @@ public class Jumble {
     final Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     final Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
     final Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
+    final Flag deferFlag = flags.registerOptional('d', "defer-class", String.class, "NAME", "Defer loading of the named class/package to the parent classloader.");
+    deferFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX", "Maximum number of mutations to run in the external JVM.");
     final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
     final Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
@@ -91,9 +93,6 @@ public class Jumble {
       }
     }
 
-    String className;
-    List<String> testList;
-
     if (exFlag.isSet()) {
       String[] tokens = ((String) exFlag.getValue()).split(",");
       for (int i = 0; i < tokens.length; i++) {
@@ -101,8 +100,11 @@ public class Jumble {
       }
     }
 
-    className = ((String) classFlag.getValue()).replace('/', '.');
-    testList = new ArrayList<String>();
+    if (deferFlag.isSet()) {
+      for (Object val : deferFlag.getValues()) {
+        mFastRunner.addDeferredClass((String) val);
+      }
+    }
 
     if (jvmargFlag.isSet()) {
       for (Object val : jvmargFlag.getValues()) {
@@ -116,7 +118,10 @@ public class Jumble {
       }
     }
 
+    String className = ((String) classFlag.getValue()).replace('/', '.');
+
     // We need at least one test
+    List<String> testList = new ArrayList<String>();
     if (testClassFlag.isSet()) {
       for (Iterator<?> it = testClassFlag.getValues().iterator(); it.hasNext();) {
         testList.add(((String) it.next()).replace('/', '.'));
