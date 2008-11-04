@@ -650,7 +650,7 @@ public class FastRunner {
   private JumbleResult runInitialTests(List<String> testClassNames) {
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
     if (!mDeferredClasses.isEmpty()) {
-      jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[0]));
+      jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[mDeferredClasses.size()]));
     }
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
@@ -762,7 +762,7 @@ public class FastRunner {
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
       if (!mDeferredClasses.isEmpty()) {
-        jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[0]));
+        jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[mDeferredClasses.size()]));
       }
       Class<?> clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {
