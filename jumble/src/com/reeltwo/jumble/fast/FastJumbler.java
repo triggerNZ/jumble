@@ -88,7 +88,7 @@ public class FastJumbler {
     mutater.setMutateReturnValues(retFlag.isSet());
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, classpath);
     if (deferFlag.isSet()) {
-      jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[0]));
+      jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[deferFlag.getValues().size()]));
     }
     
 
