@@ -5,7 +5,6 @@ package com.reeltwo.jumble.mutation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import org.apache.bcel.classfile.JavaClass;
