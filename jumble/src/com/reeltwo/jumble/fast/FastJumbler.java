@@ -123,7 +123,7 @@ public class FastJumbler {
       mutater.setMutationPoint(i);
       jumbler = new MutatingClassLoader(className, mutater, classpath);
       if (deferFlag.isSet()) {
-        jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[0]));
+        jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[deferFlag.getValues().size()]));
       }
       jumbler.loadClass(className);
       String methodName = mutater.getMutatedMethodName(className);
