@@ -5,6 +5,7 @@ package com.reeltwo.jumble.mutation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import org.apache.bcel.classfile.JavaClass;
@@ -84,6 +85,10 @@ public class MutatingClassLoader extends ClassLoader {
     //System.err.println("Using classpath" + mClassPath);
     mRepository = SyntheticRepository.getInstance(mClassPath);
     mMutater.setRepository(mRepository);
+  }
+
+  public void addDeferredPrefixes(Collection<String> prefixes) {
+    addDeferredPrefixes(prefixes.toArray(new String[prefixes.size()]));
   }
 
   public void addDeferredPrefixes(String[] prefixes) {

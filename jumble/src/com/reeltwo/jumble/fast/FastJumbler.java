@@ -9,8 +9,6 @@ import java.io.ObjectInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * A class that gives process separation when running unit tests. A parent
@@ -53,9 +51,9 @@ public class FastJumbler {
   public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("FastJumbler");
 
-    final Flag deferFlag = flags.registerOptional('d', FLAG_DEFER, String.class, "NAMES", "Name of class/package to defer to the parent classloader.");
+    final Flag<String> deferFlag = flags.registerOptional('d', FLAG_DEFER, String.class, "NAMES", "Name of class/package to defer to the parent classloader.");
     deferFlag.setMaxCount(Integer.MAX_VALUE);
-    final Flag exFlag = flags.registerOptional('x', FLAG_EXCLUDE, String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag<String> exFlag = flags.registerOptional('x', FLAG_EXCLUDE, String.class, "METHOD", "Comma-separated list of methods to exclude.");
     final Flag verboseFlag = flags.registerOptional('v', FLAG_VERBOSE, "Provide extra output during run.");
     final Flag retFlag = flags.registerOptional('r', FLAG_RETURN_VALS, "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', FLAG_INLINE_CONSTS, "Mutate inline constants.");
@@ -63,23 +61,23 @@ public class FastJumbler {
     final Flag switchFlag = flags.registerOptional('j', FLAG_SWITCHES, "Mutate switch instructions.");
     final Flag storesFlag = flags.registerOptional('X', FLAG_STORES, "Mutate store instructions.");
     final Flag incFlag = flags.registerOptional('i', FLAG_INCREMENTS, "Mutate increments.");
-    final Flag startFlag = flags.registerRequired('s', FLAG_START, Integer.class, "NUM", "The mutation point to start at.");
-    final Flag lengthFlag = flags.registerOptional('l', FLAG_LENGTH, Integer.class, "LEN", "The number of mutation points to execute");
-    final Flag classpathFlag = flags.registerOptional('c', FLAG_CLASSPATH, String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
-    final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
-    final Flag testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
-    final Flag cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
+    final Flag<Integer> startFlag = flags.registerRequired('s', FLAG_START, Integer.class, "NUM", "The mutation point to start at.");
+    final Flag<Integer> lengthFlag = flags.registerOptional('l', FLAG_LENGTH, Integer.class, "LEN", "The number of mutation points to execute");
+    final Flag<String> classpathFlag = flags.registerOptional('c', FLAG_CLASSPATH, String.class, "CLASSPATH", "The classpath to use for tests", System.getProperty("java.class.path"));
+    final Flag<String> classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
+    final Flag<String> testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
+    final Flag<String> cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
     cacheFileFlag.setMinCount(0);
     flags.setFlags(args);
 
     // First, process all the command line options
-    final String className = ((String) classFlag.getValue()).replace('/', '.');
-    final int startPoint = ((Integer) startFlag.getValue()).intValue();
-    final int length = lengthFlag.isSet() ? ((Integer) lengthFlag.getValue()).intValue() : -1;
-    final String classpath = (String) classpathFlag.getValue();
+    final String className = classFlag.getValue().replace('/', '.');
+    final int startPoint = startFlag.getValue();
+    final int length = lengthFlag.isSet() ? lengthFlag.getValue() : -1;
+    final String classpath = classpathFlag.getValue();
     System.setProperty("java.class.path", classpath);  // Make classpath available to code doing classpath scanning.
     final Mutater mutater = new Mutater(-1);
-    mutater.setIgnoredMethods(new HashSet<String>(Arrays.asList(exFlag.getValues().toArray(new String[exFlag.getValues().size()])))); // Wish there were a nice way to get exFlag.Values() as Strings directly
+    mutater.setIgnoredMethods(exFlag.getValues());
     mutater.setMutateIncrements(incFlag.isSet());
     mutater.setMutateCPool(cpoolFlag.isSet());
     mutater.setMutateSwitch(switchFlag.isSet());
@@ -88,18 +86,18 @@ public class FastJumbler {
     mutater.setMutateReturnValues(retFlag.isSet());
     MutatingClassLoader jumbler = new MutatingClassLoader(className, mutater, classpath);
     if (deferFlag.isSet()) {
-      jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[deferFlag.getValues().size()]));
+      jumbler.addDeferredPrefixes(deferFlag.getValues());
     }
     
 
     final int mutationCount = jumbler.countMutationPoints(className);
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream((String) testSuiteFlag.getValue()));
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(testSuiteFlag.getValue()));
     final TestOrder order = (TestOrder) ois.readObject();
     ois.close();
 
     FailedTestMap cache = null;
     if (cacheFileFlag.isSet()) {
-      ois = new ObjectInputStream(new FileInputStream((String) cacheFileFlag.getValue()));
+      ois = new ObjectInputStream(new FileInputStream(cacheFileFlag.getValue()));
       cache = (FailedTestMap) ois.readObject();
       ois.close();
     }
@@ -123,7 +121,7 @@ public class FastJumbler {
       mutater.setMutationPoint(i);
       jumbler = new MutatingClassLoader(className, mutater, classpath);
       if (deferFlag.isSet()) {
-        jumbler.addDeferredPrefixes(deferFlag.getValues().toArray(new String[deferFlag.getValues().size()]));
+        jumbler.addDeferredPrefixes(deferFlag.getValues());
       }
       jumbler.loadClass(className);
       String methodName = mutater.getMutatedMethodName(className);

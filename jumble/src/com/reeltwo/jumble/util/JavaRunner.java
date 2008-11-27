@@ -1,6 +1,7 @@
 package com.reeltwo.jumble.util;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -37,7 +38,7 @@ public class JavaRunner {
    * @param arguments
    *          the arguments to pass to the main method.
    */
-  public JavaRunner(String className, String[] arguments) {
+  public JavaRunner(String className, String... arguments) {
     mClassName = className;
     mArgs = arguments;
 
@@ -90,8 +91,20 @@ public class JavaRunner {
    * @param args
    *          the new arguments.
    */
-  public void setJvmArguments(String[] args) {
+  public void setJvmArguments(String... args) {
     mJvmArgs = args;
+  }
+
+  /**
+   * Sets the arguments to pass to the JVM. The default JVM arguments includes
+   * the classpath for the JVM to use, so if you supply new JVM arguments, you
+   * should probably include classpath settings.
+   *
+   * @param args
+   *          the new arguments.
+   */
+  public void setJvmArguments(Collection<String> args) {
+    mJvmArgs = args == null ? null : args.toArray(new String[args.size()]);
   }
 
   /**
@@ -109,8 +122,18 @@ public class JavaRunner {
    * @param args
    *          the new arguments.
    */
-  public void setArguments(String[] args) {
+  public void setArguments(String... args) {
     mArgs = args;
+  }
+
+  /**
+   * Sets the arguments to pass to the main method
+   *
+   * @param args
+   *          the new arguments.
+   */
+  public void setArguments(Collection<String> args) {
+    mArgs = args == null ? null : args.toArray(new String[args.size()]);
   }
 
   /**

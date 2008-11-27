@@ -2,7 +2,8 @@ package com.reeltwo.jumble.mutation;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Attribute;
@@ -186,7 +187,7 @@ public class Mutater {
   }
 
   /** Set of methods to be ignored (i.e. never mutated). */
-  private Set<String> mIgnored;
+  private Collection<String> mIgnored;
 
   /** Should ICONST instructions be changed. */
   private boolean mMutateInlineConstants = false;
@@ -463,7 +464,7 @@ public class Mutater {
    * 
    * @param ignore Set of ignored methods
    */
-  public void setIgnoredMethods(final Set<String> ignore) {
+  public void setIgnoredMethods(final Collection<String> ignore) {
     mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 

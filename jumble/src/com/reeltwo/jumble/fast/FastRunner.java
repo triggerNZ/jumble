@@ -130,7 +130,7 @@ public class FastRunner {
   private JavaRunner getJavaRunner() {
     if (mRunner == null) {
       mRunner = new JavaRunner("com.reeltwo.jumble.fast.FastJumbler");
-      mRunner.setJvmArguments(mJvmArgs.toArray(new String[mJvmArgs.size()]));
+      mRunner.setJvmArguments(mJvmArgs);
     }
     return mRunner;
   }
@@ -459,7 +459,7 @@ public class FastRunner {
   }
 
   /** Constructs arguments to the FastJumbler */
-  private String[] createArgs(int currentMutation, int max) {
+  private List<String> createArgs(int currentMutation, int max) {
     ArrayList<String> args = new ArrayList<String>();
     args.add("--" + FastJumbler.FLAG_CLASSPATH);
     args.add(mClassPath);
@@ -536,7 +536,7 @@ public class FastRunner {
       args.add("--" + FastJumbler.FLAG_LENGTH);
       args.add("" + max);
     }
-    return args.toArray(new String[args.size()]);
+    return args;
   }
 
   private Mutater createMutater(int mutationpoint) {
@@ -587,7 +587,7 @@ public class FastRunner {
     }
   }
 
-  private void startChildProcess(String[] args) throws IOException, InterruptedException {
+  private void startChildProcess(List<String> args) throws IOException, InterruptedException {
     JavaRunner runner = getJavaRunner();
     runner.setArguments(args);
     mChildProcess = runner.start();
@@ -650,7 +650,7 @@ public class FastRunner {
   private JumbleResult runInitialTests(List<String> testClassNames) {
     MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
     if (!mDeferredClasses.isEmpty()) {
-      jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[mDeferredClasses.size()]));
+      jumbler.addDeferredPrefixes(mDeferredClasses);
     }
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(jumbler);
@@ -762,7 +762,7 @@ public class FastRunner {
     try {
       MutatingClassLoader jumbler = new MutatingClassLoader(mClassName, createMutater(-1), mClassPath);
       if (!mDeferredClasses.isEmpty()) {
-        jumbler.addDeferredPrefixes(mDeferredClasses.toArray(new String[mDeferredClasses.size()]));
+        jumbler.addDeferredPrefixes(mDeferredClasses);
       }
       Class<?> clazz = jumbler.loadClass(className);
       if (!clazz.isInterface()) {

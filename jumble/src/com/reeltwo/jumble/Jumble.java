@@ -38,7 +38,7 @@ public class Jumble {
   public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("Jumble");
     final Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
-    final Flag exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag<String> exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
@@ -46,22 +46,22 @@ public class Jumble {
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
     final Flag storesFlag = flags.registerOptional('X', "stores", "Mutate assignments.");
     final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output (shortcut for --printer=" + EmacsFormatListener.class.getName() + ").");
-    final Flag jvmargFlag = flags.registerOptional('J', "jvm-arg", String.class, "STRING", "Additional command-line argument passed to the JVM used to run unit tests.");
+    final Flag<String> jvmargFlag = flags.registerOptional('J', "jvm-arg", String.class, "STRING", "Additional command-line argument passed to the JVM used to run unit tests.");
     jvmargFlag.setMaxCount(Integer.MAX_VALUE);
-    final Flag jvmpropFlag = flags.registerOptional('D', "define-property", String.class, "STRING", "Additional system property to define in the JVM used to run unit tests.");
+    final Flag<String> jvmpropFlag = flags.registerOptional('D', "define-property", String.class, "STRING", "Additional system property to define in the JVM used to run unit tests.");
     jvmpropFlag.setMaxCount(Integer.MAX_VALUE);
-    final Flag printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
-    final Flag firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt (this is mainly useful for testing). Negative values are ignored.");
-    final Flag classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests.", System.getProperty("java.class.path"));
+    final Flag<String> printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
+    final Flag<Integer> firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt (this is mainly useful for testing). Negative values are ignored.");
+    final Flag<String> classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests.", System.getProperty("java.class.path"));
     final Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     final Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     final Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
     final Flag useFlag = flags.registerOptional('u', "no-use-cache", "Do not use cache.");
-    final Flag deferFlag = flags.registerOptional('d', "defer-class", String.class, "NAME", "Defer loading of the named class/package to the parent classloader.");
+    final Flag<String> deferFlag = flags.registerOptional('d', "defer-class", String.class, "NAME", "Defer loading of the named class/package to the parent classloader.");
     deferFlag.setMaxCount(Integer.MAX_VALUE);
-    final Flag lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX", "Maximum number of mutations to run in the external JVM.");
-    final Flag classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
-    final Flag testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
+    final Flag<Integer> lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX", "Maximum number of mutations to run in the external JVM.");
+    final Flag<String> classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
+    final Flag<String> testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
 
@@ -78,53 +78,53 @@ public class Jumble {
     mFastRunner.setSaveCache(!saveFlag.isSet());
     mFastRunner.setUseCache(!useFlag.isSet());
     mFastRunner.setVerbose(verboseFlag.isSet());
-    mFastRunner.setClassPath((String) classpathFlag.getValue());
+    mFastRunner.setClassPath(classpathFlag.getValue());
 
     if (lengthFlag.isSet()) {
-      int val = ((Integer) lengthFlag.getValue()).intValue();
+      int val = lengthFlag.getValue();
       if (val >= 0) {
         mFastRunner.setMaxExternalMutations(val);
       }
     }
     if (firstFlag.isSet()) {
-      int val = ((Integer) firstFlag.getValue()).intValue();
+      int val = firstFlag.getValue();
       if (val >= -1) {
         mFastRunner.setFirstMutation(val);
       }
     }
 
     if (exFlag.isSet()) {
-      String[] tokens = ((String) exFlag.getValue()).split(",");
+      String[] tokens = exFlag.getValue().split(",");
       for (int i = 0; i < tokens.length; i++) {
         mFastRunner.addExcludeMethod(tokens[i]);
       }
     }
 
     if (deferFlag.isSet()) {
-      for (Object val : deferFlag.getValues()) {
-        mFastRunner.addDeferredClass((String) val);
+      for (String val : deferFlag.getValues()) {
+        mFastRunner.addDeferredClass(val);
       }
     }
 
     if (jvmargFlag.isSet()) {
-      for (Object val : jvmargFlag.getValues()) {
-        mFastRunner.addJvmArg((String) val);
+      for (String val : jvmargFlag.getValues()) {
+        mFastRunner.addJvmArg(val);
       }
     }
 
     if (jvmpropFlag.isSet()) {
-      for (Object val : jvmpropFlag.getValues()) {
-        mFastRunner.addSystemProperty((String) val);
+      for (String val : jvmpropFlag.getValues()) {
+        mFastRunner.addSystemProperty(val);
       }
     }
 
-    String className = ((String) classFlag.getValue()).replace('/', '.');
+    String className = classFlag.getValue().replace('/', '.');
 
     // We need at least one test
     List<String> testList = new ArrayList<String>();
     if (testClassFlag.isSet()) {
-      for (Iterator<?> it = testClassFlag.getValues().iterator(); it.hasNext();) {
-        testList.add(((String) it.next()).replace('/', '.'));
+      for (String testClass : testClassFlag.getValues()) {
+        testList.add(testClass.replace('/', '.'));
       }
     } else {
       // no test class given, guess its name
@@ -132,8 +132,8 @@ public class Jumble {
       testList.add(guessTestClassName(className));
     }
 
-    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener((String) classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
-        : getListener((String) printFlag.getValue());
+    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener(classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
+        : getListener(printFlag.getValue());
     mFastRunner.runJumble(className, testList, listener);
   }
 
