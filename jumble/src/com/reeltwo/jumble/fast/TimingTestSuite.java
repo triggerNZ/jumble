@@ -58,7 +58,7 @@ public class TimingTestSuite extends FlatTestSuite {
    * <CODE>result</CODE> as usual in JUnit.
    */
   @Override
-public void run(TestResult result) {
+  public void run(TestResult result) {
     mRuntimes = new long[testCount()];
     for (int i = 0; i < mRuntimes.length; i++) {
       Test curTest = testAt(i);
