@@ -691,9 +691,12 @@ public class FastRunner {
       // Store the test suite information serialized in a temporary file so
       // FastJumbler can load it.
       Object order = suite.getOrder(mOrdered);
-      ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFile));
-      oos.writeObject(order);
-      oos.close();
+      final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mTestSuiteFile));
+      try {
+        oos.writeObject(order);
+      } finally {
+        oos.close();
+      }
 
       // Now try the tests again in a separate JVM to detect if there
       // are problems due to invocation within a separate JVM.
