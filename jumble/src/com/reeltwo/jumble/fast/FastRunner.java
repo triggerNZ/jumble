@@ -386,8 +386,12 @@ public class FastRunner {
     // Load the cache if it exists and is needed
     if (mLoadCache) {
       try {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CACHE_FILE));
-        mCache = (FailedTestMap) ois.readObject();
+        final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CACHE_FILE));
+        try {
+          mCache = (FailedTestMap) ois.readObject();
+        } finally {
+          ois.close();
+        }
         loaded = true;
       } catch (IOException e) {
         loaded = false;
