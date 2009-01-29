@@ -114,7 +114,6 @@ import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
 
-
 /**
  * Given a class file can either count the number of possible
  * mutation points or perform a mutations. Mutations can be specified by number
@@ -469,15 +468,12 @@ public class Mutater {
     mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
-  private boolean checkNormalMethod(final Method m, final String className) {
-    return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !isIgnored(m, className);
+  private boolean isMutatableMethod(final Method m) {
+    //System.out.println(m.getName() + " " + mIgnored.contains(m.getName()));
+    return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !mIgnored.contains(m.getName());
   }
 
-  private boolean isIgnored(final Method m, final String className) {
-    return mIgnored.contains(m.getName());
-  }
-
-/** Records the first line in the code that uses a constant. */
+  /** Records the first line in the code that uses a constant. */
   private int[] mConstantFirstRef = null;
 
   private void initConstantRef(final Method[] methods, final String className, final ConstantPoolGen cp) {
@@ -487,7 +483,7 @@ public class Mutater {
       if (methods != null) {
         for (int i = 0; i < methods.length; i++) {
           final Method m = methods[i];
-          if (checkNormalMethod(m, className)) {
+          if (isMutatableMethod(m)) {
             final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
             if (il != null) {
               final InstructionHandle[] ihs = il.getInstructionHandles();
@@ -540,7 +536,7 @@ public class Mutater {
    */
   private int countMutationPoints(final Method m, final String className, final ConstantPoolGen cp) {
     // check this is a method that it makes sense to mutate
-    if (!checkNormalMethod(m, className)) {
+    if (!isMutatableMethod(m)) {
       return 0;
     }
     final InstructionList il = new MethodGen(m, className, cp).getInstructionList();
@@ -856,8 +852,8 @@ public class Mutater {
 
   private int jumble(Method[] methods, int methodidx, final String className, final ConstantPoolGen cp, int count) {
     // check if modification is appropriate
-    Method m = methods[methodidx];
-    if (count < 0 || !checkNormalMethod(m, className)) {
+    final Method m = methods[methodidx];
+    if (count < 0 || !isMutatableMethod(m)) {
       return count;
     }
     final MethodGen mg = new MethodGen(m, className, cp);
@@ -869,8 +865,8 @@ public class Mutater {
       final Instruction i = ihs[j].getInstruction();
       final int points = isMutatable(ihs, j, cp);
       if (points != 0 && (count -= points) < 0) {
-        // not count is < -1 only for a few instructions like TABLESWITCH
-        int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
+        // note count is < -1 only for a few instructions like TABLESWITCH
+        final int lineNumber = (m.getLineNumberTable() != null ? m.getLineNumberTable().getSourceLine(ihs[j].getPosition()) : 0);
         StringBuffer mod = new StringBuffer(className).append(":").append(lineNumber).append(": ");
         if (i instanceof IfInstruction) {
           ihs[j].setInstruction(((IfInstruction) i).negate());
