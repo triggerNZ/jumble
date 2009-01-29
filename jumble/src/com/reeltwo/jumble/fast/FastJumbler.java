@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.HashSet;
 
 /**
  * A class that gives process separation when running unit tests. A parent
@@ -77,7 +78,11 @@ public class FastJumbler {
     final String classpath = classpathFlag.getValue();
     System.setProperty("java.class.path", classpath);  // Make classpath available to code doing classpath scanning.
     final Mutater mutater = new Mutater(-1);
-    mutater.setIgnoredMethods(exFlag.getValues());
+    final HashSet<String> ex = new HashSet<String>();
+    for (final String s : exFlag.getValue().split(",")) {
+      ex.add(s);
+    }
+    mutater.setIgnoredMethods(ex);
     mutater.setMutateIncrements(incFlag.isSet());
     mutater.setMutateCPool(cpoolFlag.isSet());
     mutater.setMutateSwitch(switchFlag.isSet());
