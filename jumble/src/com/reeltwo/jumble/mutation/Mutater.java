@@ -114,6 +114,7 @@ import org.apache.bcel.util.ByteSequence;
 import org.apache.bcel.util.Repository;
 import org.apache.bcel.util.SyntheticRepository;
 
+
 /**
  * Given a class file can either count the number of possible
  * mutation points or perform a mutations. Mutations can be specified by number
@@ -468,11 +469,11 @@ public class Mutater {
     mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
-  private boolean checkNormalMethod(final Method m, String className) {
+  private boolean checkNormalMethod(final Method m, final String className) {
     return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !isIgnored(m, className);
   }
 
-  private boolean isIgnored(final Method m, String className) {
+  private boolean isIgnored(final Method m, final String className) {
     return mIgnored.contains(m.getName());
   }
 
@@ -866,7 +867,6 @@ public class Mutater {
 
     for (int j = 0; j < ihs.length; j = skipAhead(ihs, cp, j)) {
       final Instruction i = ihs[j].getInstruction();
-      // TODO needs modification to support SWITCH
       final int points = isMutatable(ihs, j, cp);
       if (points != 0 && (count -= points) < 0) {
         // not count is < -1 only for a few instructions like TABLESWITCH
