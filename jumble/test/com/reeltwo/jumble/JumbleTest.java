@@ -104,8 +104,8 @@ public class JumbleTest extends TestCase {
 
   // Test for floating point return value bug
   public void testFloatReturn() throws Exception {
-    String out = runCommandLineJumble("experiments.FloatReturn", "experiments.FloatReturnTest", true);
-    StringTokenizer tokens = new StringTokenizer(out, "\n");
+    final String out = runCommandLineJumble("experiments.FloatReturn", "experiments.FloatReturnTest", true);
+    final StringTokenizer tokens = new StringTokenizer(out, "\n");
 
     assertEquals("Mutating experiments.FloatReturn", tokens.nextToken().trim());
     assertEquals("Tests: experiments.FloatReturnTest", tokens.nextToken().trim());
