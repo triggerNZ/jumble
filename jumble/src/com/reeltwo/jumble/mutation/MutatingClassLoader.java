@@ -190,8 +190,8 @@ public class MutatingClassLoader extends ClassLoader {
 
   @Override
 @SuppressWarnings("unchecked")
-  public Enumeration < URL > getResources(String name) throws IOException {
-    Enumeration < URL > resources = mClassPath.getResources(name);
+  public Enumeration<URL> getResources(String name) throws IOException {
+    Enumeration<URL> resources = mClassPath.getResources(name);
     if (!resources.hasMoreElements()) {
       resources = mDeferTo.getResources(name);
     }
