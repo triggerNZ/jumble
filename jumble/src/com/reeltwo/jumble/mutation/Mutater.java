@@ -120,7 +120,7 @@ import org.apache.bcel.util.SyntheticRepository;
  * or selected at random.
  * 
  * @author Sean A. Irvine
- * @version $Revision:496 $
+ * @version $Revision$
  */
 public class Mutater {
 
