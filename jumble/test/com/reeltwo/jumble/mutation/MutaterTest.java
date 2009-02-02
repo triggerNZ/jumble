@@ -1,8 +1,6 @@
 package com.reeltwo.jumble.mutation;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
