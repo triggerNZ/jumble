@@ -216,7 +216,6 @@ public class MutaterTest extends TestCase {
     assertEquals("someMethod()Ljava/lang/String;", allMutatedMethods.iterator().next());
 
   }
-  */
 
   private Set<String> getAllMutatedMethods(Mutater m, String className) {
 
@@ -228,6 +227,7 @@ public class MutaterTest extends TestCase {
     }
     return allMutatedMethods;
   }
+  */
 
   public void testGetMethodRelativeMutationPoint() {
     Mutater m = new Mutater();
