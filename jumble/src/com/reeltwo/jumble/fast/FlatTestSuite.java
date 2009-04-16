@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -47,7 +48,11 @@ public class FlatTestSuite extends TestSuite {
 
     if (suiteMethod == null) {
       //No suite method, so we need to construct either a JUnit 3 or JUnit 4 test case.
-      addTest(new TestSuite(theClass));
+      if (TestCase.class.isAssignableFrom(theClass)) {
+          addTest(new TestSuite(theClass)); // junit 3
+      } else {
+          addTest(new JUnit4TestAdapter(theClass)); // junit 4
+      }
     } else {
       //We have a suite method which will construct the test case.
       try {
