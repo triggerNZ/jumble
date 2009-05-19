@@ -208,6 +208,7 @@ TABLE.s {border-width:1px 0 1px 1px;}
 TABLE.s TD {font-family:courier,monospace;font-size:10pt;} 
 TABLE.s TD {padding-left:0.25em;padding-right:0.25em;} 
 TABLE.s TD.l {padding-left:0.25em;padding-right:0.25em;text-align:right;background:#F0F0F0;}
+</STYLE>
 EOF
                 failedlines=$(cat $jumblefile | grep "FAIL: " | sed 's/.*FAIL: \([^:]\+\):\([0-9]\+\):.*/\,#f\2/g' | sort | uniq | tr -d '\n' | sed "s/^,//g")
                 if [ "$failedlines" ]; then
@@ -294,7 +295,7 @@ function dopackageenqueue ()
 # Get parameters we need
 checker=$(getparam checker)
 packagepath=$(getparam package)
-classname=$(getparam class)
+classname=$(getparam class | tr '.' '/')
 enqueue=$(getparam enqueue)
 
 # Editable variables
