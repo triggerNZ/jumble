@@ -65,6 +65,7 @@
 
 		<copy file="${jarfile}" todir="${dest}" />
 		<copy file="plugin.xml" todir="${dest}" />
-		<copy file="../jumble/jumble.jar" tofile="${dest}/jumble.jar" />
+		<copy file="../jumble/jumble.jar" todir="${dest}" />
+		<copy file="../jumble-annotations/jumble-annotations.jar" todir="${dest}" />
 	</target>
 </project>

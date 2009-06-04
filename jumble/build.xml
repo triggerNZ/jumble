@@ -41,6 +41,7 @@
 		<jar destfile="jumble.jar">
 			<fileset dir="${build.dir}" includes="**/*.class" />
 			<zipfileset src="${lib.dir}/bcel.jar" />
+                     <zipfileset src="${lib.dir}/jumble-annotations.jar" />
 			<zipfileset src="${lib.dir}/junit-4.3.1.jar" />
 			<zipfileset src="${lib.dir}/reeltwo.jar" />
 			<manifest>
@@ -72,13 +73,6 @@
 			</classpath>
 		</junit>
 	</target>
-
-	<target name="webdist" description="Creates a ZIP file containing the code needed for the jumble web interface.">
-		<zip destfile="jumbleweb.zip">
-			<zipfileset dir="web" prefix="jumble" excludes="CVS" />
-		</zip>
-	</target>
-
 
 	<!-- Build jar file containing utility code from the Reel Two
 	     internal source tree. Can only be run by someone at Reel

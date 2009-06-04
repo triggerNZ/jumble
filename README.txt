@@ -22,12 +22,15 @@ This distribution contains these subdirectories:
       Source code for Jumble.  Go here to build jumble.jar, 
       which contains the command line interface for Jumble.
 
+* jumble-annotations
+      This defines a Java 1.5+ annotation (@TestClass), which
+      can be used to specify the connection between your main
+      Java class and its unit tests.  The use of this annotation
+      is optional, but is useful for allowing the Eclipse plugin
+      to support more flexible naming conventions for unit test files.
+
 * eclipseplugin
       A simple plugin for running Jumble within Eclipse.
-
-* web
-      Documentation about Jumble (see web/index.html).
-      Also contains a CGI script for a web-server interface to Jumble.
 
 See the README.txt file in each subdirectory for more detail.
 
@@ -37,7 +40,7 @@ Source Code
 If this distribution does not contain the Java source code,
 you can obtain it from the Sourceforge SVN repository like this:
 
-  svn co https://jumble.svn.sourceforge.net/svnroot/jumble/tags/release_1_0_0 jumble1.0.0
+  svn co https://jumble.svn.sourceforge.net/svnroot/jumble/tags/release_1_1_0 jumble1.1.0
 
 Or for the latest development version of Jumble, like this:
   svn co https://jumble.svn.sourceforge.net/svnroot/jumble/trunk trunk
