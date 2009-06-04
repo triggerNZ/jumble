@@ -25,17 +25,14 @@ the .jar files that come with your version of Eclipse.
 Installing Jumble into Eclipse
 ==============================
 NOTE: check the contents of your plugin-export/jumble directory.
-It should contain three files:
+It should contain four files:
 
-    plugin-export/jumble/jumble-eclipse.jar    (about 7Kb)
-    plugin-export/jumble/jumble.jar            (about 780Kb)
-    plugin-export/jumble/plugin.xml            (about 3Kb)
+    plugin-export/jumble/jumble-eclipse.jar      (about 7Kb)
+    plugin-export/jumble/jumble.jar              (about 780Kb)
+    plugin-export/jumble/jumble-annotations.jar  (about 1Kb)
+    plugin-export/jumble/plugin.xml              (about 3Kb)
 
-If 'jumble.jar' is missing, then you should copy '../jumble/jumble.jar' 
-to 'plugin-export/jumble/jumble.jar'.  (The binary-only release of 
-Jumble contains just one copy of jumble.jar, to save space).
-
-Now, to install the Jumble plugin into Eclipse, you must copy the
+To install the Jumble plugin into Eclipse, you must copy the
 whole plugin-export/jumble directory into the 'plugins' directory
 of your Eclipse installation.
 
@@ -51,3 +48,13 @@ choose the "Jumble / Jumble Class" command to run Jumble.
 You can use the "Window / Preferences / Jumble" preferences
 page to turn on and off various Jumble flags.
 
+If you use non-standard naming conventions for your JUnit test classes
+(eg. not <xxx>Test.java), then you can use the 
+com.reeltwo.jumble.annotations.TestClass annotation in the main Java
+class to tell Jumble which unit tests to run.
+Eg. @TestClass({"my.package.MyUnitTestsWithStrangeName"})
+
+
+TODO
+====
+Add 'Mutate assignments' to the Eclipse Preferences page for Jumble.
