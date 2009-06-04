@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/reeltwo.jar"/>
 	<classpathentry kind="lib" path="lib/testclasses.jar"/>
 	<classpathentry kind="lib" path="lib/bcel.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/jumble-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.6.jar"/>
 	<classpathentry kind="output" path="build_eclipse"/>
 </classpath>

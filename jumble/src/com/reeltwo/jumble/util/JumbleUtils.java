@@ -1,5 +1,6 @@
 package com.reeltwo.jumble.util;
 
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public class JumbleUtils {
     }
 
     for (Class<?> cl : interfaceSet) {
-      if (cl == Test.class) {
+      if (cl == junit.framework.Test.class) {
         return true;
       }
     }
@@ -64,7 +65,14 @@ public class JumbleUtils {
    * @return true if the given class contains JUnit 4 test cases.
    */
   public static boolean isJUnit4TestClass(Class<?> clazz) {
-    return new org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
+	  // TODO: find a better way of knowing if clazz is a JUnit 4 test.
+	  // Was: org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
+	  for (Method m : clazz.getMethods())
+	  {
+		  if (m.getAnnotation(org.junit.Test.class) != null)
+			  return true;
+	  }
+	  return false;
   }
 
   /**

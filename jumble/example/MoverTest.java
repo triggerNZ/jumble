@@ -1,37 +1,44 @@
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.Assert;
 
-public class MoverTest extends TestCase
+public class MoverTest
 {
   private Mover mover;
 
-  public void setUp()
+  @Before
+  public void init()
   {
     mover = new Mover();
   }
 
-  public void testUp()
+  @Test
+  public void up()
   {
     mover.move("up", 2);
-    assertEquals("0,-2", mover.toString());
+    Assert.assertEquals("0,-2", mover.toString());
   }
 
-  public void testDown()
+  @Test
+  public void down()
   {
     mover.move("down", 2);
-    assertEquals("0,2", mover.toString());
+    Assert.assertEquals("0,2", mover.toString());
   }
 
-  public void testLeft()
+  @Test
+  public void left()
   {
     mover.move("left", 2);
-    assertEquals("0,0", mover.toString());
+    Assert.assertEquals("0,0", mover.toString());
   }
 
-  public void testRight()
+  @Test
+  public void right()
   {
     mover.move("right", 2);
-    assertEquals("0,0", mover.toString());
+    Assert.assertEquals("0,0", mover.toString());
   }
 }
