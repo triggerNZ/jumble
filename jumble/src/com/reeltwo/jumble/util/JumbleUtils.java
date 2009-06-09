@@ -65,14 +65,14 @@ public class JumbleUtils {
    * @return true if the given class contains JUnit 4 test cases.
    */
   public static boolean isJUnit4TestClass(Class<?> clazz) {
-	  // TODO: find a better way of knowing if clazz is a JUnit 4 test.
-	  // Was: org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
-	  for (Method m : clazz.getMethods())
-	  {
-		  if (m.getAnnotation(org.junit.Test.class) != null)
-			  return true;
-	  }
-	  return false;
+    // TODO find a better way of knowing if clazz is a JUnit 4 test.
+    // Was: org.junit.internal.runners.TestIntrospector(clazz).getTestMethods(org.junit.Test.class).size() > 0;
+    for (Method m : clazz.getMethods()) {
+      if (m.getAnnotation(org.junit.Test.class) != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
