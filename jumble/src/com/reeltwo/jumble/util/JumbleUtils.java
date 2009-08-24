@@ -39,21 +39,16 @@ public class JumbleUtils {
    * @return if clazz is a test class, false otherwise.
    */
   public static boolean isJUnit3TestClass(Class<?> clazz) {
-    Set<Class<?>> interfaceSet = new HashSet<Class<?>>();
     Class<?> tmp = clazz;
 
+    // search through all its interfaces
     while (tmp != Object.class) {
       Class<?>[] intfc = tmp.getInterfaces();
       for (int i = 0; i < intfc.length; i++) {
-        interfaceSet.add(intfc[i]);
+    	if (intfc[i].getName().equals("junit.framework.Test"))
+    	  return true;
       }
       tmp = tmp.getSuperclass();
-    }
-
-    for (Class<?> cl : interfaceSet) {
-      if (cl == junit.framework.Test.class) {
-        return true;
-      }
     }
     return false;
   }
