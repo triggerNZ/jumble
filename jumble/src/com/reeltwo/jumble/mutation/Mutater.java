@@ -1,11 +1,13 @@
 package com.reeltwo.jumble.mutation;
 
+
+
+import com.reeltwo.jumble.annotations.JumbleIgnore;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Collection;
-
-
+import java.util.HashSet;
 import org.apache.bcel.Constants;
+import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantDouble;
@@ -38,8 +40,8 @@ import org.apache.bcel.generic.DREM;
 import org.apache.bcel.generic.DRETURN;
 import org.apache.bcel.generic.DSTORE;
 import org.apache.bcel.generic.DSUB;
-import org.apache.bcel.generic.DUP;
 import org.apache.bcel.generic.DUP2;
+import org.apache.bcel.generic.DUP;
 import org.apache.bcel.generic.FADD;
 import org.apache.bcel.generic.FCMPG;
 import org.apache.bcel.generic.FCONST;
@@ -98,8 +100,8 @@ import org.apache.bcel.generic.LUSHR;
 import org.apache.bcel.generic.LXOR;
 import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.NOP;
-import org.apache.bcel.generic.POP;
 import org.apache.bcel.generic.POP2;
+import org.apache.bcel.generic.POP;
 import org.apache.bcel.generic.PUTFIELD;
 import org.apache.bcel.generic.PUTSTATIC;
 import org.apache.bcel.generic.ReturnInstruction;
@@ -468,8 +470,28 @@ public class Mutater {
     mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
+  private static final String JUMBLE_ANNOTATION_TYPE = "L" + JumbleIgnore.class.getName().replace('.', '/') + ";";
+
+  private boolean isMutatable(final AnnotationEntry[] as) {
+    // Using BCEL that has been patched for: https://issues.apache.org/bugzilla/show_bug.cgi?id=47073
+    for (AnnotationEntry an : as) {
+      //System.err.println("Method " + m.getName() + " " + JUMBLE_ANNOTATION_TYPE + " -- " + an.getAnnotationType());
+      if (JUMBLE_ANNOTATION_TYPE.equals(an.getAnnotationType())) {
+        //System.err.println("Mutation of " + m.getName() + " suppressed by annotation");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean isMutatableClass(final JavaClass clazz) {
+    return isMutatable(clazz.getAnnotationEntries());
+  }  
+
   private boolean isMutatableMethod(final Method m) {
-    //System.out.println(m.getName() + " " + mIgnored.contains(m.getName()));
+    if (!isMutatable(m.getAnnotationEntries())) {
+      return false;
+    }
     return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !mIgnored.contains(m.getName());
   }
 
@@ -568,6 +590,7 @@ public class Mutater {
     return false;
   }
 
+
   /**
    * Compute the total number of possible mutation points in the class.
    */
@@ -581,6 +604,10 @@ public class Mutater {
     // if is an interface, return -1 to distinguish from 0 point classes
     if (clazz.isInterface()) {
       return -1;
+    }
+
+    if (!isMutatableClass(clazz)) {
+      return 0;
     }
 
     final Method[] methods = clazz.getMethods();
@@ -1027,6 +1054,10 @@ public class Mutater {
   }
 
   public JavaClass jumbler(final JavaClass clazz) {
+    if (!isMutatableClass(clazz)) {
+      return clazz;
+    }
+
     JavaClass ret = clazz.copy();
 
     Method[] methods = ret.getMethods();
