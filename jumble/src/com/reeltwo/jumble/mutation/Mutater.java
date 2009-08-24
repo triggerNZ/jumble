@@ -2,12 +2,12 @@ package com.reeltwo.jumble.mutation;
 
 
 
-import com.reeltwo.jumble.annotations.JumbleIgnore;
+//import com.reeltwo.jumble.annotations.JumbleIgnore;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.AnnotationEntry;
+//import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantDouble;
@@ -470,6 +470,9 @@ public class Mutater {
     mIgnored = ignore == null ? new HashSet<String>() : ignore;
   }
 
+
+  /* BCEL snapshot is still too broken :-(
+
   private static final String JUMBLE_ANNOTATION_TYPE = "L" + JumbleIgnore.class.getName().replace('.', '/') + ";";
 
   private boolean isMutatable(final AnnotationEntry[] as) {
@@ -483,15 +486,17 @@ public class Mutater {
     }
     return true;
   }
-
+  */
   private boolean isMutatableClass(final JavaClass clazz) {
-    return isMutatable(clazz.getAnnotationEntries());
+    //return isMutatable(clazz.getAnnotationEntries());  // BCEL snapshot is still too broken :-(
+    return true;
   }  
-
   private boolean isMutatableMethod(final Method m) {
+    /* BCEL snapshot is still too broken :-(
     if (!isMutatable(m.getAnnotationEntries())) {
       return false;
     }
+    */
     return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !mIgnored.contains(m.getName());
   }
 
