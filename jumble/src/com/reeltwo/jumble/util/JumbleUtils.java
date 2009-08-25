@@ -1,9 +1,6 @@
 package com.reeltwo.jumble.util;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.JUnit4TestCaseFacade;
 import junit.framework.Test;
@@ -16,17 +13,17 @@ import junit.framework.TestCase;
  * @version $Revision$
  */
 public class JumbleUtils {
+
   private JumbleUtils() {
   }
 
   /**
    * Determines whether a given class is a test class.
    * 
-   * @param clazz
-   *          the class to check.
+   * @param clazz the class to check.
    * @return true if the class is a test class, false otherwise.
    */
-  public static boolean isTestClass(Class clazz) {
+  public static boolean isTestClass(Class<?> clazz) {
     final boolean junit3 = isJUnit3TestClass(clazz);
     final boolean junit4 = isJUnit4TestClass(clazz);
     return junit3 || junit4;
@@ -45,8 +42,9 @@ public class JumbleUtils {
     while (tmp != Object.class) {
       Class<?>[] intfc = tmp.getInterfaces();
       for (int i = 0; i < intfc.length; i++) {
-    	if (intfc[i].getName().equals("junit.framework.Test"))
-    	  return true;
+        if (intfc[i].getName().equals("junit.framework.Test")) {
+          return true;
+        }
       }
       tmp = tmp.getSuperclass();
     }
@@ -99,7 +97,7 @@ public class JumbleUtils {
     if (t instanceof JUnit4TestAdapter) {
       return ((JUnit4TestAdapter) t).getDescription().getDisplayName();
     }
-    
+
     throw new ClassCastException(t.getClass().toString());
   }
 }
