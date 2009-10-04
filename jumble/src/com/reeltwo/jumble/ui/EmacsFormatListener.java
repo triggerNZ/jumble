@@ -48,7 +48,7 @@ public class EmacsFormatListener implements JumbleListener {
         mStream.println("Score: " + (mCovered) * 100 / mMutationCount);
       }
     }
-    mStream.close();
+   
   }
 
   private String findSourceName(String className) {

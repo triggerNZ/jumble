@@ -44,7 +44,7 @@ public class JumbleScorePrinterListener implements JumbleListener {
       getStream().println();
       printResultsForNormalRun();
     }
-    getStream().close();
+   
   }
 
 
