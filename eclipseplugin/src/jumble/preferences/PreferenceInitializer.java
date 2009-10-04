@@ -19,6 +19,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     store.setDefault(PreferenceConstants.P_INLINE_CONSTANTS, true);
     store.setDefault(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS, true);
     store.setDefault(PreferenceConstants.P_SWITCH, true);
+    store.setDefault(PreferenceConstants.P_STORES, false);
   }
 
 }

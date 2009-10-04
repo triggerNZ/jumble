@@ -7,7 +7,7 @@
 		<property name="jarfile" value="jumble-eclipse.jar" />
 		<property name="dest" value="${destdir}/${plugin}" />
 		<property name="bindir" value="build" />
-		<property name="ECLIPSE_HOME" value="/opt/development/eclipse" />
+		<property name="ECLIPSE_HOME" value="/eclipse" />
 		<path id="Plug-in Dependencies.libraryclasspath">
 			<fileset dir="${ECLIPSE_HOME}/plugins/">
 				 <include name="*.jar"/>

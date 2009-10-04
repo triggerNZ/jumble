@@ -36,10 +36,12 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
     addField(new BooleanFieldEditor(PreferenceConstants.P_INCREMENTS, "Mutate &Increment Instructions", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_RETURNS, "Mutate &Return Values", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_SWITCH, "Mutate &Switch Statements", getFieldEditorParent()));
-    
     addField(new BooleanFieldEditor(PreferenceConstants.P_VERBOSE, "&Verbose Mode", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_STORES, "Mutate Assignments(-X)", getFieldEditorParent()));
     
     addField(new StringFieldEditor(PreferenceConstants.P_ARGS, "Jumble &Arguments", getFieldEditorParent()));
+    
+   
   }
 
   /*

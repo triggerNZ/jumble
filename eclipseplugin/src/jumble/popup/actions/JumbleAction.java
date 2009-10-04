@@ -126,10 +126,11 @@ public class JumbleAction implements IObjectActionDelegate, IEditorActionDelegat
       boolean inlineConstants = prefs.getBoolean(PreferenceConstants.P_INLINE_CONSTANTS);
       boolean constantPoolConstants = prefs.getBoolean(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS);
       boolean switchStatements = prefs.getBoolean(PreferenceConstants.P_SWITCH);
+      boolean mutateAssignments = prefs.getBoolean(PreferenceConstants.P_STORES);
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "com.reeltwo.jumble.Jumble");
       workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, (returnVals ? "-r " : "") + (inlineConstants ? "-k " : "")
-          + (increments ? "-i " : "") + (verbose ? "-v " : "") + (constantPoolConstants ? "-w " : "") + (switchStatements ? "-j " : "")
-          + "--classpath \"" + classPath + "\" " + " " + extraArgs + " " + className);
+          + (increments ? "-i " : "") + (verbose ? "-v " : "") + (constantPoolConstants ? "-w " : "") + (switchStatements ? "-j " : "") + 
+          (mutateAssignments ? "-X " : "") + "--classpath \"" + classPath + "\" " + " " + extraArgs + " " + className);
 
       // Now run...
       ILaunchConfiguration configuration = workingCopy.doSave();
