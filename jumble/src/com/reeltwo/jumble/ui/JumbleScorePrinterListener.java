@@ -72,6 +72,8 @@ public class JumbleScorePrinterListener implements JumbleListener {
   }
 
   public void jumbleRunStarted(String className, List < String > testClassNames) {
+	mMutationCount = 0;
+	mCovered = 0;
     mClassName = className;
     mTestNames = testClassNames;
   }
