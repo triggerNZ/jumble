@@ -53,7 +53,9 @@ public class MutatingClassLoader extends ClassLoader {
   private final String mTarget;
 
   private final Hashtable<String, Class<?>> mClasses = new Hashtable<String, Class<?>>();
-  private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
+  //private final ClassLoader mDeferTo = ClassLoader.getSystemClassLoader();
+  
+  private final ClassLoader mDeferTo = Thread.currentThread().getContextClassLoader();
   private final Repository mRepository;
 
   private final ClassPath mClassPath;
