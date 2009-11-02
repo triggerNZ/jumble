@@ -1,0 +1,73 @@
+Base Dir is D:\ClassFinder\example
+
+aaa
+abc
+Current Directory is : D:\ClassFinder\example
+scanClasses in D:\ClassFinder\example\ finds 0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Current Directory is : D:\ClassFinder\example\aaa
+scanClasses in D:\ClassFinder\example\aaa finds 2
+    0: aaa.AaaMoverTest
+    1: aaa.AaaMover
+Adding class aaa.AaaMover with test aaa.AaaMoverTest
+
+aaa.AaaMover    TestClass :   aaa.AaaMoverTest   
+---- JUMBLE class path is classfinder.jar;D:\ClassFinder\example;null;D:\ClassFinder\example;D:\ClassFinder\example
+Mutating aaa.AaaMover
+Tests: aaa.AaaMoverTest
+Mutation points = 23, unit test time limit 2.0s
+....M FAIL: aaa.AaaMover:32: CP[46] "illegal direction: " -> "___jumble___"
+.M FAIL: aaa.AaaMover:43: CP[76] "(" -> "___jumble___"
+M FAIL: aaa.AaaMover:43: CP[78] ")" -> "___jumble___"
+M FAIL: aaa.AaaMover:6: 5 -> -1
+.......M FAIL: aaa.AaaMover:26: - -> +
+...M FAIL: aaa.AaaMover:29: + -> -
+.M FAIL: aaa.AaaMover:43: changed return value (areturn)
+
+Score: 69%
+---- FINISHED JUMBLING aaa.AaaMover
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Current Directory is : D:\ClassFinder\example\abc
+scanClasses in D:\ClassFinder\example\abc finds 4
+    0: abc.AbcMover
+    1: abc.AbcMover2Test
+    2: abc.AbcMoverTest
+    3: abc.AbcMover2
+Adding class abc.AbcMover with test abc.AbcMoverTest
+Adding class abc.AbcMover2 with test abc.AbcMover2Test
+abc.AbcMover    TestClass :   abc.AbcMoverTest   
+---- JUMBLE class path is classfinder.jar;D:\ClassFinder\example;null;D:\ClassFinder\example;D:\ClassFinder\example;D:\ClassFinder\example
+Mutating abc.AbcMover
+Tests: abc.AbcMoverTest
+Mutation points = 23, unit test time limit 2.0s
+....M FAIL: abc.AbcMover:32: CP[46] "illegal direction: " -> "___jumble___"
+.M FAIL: abc.AbcMover:43: CP[76] "(" -> "___jumble___"
+M FAIL: abc.AbcMover:43: CP[78] ")" -> "___jumble___"
+M FAIL: abc.AbcMover:6: 5 -> -1
+.......M FAIL: abc.AbcMover:26: - -> +
+...M FAIL: abc.AbcMover:29: + -> -
+.M FAIL: abc.AbcMover:43: changed return value (areturn)
+
+Score: 69%
+---- FINISHED JUMBLING abc.AbcMover
+
+
+
+abc.AbcMover2    TestClass :   abc.AbcMover2Test   
+---- JUMBLE class path is classfinder.jar;D:\ClassFinder\example;null;D:\ClassFinder\example;D:\ClassFinder\example;D:\ClassFinder\example
+Mutating abc.AbcMover2
+Tests: abc.AbcMover2Test
+Mutation points = 23, unit test time limit 2.0s
+....M FAIL: abc.AbcMover2:32: CP[46] "illegal direction: " -> "___jumble___"
+.M FAIL: abc.AbcMover2:43: CP[76] "(" -> "___jumble___"
+M FAIL: abc.AbcMover2:43: CP[78] ")" -> "___jumble___"
+M FAIL: abc.AbcMover2:6: 5 -> -1
+.......M FAIL: abc.AbcMover2:26: - -> +
+...M FAIL: abc.AbcMover2:29: + -> -
+.M FAIL: abc.AbcMover2:43: changed return value (areturn)
+
+Score: 69%
+---- FINISHED JUMBLING abc.AbcMover2
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

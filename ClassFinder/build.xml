@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="ClassFinder" basedir="." default="jar">
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="build.dir" value="build" />
+
+
+	<path id="classpath">
+		
+	       
+
+	       <pathelement location="${lib.dir}/jumble.jar" />
+            
+               <pathelement location="${lib.dir}/ant.jar" />
+	       <pathelement location="${build.dir}" />
+	      </path>
+
+    	<target name="clean">
+		<delete dir="${build.dir}" />
+	 </target>
+
+      	<target name="init" depends="clean" >
+		<mkdir dir="${build.dir}" />
+		
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/*.java" source="1.5" debug="on">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile" description="Generates a JAR file containing ClassFinder and its dependencies">
+		<jar destfile="ClassFinder.jar">
+	       <fileset dir="${build.dir}" includes="**/*.class" />
+            
+	    <zipfileset src="${lib.dir}/ant.jar" />
+          
+                  <zipfileset src="${lib.dir}/jumble.jar" />
+		<manifest>
+				<attribute name="Main-Class" value="ClassFinderCmdLine" />
+			</manifest>
+		</jar>
+	</target>
+</project>

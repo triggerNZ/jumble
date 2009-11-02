@@ -1,0 +1,1233 @@
+Child.out->START
+Child.out->INIT: No mutation made
+Child.err->Non-Heap used:14137520KB delta:74KB avail:170513KB
+
+Child.out->FAIL: No mutation made
+Child.out->START
+Child.out->INIT: aaa.AaaMover:19: CP[24] "up" -> "___jumble___"
+Child.err->TEST FINISHED WITH ERROR: testUp(aaa.AaaMoverTest): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testUp(AaaMoverTest.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.err->Non-Heap used:14169600KB delta:105KB avail:170482KB
+TEST FINISHED WITH ERROR: testDown(aaa.AaaMoverTest): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testDown(AaaMoverTest.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:<init>()V:-8:testUp
+Child.out->INIT: aaa.AaaMover:22: CP[34] "down" -> "___jumble___"
+Child.err->Non-Heap used:14174184KB delta:4KB avail:170478KB
+TEST FINISHED WITH ERROR: testLeft(aaa.AaaMoverTest): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testLeft(AaaMoverTest.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:<init>()V:-7:testDown
+Child.out->INIT: aaa.AaaMover:25: CP[36] "left" -> "___jumble___"
+Child.err->Non-Heap used:14182072KB delta:8KB avail:170470KB
+TEST FINISHED WITH ERROR: testRight(aaa.AaaMoverTest): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testRight(AaaMoverTest.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:<init>()V:-6:testLeft
+Child.out->INIT: aaa.AaaMover:28: CP[40] "right" -> "___jumble___"
+Child.err->Non-Heap used:14191256KB delta:9KB avail:170461KB
+
+Child.out->PASS: aaa.AaaMover:<init>()V:-5:testRight
+Child.out->INIT: aaa.AaaMover:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.err->Non-Heap used:14195768KB delta:5KB avail:170456KB
+TEST FINISHED WITH FAILURE: testUp(aaa.AaaMoverTest): null expected:<0[,]-2> but was:<0[___jumble___]-2>
+junit.framework.ComparisonFailure: null expected:<0[,]-2> but was:<0[___jumble___]-2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testUp(AaaMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: aaa.AaaMover:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.out->INIT: aaa.AaaMover:38: CP[73] "," -> "___jumble___"
+Child.err->Non-Heap used:14227104KB delta:30KB avail:170426KB
+
+Child.out->PASS: aaa.AaaMover:<init>()V:-3:testUp
+Child.out->INIT: aaa.AaaMover:43: CP[76] "(" -> "___jumble___"
+Child.err->Non-Heap used:14231152KB delta:4KB avail:170422KB
+
+Child.out->FAIL: aaa.AaaMover:43: CP[76] "(" -> "___jumble___"
+Child.out->INIT: aaa.AaaMover:43: CP[78] ")" -> "___jumble___"
+Child.err->Non-Heap used:14235776KB delta:5KB avail:170417KB
+
+Child.out->FAIL: aaa.AaaMover:43: CP[78] ")" -> "___jumble___"
+Child.out->INIT: aaa.AaaMover:6: 5 -> -1
+Child.err->Non-Heap used:14338096KB delta:100KB avail:170317KB
+TEST FINISHED WITH ERROR: testUp(aaa.AaaMoverTest): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testUp(AaaMoverTest.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: aaa.AaaMover:6: 5 -> -1
+Child.out->INIT: aaa.AaaMover:19: negated conditional
+Child.err->Non-Heap used:14350960KB delta:12KB avail:170305KB
+TEST FINISHED WITH FAILURE: testUp(aaa.AaaMoverTest): null expected:<0,[-]2> but was:<0,[]2>
+junit.framework.ComparisonFailure: null expected:<0,[-]2> but was:<0,[]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testUp(AaaMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:0:testUp
+Child.out->INIT: aaa.AaaMover:20: - -> +
+Child.err->Non-Heap used:14358336KB delta:7KB avail:170298KB
+TEST FINISHED WITH ERROR: testDown(aaa.AaaMoverTest): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testDown(AaaMoverTest.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:1:testUp
+Child.out->INIT: aaa.AaaMover:22: negated conditional
+Child.err->Non-Heap used:14378960KB delta:20KB avail:170278KB
+TEST FINISHED WITH FAILURE: testDown(aaa.AaaMoverTest): null expected:<0,[]2> but was:<0,[-]2>
+junit.framework.ComparisonFailure: null expected:<0,[]2> but was:<0,[-]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testDown(AaaMoverTest.java:23)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:2:testDown
+Child.out->INIT: aaa.AaaMover:23: + -> -
+Child.err->Non-Heap used:14384544KB delta:6KB avail:170272KB
+TEST FINISHED WITH ERROR: testLeft(aaa.AaaMoverTest): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testLeft(AaaMoverTest.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:3:testDown
+Child.out->INIT: aaa.AaaMover:25: negated conditional
+Child.err->Non-Heap used:14388912KB delta:4KB avail:170268KB
+TEST FINISHED WITH FAILURE: testLeft(aaa.AaaMoverTest): null expected:<[0],0> but was:<[2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testLeft(AaaMoverTest.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:4:testLeft
+Child.out->INIT: aaa.AaaMover:26: 5 -> -1
+Child.err->Non-Heap used:14407416KB delta:18KB avail:170250KB
+TEST FINISHED WITH FAILURE: testLeft(aaa.AaaMoverTest): null expected:<[]0,0> but was:<[-1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[-1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testLeft(AaaMoverTest.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:5:testLeft
+Child.out->INIT: aaa.AaaMover:26: / -> *
+Child.err->Non-Heap used:14415016KB delta:8KB avail:170242KB
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:6:testLeft
+Child.out->INIT: aaa.AaaMover:26: - -> +
+Child.err->Non-Heap used:14426648KB delta:11KB avail:170231KB
+TEST FINISHED WITH ERROR: testRight(aaa.AaaMoverTest): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at aaa.AaaMover.move(AaaMover.java:32)
+	at aaa.AaaMoverTest.testRight(AaaMoverTest.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: aaa.AaaMover:26: - -> +
+Child.out->INIT: aaa.AaaMover:28: negated conditional
+Child.err->Non-Heap used:14472520KB delta:45KB avail:170186KB
+TEST FINISHED WITH FAILURE: testRight(aaa.AaaMoverTest): null expected:<[0],0> but was:<[-2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[-2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testRight(AaaMoverTest.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:8:testRight
+Child.out->INIT: aaa.AaaMover:29: 5 -> -1
+Child.err->Non-Heap used:14481944KB delta:9KB avail:170177KB
+TEST FINISHED WITH FAILURE: testRight(aaa.AaaMoverTest): null expected:<[]0,0> but was:<[1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testRight(AaaMoverTest.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:9:testRight
+Child.out->INIT: aaa.AaaMover:29: / -> *
+Child.err->Non-Heap used:14490216KB delta:8KB avail:170169KB
+
+Child.out->PASS: aaa.AaaMover:move(Ljava/lang/String;I)V:10:testRight
+Child.out->INIT: aaa.AaaMover:29: + -> -
+Child.err->Non-Heap used:14496056KB delta:6KB avail:170163KB
+TEST FINISHED WITH FAILURE: testUp(aaa.AaaMoverTest): null expected:<0,-2> but was:<null>
+junit.framework.ComparisonFailure: null expected:<0,-2> but was:<null>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at aaa.AaaMoverTest.testUp(AaaMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: aaa.AaaMover:29: + -> -
+Child.out->INIT: aaa.AaaMover:38: changed return value (areturn)
+Child.err->Non-Heap used:14503176KB delta:7KB avail:170156KB
+
+Child.out->PASS: aaa.AaaMover:toString()Ljava/lang/String;:0:testUp
+Child.out->INIT: aaa.AaaMover:43: changed return value (areturn)
+Child.err->Non-Heap used:14509432KB delta:6KB avail:170150KB
+
+Child.out->FAIL: aaa.AaaMover:43: changed return value (areturn)
+Child.out->START
+Child.out->INIT: No mutation made
+Child.err->Non-Heap used:14137568KB delta:74KB avail:170513KB
+
+Child.out->FAIL: No mutation made
+Child.err->TEST FINISHED WITH ERROR: testUp(abc.AbcMoverTest): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testUp(AbcMoverTest.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->START
+Child.out->INIT: abc.AbcMover:19: CP[24] "up" -> "___jumble___"
+Child.err->Non-Heap used:14169648KB delta:105KB avail:170482KB
+TEST FINISHED WITH ERROR: testDown(abc.AbcMoverTest): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testDown(AbcMoverTest.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:<init>()V:-8:testUp
+Child.out->INIT: abc.AbcMover:22: CP[34] "down" -> "___jumble___"
+Child.err->Non-Heap used:14174232KB delta:5KB avail:170477KB
+TEST FINISHED WITH ERROR: testLeft(abc.AbcMoverTest): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testLeft(AbcMoverTest.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:<init>()V:-7:testDown
+Child.out->INIT: abc.AbcMover:25: CP[36] "left" -> "___jumble___"
+Child.err->Non-Heap used:14182120KB delta:7KB avail:170470KB
+TEST FINISHED WITH ERROR: testRight(abc.AbcMoverTest): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testRight(AbcMoverTest.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:<init>()V:-6:testLeft
+Child.out->INIT: abc.AbcMover:28: CP[40] "right" -> "___jumble___"
+Child.err->Non-Heap used:14191624KB delta:10KB avail:170460KB
+
+Child.out->PASS: abc.AbcMover:<init>()V:-5:testRight
+Child.out->INIT: abc.AbcMover:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.err->Non-Heap used:14195816KB delta:4KB avail:170456KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMoverTest): null expected:<0[,]-2> but was:<0[___jumble___]-2>
+junit.framework.ComparisonFailure: null expected:<0[,]-2> but was:<0[___jumble___]-2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testUp(AbcMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.out->INIT: abc.AbcMover:38: CP[73] "," -> "___jumble___"
+Child.err->Non-Heap used:14227152KB delta:30KB avail:170426KB
+
+Child.out->PASS: abc.AbcMover:<init>()V:-3:testUp
+Child.out->INIT: abc.AbcMover:43: CP[76] "(" -> "___jumble___"
+Child.err->Non-Heap used:14231200KB delta:4KB avail:170422KB
+
+Child.out->FAIL: abc.AbcMover:43: CP[76] "(" -> "___jumble___"
+Child.out->INIT: abc.AbcMover:43: CP[78] ")" -> "___jumble___"
+Child.err->Non-Heap used:14235824KB delta:5KB avail:170417KB
+
+Child.out->FAIL: abc.AbcMover:43: CP[78] ")" -> "___jumble___"
+Child.out->INIT: abc.AbcMover:6: 5 -> -1
+Child.err->Non-Heap used:14338144KB delta:100KB avail:170317KB
+TEST FINISHED WITH ERROR: testUp(abc.AbcMoverTest): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testUp(AbcMoverTest.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover:6: 5 -> -1
+Child.out->INIT: abc.AbcMover:19: negated conditional
+Child.err->Non-Heap used:14351008KB delta:12KB avail:170305KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMoverTest): null expected:<0,[-]2> but was:<0,[]2>
+junit.framework.ComparisonFailure: null expected:<0,[-]2> but was:<0,[]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testUp(AbcMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:0:testUp
+Child.out->INIT: abc.AbcMover:20: - -> +
+Child.err->Non-Heap used:14358384KB delta:7KB avail:170298KB
+TEST FINISHED WITH ERROR: testDown(abc.AbcMoverTest): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testDown(AbcMoverTest.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:1:testUp
+Child.out->INIT: abc.AbcMover:22: negated conditional
+Child.err->Non-Heap used:14379008KB delta:21KB avail:170278KB
+TEST FINISHED WITH FAILURE: testDown(abc.AbcMoverTest): null expected:<0,[]2> but was:<0,[-]2>
+junit.framework.ComparisonFailure: null expected:<0,[]2> but was:<0,[-]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testDown(AbcMoverTest.java:23)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:2:testDown
+Child.out->INIT: abc.AbcMover:23: + -> -
+Child.err->Non-Heap used:14384592KB delta:5KB avail:170272KB
+TEST FINISHED WITH ERROR: testLeft(abc.AbcMoverTest): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testLeft(AbcMoverTest.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:3:testDown
+Child.out->INIT: abc.AbcMover:25: negated conditional
+Child.err->Non-Heap used:14388960KB delta:4KB avail:170268KB
+TEST FINISHED WITH FAILURE: testLeft(abc.AbcMoverTest): null expected:<[0],0> but was:<[2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testLeft(AbcMoverTest.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:4:testLeft
+Child.out->INIT: abc.AbcMover:26: 5 -> -1
+Child.err->Non-Heap used:14408040KB delta:19KB avail:170249KB
+TEST FINISHED WITH FAILURE: testLeft(abc.AbcMoverTest): null expected:<[]0,0> but was:<[-1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[-1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testLeft(AbcMoverTest.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:5:testLeft
+Child.out->INIT: abc.AbcMover:26: / -> *
+Child.err->Non-Heap used:14415064KB delta:7KB avail:170242KB
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:6:testLeft
+Child.out->INIT: abc.AbcMover:26: - -> +
+Child.err->Non-Heap used:14426696KB delta:11KB avail:170231KB
+TEST FINISHED WITH ERROR: testRight(abc.AbcMoverTest): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at abc.AbcMover.move(AbcMover.java:32)
+	at abc.AbcMoverTest.testRight(AbcMoverTest.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover:26: - -> +
+Child.out->INIT: abc.AbcMover:28: negated conditional
+Child.err->Non-Heap used:14472568KB delta:45KB avail:170186KB
+TEST FINISHED WITH FAILURE: testRight(abc.AbcMoverTest): null expected:<[0],0> but was:<[-2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[-2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testRight(AbcMoverTest.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:8:testRight
+Child.out->INIT: abc.AbcMover:29: 5 -> -1
+Child.err->Non-Heap used:14481992KB delta:9KB avail:170177KB
+TEST FINISHED WITH FAILURE: testRight(abc.AbcMoverTest): null expected:<[]0,0> but was:<[1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testRight(AbcMoverTest.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:9:testRight
+Child.out->INIT: abc.AbcMover:29: / -> *
+Child.err->Non-Heap used:14490264KB delta:8KB avail:170169KB
+
+Child.out->PASS: abc.AbcMover:move(Ljava/lang/String;I)V:10:testRight
+Child.out->INIT: abc.AbcMover:29: + -> -
+Child.err->Non-Heap used:14496104KB delta:6KB avail:170163KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMoverTest): null expected:<0,-2> but was:<null>
+junit.framework.ComparisonFailure: null expected:<0,-2> but was:<null>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMoverTest.testUp(AbcMoverTest.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover:29: + -> -
+Child.out->INIT: abc.AbcMover:38: changed return value (areturn)
+Child.err->Non-Heap used:14503224KB delta:7KB avail:170156KB
+
+Child.out->PASS: abc.AbcMover:toString()Ljava/lang/String;:0:testUp
+Child.out->INIT: abc.AbcMover:43: changed return value (areturn)
+Child.err->Non-Heap used:14509480KB delta:6KB avail:170150KB
+
+Child.out->FAIL: abc.AbcMover:43: changed return value (areturn)
+Child.out->START
+Child.out->INIT: No mutation made
+Child.err->Non-Heap used:14137576KB delta:74KB avail:170513KB
+
+Child.out->FAIL: No mutation made
+Child.err->TEST FINISHED WITH ERROR: testUp(abc.AbcMover2Test): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testUp(AbcMover2Test.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->START
+Child.out->INIT: abc.AbcMover2:19: CP[24] "up" -> "___jumble___"
+Child.err->Non-Heap used:14169656KB delta:105KB avail:170482KB
+TEST FINISHED WITH ERROR: testDown(abc.AbcMover2Test): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testDown(AbcMover2Test.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:<init>()V:-8:testUp
+Child.out->INIT: abc.AbcMover2:22: CP[34] "down" -> "___jumble___"
+Child.err->Non-Heap used:14174240KB delta:5KB avail:170477KB
+TEST FINISHED WITH ERROR: testLeft(abc.AbcMover2Test): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testLeft(AbcMover2Test.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:<init>()V:-7:testDown
+Child.out->INIT: abc.AbcMover2:25: CP[36] "left" -> "___jumble___"
+Child.err->Non-Heap used:14182128KB delta:7KB avail:170470KB
+TEST FINISHED WITH ERROR: testRight(abc.AbcMover2Test): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testRight(AbcMover2Test.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:<init>()V:-6:testLeft
+Child.out->INIT: abc.AbcMover2:28: CP[40] "right" -> "___jumble___"
+Child.err->Non-Heap used:14191632KB delta:10KB avail:170460KB
+
+Child.out->PASS: abc.AbcMover2:<init>()V:-5:testRight
+Child.out->INIT: abc.AbcMover2:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.err->Non-Heap used:14195824KB delta:4KB avail:170456KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMover2Test): null expected:<0[,]-2> but was:<0[___jumble___]-2>
+junit.framework.ComparisonFailure: null expected:<0[,]-2> but was:<0[___jumble___]-2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testUp(AbcMover2Test.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover2:32: CP[46] "illegal direction: " -> "___jumble___"
+Child.out->INIT: abc.AbcMover2:38: CP[73] "," -> "___jumble___"
+Child.err->Non-Heap used:14227160KB delta:30KB avail:170426KB
+
+Child.out->PASS: abc.AbcMover2:<init>()V:-3:testUp
+Child.out->INIT: abc.AbcMover2:43: CP[76] "(" -> "___jumble___"
+Child.err->Non-Heap used:14231208KB delta:4KB avail:170422KB
+
+Child.out->FAIL: abc.AbcMover2:43: CP[76] "(" -> "___jumble___"
+Child.out->INIT: abc.AbcMover2:43: CP[78] ")" -> "___jumble___"
+Child.err->Non-Heap used:14235832KB delta:5KB avail:170417KB
+
+Child.out->FAIL: abc.AbcMover2:43: CP[78] ")" -> "___jumble___"
+Child.out->INIT: abc.AbcMover2:6: 5 -> -1
+Child.err->Non-Heap used:14338184KB delta:100KB avail:170317KB
+TEST FINISHED WITH ERROR: testUp(abc.AbcMover2Test): illegal direction: up
+java.lang.RuntimeException: illegal direction: up
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testUp(AbcMover2Test.java:16)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover2:6: 5 -> -1
+Child.out->INIT: abc.AbcMover2:19: negated conditional
+Child.err->Non-Heap used:14351048KB delta:12KB avail:170305KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMover2Test): null expected:<0,[-]2> but was:<0,[]2>
+junit.framework.ComparisonFailure: null expected:<0,[-]2> but was:<0,[]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testUp(AbcMover2Test.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:0:testUp
+Child.out->INIT: abc.AbcMover2:20: - -> +
+Child.err->Non-Heap used:14358424KB delta:7KB avail:170298KB
+TEST FINISHED WITH ERROR: testDown(abc.AbcMover2Test): illegal direction: down
+java.lang.RuntimeException: illegal direction: down
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testDown(AbcMover2Test.java:22)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:1:testUp
+Child.out->INIT: abc.AbcMover2:22: negated conditional
+Child.err->Non-Heap used:14379048KB delta:21KB avail:170277KB
+TEST FINISHED WITH FAILURE: testDown(abc.AbcMover2Test): null expected:<0,[]2> but was:<0,[-]2>
+junit.framework.ComparisonFailure: null expected:<0,[]2> but was:<0,[-]2>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testDown(AbcMover2Test.java:23)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:2:testDown
+Child.out->INIT: abc.AbcMover2:23: + -> -
+Child.err->Non-Heap used:14384632KB delta:5KB avail:170272KB
+TEST FINISHED WITH ERROR: testLeft(abc.AbcMover2Test): illegal direction: left
+java.lang.RuntimeException: illegal direction: left
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testLeft(AbcMover2Test.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:3:testDown
+Child.out->INIT: abc.AbcMover2:25: negated conditional
+Child.err->Non-Heap used:14389000KB delta:4KB avail:170268KB
+TEST FINISHED WITH FAILURE: testLeft(abc.AbcMover2Test): null expected:<[0],0> but was:<[2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testLeft(AbcMover2Test.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:4:testLeft
+Child.out->INIT: abc.AbcMover2:26: 5 -> -1
+Child.err->Non-Heap used:14408080KB delta:19KB avail:170249KB
+TEST FINISHED WITH FAILURE: testLeft(abc.AbcMover2Test): null expected:<[]0,0> but was:<[-1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[-1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testLeft(AbcMover2Test.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:5:testLeft
+Child.out->INIT: abc.AbcMover2:26: / -> *
+Child.err->Non-Heap used:14415104KB delta:7KB avail:170242KB
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:6:testLeft
+Child.out->INIT: abc.AbcMover2:26: - -> +
+Child.err->Non-Heap used:14426736KB delta:11KB avail:170231KB
+TEST FINISHED WITH ERROR: testRight(abc.AbcMover2Test): illegal direction: right
+java.lang.RuntimeException: illegal direction: right
+	at abc.AbcMover2.move(AbcMover2.java:32)
+	at abc.AbcMover2Test.testRight(AbcMover2Test.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover2:26: - -> +
+Child.out->INIT: abc.AbcMover2:28: negated conditional
+Child.err->Non-Heap used:14472608KB delta:45KB avail:170186KB
+TEST FINISHED WITH FAILURE: testRight(abc.AbcMover2Test): null expected:<[0],0> but was:<[-2],0>
+junit.framework.ComparisonFailure: null expected:<[0],0> but was:<[-2],0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testRight(AbcMover2Test.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:8:testRight
+Child.out->INIT: abc.AbcMover2:29: 5 -> -1
+Child.err->Non-Heap used:14482032KB delta:9KB avail:170177KB
+TEST FINISHED WITH FAILURE: testRight(abc.AbcMover2Test): null expected:<[]0,0> but was:<[1]0,0>
+junit.framework.ComparisonFailure: null expected:<[]0,0> but was:<[1]0,0>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testRight(AbcMover2Test.java:35)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:9:testRight
+Child.out->INIT: abc.AbcMover2:29: / -> *
+Child.err->Non-Heap used:14490304KB delta:8KB avail:170169KB
+
+Child.out->PASS: abc.AbcMover2:move(Ljava/lang/String;I)V:10:testRight
+Child.out->INIT: abc.AbcMover2:29: + -> -
+Child.err->Non-Heap used:14496144KB delta:6KB avail:170163KB
+TEST FINISHED WITH FAILURE: testUp(abc.AbcMover2Test): null expected:<0,-2> but was:<null>
+junit.framework.ComparisonFailure: null expected:<0,-2> but was:<null>
+	at junit.framework.Assert.assertEquals(Assert.java:81)
+	at junit.framework.Assert.assertEquals(Assert.java:87)
+	at abc.AbcMover2Test.testUp(AbcMover2Test.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:87)
+	at com.reeltwo.jumble.fast.JumbleTestSuite.run(JumbleTestSuite.java:139)
+	at com.reeltwo.jumble.fast.FastJumbler.runMain(FastJumbler.java:143)
+	at com.reeltwo.jumble.fast.FastJumbler.main(FastJumbler.java:192)
+
+
+Child.out->FAIL: abc.AbcMover2:29: + -> -
+Child.out->INIT: abc.AbcMover2:38: changed return value (areturn)
+Child.err->Non-Heap used:14503264KB delta:7KB avail:170156KB
+
+Child.out->PASS: abc.AbcMover2:toString()Ljava/lang/String;:0:testUp
+Child.out->INIT: abc.AbcMover2:43: changed return value (areturn)
+Child.err->Non-Heap used:14509520KB delta:6KB avail:170150KB
+
+Child.out->FAIL: abc.AbcMover2:43: changed return value (areturn)
