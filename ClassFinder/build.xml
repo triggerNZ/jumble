@@ -3,25 +3,38 @@
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
-
+		<property name="test.build.dir" value="build_test" />
+	<property name="test.dir" value="test" />
+	<property name="example.dir" value="example" />
 
 	<path id="classpath">
-		
-	       
-
-	       <pathelement location="${lib.dir}/jumble.jar" />
-            
-               <pathelement location="${lib.dir}/ant.jar" />
+		<pathelement location="${lib.dir}/jumble.jar" />
+            <pathelement location="${lib.dir}/ant.jar" />
 	       <pathelement location="${build.dir}" />
+               	<pathelement location="${test.build.dir}" />
 	      </path>
 
     	<target name="clean">
-		<delete dir="${build.dir}" />
+	    <delete dir="${build.dir}" />
+           
+           
+	 </target>
+
+	<target name="test_clean">
+	    <delete dir="${test.build.dir}" />
+           
+           
 	 </target>
 
       	<target name="init" depends="clean" >
 		<mkdir dir="${build.dir}" />
-		
+
+	</target>
+
+
+      	<target name="test_init" depends="test_clean" >
+		<mkdir dir="${test.build.dir}" />
+
 	</target>
 
 	<target name="compile" depends="init">
@@ -44,4 +57,46 @@
 			</manifest>
 		</jar>
 	</target>
+
+	<target name="compile-example">
+		<javac srcdir="${example.dir}" destdir="${example.dir}">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+     </target>
+
+	<target name="compile-tests" depends="compile">
+		<javac srcdir="${test.dir}" destdir="${test.build.dir}">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+
+	</target>
+
+	<target name="test" description="Run tests" depends="test_init,compile-tests,compile-example">
+		<junit fork="yes" printsummary="yes">
+			<formatter type="plain" />
+			<test name="AllTests" />
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</junit>
+	</target>
+
+<taskdef name = "cf"
+       classname ="ClassFinderAnt">
+    <classpath refid="classpath"/>
+</taskdef>
+
+<target name = "systest" depends="jar,compile-example" >
+  <cf 
+      path = "${example.dir}" >
+      <path>                                                
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+      </path>
+   </cf>
+</target>
+
 </project>

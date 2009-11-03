@@ -1,6 +1,6 @@
 
 /** An example class to illustrate Jumble coverage. */
-@TestClass ("notest3")
+
 public class Mover3
 {
   /** How much slower to travel in the horizontal direction */
