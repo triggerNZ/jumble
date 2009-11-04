@@ -7,36 +7,31 @@
 	<property name="test.dir" value="test" />
 	<property name="example.dir" value="example" />
 	<property name="jumble.dir" value="../jumble" />
+      	<property name="run.dir" value="example" />
 
 	<path id="classpath">
 		<pathelement location="${jumble.dir}/jumble.jar" />
-            <pathelement location="${lib.dir}/ant.jar" />
+              <pathelement location="${lib.dir}/ant.jar" />
 	       <pathelement location="${build.dir}" />
-               	<pathelement location="${test.build.dir}" />
-	      </path>
+              <pathelement location="${test.build.dir}" />
+	</path>
 
     	<target name="clean">
 	    <delete dir="${build.dir}" />
-           
-           
-	 </target>
+       </target>
 
 	<target name="test_clean">
 	    <delete dir="${test.build.dir}" />
-           
-           
-	 </target>
+       </target>
 
       	<target name="init" depends="clean" >
 		<mkdir dir="${build.dir}" />
-
-	</target>
+       </target>
 
 
       	<target name="test_init" depends="test_clean" >
 		<mkdir dir="${test.build.dir}" />
-
-	</target>
+       </target>
 
 	<target name="compile" depends="init">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/*.java" source="1.5" debug="on">
@@ -49,14 +44,16 @@
 	<target name="jar" depends="compile" description="Generates a JAR file containing ClassFinder and its dependencies">
 		<jar destfile="antplugin.jar">
 	       <fileset dir="${build.dir}" includes="**/*.class" />
-            
-	    <zipfileset src="${lib.dir}/ant.jar" />
-          
-                  <zipfileset src="${jumble.dir}/jumble.jar" />
-		<manifest>
-				<attribute name="Main-Class" value="ClassFinderCmdLine" />
-			</manifest>
+              <zipfileset src="${lib.dir}/ant.jar" />
+              <zipfileset src="${jumble.dir}/jumble.jar" />
+		     <manifest>
+		           <attribute name="Main-Class" value="ClassFinderCmdLine" />
+		     </manifest>
 		</jar>
+            <taskdef name = "cf"
+                 classname ="ClassFinderAnt">
+                 <classpath refid="classpath"/>
+            </taskdef>
 	</target>
 
 	<target name="compile-example">
@@ -86,10 +83,7 @@
 		</junit>
 	</target>
 
-<taskdef name = "cf"
-       classname ="ClassFinderAnt">
-    <classpath refid="classpath"/>
-</taskdef>
+
 
 <!-- System test, can set jumble flags, recursive scan and output to file -->
 <target name = "systest" depends="jar,compile-example" >
@@ -105,6 +99,27 @@
       outputtofile = "false"  
       recurscan = "true"
       path = "${example.dir}" >
+      <path>                                                
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${jumble.dir}" includes = "jumble.jar"/>
+      </path>
+   </cf>
+</target>
+
+<!-- Run plugin, can set jumble flags, recursive scan and output to file -->
+<target name = "run" depends="jar" >
+  <cf 
+      inlineConstants = "true"
+      returnVals = "true"
+      stores = "false"
+      increments  = "true"
+      cpool = "true"
+      switches = "true"
+      ordered = "true"
+      verbose = "false"
+      outputtofile = "false"  
+      recurscan = "true"
+      path = "${run.dir}" >
       <path>                                                
             <fileset dir="${lib.dir}" includes="**/*.jar"/>
             <fileset dir="${jumble.dir}" includes = "jumble.jar"/>
