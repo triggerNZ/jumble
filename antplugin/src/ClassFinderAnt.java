@@ -3,8 +3,7 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 
 /**
- * Search .class files in a given directory For every non testing class, assign
- * corresponding test classes.
+ * Ant task main class
  * 
  * @author Jay Huang
  */
@@ -39,6 +38,8 @@ public class ClassFinderAnt extends Task {
   /** Whether to recursively scan all classes under the base directory */
   private boolean recurScan = true;
 
+  private String resultPath = System.getProperty("user.dir");
+
   Vector<Path> paths = new Vector<Path>();
 
   /** Classpath and the base directory */
@@ -61,6 +62,12 @@ public class ClassFinderAnt extends Task {
    */
   public void setPath(String p) {
     path = p;
+
+  }
+
+  /** Set where to store jumble results */
+  public void setResultPath(String val) {
+    resultPath = val;
 
   }
 
@@ -130,6 +137,7 @@ public class ClassFinderAnt extends Task {
     cf.setOrdered(mOrdered);
     cf.setVerbose(mVerbose);
     cf.setOuputResultsToFile(outputToFile);
+    cf.setResultPath(resultPath);
     cf.setRecurScan(recurScan);
     cf.runJumbleOnAllClasses();
 

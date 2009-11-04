@@ -1,6 +1,5 @@
 /**
- * Search .class files in a given directory For every non testing class, assign
- * corresponding test classes.
+ * Command line implementation
  * 
  * @author Jay Huang
  */
@@ -24,7 +23,7 @@ public class ClassFinderCmdLine {
     cf.setSwitches(true);
     cf.setOrdered(true);
     cf.setVerbose(false);
-    cf.setOuputResultsToFile(false);
+    cf.setOuputResultsToFile(true);
     cf.setRecurScan(true);
     cf.runJumbleOnAllClasses();
 

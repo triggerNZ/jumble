@@ -13,31 +13,37 @@ import com.reeltwo.jumble.ui.JumbleScorePrinterListener;
 
 /**
  * 
- * @author Jay Huang
+ * This class finds all classes in a given directory or all classes in all
+ * sub-directory in the given directory, then run jumble on these classes if
+ * every one of them has at least one valid test class.
  * 
+ * @author Jay Huang
  */
-
-/**
-* 
-* This class finds all classes in a given directory or all classes in all sub-directory in the given directory, then
-* run jumble on these classes if every one of them has at least one valid test class. 
-*
-*/
 public class ClassFinder {
 
   private static final String pathsep = System.getProperty("path.separator");
   private static final String dirsep = System.getProperty("file.separator");
   private static final String sysClasspath = System.getProperty("java.class.path");
+  private static final String userdir = System.getProperty("user.dir");
 
   /** Output file names */
-  private static final String outFileName = "jumble_output.txt";
-  private static final String errFileName = "jumble_errput.txt";
+  private static final String resultsFileName = "jumble_results";
+  private static final String outFileName = "_jumble_output.txt";
+  private static final String errFileName = "_jumble_error.txt";
 
+  private static final PrintStream orgOut = System.out;
+  private static final PrintStream orgErr = System.err;
   /** Whether to recursively scan all classes under the base directory */
   private boolean recurScan = false;
 
-  /** Base directory of all classes to be scanned, and the class path */
-  private String basedir, cp;
+  /** Base directory */
+  private String basedir;
+
+  /** Class path */
+  private String cp;
+
+  /** Path to store jumble results */
+  private String resultPath;
 
   /** Whether to output jumble results to files */
   private boolean ouputResultsToFile;
@@ -74,7 +80,12 @@ public class ClassFinder {
     this.basedir = basedir.length() > 0 ? basedir : System.getProperty("user.dir");
     this.cp = cp;
     ouputResultsToFile = false;
+    resultPath = userdir;
+  }
 
+  /** Set path to store jumble results in */
+  public void setResultPath(String val) {
+    resultPath = val;
   }
 
   /** Set whether to output to files */
@@ -133,13 +144,15 @@ public class ClassFinder {
    */
   public void runJumbleOnAllClasses() {
 
-    PrintStream orgStream = null;
-    PrintStream orgErr = null;
+    if (ouputResultsToFile) {
 
-    PrintStream outFileStream = null;
-    PrintStream errFileStream = null;
+      File resultsFolder = new File(resultPath + dirsep + resultsFileName);
 
-    // Set the base directory with default being the user directory if empty 
+      resultsFolder.mkdir();
+
+    }
+
+    // Set the base directory with default being the user directory if empty
     // directory is parsed into the constructor
     String path = basedir;
     File dir = new File(path).getAbsoluteFile();
@@ -153,31 +166,7 @@ public class ClassFinder {
 
     try {
 
-      orgStream = System.out;
-      orgErr = System.err;
-
-      if (ouputResultsToFile) {
-        File out = new File("outFileName");
-        File err = new File("errFileName");
-
-        try {
-          out.delete();
-          err.delete();
-        } finally {
-          out = new File("outFileName");
-          err = new File("errFileName");
-        }
-
-        outFileStream = new PrintStream(new FileOutputStream(out, true));
-        errFileStream = new PrintStream(new FileOutputStream(err, true));
-
-        // Redirecting console output to file
-        System.setOut(outFileStream);
-        // Redirecting console output to file
-        System.setErr(errFileStream);
-      }
-
-      //Scan classes in base directory and run jumble on these classes
+      // Scan classes in base directory and run jumble on these classes
       if (!recurScan) {
         try {
           runJumbleInDirectory(path, "", ".class", " ");
@@ -190,14 +179,15 @@ public class ClassFinder {
         }
       }
 
-      //Recursively scan all classes within the base directory
+      // Recursively scan all classes within the base directory
       String[] includes = { "**\\*.class" };
       ds.setBasedir(path);
       ds.setIncludes(includes);
       ds.scan();
       String[] directories = ds.getNotIncludedDirectories();
 
-      //For each scanned directory, run jumble on valid classes inside it. 
+      // For each scanned directory, run jumble on valid classes inside
+      // it.
       for (String relativePath : directories) {
         runJumbleInDirectory(path, relativePath, ".class", " ");
 
@@ -208,12 +198,6 @@ public class ClassFinder {
 
       e.printStackTrace();
 
-    }
-
-    finally {
-      // Restoring back to console
-      System.setOut(orgStream);
-      System.setErr(orgErr);
     }
 
   }
@@ -237,8 +221,10 @@ public class ClassFinder {
       return mutatingClass;
     }
 
-    //  Match classes to corresponding test classes, by the naming convention.
-    //  e.g if a class' name is xyz.class, then every class in the directory with
+    // Match classes to corresponding test classes, by the naming
+    // convention.
+    // e.g if a class' name is xyz.class, then every class in the directory
+    // with
     // name xyzTest.class will be regarded as a test class of xyz.class and
     // added to the test class list.
     for (int i = 0; i < claz.length; i++) {
@@ -260,6 +246,17 @@ public class ClassFinder {
   }
 
   /**
+   * Reset console output
+   */
+  private void resetOutput() {
+    // Redirecting console output
+    System.setOut(orgOut);
+    // Redirecting console output
+    System.setErr(orgErr);
+
+  }
+
+  /**
    * Run jumble on classes in the given directory
    * 
    * @param dir the directory
@@ -267,11 +264,13 @@ public class ClassFinder {
    * @param listener jumble listener to print results
    * 
    */
-  private void runJumble(String dir, List<ClassToBeMutated> mutatingClass, JumbleListener listener) {
+  private void runJumble(String dir, List<ClassToBeMutated> mutatingClass) {
 
+    PrintStream outFileStream = null;
+    PrintStream errFileStream = null;
     FastRunner runner = new FastRunner();
-
-    //Set jumble flags
+    JumbleListener listener = new JumbleScorePrinterListener();
+    // Set jumble flags
     runner.setInlineConstants(mInlineConstants);
     runner.setReturnVals(mReturnVals);
     runner.setStores(mStores);
@@ -281,7 +280,7 @@ public class ClassFinder {
     runner.setOrdered(mOrdered);
     runner.setVerbose(mVerbose);
 
-    //Set jumble classpath
+    // Set jumble classpath
     String origClassPath = runner.getClassPath();
     runner.setClassPath(origClassPath + pathsep + dir);
 
@@ -291,7 +290,7 @@ public class ClassFinder {
       return;
     }
 
-    //Run jumble on classes
+    // Run jumble on classes
     for (ClassToBeMutated c : mutatingClass) {
       List<String> testNames = new ArrayList<String>();
       for (JavaClass jc : c.getTests()) {
@@ -299,16 +298,53 @@ public class ClassFinder {
         testNames.add(jc.getClassName());
       }
 
+      if (testNames.size() == 0) {
+        continue;
+      }
+
+      String className = c.getName();
+
       try {
 
-        if (testNames.size() == 0) {
-          continue;
+        if (ouputResultsToFile) {
+          //Create output and error files to store results 
+          File out = new File(resultsFileName + dirsep + className + outFileName);
+          File err = new File(resultsFileName + dirsep + className + errFileName);
+
+          if (out.exists())
+            out.delete();
+          if (err.exists())
+            err.delete();
+
+          outFileStream = new PrintStream(new FileOutputStream(out, true));
+          errFileStream = new PrintStream(new FileOutputStream(err, true));
+
+          // Redirecting console output to file
+          System.setOut(outFileStream);
+          // Redirecting console output to file
+          System.setErr(errFileStream);
+
+          //Set listener output stream
+          listener = new JumbleScorePrinterListener(outFileStream);
+
+          System.out.println("Directory:   " + dir);
+          System.err.println("Directory:   " + dir);
+          System.err.println("Mutating Class:   " + className);
         }
-        runner.runJumble(c.getName(), testNames, listener);
-        System.out.println("\n");
+
+        //Run jumble
+        runner.runJumble(className, testNames, listener);
 
       } catch (Exception e) {
         e.getStackTrace();
+      } finally {
+        //Close streams and reset console output
+        if (ouputResultsToFile) {
+          outFileStream.close();
+          errFileStream.close();
+          resetOutput();
+          System.out.println("Result has been output to file" + "\n");
+        }
       }
     }
   }
@@ -326,7 +362,7 @@ public class ClassFinder {
 
     List<ClassToBeMutated> mutatingClass = scanClasses(baseDir + dirsep + directory, included, excluded);
 
-    runJumble(baseDir + dirsep + directory, mutatingClass, new JumbleScorePrinterListener());
+    runJumble(baseDir + dirsep + directory, mutatingClass);
 
   }
 
