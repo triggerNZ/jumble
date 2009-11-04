@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="ClassFinder" basedir="." default="jar">
+<project name="AntPlugin" basedir="." default="jar">
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
@@ -47,7 +47,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Generates a JAR file containing ClassFinder and its dependencies">
-		<jar destfile="ClassFinder.jar">
+		<jar destfile="antplugin.jar">
 	       <fileset dir="${build.dir}" includes="**/*.class" />
             
 	    <zipfileset src="${lib.dir}/ant.jar" />
