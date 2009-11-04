@@ -17,7 +17,8 @@
 	</path>
 
     	<target name="clean">
-	    <delete dir="${build.dir}" />
+	    <delete dir="${build.dir}"/>
+	    <delete file="antplugin.jar"/>
        </target>
 
 	<target name="test_clean">
@@ -44,16 +45,16 @@
 	<target name="jar" depends="compile" description="Generates a JAR file containing ClassFinder and its dependencies">
 		<jar destfile="antplugin.jar">
 	       <fileset dir="${build.dir}" includes="**/*.class" />
-              <zipfileset src="${lib.dir}/ant.jar" />
               <zipfileset src="${jumble.dir}/jumble.jar" />
+              <zipfileset src="${lib.dir}/ant.jar" />  <!-- needed for command-line use -->
 		     <manifest>
 		           <attribute name="Main-Class" value="ClassFinderCmdLine" />
 		     </manifest>
 		</jar>
-            <taskdef name = "cf"
-                 classname ="ClassFinderAnt">
+          <taskdef name = "cf"
+             classname ="ClassFinderAnt">
                  <classpath refid="classpath"/>
-            </taskdef>
+          </taskdef>
 	</target>
 
 	<target name="compile-example">
