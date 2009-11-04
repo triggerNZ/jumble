@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="AntPlugin" basedir="." default="jar">
+<project name="JumbleAntPlugin" basedir="." default="jar">
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
@@ -8,6 +8,7 @@
 	<property name="example.dir" value="example" />
 	<property name="jumble.dir" value="../jumble" />
       	<property name="run.dir" value="example" />
+	<property name="result.dir" value="." />
 
 	<path id="classpath">
 		<pathelement location="${jumble.dir}/jumble.jar" />
@@ -43,7 +44,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Generates a JAR file containing ClassFinder and its dependencies">
-		<jar destfile="antplugin.jar">
+		<jar destfile="jumble-antplugin.jar">
 	       <fileset dir="${build.dir}" includes="**/*.class" />
               <zipfileset src="${jumble.dir}/jumble.jar" />
               <zipfileset src="${lib.dir}/ant.jar" />  <!-- needed for command-line use -->
@@ -100,7 +101,8 @@
       verbose = "false"
       outputtofile = "false"  
       recurscan = "true"
-      path = "${example.dir}" >
+      path = "${example.dir}" 
+      resultpath = "." >
       <path>                                                
             <fileset dir="${lib.dir}" includes="**/*.jar"/>
             <fileset dir="${jumble.dir}" includes = "jumble.jar"/>
@@ -122,7 +124,8 @@
       verbose = "false"
       outputtofile = "false"  
       recurscan = "true"
-      path = "${run.dir}" >
+      path = "${run.dir}" 
+      resultpath = "${result.dir}" >
       <path>                                                
             <fileset dir="${lib.dir}" includes="**/*.jar"/>
             <fileset dir="${jumble.dir}" includes = "jumble.jar"/>
