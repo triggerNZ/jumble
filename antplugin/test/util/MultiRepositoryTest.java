@@ -10,9 +10,10 @@ import org.apache.bcel.util.ClassPath;
 import util.MultiRepository;
 
 /**
+ * Test of </code>MultiRepository<code> class
  * 
  * @author Jay Huang
- *
+ * 
  */
 
 public class MultiRepositoryTest extends TestCase {

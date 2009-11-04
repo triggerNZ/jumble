@@ -10,9 +10,10 @@ import org.apache.bcel.util.SyntheticRepository;
 import org.apache.bcel.util.ClassPath;
 
 /**
+ * Test of </code>ClassToBeMutated<code> class
  * 
  * @author Jay Huang
- *
+ * 
  */
 public class ClassToBeMutatedTest extends TestCase {
 

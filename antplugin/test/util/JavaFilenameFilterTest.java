@@ -5,9 +5,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
+ * Test of </code>JavaFilenameFilter<code> class
  * 
  * @author Jay Huang
- *
+ * 
  */
 public class JavaFilenameFilterTest extends TestCase{
 	
