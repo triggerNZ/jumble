@@ -3,12 +3,13 @@
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
-		<property name="test.build.dir" value="build_test" />
+	<property name="test.build.dir" value="build_test" />
 	<property name="test.dir" value="test" />
 	<property name="example.dir" value="example" />
+	<property name="jumble.dir" value="../jumble" />
 
 	<path id="classpath">
-		<pathelement location="${lib.dir}/jumble.jar" />
+		<pathelement location="${jumble.dir}/jumble.jar" />
             <pathelement location="${lib.dir}/ant.jar" />
 	       <pathelement location="${build.dir}" />
                	<pathelement location="${test.build.dir}" />
@@ -51,7 +52,7 @@
             
 	    <zipfileset src="${lib.dir}/ant.jar" />
           
-                  <zipfileset src="${lib.dir}/jumble.jar" />
+                  <zipfileset src="${jumble.dir}/jumble.jar" />
 		<manifest>
 				<attribute name="Main-Class" value="ClassFinderCmdLine" />
 			</manifest>
@@ -90,11 +91,23 @@
     <classpath refid="classpath"/>
 </taskdef>
 
+<!-- System test, can set jumble flags, recursive scan and output to file -->
 <target name = "systest" depends="jar,compile-example" >
   <cf 
+      inlineConstants = "true"
+      returnVals = "true"
+      stores = "false"
+      increments  = "true"
+      cpool = "true"
+      switches = "true"
+      ordered = "true"
+      verbose = "false"
+      outputtofile = "false"  
+      recurscan = "true"
       path = "${example.dir}" >
       <path>                                                
             <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${jumble.dir}" includes = "jumble.jar"/>
       </path>
    </cf>
 </target>
