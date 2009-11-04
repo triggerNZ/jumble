@@ -1,15 +1,4 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
-
-import org.apache.bcel.classfile.*;
-import org.apache.tools.ant.DirectoryScanner;
-import com.reeltwo.jumble.fast.FastRunner;
-
-import com.reeltwo.jumble.ui.JumbleListener;
-import com.reeltwo.jumble.ui.JumbleScorePrinterListener;
-
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 
@@ -21,39 +10,129 @@ import org.apache.tools.ant.types.Path;
  */
 
 public class ClassFinderAnt extends Task {
-	Vector<Path> paths = new Vector<Path>();
 
-	private String classpath, path;
+  /** Whether to mutate constants */
+  private boolean mInlineConstants = true;
 
-	public void addPath(Path p) {
-		paths.add(p);
+  /** Whether to mutate return values */
+  private boolean mReturnVals = true;
 
-	}
+  /** Whether to mutate stores */
+  private boolean mStores = false;
 
-	public void setPath(String p) {
-		path = p;
+  /** Whether to mutate increments */
+  private boolean mIncrements = true;
 
-	}
+  /** Whether to mutate constant pool */
+  private boolean mCPool = true;
 
-	/**
-	 * The main method.
-	 * 
-	 * @param args
-	 *            the path of the directory
-	 */
+  /** Whether to mutate switches */
+  private boolean mSwitches = true;
 
-	public void execute() {
+  private boolean mOrdered = true;
 
-		String cp = "";
-		String pathsep = System.getProperty("path.separator");
-		for (Path p : paths) {
-			cp = cp + p.toString() + pathsep;
-		}
+  private boolean mVerbose = false;
 
-		ClassFinder cf = new ClassFinder(path, cp);
-		cf.setOuputResultsToFile(true);
-		cf.runJumbleOnAllClasses();
+  /** Whether to output results to files */
+  private boolean outputToFile = false;
 
-	}
+  /** Whether to recursively scan all classes under the base directory */
+  private boolean recurScan = true;
+
+  Vector<Path> paths = new Vector<Path>();
+
+  /** Classpath and the base directory */
+  private String classpath, path;
+
+  /**
+   * Add classpath
+   * 
+   * @param p path to be added
+   */
+  public void addPath(Path p) {
+    paths.add(p);
+
+  }
+
+  /**
+   * Set base directory
+   * 
+   * @param p base directory
+   */
+  public void setPath(String p) {
+    path = p;
+
+  }
+
+  public void setVerbose(boolean val) {
+    mVerbose = val;
+  }
+
+  public void setInlineConstants(boolean val) {
+    mInlineConstants = val;
+  }
+
+  public void setReturnVals(boolean val) {
+    mReturnVals = val;
+  }
+
+  public void setStores(boolean val) {
+    mStores = val;
+  }
+
+  public void setIncrements(boolean val) {
+    mIncrements = val;
+  }
+
+  public void setCPool(boolean val) {
+    mCPool = val;
+  }
+
+  public void setSwitches(boolean val) {
+    mSwitches = val;
+  }
+
+  public void setOrdered(boolean val) {
+    mOrdered = val;
+  }
+
+  public void setOutputToFile(boolean val) {
+    outputToFile = val;
+  }
+
+  public void setRecurScan(boolean val) {
+    recurScan = val;
+
+  }
+
+  /**
+   * The main method.
+   * 
+   * @param args the path of the directory
+   */
+
+  public void execute() {
+
+    String cp = "";
+    String pathsep = System.getProperty("path.separator");
+    for (Path p : paths) {
+      cp = cp + p.toString() + pathsep;
+    }
+
+    ClassFinder cf = new ClassFinder(path, cp);
+
+    cf.setInlineConstants(mInlineConstants);
+    cf.setReturnVals(mReturnVals);
+    cf.setStores(mStores);
+    cf.setIncrements(mIncrements);
+    cf.setCPool(mCPool);
+    cf.setSwitches(mSwitches);
+    cf.setOrdered(mOrdered);
+    cf.setVerbose(mVerbose);
+    cf.setOuputResultsToFile(outputToFile);
+    cf.setRecurScan(recurScan);
+    cf.runJumbleOnAllClasses();
+
+  }
 
 }
