@@ -16,6 +16,13 @@ import com.reeltwo.jumble.ui.JumbleScorePrinterListener;
  * @author Jay Huang
  * 
  */
+
+/**
+* 
+* This class finds all classes in a given directory or all classes in all sub-directory in the given directory, then
+* run jumble on these classes if every one of them has at least one valid test class. 
+*
+*/
 public class ClassFinder {
 
   private static final String pathsep = System.getProperty("path.separator");
@@ -264,7 +271,7 @@ public class ClassFinder {
 
     FastRunner runner = new FastRunner();
 
-    //Set flags
+    //Set jumble flags
     runner.setInlineConstants(mInlineConstants);
     runner.setReturnVals(mReturnVals);
     runner.setStores(mStores);
