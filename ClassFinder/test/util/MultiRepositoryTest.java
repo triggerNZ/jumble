@@ -3,6 +3,7 @@ package util;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.util.SyntheticRepository;
 import org.apache.bcel.util.ClassPath;
+import util.MultiRepository;
 import java.util.HashSet;
 
 import junit.framework.Test;
