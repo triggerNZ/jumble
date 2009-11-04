@@ -73,7 +73,7 @@
 
 	</target>
 
-	<target name="test" description="Run tests" depends="test_init,compile-tests,compile-example">
+	<target name="test" description="Run unit tests" depends="test_init,compile-tests,compile-example">
 		<junit fork="yes" printsummary="yes">
 			<formatter type="plain" />
 			<test name="AllTests" />
@@ -86,7 +86,8 @@
 
 
 <!-- System test, can set jumble flags, recursive scan and output to file -->
-<target name = "systest" depends="jar,compile-example" >
+<target name = "systest" depends="jar,compile-example"
+  description="Run a system test in the 'example' directory.">
   <cf 
       inlineConstants = "true"
       returnVals = "true"
@@ -107,7 +108,8 @@
 </target>
 
 <!-- Run plugin, can set jumble flags, recursive scan and output to file -->
-<target name = "run" depends="jar" >
+<target name = "run" depends="jar"
+   description="Run the Jumble plugin: e.g., ant run -Drun.dir=example">
   <cf 
       inlineConstants = "true"
       returnVals = "true"
