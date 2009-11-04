@@ -1,7 +1,14 @@
 package util;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+/**
+ * 
+ * @author Jay Huang
+ *
+ */
 public class JavaFilenameFilterTest extends TestCase{
 	
 private JavaFilenameFilter filter;
