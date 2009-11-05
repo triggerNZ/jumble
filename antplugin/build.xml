@@ -9,6 +9,16 @@
 	<property name="jumble.dir" value="../jumble" />
       	<property name="run.dir" value="example" />
 	<property name="result.dir" value="." />
+	<property name="k" value="true" />
+	<property name="r" value="true" />
+	<property name="X" value="false" />
+	<property name="i" value="true" />
+	<property name="w" value="true" />
+	<property name="j" value="true" />
+	<property name="o" value="true" />
+	<property name="v" value="false" />
+	<property name="re" value="false" />
+	<property name="out" value="false" />
 
 	<path id="classpath">
 		<pathelement location="${jumble.dir}/jumble.jar" />
@@ -100,7 +110,7 @@
       ordered = "true"
       verbose = "false"
       outputtofile = "false"  
-      recurscan = "true"
+      recurscan = "false"
       path = "${example.dir}" 
       resultpath = "." >
       <path>                                                
@@ -114,16 +124,16 @@
 <target name = "run" depends="jar"
    description="Run the Jumble plugin: e.g., ant run -Drun.dir=example">
   <cf 
-      inlineConstants = "true"
-      returnVals = "true"
-      stores = "false"
-      increments  = "true"
-      cpool = "true"
-      switches = "true"
-      ordered = "true"
-      verbose = "false"
-      outputtofile = "false"  
-      recurscan = "true"
+      inlineConstants = "${k}"
+      returnVals = "${r}"
+      stores = "${X}"
+      increments  = "${i}"
+      cpool = "${w}"
+      switches = "${j}"
+      ordered = "${o}"
+      verbose = "${v}"
+      outputtofile = "${out}"  
+      recurscan = "${re}"
       path = "${run.dir}" 
       resultpath = "${result.dir}" >
       <path>                                                
