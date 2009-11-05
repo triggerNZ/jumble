@@ -23,7 +23,7 @@ public class ClassFinderCmdLine {
     cf.setSwitches(true);
     cf.setOrdered(true);
     cf.setVerbose(false);
-    cf.setOuputResultsToFile(true);
+    cf.setOuputResultsToFile(false);
     cf.setRecurScan(true);
     cf.runJumbleOnAllClasses();
 
