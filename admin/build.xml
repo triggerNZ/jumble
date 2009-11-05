@@ -19,6 +19,7 @@
         <include name="README.txt" />
         <include name="jumble/**" />
         <include name="eclipseplugin/**" />
+         <include name="antplugin/**" />
          <include name="jumble-annotations/**" />
         <exclude name="**/*.class" />
 	<!-- it already excludes the .svn directories -->
@@ -45,6 +46,12 @@
       <include name="${version}/eclipseplugin/build.xml" />
       <include name="${version}/eclipseplugin/plugin.xml" />
       <include name="${version}/eclipseplugin/src/**" />
+      <include name="${version}/antplugin/src/**" />
+      <include name="${version}/antplugin/lib/**" />
+      <include name="${version}/antplugin/test/**" />
+      <include name="${version}/antplugin/build.xml" />
+      <include name="${version}/antplugin/example/**/*.java" />
+      <include name="${version}/antplugin/README.txt" />
        </zip>
   </target>
 
@@ -60,6 +67,10 @@
       <include name="${version}/eclipseplugin/README.txt" />
       <include name="${version}/eclipseplugin/COPYING.txt" />
       <include name="${version}/eclipseplugin/plugin-export/**"/>
+      <include name="${version}/antplugin/build.xml" />
+      <include name="${version}/antplugin/example/**/*.java" />
+      <include name="${version}/antplugin/jumble-antplugin.jar" />
+      <include name="${version}/antplugin/README.txt" />
     </zip>
   </target>
 
