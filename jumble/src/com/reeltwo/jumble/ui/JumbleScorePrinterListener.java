@@ -1,20 +1,19 @@
 package com.reeltwo.jumble.ui;
 
-
-
 import com.reeltwo.jumble.fast.JumbleResult;
 import com.reeltwo.jumble.fast.MutationResult;
 import java.io.PrintStream;
 import java.util.List;
 
 /**
- * Prints the results of a Jumble run to a <code>PrintStream</code>, this
- * will usually be <code>System.out</code>.
+ * Prints the results of a Jumble run to a <code>PrintStream</code>, this will
+ * usually be <code>System.out</code>.
  * 
  * @author Tin Pavlinic
  * @version $Revision$
  */
 public class JumbleScorePrinterListener implements JumbleListener {
+
   private static final int DOTS_PER_LINE = 50;
 
   private PrintStream mStream;
@@ -25,7 +24,7 @@ public class JumbleScorePrinterListener implements JumbleListener {
 
   private String mClassName;
 
-  private List < String > mTestNames;
+  private List<String> mTestNames;
 
   private boolean mInitialTestsPassed;
 
@@ -44,9 +43,8 @@ public class JumbleScorePrinterListener implements JumbleListener {
       getStream().println();
       printResultsForNormalRun();
     }
-   
-  }
 
+  }
 
   public void finishedMutation(MutationResult res) {
     if (res.isPassed()) {
@@ -71,9 +69,9 @@ public class JumbleScorePrinterListener implements JumbleListener {
     }
   }
 
-  public void jumbleRunStarted(String className, List < String > testClassNames) {
-	mMutationCount = 0;
-	mCovered = 0;
+  public void jumbleRunStarted(String className, List<String> testClassNames) {
+    mMutationCount = 0;
+    mCovered = 0;
     mClassName = className;
     mTestNames = testClassNames;
   }
