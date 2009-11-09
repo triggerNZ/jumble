@@ -110,7 +110,7 @@
       ordered = "true"
       verbose = "false"
       outputtofile = "false"  
-      recurscan = "false"
+      recurscan = "true"
       path = "${example.dir}" 
       resultpath = "." >
       <path>                                                
