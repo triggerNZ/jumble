@@ -1,14 +1,15 @@
 package com.reeltwo.jumble.ui;
 
 
+
+import com.reeltwo.jumble.fast.JumbleResult;
+import com.reeltwo.jumble.fast.MutationResult;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import org.apache.bcel.util.ClassPath.ClassFile;
 import org.apache.bcel.util.ClassPath;
-
-import com.reeltwo.jumble.fast.JumbleResult;
-import com.reeltwo.jumble.fast.MutationResult;
 
 /**
  * Prints the results of a Jumble run in <code>Emacs</code> compatible format.
@@ -27,7 +28,7 @@ public class EmacsFormatListener implements JumbleListener {
 
   private boolean mInitialTestsPassed;
 
-  private ClassPath mClassPath;
+  private ClassPath mSourcePath;
 
   private String mBaseDir = System.getProperty("user.dir");
 
@@ -35,9 +36,9 @@ public class EmacsFormatListener implements JumbleListener {
     this(classPath, System.out);
   }
 
-  public EmacsFormatListener(String classPath, PrintStream output) {
+  public EmacsFormatListener(String sourcePath, PrintStream output) {
     mStream = output;
-    mClassPath = new ClassPath(classPath);
+    mSourcePath = new ClassPath(sourcePath);
   }
 
   public void jumbleRunEnded() {
@@ -52,20 +53,18 @@ public class EmacsFormatListener implements JumbleListener {
   }
 
   private String findSourceName(String className) {
-    String sourceName = className.replace('.', '/') + ".java";
+    String sourceName = className.replace('.', File.separatorChar) + ".java";
+    // Convert inner class to the outer source file
+    sourceName = sourceName.replaceAll("\\$[^.]+\\.", ".");
     try {
       // Try to resolve the class name relative to the classpath
-      ClassFile cf = mClassPath.getClassFile(className);
-      sourceName = cf.getPath();
-      sourceName = sourceName.replaceAll("\\.class$", ".java");
+      sourceName = mSourcePath.getPath(sourceName);
       if (sourceName.startsWith(mBaseDir)) {
         sourceName = sourceName.substring(mBaseDir.length() + 1);
       }
     } catch (IOException e) {
       // Use the sourceName that we have.
     }
-    // Convert inner class to the outer source file
-    sourceName = sourceName.replaceAll("\\$[^.]+\\.", ".");
     return sourceName;
   }
 

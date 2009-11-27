@@ -44,7 +44,7 @@ public class Jumble {
     final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
     final Flag storesFlag = flags.registerOptional('X', "stores", "Mutate assignments.");
-    final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output (shortcut for --printer=" + EmacsFormatListener.class.getName() + ").");
+    final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
     final Flag<String> jvmargFlag = flags.registerOptional('J', "jvm-arg", String.class, "STRING", "Additional command-line argument passed to the JVM used to run unit tests.");
     jvmargFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag<String> jvmpropFlag = flags.registerOptional('D', "define-property", String.class, "STRING", "Additional system property to define in the JVM used to run unit tests.");
@@ -52,6 +52,7 @@ public class Jumble {
     final Flag<String> printFlag = flags.registerOptional('p', "printer", String.class, "CLASS", "Name of the class responsible for producing output.");
     final Flag<Integer> firstFlag = flags.registerOptional('f', "first-mutation", Integer.class, "NUM", "Index of the first mutation to attempt (this is mainly useful for testing). Negative values are ignored.");
     final Flag<String> classpathFlag = flags.registerOptional('c', "classpath", String.class, "CLASSPATH", "The classpath to use for tests.", System.getProperty("java.class.path"));
+    final Flag<String> sourcepathFlag = flags.registerOptional("sourcepath", String.class, "SOURCEPATH", "The sourcepath to use for resolving source file names. Default is to use the classpath.");
     final Flag orderFlag = flags.registerOptional('o', "no-order", "Do not order tests by runtime.");
     final Flag saveFlag = flags.registerOptional('s', "no-save-cache", "Do not save cache.");
     final Flag loadFlag = flags.registerOptional('l', "no-load-cache", "Do not load cache.");
@@ -131,8 +132,11 @@ public class Jumble {
       testList.add(guessTestClassName(className));
     }
 
-    JumbleListener listener = emacsFlag.isSet() ? new EmacsFormatListener(classpathFlag.getValue()) : !printFlag.isSet() ? new JumbleScorePrinterListener()
-        : getListener(printFlag.getValue());
+    JumbleListener listener = emacsFlag.isSet() 
+      ? new EmacsFormatListener(sourcepathFlag.isSet() ? sourcepathFlag.getValue() : classpathFlag.getValue()) 
+      : !printFlag.isSet() 
+      ? new JumbleScorePrinterListener()
+      : getListener(printFlag.getValue());
     mFastRunner.runJumble(className, testList, listener);
   }
 
