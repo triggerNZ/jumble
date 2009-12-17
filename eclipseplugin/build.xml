@@ -7,11 +7,11 @@
 		<property name="jarfile" value="jumble-eclipse.jar" />
 		<property name="dest" value="${destdir}/${plugin}" />
 		<property name="bindir" value="build" />
-		<property name="ECLIPSE_HOME" value="d:/eclipse" />
+		<property name="ECLIPSE_HOME" value="/usr/local/java/eclipse" />
 		<path id="Plug-in Dependencies.libraryclasspath">
 			<fileset dir="${ECLIPSE_HOME}/plugins/">
 				 <include name="*.jar"/>
-		    </fileset>	
+		    </fileset>
 			<!--
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
 			<pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar" />

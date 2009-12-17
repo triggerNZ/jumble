@@ -53,8 +53,3 @@ If you use non-standard naming conventions for your JUnit test classes
 com.reeltwo.jumble.annotations.TestClass annotation in the main Java
 class to tell Jumble which unit tests to run.
 Eg. @TestClass({"my.package.MyUnitTestsWithStrangeName"})
-
-
-TODO
-====
-Add 'Mutate assignments' to the Eclipse Preferences page for Jumble.

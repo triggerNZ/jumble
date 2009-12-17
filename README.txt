@@ -32,11 +32,13 @@ This distribution contains these subdirectories:
 * eclipseplugin
       A simple plugin for running Jumble within Eclipse.
 
-*antplugin
+* antplugin
       An ant plug for running Jumble in ant. It can run jumble on classes 
       in a given directory and output results to files for every mutated class.
 
-See the README.txt file in each subdirectory for more detail.
+See the README.txt file in each subdirectory for information
+on how to build, install and use each package.
+Make sure you build them in the order shown above.
 
 
 Source Code
