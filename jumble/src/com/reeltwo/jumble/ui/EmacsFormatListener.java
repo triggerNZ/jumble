@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import org.apache.bcel.util.ClassPath.ClassFile;
 import org.apache.bcel.util.ClassPath;
 
 /**
