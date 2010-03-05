@@ -2,7 +2,7 @@ Author: Jay Huang
 
 This directory contains a plugin for Ant that
 allows you to run Jumble on all classes within a directory
-or classes in all sub-directory of the given directory(recursive scan), and
+or classes in all sub-directories of the given directory(recursive scan), and
 be able to ouput jumble results to files. 
 NOTE: DO NOT modify the "example" folder.
 
@@ -41,9 +41,9 @@ eg. run "ant -Dresult.dir=foo run" , this will create a "jumble_results" folder 
 To run jumble in any directory and store results in any location, use composition of the above,
 eg. run "ant -Drun.dir=foo -Dresult.dir=result run" , this will run jumble in "foo" and output results in "result"
 
-The following lists all usage of the plugin:
+The following lists all usages of the plugin:
 
--Dk                     set mutate inline constants, eg. run "ant -Dk=true run"                               
+-Dk                     set mutate inline constants, eg."ant -Dk=true run"                               
 -Dr                     set mutate return values
 -DX	                 set mutate stores
 -Di                     set mutate increments
