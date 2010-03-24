@@ -959,6 +959,7 @@ public class Mutater {
           final InstructionHandle oldDefHandle = select.getTarget();
           if (newDefHandle == oldDefHandle) {
             // need to try harder to find a case we can swap with
+            boolean ok = false;
             for (int k = 0; k < matches.length; k++) {
               if (k != index && newDefHandle != handles[k]) {
                 mod.append("switched case " + matches[index] + " with case " + k);
@@ -969,15 +970,18 @@ public class Mutater {
                 } else {
                   ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, oldDefHandle));
                 }
+                ok = true;
                 break;
               }
             }
-            // still didn't find an option, just mutate the case value itself
-            mod.append("switched case " + matches[index] + " -> " + ++matches[index]);
-            if (select instanceof TABLESWITCH) {
-              ihs[j].setInstruction(new TABLESWITCH(matches, handles, oldDefHandle));
-            } else {
-              ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, oldDefHandle));
+            if (!ok) {
+              // still didn't find an option, just mutate the case value itself
+              mod.append("switched case " + matches[index] + " -> " + ++matches[index]);
+              if (select instanceof TABLESWITCH) {
+                ihs[j].setInstruction(new TABLESWITCH(matches, handles, oldDefHandle));
+              } else {
+                ihs[j].setInstruction(new LOOKUPSWITCH(matches, handles, oldDefHandle));
+              }
             }
           } else {
             handles[index] = oldDefHandle;
