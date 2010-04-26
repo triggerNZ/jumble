@@ -28,6 +28,7 @@ public class MutatingClassLoader extends ClassLoader {
     "java.",
     "junit.",
     "org.junit.",
+    "com.reeltwo.jumble.annotations.",
     "sun.reflect.",
     /*
       "com.sun.management.OperatingSystemMXBean"

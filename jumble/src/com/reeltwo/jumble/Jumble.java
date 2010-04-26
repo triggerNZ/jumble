@@ -1,16 +1,17 @@
 package com.reeltwo.jumble;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
+import com.reeltwo.jumble.annotations.JumbleAnnotationProcessor;
 import com.reeltwo.jumble.fast.FastRunner;
 import com.reeltwo.jumble.ui.EmacsFormatListener;
 import com.reeltwo.jumble.ui.JumbleListener;
 import com.reeltwo.jumble.ui.JumbleScorePrinterListener;
-import com.reeltwo.util.CLIFlags;
 import com.reeltwo.util.CLIFlags.Flag;
+import com.reeltwo.util.CLIFlags;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A CLI interface to the <CODE>FastRunner</CODE>.
@@ -127,9 +128,7 @@ public class Jumble {
         testList.add(testClass.replace('/', '.'));
       }
     } else {
-      // no test class given, guess its name
-//      testList.addAll(getTestClassNames(className));
-      testList.add(guessTestClassName(className));
+      testList.addAll(getTestClassNames(className, mFastRunner.getClassPath()));
     }
 
     JumbleListener listener = emacsFlag.isSet() 
@@ -140,21 +139,22 @@ public class Jumble {
     mFastRunner.runJumble(className, testList, listener);
   }
 
-//  private List<String> getTestClassNames(final String className) {
-//    JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
-//    List<String> testNamesFromAnnotation = null;
-//      try {
-//        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className);
-//      } catch (ClassNotFoundException e) {
-//        throw new RuntimeException(e);
-//      }
-//    
-//    if (testNamesFromAnnotation.isEmpty()) {
-//      return new ArrayList<String> () { { add(guessTestClassName(className)); } };
-//    } else {
-//      return testNamesFromAnnotation;
-//    }
-//  }
+  private List<String> getTestClassNames(final String className, String classPath) {
+    JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
+    List<String> testNamesFromAnnotation = null;
+      try {
+        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className, classPath);
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    
+    if (testNamesFromAnnotation.isEmpty()) {
+      return new ArrayList<String> () { { add(guessTestClassName(className)); } };
+    } else {
+      System.err.println("Using test classes from annotation: " + testNamesFromAnnotation);
+      return testNamesFromAnnotation;
+    }
+  }
   
   /**
    * Guesses the name of a test class used for testing a particular class. It

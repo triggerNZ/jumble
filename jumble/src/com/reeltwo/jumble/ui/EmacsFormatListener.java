@@ -94,10 +94,10 @@ public class EmacsFormatListener implements JumbleListener {
     } else {
       mStream.println(" (" + mMutationCount + " mutation points)");
       if (result.isMissingTestClass()) {
-        mStream.println(sourceName + ":0: No test class" + result.getTestClasses());
+        mStream.println(sourceName + ":0: Missing test class " + result.getTestClasses());
         mStream.println("Score: 0");
       } else if (!mInitialTestsPassed) {
-        mStream.println(sourceName + ":0: Test class is broken" + result.getTestClasses());
+        mStream.println(sourceName + ":0: Test class is broken " + result.getTestClasses());
         mStream.println("Score: 0");
       }
     }
