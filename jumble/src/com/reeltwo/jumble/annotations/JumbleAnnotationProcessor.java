@@ -3,7 +3,6 @@ package com.reeltwo.jumble.annotations;
 
 import com.reeltwo.jumble.mutation.Mutater;
 import com.reeltwo.jumble.mutation.MutatingClassLoader;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
