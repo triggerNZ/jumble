@@ -492,7 +492,7 @@ public class Mutater {
     if (!isMutatable(m.getAnnotationEntries())) {
       return false;
     }
-    return m != null && !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !mIgnored.contains(m.getName());
+    return !m.isNative() && !m.isAbstract() && !m.isSynthetic() && !mIgnored.contains(m.getName());
   }
 
   /** Records the first line in the code that uses a constant. */

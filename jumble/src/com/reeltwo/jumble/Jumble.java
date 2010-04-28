@@ -149,7 +149,7 @@ public class Jumble {
       }
     
     if (testNamesFromAnnotation.isEmpty()) {
-      return new ArrayList<String> () { { add(guessTestClassName(className)); } };
+      return new ArrayList<String>() { { add(guessTestClassName(className)); } };
     } else {
       System.err.println("Using test classes from annotation: " + testNamesFromAnnotation);
       return testNamesFromAnnotation;
