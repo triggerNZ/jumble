@@ -38,7 +38,7 @@ public class Jumble {
   public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("Jumble");
     final Flag verboseFlag = flags.registerOptional('v', "verbose", "Provide extra output during run.");
-    final Flag<String> exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to exclude.");
+    final Flag<String> exFlag = flags.registerOptional('x', "exclude", String.class, "METHOD", "Comma-separated list of methods to globally exclude. You can also exclude individual methods via the @JumbleIgnore annotation.");
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
@@ -62,7 +62,7 @@ public class Jumble {
     deferFlag.setMaxCount(Integer.MAX_VALUE);
     final Flag<Integer> lengthFlag = flags.registerOptional('m', "max-external-mutations", Integer.class, "MAX", "Maximum number of mutations to run in the external JVM.");
     final Flag<String> classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
-    final Flag<String> testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class.");
+    final Flag<String> testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class. If not supplied, jumble will look for an @TestClass annotation, or will attempt to guess the test class name.");
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
 
