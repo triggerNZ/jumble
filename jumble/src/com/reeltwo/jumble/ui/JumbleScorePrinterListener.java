@@ -30,6 +30,8 @@ public class JumbleScorePrinterListener implements JumbleListener {
 
   private int mDotCount = 0;
 
+  private long mStartTime = 0;
+
   public JumbleScorePrinterListener() {
     this(System.out);
   }
@@ -74,6 +76,7 @@ public class JumbleScorePrinterListener implements JumbleListener {
     mCovered = 0;
     mClassName = className;
     mTestNames = testClassNames;
+    mStartTime = System.currentTimeMillis();
   }
 
   public void performedInitialTest(JumbleResult result, int mutationCount) {
@@ -109,6 +112,7 @@ public class JumbleScorePrinterListener implements JumbleListener {
   }
 
   protected void printResultsForNormalRun() {
+    getStream().println("Jumbling took " + (double) (System.currentTimeMillis() - mStartTime) / 1000 + "s");
     if (mMutationCount == 0) {
       getStream().println("Score: 100% (NO MUTATIONS POSSIBLE)");
     } else {

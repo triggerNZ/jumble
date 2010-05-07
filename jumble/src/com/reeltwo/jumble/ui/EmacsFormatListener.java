@@ -31,6 +31,8 @@ public class EmacsFormatListener implements JumbleListener {
 
   private String mBaseDir = System.getProperty("user.dir");
 
+  private long mStartTime = 0;
+  
   public EmacsFormatListener(String classPath) {
     this(classPath, System.out);
   }
@@ -42,6 +44,7 @@ public class EmacsFormatListener implements JumbleListener {
 
   public void jumbleRunEnded() {
     if (mInitialTestsPassed) {
+      mStream.println("Jumbling took " + (double) (mStartTime - System.currentTimeMillis()) / 1000 + "s");
       if (mMutationCount == 0) {
         mStream.println("Score: 100");
       } else {
@@ -78,8 +81,9 @@ public class EmacsFormatListener implements JumbleListener {
     }
   }
 
-  public void jumbleRunStarted(String className, List < String > testClasses) {
+  public void jumbleRunStarted(String className, List<String> testClasses) {
     mClassName = className;
+    mStartTime = System.currentTimeMillis();
   }
 
   public void performedInitialTest(JumbleResult result, int mutationCount) {
