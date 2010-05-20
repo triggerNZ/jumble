@@ -3,4 +3,5 @@ Tests: experiments.JumblerExperimentSillySuiteTest
 Mutation points = 5, unit test time limit 2.1s
 ..M FAIL: experiments.JumblerExperiment:25: - -> +
 ..
+Jumbling took 0.993s
 Score: 80%

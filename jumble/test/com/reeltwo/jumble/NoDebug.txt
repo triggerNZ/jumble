@@ -5,4 +5,5 @@ M FAIL: DebugNone:0: negated conditional
 M FAIL: DebugNone:0: + -> -
 M FAIL: DebugNone:0: - -> +
 
+Jumbling took 8.43s
 Score: 0%

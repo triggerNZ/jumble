@@ -55,6 +55,9 @@ public class JumbleTest extends TestCase {
 
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
@@ -75,6 +78,9 @@ public class JumbleTest extends TestCase {
 
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
@@ -95,6 +101,9 @@ public class JumbleTest extends TestCase {
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
@@ -111,6 +120,7 @@ public class JumbleTest extends TestCase {
     assertEquals("Tests: experiments.FloatReturnTest", tokens.nextToken().trim());
     assertNotNull(tokens.nextToken()); // skip timing
     assertEquals("..", tokens.nextToken().trim());
+    assertNotNull(tokens.nextToken()); // skip timing
     assertEquals("Score: 100%", tokens.nextToken().trim());
   }
 
@@ -131,6 +141,9 @@ public class JumbleTest extends TestCase {
 
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
 
   }
@@ -153,6 +166,9 @@ public class JumbleTest extends TestCase {
 
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
@@ -173,6 +189,9 @@ public class JumbleTest extends TestCase {
 
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
+    // Skip next line, as it contains timing information
+    tokens1.nextToken();
+    tokens2.nextToken();
     assertEquals(tokens1.nextToken(), tokens2.nextToken());
   }
 
