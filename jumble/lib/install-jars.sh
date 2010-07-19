@@ -1,0 +1,3 @@
+mvn install:install-file -Dfile=bcel.jar -DgroupId=com.reeltwo -DartifactId=bcel  -Dversion=unknown  -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=reeltwo.jar -DgroupId=com.reeltwo -DartifactId=util  -Dversion=unknown  -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=testclasses.jar -DgroupId=com.reeltwo -DartifactId=testclasses  -Dversion=unknown  -Dpackaging=jar -DgeneratePom=true
