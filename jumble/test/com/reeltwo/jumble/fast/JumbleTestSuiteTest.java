@@ -68,10 +68,9 @@ public class JumbleTestSuiteTest extends TestCase {
   }
 
   public void testX5TF() {
-    assertEquals("FAIL",
-        JumbleTestSuite.run(getClass().getClassLoader(),
-                            new TestOrder(new Class[] {jumble.X5TF.class},
-                                          new long[] {0}), null, null, null, 0, false));
+    String result = JumbleTestSuite.run(getClass().getClassLoader(),
+        new TestOrder(new Class[] {jumble.X5TF.class}, new long[] {0}), null, null, null, 0, false);
+    assertEquals("FAIL", result.substring(0, 4));
   }
 
   public void testX5TY() {

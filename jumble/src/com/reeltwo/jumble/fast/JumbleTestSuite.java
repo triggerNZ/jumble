@@ -4,12 +4,12 @@ package com.reeltwo.jumble.fast;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import junit.framework.Test;
-
+import junit.framework.TestFailure;
 import com.reeltwo.jumble.util.JumbleUtils;
 
 /**
@@ -77,22 +77,34 @@ public class JumbleTestSuite extends FlatTestSuite {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     PrintStream newOut = new PrintStream(bos);
     PrintStream oldOut = System.out;
-
+    boolean isFailed = false;
+    String pass = "PASS: ";
+    String fail = "FAIL: ";
+    String desc = "";
+    
     for (int i = 0; i < testCount(); i++) {
       Test t = tests[i];
-
+      ArrayList<TestFailure> lastRunErrorList = Collections.list(result.errors());
+      ArrayList<TestFailure> lastRunFailureList = Collections.list(result.failures());
+            
+      double runTime;
       System.setOut(newOut);
       try {
         bos.reset();
+        long startTime = System.nanoTime();
         t.run(result);
+        long endTime = System.nanoTime();
+        runTime = (double) (endTime - startTime) / 1000000000;
+        System.err.println("This test took " + runTime + "s");
       } finally {
         System.setOut(oldOut);
       }
 
+      JUnitTestResult currentResult = result.getCurrentTestCaseResult(lastRunErrorList, lastRunFailureList);
       if (mVerbose) {  // Debugging to allow seeing how the tests picked up the mutation
-        String rstr = result.toString();
-        if (rstr.length() > 0) {
-          System.err.println(result);
+        String curResult = currentResult.toString();
+        if (curResult.length() > 0) {
+          System.err.println(currentResult);
         }
         if (bos.size() > 0) {
           System.err.println("CAPTURED OUTPUT: " + bos.toString());
@@ -104,17 +116,24 @@ public class JumbleTestSuite extends FlatTestSuite {
           ; // Don't care
         }
       }
-      if (result.errorCount() > 0 || result.failureCount() > 0) {
-        return "PASS: " + JumbleUtils.getTestName(t);
+      if (currentResult.errorCount() > 0 || currentResult.failureCount() > 0) {
+          desc = desc + t.getClass().getName() + "/" + JumbleUtils.getTestName(t) + "/" + MutationResult.PASS + "/" +runTime + ";";
+    	  isFailed = true;
+      } else {
+        desc = desc + t.getClass().getName() + "/" + JumbleUtils.getTestName(t) + "/" + MutationResult.FAIL + "/" + runTime + ";";
       }
-      if (result.shouldStop()) {
-        break;
-      }
+
+//      if (result.shouldStop()) {
+//        break;
+//      }
+    }
+    
+    if (isFailed) {
+    	return pass + desc;
     }
     // all tests passed, this mutation is a problem, report it as a FAIL
-    return "FAIL";
+    return fail + desc;
   }
-
 
   /**
    * Run the tests for the given class.

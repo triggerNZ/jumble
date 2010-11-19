@@ -48,7 +48,8 @@ public class FastJumbler {
   static final String FLAG_START = "start";
   static final String FLAG_LENGTH = "length";
   static final String FLAG_CLASSPATH = "classpath";
-
+  static final String FLAG_REC_STAT = "record-statistic";
+  
   public void runMain(String[] args) throws Exception {
     final CLIFlags flags = new CLIFlags("FastJumbler");
 
@@ -68,6 +69,7 @@ public class FastJumbler {
     final Flag<String> classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
     final Flag<String> testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
     final Flag<String> cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
+    final Flag<String> recFlag = flags.registerOptional('t', "record-statistic", "Record the statistic of each test and output to a csv file.");
     cacheFileFlag.setMinCount(0);
     flags.setFlags(args);
 
@@ -147,12 +149,12 @@ public class FastJumbler {
                                        methodName, mutPoint, 
                                        verboseFlag.isSet());
       
+      String testName = out.substring(6);
       // Communicate the outcome to the parent JVM.
-      if (out.startsWith("FAIL")) {
+      if (out.startsWith("FAIL: ")) {
         // This is the magic line that the parent JVM is looking for.
-        System.out.println(FAIL_PREFIX + modification); 
+        System.out.println(FAIL_PREFIX + modification + ":" + className + ":" + methodName + ":" + mutPoint + ":" + testName); 
       } else if (out.startsWith("PASS: ")) {
-        String testName = out.substring(6);
         if (cache != null) {
           cache.addFailure(className, methodName, mutPoint, testName);
         }

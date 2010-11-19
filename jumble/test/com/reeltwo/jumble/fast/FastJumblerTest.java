@@ -81,7 +81,14 @@ public final void tearDown() {
       line = reader.readLine();
       assertEquals("INIT: experiments.JumblerExperiment:21: negated conditional", line);
       line = reader.readLine();
-      assertEquals("PASS: experiments.JumblerExperiment:add(II)I:0:testAdd", line);
+      assertTrue(line.startsWith("PASS: experiments.JumblerExperiment"));
+      String[] tests = line.split(";");
+      for (String test : tests) {
+        String segs[] = test.split("/");
+        if (Integer.parseInt(segs[2]) == 0) {
+          assertEquals("testAdd", segs[1]);
+        }
+      }
       line = reader.readLine();
       assertEquals(FastJumbler.SIGNAL_MAX_REACHED, line);
     } finally {

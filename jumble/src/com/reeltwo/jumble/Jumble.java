@@ -65,6 +65,7 @@ public class Jumble {
     final Flag<String> testClassFlag = flags.registerRequired(String.class, "TESTCLASS", "Name of the unit test classes for testing the supplied class. If not supplied, jumble will look for an @TestClass annotation, or will attempt to guess the test class name.");
     testClassFlag.setMinCount(0);
     testClassFlag.setMaxCount(Integer.MAX_VALUE);
+    final Flag recFlag = flags.registerOptional('t', "record-statistic", "Record the statistic of each test and output to a csv file.");
 
     flags.setFlags(args);
 
@@ -80,7 +81,8 @@ public class Jumble {
     mFastRunner.setUseCache(!useFlag.isSet());
     mFastRunner.setVerbose(verboseFlag.isSet());
     mFastRunner.setClassPath(classpathFlag.getValue());
-
+    mFastRunner.setRecStat(recFlag.isSet());
+    
     if (lengthFlag.isSet()) {
       int val = lengthFlag.getValue();
       if (val >= 0) {
