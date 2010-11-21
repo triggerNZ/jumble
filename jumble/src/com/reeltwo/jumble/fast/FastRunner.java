@@ -812,7 +812,7 @@ public class FastRunner {
     mappingWriter.append("Mutations mapping: \n");
     counter = 1;
     for (String m : orderedMuts) {
-      mappingWriter.append("" + counter++ + "\t" + m + "\n");
+      mappingWriter.append("r" + counter++ + "\t" + m + "\n");
     }
 
     mappingWriter.close();
