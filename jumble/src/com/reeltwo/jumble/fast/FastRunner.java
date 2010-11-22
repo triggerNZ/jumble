@@ -571,7 +571,7 @@ public class FastRunner {
    */
   private boolean writeStats(String cName) {
     try {
-      Writer o = constructBufferWriter("jumble-stat-" + cName + ".csv");
+      Writer o = constructBufferWriter(cName + ".csv");
       // First line - test class name
       o.append("\t");
       o.append("\t");
@@ -666,16 +666,16 @@ public class FastRunner {
    * 0  failed
    * 
    * @param cName   statistic file name
-   * @return
    */
-  private boolean writeToBinaryMatrix(String cName) {
+  private void writeToBinaryMatrix(String cName) {
     try {
-      Writer o = constructBufferWriter("jumble-stat-" + cName + "-binary-matrix.csv");
+      Writer o = constructBufferWriter(cName + "-binary-matrix.csv");
 
       Map<String, Double> testTimeMap = new HashMap<String, Double>();
       List<String> orderedMuts = new ArrayList<String>();
       List<String> orderedTests = new ArrayList<String>();
       Map<String, Integer> colCountMap = new HashMap<String, Integer>();
+      List<List<Integer>> matrix = new ArrayList<List<Integer>>();
       int testCount = 0;
       
       // Following lines are the results of all the mutations
@@ -689,6 +689,8 @@ public class FastRunner {
             orderedMuts.remove(mut);
             continue;
           }
+
+          List<Integer> passFailStatus = new ArrayList<Integer>();
           
           int rowCount = 0;
           for (String tClass : mTestMap.keySet()) {
@@ -711,7 +713,7 @@ public class FastRunner {
                 if (mutKey.equals(key)) {
                   TestStatistic stat = mStats.get(mutKey);
                   if (MutationResult.PASS == stat.status) {
-                    o.append("1" + " ");
+                    passFailStatus.add(1);
                     rowCount++;
                     
                     if (colCountMap.get(test) == null) {
@@ -722,11 +724,11 @@ public class FastRunner {
                     }
                     
                   } else if (MutationResult.FAIL == stat.status) {
-                    o.append("0" + " ");
+                    passFailStatus.add(0);
                   } else if (MutationResult.TIMEOUT == stat.status) {
-                    o.append("0" + " ");
+                    passFailStatus.add(0);
                   } else {
-                    o.append("0" + " ");
+                    passFailStatus.add(0);
                   }
                   
                   if (MutationResult.PASS == stat.status || MutationResult.FAIL == stat.status) {
@@ -743,27 +745,31 @@ public class FastRunner {
                 }
               }
               
+              if (colCountMap.get(test) == null) {
+                colCountMap.put(test, 0);
+              }
+              
               /**
                * If no stat record is found, the test is not run.
                */
               if (!isFound) {
-                o.append("0" + " ");
+                passFailStatus.add(0);
               }
             }
           }
           
-          o.append("" + rowCount);
-          o.append("\n");
+          passFailStatus.add(rowCount);
+          matrix.add(passFailStatus);
         }
       }
       
-      writeExtraFiles(cName, o, testTimeMap, orderedMuts, orderedTests, colCountMap);
-      
+      if (matrix.size() > 0) {
+        List<Integer> removedTests = writeMatrixFile(cName, o, matrix);
+        writeExtraFiles(cName, o, testTimeMap, orderedMuts, orderedTests, removedTests, colCountMap);
+      }
       o.close();
-      return true;
     } catch (IOException e) {
       e.printStackTrace();
-      return false;
     }
   }
 
@@ -788,28 +794,72 @@ public class FastRunner {
     return false;
   }
 
+  
+  private List<Integer> writeMatrixFile(String cName, Writer o, List<List<Integer>> row) throws IOException {
+    List<Integer> removedTests = new ArrayList<Integer>();
+    
+    int colCount = row.get(0).size();
+    for (int j = 0; j < colCount - 1; j++) {
+      boolean isFound = false;
+      for (int i = 0; i < row.size(); i++) {
+        List<Integer> col = row.get(i);
+        if (col.get(j).intValue() != 0) {
+          isFound = true;
+          break;
+        }
+      }
+      
+      if (!isFound) {
+        removedTests.add(j);
+      }
+    }
+    
+    for (int i = 0; i < row.size(); i++) {
+      List<Integer> col = row.get(i);
+      for (int j = 0; j < col.size(); j++) {
+        if (!removedTests.contains(j)) {
+          o.append(col.get(j) + " ");
+        }
+      }
+      o.append("\n");
+    }
+    
+    return removedTests;
+  }
+  
   private void writeExtraFiles(String cName, Writer o, 
       Map<String, Double> testTimeMap, List<String> orderedMuts, List<String> orderedTests,
-      Map<String, Integer> colCountMap) throws IOException {
+      List<Integer> removedTestsIndex, Map<String, Integer> colCountMap) throws IOException {
     
-    Writer timingWriter = constructBufferWriter("jumble-stat-" + cName + "-time.csv");
+    Writer timingWriter = constructBufferWriter(cName + "-time.csv");
     // Mapping file contains all the tests and detected mutation mapping.
     // If a mutation is not detected by any of the tests, it's not included in this mapping file.
-    Writer mappingWriter = constructBufferWriter("jumble-stat-" + cName + "-mapping.csv");
+    Writer mappingWriter = constructBufferWriter(cName + "-mapping.csv");
     
     timingWriter.append("Name\tTime\n");
     mappingWriter.append("Tests mapping: \n");
     int counter = 1;
+    int index = 0;
+    List<String> removedTests = new ArrayList<String>();
     for (String t : orderedTests) {
-      mappingWriter.append("" + counter + "\t" + t + "\n");
-      timingWriter.append(counter + "\t" + testTimeMap.get(t) + "\n");
-      o.append(colCountMap.get(t) + " ");
-      counter++;
+      if (!removedTestsIndex.contains(index)) {
+        mappingWriter.append("" + counter + "\t" + t + "\n");
+        timingWriter.append(counter + "\t" + testTimeMap.get(t) + "\n");
+        o.append(colCountMap.get(t) + " ");
+        counter++;
+      } else {
+        removedTests.add(t);
+      }
+      index++;
     }
     o.append("0");
     
-    mappingWriter.append("\n");
-    mappingWriter.append("Mutations mapping: \n");
+    mappingWriter.append("\nTests cover zero mutations:\n");
+    for (String t : removedTests) {
+      mappingWriter.append("0\t" + t + "\n");
+    }
+    
+    mappingWriter.append("\nMutations mapping: \n");
     counter = 1;
     for (String m : orderedMuts) {
       mappingWriter.append("r" + counter++ + "\t" + m + "\n");
