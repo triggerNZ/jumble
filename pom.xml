@@ -11,8 +11,8 @@
 	<name>jumble-parent</name>
 
 	<modules>
-		<module>jumble</module>
 		<module>jumble-annotations</module>
+		<module>jumble</module>
 	</modules>
 
 	<build>
