@@ -4,90 +4,115 @@ package com.reeltwo.jumble.fast;
  * This class holds the values for the test to each mutation point.
  * 
  * @author Celia Lai
+ * @version $Revision: 743 $
  */
 public class MutationKey {
-  public String className;
+  private String mClassName;
 
-  public String methodName;
+  private String mMethodName;
 
-  public String testClassName;
+  private String mTestClassName;
 
-  public String testMethodName;
+  private String mTestMethodName;
 
-  public int mutationPoint;
+  private int mMutationPoint;
 
-  public String mutationDescription;
+  private String mMutationDescription;
 
   public MutationKey(String className, String testClassName, String testMethodName, String mutationDescription) {
-    this.className = className;
-    this.testClassName = testClassName;
-    this.testMethodName = testMethodName;
-    this.mutationDescription = mutationDescription;
+    this.mClassName = className;
+    this.mTestClassName = testClassName;
+    this.mTestMethodName = testMethodName;
+    this.mMutationDescription = mutationDescription;
   }
-  
+
   public MutationKey(String className, String methodName, String testClassName,
       String testMethodName, int mutationPoint, String mutationDescription) {
     this(className, testClassName, testMethodName, mutationDescription);
-    this.methodName = methodName;
-    this.mutationPoint = mutationPoint;
+    this.mMethodName = methodName;
+    this.mMutationPoint = mutationPoint;
   }
 
   public String getClassName() {
-    return className;
+    return mClassName;
   }
 
   public void setClassName(String className) {
-    this.className = className;
+    this.mClassName = className;
   }
 
   public String getMethodName() {
-    return methodName;
+    return mMethodName;
   }
 
   public void setMethodName(String methodName) {
-    this.methodName = methodName;
+    this.mMethodName = methodName;
   }
 
   public String getTestClassName() {
-    return testClassName;
+    return mTestClassName;
   }
 
   public void setTestClassName(String testClassName) {
-    this.testClassName = testClassName;
+    this.mTestClassName = testClassName;
   }
 
   public String getTestMethodName() {
-    return testMethodName;
+    return mTestMethodName;
   }
 
   public void setTestMethodName(String testMethodName) {
-    this.testMethodName = testMethodName;
+    this.mTestMethodName = testMethodName;
   }
 
   public int getMutationPoint() {
-    return mutationPoint;
+    return mMutationPoint;
   }
 
   public void setMutationPoint(int mutationPoint) {
-    this.mutationPoint = mutationPoint;
+    this.mMutationPoint = mutationPoint;
   }
 
   public String getMutationDescription() {
-    return mutationDescription;
+    return mMutationDescription;
   }
 
   public void setMutationDescription(String mutationDescription) {
-    this.mutationDescription = mutationDescription;
+    this.mMutationDescription = mutationDescription;
   }
-  
-  public boolean equals(MutationKey mutationKey) {
-    if (this.className.equals(mutationKey.getClassName()) &&
-        this.testClassName.equals(mutationKey.getTestClassName()) &&
-        this.testMethodName.equals(mutationKey.getTestMethodName()) &&
-        this.mutationDescription.equals(mutationKey.getMutationDescription())) {
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == null) {
+      return super.equals(other);
+    }
+
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof MutationKey)) {
+      return false;
+    }
+
+    MutationKey mutationKey = (MutationKey) other;
+    if (this.mClassName.equals(mutationKey.getClassName()) 
+        && this.mTestClassName.equals(mutationKey.getTestClassName())
+        && this.mTestMethodName.equals(mutationKey.getTestMethodName())
+        && this.mMutationDescription.equals(mutationKey.getMutationDescription())) {
       return true;
     }
-    
+
     return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (this == null) {
+      return super.hashCode();
+    }
+
+    return mClassName.hashCode() + mTestClassName.hashCode() + 
+    mTestMethodName.hashCode() + mMutationDescription.hashCode();
   }
 }

@@ -1,15 +1,15 @@
 package com.reeltwo.jumble.fast;
 
-import com.reeltwo.jumble.mutation.Mutater;
-import com.reeltwo.jumble.mutation.MutatingClassLoader;
-import com.reeltwo.util.CLIFlags.Flag;
-import com.reeltwo.util.CLIFlags;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.HashSet;
+import com.reeltwo.jumble.mutation.Mutater;
+import com.reeltwo.jumble.mutation.MutatingClassLoader;
+import com.reeltwo.util.CLIFlags;
+import com.reeltwo.util.CLIFlags.Flag;
 
 /**
  * A class that gives process separation when running unit tests. A parent
@@ -69,8 +69,8 @@ public class FastJumbler {
     final Flag<String> classFlag = flags.registerRequired(String.class, "CLASS", "Name of the class to mutate.");
     final Flag<String> testSuiteFlag = flags.registerRequired(String.class, "TESTFILE", "Name the test suite file containing serialized TestOrder objects.");
     final Flag<String> cacheFileFlag = flags.registerRequired(String.class, "CACHEFILE", "Name the cache file file.");
-    final Flag<String> recFlag = flags.registerOptional('t', "record-statistic", "Record the statistic of each test and output to a csv file.");
     cacheFileFlag.setMinCount(0);
+    flags.registerOptional('t', "record-statistic", "Record the statistic of each test and output to a csv file.");
     flags.setFlags(args);
 
     // First, process all the command line options

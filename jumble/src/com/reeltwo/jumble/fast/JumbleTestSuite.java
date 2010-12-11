@@ -21,6 +21,12 @@ import com.reeltwo.jumble.util.JumbleUtils;
  */
 public class JumbleTestSuite extends FlatTestSuite {
 
+  /** Semicolon */
+  private static final String SEMICOLON = ";";
+
+  /** Forward slash */
+  private static final String FORWARD_SLASH = "/";
+
   /** Cache of previously failed tests */
   private FailedTestMap mCache;
 
@@ -117,10 +123,10 @@ public class JumbleTestSuite extends FlatTestSuite {
         }
       }
       if (currentResult.errorCount() > 0 || currentResult.failureCount() > 0) {
-          desc = desc + t.getClass().getName() + "/" + JumbleUtils.getTestName(t) + "/" + MutationResult.PASS + "/" +runTime + ";";
-    	  isFailed = true;
+        desc = desc + t.getClass().getName() + FORWARD_SLASH + JumbleUtils.getTestName(t) + FORWARD_SLASH + MutationResult.PASS + FORWARD_SLASH + runTime + SEMICOLON;
+        isFailed = true;
       } else {
-        desc = desc + t.getClass().getName() + "/" + JumbleUtils.getTestName(t) + "/" + MutationResult.FAIL + "/" + runTime + ";";
+        desc = desc + t.getClass().getName() + FORWARD_SLASH + JumbleUtils.getTestName(t) + FORWARD_SLASH + MutationResult.FAIL + FORWARD_SLASH + runTime + SEMICOLON;
       }
 
 //      if (result.shouldStop()) {
@@ -129,7 +135,7 @@ public class JumbleTestSuite extends FlatTestSuite {
     }
     
     if (isFailed) {
-    	return pass + desc;
+      return pass + desc;
     }
     // all tests passed, this mutation is a problem, report it as a FAIL
     return fail + desc;

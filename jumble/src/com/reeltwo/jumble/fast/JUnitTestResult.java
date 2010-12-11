@@ -39,7 +39,7 @@ public class JUnitTestResult extends TestResult {
    *  
    * @param lastRunErrorList    The error list of last test run
    * @param lastRunFailureList  The failure list of last test run
-   * @return    
+   * @return JUnitTestResult    The current test case result
    */
   public JUnitTestResult getCurrentTestCaseResult(ArrayList<TestFailure> lastRunErrorList, ArrayList<TestFailure> lastRunFailureList) {
     JUnitTestResult currentTestCaseResult = new JUnitTestResult();

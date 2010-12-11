@@ -4,31 +4,32 @@ package com.reeltwo.jumble.fast;
  * This class holds the mutation test result statistics.
  * 
  * @author Celia Lai
+ * @version $Revision: 743 $
  */
 public class TestStatistic {
 
-  public int status;
+  private int mStatus;
 
-  public String time;
+  private String mTime;
 
   public TestStatistic(int status, String time) {
-    this.status = status;
-    this.time = time;
+    this.mStatus = status;
+    this.mTime = time;
   }
 
   public int getStatus() {
-    return status;
+    return mStatus;
   }
 
   public void setStatus(int status) {
-    this.status = status;
+    this.mStatus = status;
   }
 
   public String getTime() {
-    return time;
+    return mTime;
   }
 
   public void setTime(String time) {
-    this.time = time;
+    this.mTime = time;
   }
 }

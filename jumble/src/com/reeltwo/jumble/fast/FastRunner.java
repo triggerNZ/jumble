@@ -113,10 +113,10 @@ public class FastRunner {
 
   /** {@link MutationKey} maps to each {@link TestStatistic} of this mutation */
   Map<MutationKey, TestStatistic> mStats = null;
-  
+
   /** ClassName maps to a list of Mutations in this class */
   Map<String, List<String>> mClassMutMap = null;
-  
+
   /** TestClassName maps to a list of TestMethods in this test class */
   Map<String, List<String>> mTestMap = null;
 
@@ -443,9 +443,9 @@ public class FastRunner {
       assert clazzName.equals(mutation.getClassName());
       String methodName = tokens.nextToken();
       int mutPoint = Integer.parseInt(tokens.nextToken());
-      String tests[] = tokens.nextToken().split(";");
+      String[] tests = tokens.nextToken().split(";");
       for (String test : tests) {
-        String segs[] = test.split("/");
+        String[] segs = test.split("/");
         String testName = segs[1];
         int status = Integer.parseInt(segs[2]);
         if (status == 0) { 
@@ -504,8 +504,8 @@ public class FastRunner {
    * @param mutation
    */
   private void updateStats(MutationResult mutation) {
-    if (mutation.getTestDescription() != null &&
-        mutation.getTestDescription().startsWith("No mutation made")) {
+    if (mutation.getTestDescription() != null 
+        && mutation.getTestDescription().startsWith("No mutation made")) {
       return;
     }
 
@@ -519,17 +519,17 @@ public class FastRunner {
 
     if (mutation.isFailed()) {
       // extra tokens when mutation failed
-      String lineNum = tokens.nextToken();
-      String modification = tokens.nextToken();
-      String className = tokens.nextToken();
+      tokens.nextToken();
+      tokens.nextToken();
+      tokens.nextToken();
     }
 
-    String methodName = tokens.nextToken();
-    int mutPoint = Integer.parseInt(tokens.nextToken());
+    tokens.nextToken();
+    tokens.nextToken();
     String testMethodName = tokens.nextToken();
     String modification = mutation.getDescription();
-    
-    
+
+
     if (mClassMutMap.get(clazzName) == null) {
       mClassMutMap.put(clazzName, Collections.singletonList(modification));
     } else {
@@ -537,7 +537,7 @@ public class FastRunner {
       mods.add(modification);
       mClassMutMap.put(clazzName, mods);
     }
-    
+
     String[] testMethods = testMethodName.split(";");
     for (int i = 0; i < testMethods.length; i++) {
       StringTokenizer ts = new StringTokenizer(testMethods[i], "/");
@@ -550,7 +550,7 @@ public class FastRunner {
           clazzName, testClassName, testName, modification);
       TestStatistic testStatistic = new TestStatistic(status, testTime);
       mStats.put(mutationKey, testStatistic);
-      
+
       if (mTestMap.get(testClassName) == null) {
         mTestMap.put(testClassName, Collections.singletonList(testName));
       } else {
@@ -579,12 +579,12 @@ public class FastRunner {
         // Output the test class name as column name
         o.append(tClass + "\t");
         // Reserve columns for test methods that belongs to the same test class
-        for (int i = 0; i < mTestMap.get(tClass).size()-1; i++) {
+        for (int i = 0; i < mTestMap.get(tClass).size() - 1; i++) {
           o.append("\t");
         }
       }
       o.append("\n");
-      
+
       // Second line - test method name
       o.append("\t");
       o.append("\t");
@@ -595,7 +595,7 @@ public class FastRunner {
         }
       }
       o.append("\n");
-      
+
       // Following lines are the results of all the mutations
       for (String className : mClassMutMap.keySet()) {
         // Output mutated class name
@@ -621,16 +621,16 @@ public class FastRunner {
                * test status : PASS | FAIL | TIMEOUT; and the test run time.
                */
               MutationKey key = new MutationKey(className, tClass, test, mut);
-              
+
               boolean isFound = false;
               for (MutationKey mutKey : mStats.keySet()) {
                 if (mutKey.equals(key)) {
                   TestStatistic stat = mStats.get(mutKey);
-                  if (MutationResult.PASS == stat.status) {
+                  if (MutationResult.PASS == stat.getStatus()) {
                     o.append("P/" + stat.getTime() + "s\t");
-                  } else if (MutationResult.FAIL == stat.status) {
+                  } else if (MutationResult.FAIL == stat.getStatus()) {
                     o.append("F/" + stat.getTime() + "s\t");
-                  } else if (MutationResult.TIMEOUT == stat.status) {
+                  } else if (MutationResult.TIMEOUT == stat.getStatus()) {
                     o.append("T" + "\t");
                   } else {
                     o.append("--" + "\t");
@@ -639,7 +639,7 @@ public class FastRunner {
                   break;
                 }
               }
-              
+
               /**
                * If no stat record is found, the test is not run.
                */
@@ -659,7 +659,7 @@ public class FastRunner {
       return false;
     }
   }
-  
+
   /**
    * Writes the statistic results into file as a binary matrix.
    * 1  passed
@@ -677,7 +677,7 @@ public class FastRunner {
       Map<String, Integer> colCountMap = new HashMap<String, Integer>();
       List<List<Integer>> matrix = new ArrayList<List<Integer>>();
       int testCount = 0;
-      
+
       // Following lines are the results of all the mutations
       for (String className : mClassMutMap.keySet()) {
         List<String> muts = mClassMutMap.get(className);
@@ -691,7 +691,7 @@ public class FastRunner {
           }
 
           List<Integer> passFailStatus = new ArrayList<Integer>();
-          
+
           int rowCount = 0;
           for (String tClass : mTestMap.keySet()) {
             List<String> tests = mTestMap.get(tClass);
@@ -700,38 +700,34 @@ public class FastRunner {
                 orderedTests.add(test);
                 testCount++;
               }
-              
+
               /**
                * For each of the MutationKey combination, we try to find a corresponding
                * statistic record from the mStats map. The stat contains the mutation
                * test status : PASS | FAIL | TIMEOUT; and the test run time.
                */
               MutationKey key = new MutationKey(className, tClass, test, mut);
-              
+
               boolean isFound = false;
               for (MutationKey mutKey : mStats.keySet()) {
                 if (mutKey.equals(key)) {
                   TestStatistic stat = mStats.get(mutKey);
-                  if (MutationResult.PASS == stat.status) {
+                  if (MutationResult.PASS == stat.getStatus()) {
                     passFailStatus.add(1);
                     rowCount++;
-                    
+
                     if (colCountMap.get(test) == null) {
                       colCountMap.put(test, 1);
                     } else {
                       Integer totalColCount = colCountMap.get(test) + 1;
                       colCountMap.put(test, totalColCount);
                     }
-                    
-                  } else if (MutationResult.FAIL == stat.status) {
-                    passFailStatus.add(0);
-                  } else if (MutationResult.TIMEOUT == stat.status) {
-                    passFailStatus.add(0);
-                  } else {
+
+                  }  else {
                     passFailStatus.add(0);
                   }
-                  
-                  if (MutationResult.PASS == stat.status || MutationResult.FAIL == stat.status) {
+
+                  if (MutationResult.PASS == stat.getStatus() || MutationResult.FAIL == stat.getStatus()) {
                     if (testTimeMap.get(test) == null) {
                       testTimeMap.put(test, Double.parseDouble(stat.getTime()));
                     } else {
@@ -739,30 +735,30 @@ public class FastRunner {
                       testTimeMap.put(test, totalTime);
                     }
                   }
-                  
+
                   isFound = true;
                   break;
                 }
               }
-              
+
               if (colCountMap.get(test) == null) {
                 colCountMap.put(test, 0);
               }
-              
+
               /**
                * If no stat record is found, the test is not run.
                */
-              if (!isFound) {
-                passFailStatus.add(0);
-              }
+               if (!isFound) {
+                 passFailStatus.add(0);
+               }
             }
           }
-          
+
           passFailStatus.add(rowCount);
           matrix.add(passFailStatus);
         }
       }
-      
+
       if (matrix.size() > 0) {
         List<Integer> removedTests = writeMatrixFile(cName, o, matrix);
         writeExtraFiles(cName, o, testTimeMap, orderedMuts, orderedTests, removedTests, colCountMap);
@@ -778,26 +774,26 @@ public class FastRunner {
       List<String> tests = mTestMap.get(tClass);
       for (String test : tests) {
         MutationKey key = new MutationKey(className, tClass, test, mut);
-        
+
         // Remove the requirement that none of the tests detected
         for (MutationKey mutKey : mStats.keySet()) {
           if (mutKey.equals(key)) {
             TestStatistic stat = mStats.get(mutKey);
-            if (MutationResult.PASS == stat.status) {
+            if (MutationResult.PASS == stat.getStatus()) {
               return true;
             }
           }
         }
       }
     }
-    
+
     return false;
   }
 
-  
+
   private List<Integer> writeMatrixFile(String cName, Writer o, List<List<Integer>> row) throws IOException {
     List<Integer> removedTests = new ArrayList<Integer>();
-    
+
     int colCount = row.get(0).size();
     for (int j = 0; j < colCount - 1; j++) {
       boolean isFound = false;
@@ -808,12 +804,12 @@ public class FastRunner {
           break;
         }
       }
-      
+
       if (!isFound) {
         removedTests.add(j);
       }
     }
-    
+
     for (int i = 0; i < row.size(); i++) {
       List<Integer> col = row.get(i);
       for (int j = 0; j < col.size(); j++) {
@@ -823,19 +819,19 @@ public class FastRunner {
       }
       o.append("\n");
     }
-    
+
     return removedTests;
   }
-  
+
   private void writeExtraFiles(String cName, Writer o, 
       Map<String, Double> testTimeMap, List<String> orderedMuts, List<String> orderedTests,
       List<Integer> removedTestsIndex, Map<String, Integer> colCountMap) throws IOException {
-    
+
     Writer timingWriter = constructBufferWriter(cName + "-time.csv");
     // Mapping file contains all the tests and detected mutation mapping.
     // If a mutation is not detected by any of the tests, it's not included in this mapping file.
     Writer mappingWriter = constructBufferWriter(cName + "-mapping.csv");
-    
+
     timingWriter.append("Name\tTime\n");
     mappingWriter.append("Tests mapping: \n");
     int counter = 1;
@@ -853,12 +849,12 @@ public class FastRunner {
       index++;
     }
     o.append("0");
-    
+
     mappingWriter.append("\nTests cover zero mutations:\n");
     for (String t : removedTests) {
       mappingWriter.append("0\t" + t + "\n");
     }
-    
+
     mappingWriter.append("\nMutations mapping: \n");
     counter = 1;
     for (String m : orderedMuts) {
@@ -872,16 +868,18 @@ public class FastRunner {
   private BufferedWriter constructBufferWriter(String fileName) throws IOException {
     File dir = new File(System.getProperty("user.dir") + "/jumble_stats");
     if (!dir.exists()) {
-      dir.mkdir();
+      if (!dir.mkdir()) {
+        throw new IOException("Could not create directory " + dir);
+      }
     }
-    
+
     File file = new File(dir, fileName);
     if (file.exists() && !file.delete()) {
       throw new IOException("Could not delete existing file " + file);
     }
     return new BufferedWriter(new FileWriter(file));
   }
-  
+
   public void addExcludeMethod(String methodName) {
     if (methodName == null) {
       throw new NullPointerException();
@@ -1360,7 +1358,7 @@ public class FastRunner {
       writeStats(className);
       writeToBinaryMatrix(className);
     }
-    
+
     listener.jumbleRunEnded();
     mCache = null;
     mStats = null;

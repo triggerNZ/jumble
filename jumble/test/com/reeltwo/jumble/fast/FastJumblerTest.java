@@ -81,12 +81,14 @@ public final void tearDown() {
       line = reader.readLine();
       assertEquals("INIT: experiments.JumblerExperiment:21: negated conditional", line);
       line = reader.readLine();
-      assertTrue(line.startsWith("PASS: experiments.JumblerExperiment"));
-      String[] tests = line.split(";");
-      for (String test : tests) {
-        String segs[] = test.split("/");
-        if (Integer.parseInt(segs[2]) == 0) {
-          assertEquals("testAdd", segs[1]);
+      if (line != null) {
+        assertTrue(line.startsWith("PASS: experiments.JumblerExperiment"));
+        String[] tests = line.split(";");
+        for (String test : tests) {
+          String segs[] = test.split("/");
+          if (Integer.parseInt(segs[2]) == 0) {
+            assertEquals("testAdd", segs[1]);
+          }
         }
       }
       line = reader.readLine();
