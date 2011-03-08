@@ -83,10 +83,6 @@ public class MutationKey {
 
   @Override
   public boolean equals(Object other) {
-    if (this == null) {
-      return super.equals(other);
-    }
-
     if (other == null) {
       return false;
     }
@@ -108,10 +104,6 @@ public class MutationKey {
 
   @Override
   public int hashCode() {
-    if (this == null) {
-      return super.hashCode();
-    }
-
     return mClassName.hashCode() + mTestClassName.hashCode()
       + mTestMethodName.hashCode() + mMutationDescription.hashCode();
   }
