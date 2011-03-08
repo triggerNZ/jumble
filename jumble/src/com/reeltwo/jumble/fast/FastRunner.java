@@ -1286,7 +1286,7 @@ public class FastRunner {
     }
 
     if (mRecStat) {
-      initStats();	
+      initStats();
     }
 
     listener.jumbleRunStarted(mClassName, testClassNames);

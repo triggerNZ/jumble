@@ -112,7 +112,7 @@ public class MutationKey {
       return super.hashCode();
     }
 
-    return mClassName.hashCode() + mTestClassName.hashCode() + 
-    mTestMethodName.hashCode() + mMutationDescription.hashCode();
+    return mClassName.hashCode() + mTestClassName.hashCode()
+      + mTestMethodName.hashCode() + mMutationDescription.hashCode();
   }
 }
