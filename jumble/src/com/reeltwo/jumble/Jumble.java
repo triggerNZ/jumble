@@ -141,15 +141,25 @@ public class Jumble {
     mFastRunner.runJumble(className, testList, listener);
   }
 
+  private List<String> getAnnotationTestClassNames(final JumbleAnnotationProcessor jap, final String className, final String classPath) {
+    try {
+      return jap.getTestClassNames(className, classPath);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
   private List<String> getTestClassNames(final String className, String classPath) {
     JumbleAnnotationProcessor jumbleAnnotationProcessor = new JumbleAnnotationProcessor();
-    List<String> testNamesFromAnnotation = null;
-      try {
-        testNamesFromAnnotation = jumbleAnnotationProcessor.getTestClassNames(className, classPath);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
-    
+    List<String> testNamesFromAnnotation = getAnnotationTestClassNames(jumbleAnnotationProcessor, className, classPath);
+    String c = className;
+    while (testNamesFromAnnotation.isEmpty() && c.contains("$")) {
+      // Try and inherit test classes from parent class, allowing for horrible nesting
+      c = c.substring(0, className.lastIndexOf('$'));
+      testNamesFromAnnotation = getAnnotationTestClassNames(jumbleAnnotationProcessor, c, classPath);
+    }
+
     if (testNamesFromAnnotation.isEmpty()) {
       ArrayList<String> result = new ArrayList<String>();
       result.add(guessTestClassName(className));
