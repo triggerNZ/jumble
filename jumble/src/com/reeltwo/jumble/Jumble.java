@@ -156,7 +156,7 @@ public class Jumble {
     String c = className;
     while (testNamesFromAnnotation.isEmpty() && c.contains("$")) {
       // Try and inherit test classes from parent class, allowing for horrible nesting
-      c = c.substring(0, className.lastIndexOf('$'));
+      c = c.substring(0, c.lastIndexOf('$'));
       testNamesFromAnnotation = getAnnotationTestClassNames(jumbleAnnotationProcessor, c, classPath);
     }
 
