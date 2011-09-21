@@ -6,10 +6,11 @@
 	<property name="lib.dir" value="lib" />
 	<property name="build.dir" value="build" />
 	<property name="test.build.dir" value="build_test" />
+        <property name="junit.jar" value="${lib.dir}/junit-4.9.jar" />
 
 	<path id="classpath">
 		<pathelement location="${lib.dir}/bcel.jar" />
-		<pathelement location="${lib.dir}/junit-4.6.jar" />
+		<pathelement location="${junit.jar}" />
 		<pathelement location="${lib.dir}/reeltwo.jar" />
 		<pathelement location="${lib.dir}/testclasses.jar" />
 		<pathelement location="${lib.dir}/jumble-annotations.jar" />
@@ -42,7 +43,7 @@
 			<fileset dir="${build.dir}" includes="**/*.class" />
 			<zipfileset src="${lib.dir}/bcel.jar" />
                      <zipfileset src="${lib.dir}/jumble-annotations.jar" />
-			<zipfileset src="${lib.dir}/junit-4.6.jar" />
+			<zipfileset src="${junit.jar}" />
 			<zipfileset src="${lib.dir}/reeltwo.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="com.reeltwo.jumble.Jumble" />
