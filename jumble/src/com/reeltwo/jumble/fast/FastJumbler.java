@@ -44,6 +44,7 @@ public class FastJumbler {
   static final String FLAG_INCREMENTS = "increments";
   static final String FLAG_STORES = "stores";
   static final String FLAG_CPOOL = "cpool";
+  static final String FLAG_STRINGS = "strings";
   static final String FLAG_SWITCHES = "switch";
   static final String FLAG_START = "start";
   static final String FLAG_LENGTH = "length";
@@ -59,7 +60,8 @@ public class FastJumbler {
     final Flag verboseFlag = flags.registerOptional('v', FLAG_VERBOSE, "Provide extra output during run.");
     final Flag retFlag = flags.registerOptional('r', FLAG_RETURN_VALS, "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', FLAG_INLINE_CONSTS, "Mutate inline constants.");
-    final Flag cpoolFlag = flags.registerOptional('w', FLAG_CPOOL, "Mutate constant pool entries.");
+    final Flag cpoolFlag = flags.registerOptional('w', FLAG_CPOOL, "Mutate non-string constant pool entries.");
+    final Flag stringsFlag = flags.registerOptional('S', FLAG_STRINGS, "Mutate constant pool strings.");
     final Flag switchFlag = flags.registerOptional('j', FLAG_SWITCHES, "Mutate switch instructions.");
     final Flag storesFlag = flags.registerOptional('X', FLAG_STORES, "Mutate store instructions.");
     final Flag incFlag = flags.registerOptional('i', FLAG_INCREMENTS, "Mutate increments.");
@@ -89,6 +91,7 @@ public class FastJumbler {
     }
     mutater.setMutateIncrements(incFlag.isSet());
     mutater.setMutateCPool(cpoolFlag.isSet());
+    mutater.setMutateStrings(stringsFlag.isSet());
     mutater.setMutateSwitch(switchFlag.isSet());
     mutater.setMutateStores(storesFlag.isSet());
     mutater.setMutateInlineConstants(inlFlag.isSet());

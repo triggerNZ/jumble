@@ -1,6 +1,10 @@
 package jumble.preferences;
 
 import org.eclipse.jface.preference.*;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import jumble.JumblePlugin;
@@ -20,8 +24,6 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
 
   public JumblePreferencePage() {
     super(GRID);
-    setPreferenceStore(JumblePlugin.getDefault().getPreferenceStore());
-    setDescription("Jumble Preferences");
   }
 
   /**
@@ -32,16 +34,14 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
   @Override
   public void createFieldEditors() {
     addField(new BooleanFieldEditor(PreferenceConstants.P_CONSTANT_POOL_CONSTANTS, "Mutate Constant &Pool Constants", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.P_STRING_CONSTANTS, "Mutate Constant Pool S&tring Constants", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_INLINE_CONSTANTS, "Mutate Inline &Constants", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_INCREMENTS, "Mutate &Increment Instructions", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_RETURNS, "Mutate &Return Values", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_SWITCH, "Mutate &Switch Statements", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_VERBOSE, "&Verbose Mode", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.P_STORES, "Mutate Assignments(-X)", getFieldEditorParent()));
-    
     addField(new StringFieldEditor(PreferenceConstants.P_ARGS, "Jumble &Arguments", getFieldEditorParent()));
-    
-   
   }
 
   /*
@@ -50,6 +50,8 @@ public class JumblePreferencePage extends FieldEditorPreferencePage implements I
    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
    */
   public void init(IWorkbench workbench) {
+    setPreferenceStore(JumblePlugin.getDefault().getPreferenceStore());
+    setDescription("Jumble Preferences");
   }
 
 }

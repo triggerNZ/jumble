@@ -42,7 +42,8 @@ public class Jumble {
     final Flag retFlag = flags.registerOptional('r', "return-vals", "Mutate return values.");
     final Flag inlFlag = flags.registerOptional('k', "inline-consts", "Mutate inline constants.");
     final Flag incFlag = flags.registerOptional('i', "increments", "Mutate increments.");
-    final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate constant pool entries.");
+    final Flag cpoolFlag = flags.registerOptional('w', "cpool", "Mutate non-string constant pool entries.");
+    final Flag stringsFlag = flags.registerOptional('S', "strings", "Mutate constant pool strings.");
     final Flag switchFlag = flags.registerOptional('j', "switch", "Mutate switch cases.");
     final Flag storesFlag = flags.registerOptional('X', "stores", "Mutate assignments.");
     final Flag emacsFlag = flags.registerOptional('e', "emacs", "Use Emacs-format output.");
@@ -73,6 +74,7 @@ public class Jumble {
     mFastRunner.setReturnVals(retFlag.isSet());
     mFastRunner.setIncrements(incFlag.isSet());
     mFastRunner.setCPool(cpoolFlag.isSet());
+    mFastRunner.setStrings(stringsFlag.isSet());
     mFastRunner.setSwitch(switchFlag.isSet());
     mFastRunner.setStores(storesFlag.isSet());
     mFastRunner.setOrdered(!orderFlag.isSet());

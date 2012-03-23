@@ -211,6 +211,9 @@ public class Mutater {
 
   /** Should the constant pool be changed. */
   private boolean mCPool = false;
+  
+  /** Should the strings in constant pool be changed. */
+  private boolean mStrings = false;
 
   /** The most recent modification. */
   private String mModification = null;
@@ -246,6 +249,15 @@ public class Mutater {
    */
   public void setMutateCPool(final boolean v) {
     mCPool = v;
+  }
+  
+  /**
+   * Sets whether strings in the constant pool should be mutated.
+   * 
+   * @param v true to mutate strings in the constant pool
+   */
+  public void setMutateStrings(final boolean v) {
+    mStrings = v;
   }
 
   /**
@@ -536,7 +548,7 @@ public class Mutater {
    * Test if a constant in the pool is mutatable.
    */
   private boolean isMutatable(final Constant c, final int i) {
-    return mConstantFirstRef[i] != -1 && c != null && (c instanceof ConstantString || c instanceof ConstantLong || c instanceof ConstantInteger || c instanceof ConstantFloat || c instanceof ConstantDouble); 
+    return mConstantFirstRef[i] != -1 && c != null && ((mStrings && c instanceof ConstantString) || (mCPool && (c instanceof ConstantLong || c instanceof ConstantInteger || c instanceof ConstantFloat || c instanceof ConstantDouble))); 
   }
 
   /**
@@ -620,7 +632,7 @@ public class Mutater {
 
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
 
-    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
+    int count = (mCPool || mStrings) ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
     }
@@ -1067,7 +1079,7 @@ public class Mutater {
     Method[] methods = ret.getMethods();
     ConstantPoolGen cp = new ConstantPoolGen(ret.getConstantPool());
     int count = mCount;
-    if (mCPool) {
+    if (mCPool || mStrings) {
       // first deal with constant pool
       initConstantRef(methods, ret.getClassName(), cp);
       for (int i = 0; i < cp.getSize(); i++) {
@@ -1119,7 +1131,7 @@ public class Mutater {
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
-    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
+    int count = (mCPool || mStrings) ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       count += countMutationPoints(methods[i], className, cp);
 
@@ -1167,7 +1179,7 @@ public class Mutater {
     final Method[] methods = clazz.getMethods();
     final ConstantPool cpool = clazz.getConstantPool();
     final ConstantPoolGen cp = new ConstantPoolGen(cpool);
-    int count = mCPool ? countMutationPoints(methods, className, cp) : 0;
+    int count = (mCPool || mStrings) ? countMutationPoints(methods, className, cp) : 0;
     for (int i = 0; i < methods.length; i++) {
       int oldCount = count;
       count += countMutationPoints(methods[i], className, cp);

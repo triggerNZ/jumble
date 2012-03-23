@@ -16,6 +16,8 @@ public class PreferenceConstants {
   
   public static final String P_CONSTANT_POOL_CONSTANTS = "constantpool";
   
+  public static final String P_STRING_CONSTANTS = "strings";
+  
   public static final String P_SWITCH = "switch";
   
   public static final String P_STORES = "stroes";

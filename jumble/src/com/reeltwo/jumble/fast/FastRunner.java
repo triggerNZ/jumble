@@ -51,11 +51,14 @@ public class FastRunner {
   /** Whether to mutate increments */
   private boolean mIncrements = true;
 
-  /** Whether to mutate constant pool */
+  /** Whether to mutate non-string constant pool */
   private boolean mCPool = true;
 
   /** Whether to mutate switches */
   private boolean mSwitches = true;
+  
+  /** Whether to mutate strings*/
+  private boolean mStrings = true;
 
   private boolean mOrdered = true;
 
@@ -265,7 +268,7 @@ public class FastRunner {
   }
 
   /**
-   * Gets whether constant pool will be mutated.
+   * Gets whether non-string constant pool will be mutated.
    *
    * @return true if constant pool will be mutated.
    */
@@ -274,12 +277,30 @@ public class FastRunner {
   }
 
   /**
-   * Sets whether constant pool will be mutated.
+   * Sets whether non-string constant pool will be mutated.
    *
    * @param cpool true if constants will be mutated.
    */
   public void setCPool(final boolean cpool) {
     mCPool = cpool;
+  }
+  
+  /**
+   * Sets whether strings in the constant pool will be mutated.
+   * 
+   * @return true if strings should be mutated
+   */
+  public boolean isStrings() {
+    return mStrings;
+  }
+  
+  /**
+   * Sets whether strings in the constant pool will be mutated.
+   * 
+   * @param strings true if strings in the constant pool will be mutated. 
+   */
+  public void setStrings(final boolean strings) {
+    mStrings = strings;
   }
 
   /**
@@ -978,6 +999,10 @@ public class FastRunner {
     if (mCPool) {
       args.add("--" + FastJumbler.FLAG_CPOOL);
     }
+    // strings
+    if (mStrings) {
+      args.add("--" + FastJumbler.FLAG_STRINGS);
+    }
     // switches
     if (mSwitches) {
       args.add("--" + FastJumbler.FLAG_SWITCHES);
@@ -1004,6 +1029,7 @@ public class FastRunner {
     m.setIgnoredMethods(mExcludeMethods);
     m.setMutateIncrements(mIncrements);
     m.setMutateCPool(mCPool);
+    m.setMutateStrings(mStrings);
     m.setMutateSwitch(mSwitches);
     m.setMutateInlineConstants(mInlineConstants);
     m.setMutateReturnValues(mReturnVals);
